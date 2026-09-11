@@ -195,25 +195,40 @@ export function AreasPage() {
   );
 }
 
-export function IndiaOfficePage() {
-  return <main>
-    <PageHero label="India office" title={<>Closer to home.<br /><em className="text-[#c97352]">Closer to you.</em></>} copy="Our India office connects clients with KNC Horizon’s Dubai property advisory from the heart of Gurugram." image="/images/creek-waterfront.jpg" />
-    <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-32">
-      <div className="mx-auto grid max-w-[1380px] gap-14 md:grid-cols-[.8fr_1.2fr] md:gap-24">
-        <div><SectionLabel>India office</SectionLabel><h2 className="display mt-6 text-5xl leading-[.92] md:text-7xl">Gurugram,<br /><em className="text-[#c97352]">Haryana.</em></h2></div>
-        <div className="border-t border-[#202635]/20 pt-5">
-          <p className="eyebrow text-[#202635]/45">Office address</p>
-          <p className="mt-5 font-serif text-3xl leading-tight">{CONTACT.indiaAddress}</p>
-          <p className="mt-8 max-w-xl text-sm leading-7 text-[#202635]/60">Speak with our India team about Dubai property buying, investment opportunities, relocation, and introductions to our Dubai advisory team.</p>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <Link href="/contact" className="inline-flex items-center gap-2 bg-[#202635] px-5 py-3 font-mono text-[10px] uppercase tracking-[.13em] text-[#f5f0e6]">Contact KNC <ArrowUpRight size={14} /></Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>;
-}
-
 export function ContactPage() {
-  return <main><PageHero label="Start a conversation" title={<>A good move<br />starts with a <em className="text-[#c97352]">hello.</em></>} copy="Tell us a little about what you’re looking for. We’ll come back with a thoughtful next step." image="/images/hero-dubai-villa.jpg" /><section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-32"><div className="mx-auto grid max-w-[1380px] gap-14 md:grid-cols-[.7fr_1.3fr] md:gap-24"><div><SectionLabel>Reach us directly</SectionLabel><a href={`tel:${CONTACT.phoneHref}`} className="mt-7 block font-serif text-3xl text-[#202635] hover:text-[#c97352]" data-testid="link-contact-page-phone">{CONTACT.phoneDisplay}</a><a href={`mailto:${CONTACT.email}`} className="mt-2 block font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/60 hover:text-[#c97352]" data-testid="link-contact-page-email">{CONTACT.email}</a><a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noreferrer" className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] line-link" data-testid="link-contact-page-whatsapp">WhatsApp us</a><div className="mt-16 border-t border-[#202635]/15 pt-5"><p className="eyebrow text-[#202635]/45">Studio hours</p><p className="mt-4 text-sm leading-6 text-[#202635]/60">{CONTACT.studioHours}</p></div><div className="mt-8 border-t border-[#202635]/15 pt-5"><p className="eyebrow text-[#202635]/45">Based in</p><p className="mt-4 flex items-center gap-2 text-sm text-[#202635]/60"><Globe2 size={15} className="text-[#c97352]" /> {CONTACT.dubaiAddress}</p></div></div><ContactForm /></div></section></main>;
+  return (
+    <main>
+      <PageHero
+        label="Start a conversation"
+        title={<>A good move<br />starts with a <em className="text-[#c97352]">hello.</em></>}
+        copy="Tell us a little about what you're looking for. We'll come back with a thoughtful next step."
+        image="/images/hero-dubai-villa.jpg"
+      />
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-32">
+        <div className="mx-auto grid max-w-[1380px] gap-14 md:grid-cols-[.7fr_1.3fr] md:gap-24">
+          <div>
+            <SectionLabel>Reach us directly</SectionLabel>
+            <a href={`tel:${CONTACT.phoneHref}`} className="mt-7 block font-serif text-3xl text-[#202635] hover:text-[#c97352]" data-testid="link-contact-page-phone">{CONTACT.phoneDisplay}</a>
+            <a href={`mailto:${CONTACT.email}`} className="mt-2 block font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/60 hover:text-[#c97352]" data-testid="link-contact-page-email">{CONTACT.email}</a>
+            <a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noreferrer" className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] line-link" data-testid="link-contact-page-whatsapp">WhatsApp us</a>
+            <div className="mt-10 border-t border-[#202635]/15 pt-5">
+              <p className="eyebrow text-[#202635]/45">Studio hours</p>
+              <p className="mt-4 text-sm leading-6 text-[#202635]/60">{CONTACT.studioHours}</p>
+            </div>
+            <div className="mt-8 border-t border-[#202635]/15 pt-5">
+              <p className="eyebrow text-[#c97352]">Dubai Office</p>
+              <p className="mt-4 flex items-center gap-2 text-sm text-[#202635]/60">
+                <Globe2 size={15} className="text-[#c97352]" /> {CONTACT.dubaiAddress}
+              </p>
+            </div>
+            <div className="mt-8 border-t border-[#202635]/15 pt-5">
+              <p className="eyebrow text-[#c97352]">India Office</p>
+              <p className="mt-4 text-sm leading-6 text-[#202635]/60">{CONTACT.indiaAddress}</p>
+            </div>
+          </div>
+          <ContactForm />
+        </div>
+      </section>
+    </main>
+  );
 }

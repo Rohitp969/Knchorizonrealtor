@@ -45,7 +45,22 @@ export type ProjectDoc = {
   amenities?: string[];
   highlights?: string[];
   completionDate?: string;
+  newLaunch?: boolean;
+  offPlan?: boolean;
   featured: boolean;
+  published: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type DeveloperDoc = {
+  _id?: ObjectId;
+  slug: string;
+  name: string;
+  description: string;
+  logo?: string;
+  website?: string;
+  established?: string;
   published: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -88,6 +103,9 @@ export type InquiryDoc = {
   interest: string;
   inquiryType?: "contact" | "property" | "project" | "visit" | string;
   message?: string;
+  budget?: string;
+  propertyType?: string;
+  location?: string;
   propertySlug?: string;
   projectSlug?: string;
   property?: ObjectId;

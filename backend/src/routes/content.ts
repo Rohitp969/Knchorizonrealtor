@@ -51,10 +51,27 @@ router.get("/public/properties/:slug", async (req, res, next) => {
   }
 });
 
-router.get("/public/projects", async (_req, res, next) => {
+router.get("/public/projects", async (req, res, next) => {
   try {
-    const docs = await getDb().collection<ProjectDoc>("projects").find(publicFilter()).sort({ featured: -1, createdAt: -1 }).toArray();
+    const { developer, featured, newLaunch, offPlan } = req.query as Record<string, string | undefined>;
+    const filter: Record<string, unknown> = publicFilter();
+    
+    if (developer) filter.developer = developer;
+    if (featured === "true") filter.featured = true;
+    if (newLaunch === "true") filter.newLaunch = true;
+    if (offPlan === "true") filter.offPlan = true;
+    
+    const docs = await getDb().collection<ProjectDoc>("projects").find(filter).sort({ featured: -1, createdAt: -1 }).toArray();
     return res.json({ projects: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.get("/public/developers", async (_req, res, next) => {
+  try {
+    const docs = await getDb().collection("developers").find(publicFilter()).sort({ name: 1 }).toArray();
+    return res.json({ developers: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
   } catch (error) {
     return next(error);
   }

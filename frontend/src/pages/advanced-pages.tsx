@@ -150,6 +150,105 @@ export function RegisterPage() {
 
 type AdminItem = Record<string, any> & { id: string };
 
+type InquiryStatus = 'new' | 'contacted' | 'closed';
+
+function InquiryPanel({
+  item,
+  onStatusUpdate,
+}: {
+  item: AdminItem;
+  onStatusUpdate: (id: string, status: InquiryStatus) => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const currentStatus: InquiryStatus = (item.status ?? 'new').toLowerCase() as InquiryStatus;
+
+  const statusColors: Record<InquiryStatus, string> = {
+    new: 'text-[#c97352]',
+    contacted: 'text-[#55735f]',
+    closed: 'text-[#202635]/40',
+  };
+
+  const nextStatus: Record<InquiryStatus, { label: string; value: InquiryStatus }> = {
+    new: { label: 'Mark contacted', value: 'contacted' },
+    contacted: { label: 'Mark closed', value: 'closed' },
+    closed: { label: 'Reopen', value: 'new' },
+  };
+
+  return (
+    <div className="border-b border-[#202635]/12 py-5">
+      <button
+        type="button"
+        onClick={() => setExpanded(!expanded)}
+        className="flex w-full items-start justify-between gap-4 text-left"
+      >
+        <div className="flex-1">
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="font-serif text-xl">{item.name}</p>
+            <span className={`font-mono text-[9px] uppercase tracking-[.12em] ${statusColors[currentStatus]}`}>
+              {currentStatus}
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-[#202635]/55">
+            {item.email}
+            {item.phone ? ` · ${item.phone}` : ''}
+            {item.interest ? ` · ${item.interest}` : ''}
+          </p>
+        </div>
+        <span className={`mt-0.5 font-mono text-[9px] uppercase tracking-[.1em] text-[#202635]/45 ${expanded ? 'rotate-180 block' : ''} transition-transform`}>
+          {expanded ? '▲' : '▼'}
+        </span>
+      </button>
+      {expanded && (
+        <div className="mt-4 border-l-2 border-[#c97352]/30 pl-4">
+          {item.message && (
+            <p className="mb-4 text-sm leading-6 text-[#202635]/65 italic">"{item.message}"</p>
+          )}
+          {item.propertySlug && (
+            <p className="mb-3 font-mono text-[10px] uppercase tracking-[.1em] text-[#202635]/50">
+              Property: <Link href={`/properties/${item.propertySlug}`} className="text-[#c97352] underline">{item.propertySlug}</Link>
+            </p>
+          )}
+          {item.projectSlug && (
+            <p className="mb-3 font-mono text-[10px] uppercase tracking-[.1em] text-[#202635]/50">
+              Project: <Link href={`/projects/${item.projectSlug}`} className="text-[#c97352] underline">{item.projectSlug}</Link>
+            </p>
+          )}
+          <p className="mb-4 font-mono text-[9px] uppercase tracking-[.1em] text-[#202635]/40">
+            Received: {item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-GB', { dateStyle: 'long' }) : 'Unknown date'}
+          </p>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => onStatusUpdate(item.id, nextStatus[currentStatus].value)}
+              className="border border-[#55735f] px-4 py-2 font-mono text-[9px] uppercase tracking-[.12em] text-[#55735f] hover:bg-[#55735f] hover:text-white transition-colors"
+            >
+              {nextStatus[currentStatus].label}
+            </button>
+            {item.phone && (
+              <a
+                href={`https://wa.me/${item.phone.replace(/\D/g, '')}`}
+                target="_blank"
+                rel="noreferrer"
+                className="border border-[#202635]/20 px-4 py-2 font-mono text-[9px] uppercase tracking-[.12em] text-[#202635]/60 hover:bg-[#202635] hover:text-[#f5f0e6] transition-colors"
+              >
+                WhatsApp
+              </a>
+            )}
+            {item.email && (
+              <a
+                href={`mailto:${item.email}`}
+                className="border border-[#202635]/20 px-4 py-2 font-mono text-[9px] uppercase tracking-[.12em] text-[#202635]/60 hover:bg-[#202635] hover:text-[#f5f0e6] transition-colors"
+              >
+                Email
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function BlogManagement() {
   const emptyDraft = { title: '', slug: '', excerpt: '', content: '', featuredImage: '/images/creek-waterfront.jpg', category: 'General', author: 'KNC Horizon', seoTitle: '', seoDescription: '', status: 'draft' };
   const [posts, setPosts] = useState<AdminItem[]>([]);
@@ -175,20 +274,163 @@ export function AdminPage() {
   const [, setLocation] = useLocation();
   const [counts, setCounts] = useState<Record<string, number> | null>(null);
   const [inquiries, setInquiries] = useState<AdminItem[]>([]);
+  const [inquiryFilter, setInquiryFilter] = useState<'all' | InquiryStatus>('all');
   const [error, setError] = useState('');
-  const [resource, setResource] = useState<'properties' | 'projects' | 'posts'>('properties');
+  const [resource, setResource] = useState<'properties' | 'projects' | 'posts' | 'developers'>('properties');
   const [items, setItems] = useState<AdminItem[]>([]);
-   useEffect(() => { 
-     adminFetch<{ counts: Record<string, number> }>('/admin/dashboard')
-       .then((data) => setCounts(data.counts))
-       .catch((reason) => { setError(reason instanceof Error ? reason.message : 'Please sign in again.'); });
-     adminFetch<{ inquiries: AdminItem[] }>('/admin/inquiries')
-       .then((data) => setInquiries(data.inquiries))
-       .catch(() => undefined); 
-   }, []);
-  useEffect(() => { adminFetch<{ items: AdminItem[] }>(`/admin/${resource}`).then((data) => setItems(data.items)).catch(() => setItems([])); }, [resource]);
+
+  useEffect(() => {
+    adminFetch<{ counts: Record<string, number> }>('/admin/dashboard')
+      .then((data) => setCounts(data.counts))
+      .catch((reason) => { setError(reason instanceof Error ? reason.message : 'Please sign in again.'); });
+    adminFetch<{ inquiries: AdminItem[] }>('/admin/inquiries')
+      .then((data) => setInquiries(data.inquiries))
+      .catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
+    adminFetch<{ items: AdminItem[] }>(`/admin/${resource}`)
+      .then((data) => setItems(data.items))
+      .catch(() => setItems([]));
+  }, [resource]);
+
   function logout() { localStorage.removeItem('knc_admin_token'); setLocation('/login'); }
-  async function deleteItem(id: string) { if (!window.confirm('Delete this record? This cannot be undone.')) return; await adminFetch(`/admin/${resource}/${id}`, { method: 'DELETE' }); setItems((current) => current.filter((item) => item.id !== id)); }
-  if (error) return <main className="bg-[#f5f0e6] px-5 py-40 md:px-10"><div className="mx-auto max-w-[900px]"><ErrorState message={error} /><Link href="/login" className="mt-7 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">Sign in again <ArrowUpRight size={14} /></Link></div></main>;
-  return <main className="min-h-screen bg-[#e9e4da] px-5 py-32 md:px-10"><div className="mx-auto max-w-[1380px]"><div className="flex flex-wrap items-end justify-between gap-6"><div><SectionLabel>Protected workspace</SectionLabel><h1 className="display mt-4 text-6xl">KNC <em className="text-[#c97352]">dashboard.</em></h1></div><button onClick={logout} className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/65 hover:text-[#c97352]"><LogOut size={14} /> Sign out</button></div><div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-5">{['properties', 'projects', 'posts', 'inquiries', 'subscribers'].map((key) => <div key={key} className="border-t border-[#202635]/20 p-4"><p className="display text-4xl">{counts?.[key] ?? '—'}</p><p className="mt-2 eyebrow text-[#c97352]">{key}</p></div>)}</div><section className="mt-16 grid gap-12 lg:grid-cols-[1fr_.8fr]"><div><div className="flex flex-wrap items-center justify-between gap-4"><SectionIntro label="Content management" title={<>Keep the edit<br /><em className="text-[#c97352]">alive.</em></>} /><div className="flex gap-2">{(['properties', 'projects', 'posts'] as const).map((key) => <button key={key} onClick={() => setResource(key)} className={`px-3 py-2 font-mono text-[9px] uppercase tracking-[.12em] ${resource === key ? 'bg-[#202635] text-[#f5f0e6]' : 'border border-[#202635]/20'}`}>{key}</button>)}</div></div><div className="mt-8 divide-y divide-[#202635]/15 border-y border-[#202635]/15">{items.map((item) => <div key={item.id} className="flex items-center justify-between gap-4 py-5"><div><p className="font-serif text-2xl">{item.title}</p><p className="mt-1 text-xs text-[#202635]/55">{item.location ?? item.category ?? item.status ?? 'Draft record'}</p></div><button onClick={() => deleteItem(item.id)} className="text-[#c97352]" aria-label={`Delete ${item.title}`}><Trash2 size={16} /></button></div>)}{!items.length && <p className="py-8 text-sm text-[#202635]/60">No records found.</p>}</div></div><div><SectionLabel>Recent enquiries</SectionLabel><div className="mt-5 divide-y divide-[#202635]/15 border-y border-[#202635]/15">{inquiries.slice(0, 6).map((item) => <div key={item.id} className="py-5"><div className="flex justify-between gap-4"><p className="font-serif text-2xl">{item.name}</p><span className="eyebrow text-[#c97352]">{item.status}</span></div><p className="mt-2 text-sm text-[#202635]/60">{item.email} · {item.interest}</p><p className="mt-3 text-sm leading-6 text-[#202635]/60">{item.message || 'No message supplied.'}</p></div>)}{!inquiries.length && <p className="py-8 text-sm text-[#202635]/60">No enquiries yet.</p>}</div></div></section><BlogManagement /></div></main>;
+
+  async function deleteItem(id: string) {
+    if (!window.confirm('Delete this record? This cannot be undone.')) return;
+    await adminFetch(`/admin/${resource}/${id}`, { method: 'DELETE' });
+    setItems((current) => current.filter((item) => item.id !== id));
+  }
+
+  async function updateInquiryStatus(id: string, status: InquiryStatus) {
+    try {
+      await adminFetch(`/admin/inquiries/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
+      setInquiries((current) =>
+        current.map((item) => (item.id === id ? { ...item, status } : item))
+      );
+    } catch {
+      // silently fail — status update is best-effort
+    }
+  }
+
+  const filteredInquiries = inquiryFilter === 'all'
+    ? inquiries
+    : inquiries.filter((item) => (item.status ?? 'new').toLowerCase() === inquiryFilter);
+
+  const inquiryCounts = {
+    all: inquiries.length,
+    new: inquiries.filter((i) => (i.status ?? 'new').toLowerCase() === 'new').length,
+    contacted: inquiries.filter((i) => (i.status ?? '').toLowerCase() === 'contacted').length,
+    closed: inquiries.filter((i) => (i.status ?? '').toLowerCase() === 'closed').length,
+  };
+
+  if (error) return (
+    <main className="bg-[#f5f0e6] px-5 py-40 md:px-10">
+      <div className="mx-auto max-w-[900px]">
+        <ErrorState message={error} />
+        <Link href="/login" className="mt-7 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
+          Sign in again <ArrowUpRight size={14} />
+        </Link>
+      </div>
+    </main>
+  );
+
+  return (
+    <main className="min-h-screen bg-[#e9e4da] px-5 py-32 md:px-10">
+      <div className="mx-auto max-w-[1380px]">
+        {/* Header */}
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <SectionLabel>Protected workspace</SectionLabel>
+            <h1 className="display mt-4 text-6xl">KNC <em className="text-[#c97352]">dashboard.</em></h1>
+          </div>
+          <button onClick={logout} className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/65 hover:text-[#c97352]">
+            <LogOut size={14} /> Sign out
+          </button>
+        </div>
+
+        {/* Stats */}
+        <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-6">
+          {['properties', 'projects', 'developers', 'posts', 'inquiries', 'subscribers'].map((key) => (
+            <div key={key} className="border-t border-[#202635]/20 p-4">
+              <p className="display text-4xl">{counts?.[key] ?? '—'}</p>
+              <p className="mt-2 eyebrow text-[#c97352]">{key}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Content + Leads grid */}
+        <section className="mt-16 grid gap-12 lg:grid-cols-[1fr_.85fr]">
+          {/* Content management */}
+          <div>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <SectionIntro label="Content management" title={<>Keep the edit<br /><em className="text-[#c97352]">alive.</em></>} />
+              <div className="flex gap-2">
+                {(['properties', 'projects', 'developers', 'posts'] as const).map((key) => (
+                  <button key={key} onClick={() => setResource(key)} className={`px-3 py-2 font-mono text-[9px] uppercase tracking-[.12em] ${resource === key ? 'bg-[#202635] text-[#f5f0e6]' : 'border border-[#202635]/20'}`}>{key}</button>
+                ))}
+              </div>
+            </div>
+            <div className="mt-8 divide-y divide-[#202635]/15 border-y border-[#202635]/15">
+              {items.map((item) => (
+                <div key={item.id} className="flex items-center justify-between gap-4 py-5">
+                  <div>
+                    <p className="font-serif text-xl">{item.title}</p>
+                    <p className="mt-1 text-xs text-[#202635]/55">{item.location ?? item.category ?? item.status ?? 'Draft record'}</p>
+                  </div>
+                  <button onClick={() => deleteItem(item.id)} className="text-[#c97352]" aria-label={`Delete ${item.title}`}>
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+              {!items.length && <p className="py-8 text-sm text-[#202635]/60">No records found.</p>}
+            </div>
+            <div className="mt-5 flex items-center gap-2">
+              <Plus size={14} className="text-[#c97352]" />
+              <span className="font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/50">
+                Use the blog management section below to add content
+              </span>
+            </div>
+          </div>
+
+          {/* Enquiry / Lead management */}
+          <div>
+            <SectionLabel>Lead management</SectionLabel>
+            <h2 className="display mt-4 text-4xl">Enquiries &amp; <em className="text-[#c97352]">leads.</em></h2>
+
+            {/* Status filter tabs */}
+            <div className="mt-7 flex flex-wrap gap-2 border-b border-[#202635]/15 pb-5">
+              {(['all', 'new', 'contacted', 'closed'] as const).map((status) => (
+                <button
+                  key={status}
+                  onClick={() => setInquiryFilter(status)}
+                  className={`flex items-center gap-1.5 px-3 py-2 font-mono text-[9px] uppercase tracking-[.12em] transition-colors ${
+                    inquiryFilter === status ? 'bg-[#202635] text-[#f5f0e6]' : 'border border-[#202635]/20 text-[#202635]/60 hover:border-[#c97352] hover:text-[#c97352]'
+                  }`}
+                >
+                  {status}
+                  <span className={`grid h-4 w-4 place-items-center rounded-full text-[8px] ${inquiryFilter === status ? 'bg-[#c97352]' : 'bg-[#202635]/15'}`}>
+                    {inquiryCounts[status]}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Enquiry list */}
+            <div className="mt-2">
+              {filteredInquiries.length === 0 ? (
+                <p className="py-8 text-sm text-[#202635]/60">No enquiries in this category.</p>
+              ) : (
+                filteredInquiries.map((item) => (
+                  <InquiryPanel key={item.id} item={item} onStatusUpdate={updateInquiryStatus} />
+                ))
+              )}
+            </div>
+          </div>
+        </section>
+
+        <BlogManagement />
+      </div>
+    </main>
+  );
 }

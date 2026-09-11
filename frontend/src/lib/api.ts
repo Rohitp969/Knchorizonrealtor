@@ -65,6 +65,19 @@ export type Project = {
   highlights?: string[];
   featured?: boolean;
   published?: boolean;
+  newLaunch?: boolean;
+  offPlan?: boolean;
+};
+
+export type Developer = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  logo?: string;
+  website?: string;
+  established?: string;
+  published: boolean;
 };
 
 export type Post = {

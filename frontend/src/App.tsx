@@ -7,7 +7,7 @@ import NotFound from '@/pages/not-found';
 import Home from '@/pages/home';
 import { AboutPage, AreasPage, ContactPage, DesignBuildPage, InteriorsPage, PropertiesPage, ServicesPage } from '@/pages/interior-pages';
 import { AdminPage, LoginPage, ProjectDetailPage, RegisterPage } from '@/pages/advanced-pages';
-import { BlogPage, BlogPostPage, GalleryPage, ProjectsPage, PropertiesLivePage, PropertyDetailPage } from '@/pages/content-pages';
+import { BlogPage, BlogPostPage, GalleryPage, ProjectsPage, PropertiesLivePage, PropertyDetailPage, PropertiesFilterPage, ProjectsFilterPage, DevelopersPage } from '@/pages/content-pages';
 import { SiteShell } from '@/components/site-shell';
 import { PrivacyPage, TermsPage } from '@/pages/legal-pages';
 import { usePageMeta } from '@/lib/seo';
@@ -47,9 +47,17 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/about" component={AboutPage} />
           <Route path="/properties" component={PropertiesLivePage} />
+          <Route path="/properties/residential"><PropertiesFilterPage category="residential" /></Route>
+          <Route path="/properties/commercial"><PropertiesFilterPage category="commercial" /></Route>
+          <Route path="/properties/investment"><PropertiesFilterPage category="investment" /></Route>
+          <Route path="/properties/off-plan"><PropertiesFilterPage category="off-plan" /></Route>
           <Route path="/properties/:slug" component={PropertyDetailPage} />
           <Route path="/projects" component={ProjectsPage} />
+          <Route path="/projects/featured"><ProjectsFilterPage filter="featured" /></Route>
+          <Route path="/projects/new-launches"><ProjectsFilterPage filter="new-launches" /></Route>
+          <Route path="/projects/off-plan"><ProjectsFilterPage filter="off-plan" /></Route>
           <Route path="/projects/:slug" component={ProjectDetailPage} />
+          <Route path="/developers" component={DevelopersPage} />
           <Route path="/blog" component={BlogPage} />
           <Route path="/blog/:slug" component={BlogPostPage} />
           <Route path="/gallery" component={GalleryPage} />

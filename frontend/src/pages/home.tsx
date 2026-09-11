@@ -69,9 +69,6 @@ export default function Home() {
             animate="visible"
             variants={fadeUp}
           >
-            <p className="eyebrow text-[#d9c6a4]">
-              KNC Horizon Realtor
-            </p>
 
             <h1
               className="

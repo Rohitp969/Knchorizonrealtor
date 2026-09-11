@@ -35,6 +35,7 @@ function collectionFor(resource: string): Collection<any> | undefined {
     gallery: getDb().collection<GalleryItemDoc>("gallery"),
     testimonials: getDb().collection<TestimonialDoc>("testimonials"),
     users: getDb().collection<UserDoc>("users"),
+    developers: getDb().collection("developers"),
   };
   return collections[resource as keyof typeof collections];
 }
@@ -65,14 +66,15 @@ function blogBody(body: Record<string, unknown>, existing?: BlogPostDoc) {
 router.get("/admin/dashboard", async (_req, res, next) => {
   try {
     const db = getDb();
-    const [properties, projects, posts, inquiries, subscribers] = await Promise.all([
+    const [properties, projects, posts, inquiries, subscribers, developers] = await Promise.all([
       db.collection("properties").countDocuments(),
       db.collection("projects").countDocuments(),
       db.collection("posts").countDocuments(),
       db.collection("inquiries").countDocuments({ status: "new" }),
       db.collection("newsletter").countDocuments(),
+      db.collection("developers").countDocuments(),
     ]);
-    return res.json({ counts: { properties, projects, posts, inquiries, subscribers } });
+    return res.json({ counts: { properties, projects, posts, inquiries, subscribers, developers } });
   } catch (error) {
     return next(error);
   }

@@ -6,18 +6,21 @@ const router = Router();
 
 router.post("/inquiries", async (req, res, next) => {
   try {
-    const { name, email, phone, interest, inquiryType, message, propertySlug, projectSlug, project, preferredVisitDate } = req.body as Partial<InquiryDoc>;
+    const { name, email, phone, interest, inquiryType, message, budget, propertyType, location, propertySlug, projectSlug, project, preferredVisitDate } = req.body as Partial<InquiryDoc>;
     const normalizedName = typeof name === "string" ? name.trim() : "";
     const normalizedEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
     const normalizedPhone = typeof phone === "string" ? phone.trim() : "";
     const normalizedInterest = typeof interest === "string" ? interest.trim() : "";
     const normalizedMessage = typeof message === "string" ? message.trim() : "";
+    const normalizedBudget = typeof budget === "string" ? budget.trim() : undefined;
+    const normalizedPropertyType = typeof propertyType === "string" ? propertyType.trim() : undefined;
+    const normalizedLocation = typeof location === "string" ? location.trim() : undefined;
     if (!normalizedName || !normalizedEmail || !normalizedPhone || !normalizedInterest || !normalizedMessage) return res.status(400).json({ message: "Name, phone, email, interest, and message are required." });
     if (normalizedName.length > 120 || normalizedEmail.length > 254 || normalizedPhone.length > 40 || normalizedInterest.length > 120 || normalizedMessage.length > 5000) return res.status(400).json({ message: "Please keep the enquiry within the allowed length limits." });
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) return res.status(400).json({ message: "Please provide a valid email address." });
     const inquiry: Omit<InquiryDoc, "_id"> = {
       name: normalizedName, email: normalizedEmail, phone: normalizedPhone, interest: normalizedInterest, inquiryType: inquiryType ?? "contact",
-      message: normalizedMessage, propertySlug, projectSlug, project, preferredVisitDate, status: "new", createdAt: new Date(),
+      message: normalizedMessage, budget: normalizedBudget, propertyType: normalizedPropertyType, location: normalizedLocation, propertySlug, projectSlug, project, preferredVisitDate, status: "new", createdAt: new Date(),
     };
     const result = await getDb().collection<InquiryDoc>("inquiries").insertOne(inquiry);
     return res.status(201).json({ inquiry: serializeDocument({ ...inquiry, _id: result.insertedId } as unknown as Record<string, unknown>) });

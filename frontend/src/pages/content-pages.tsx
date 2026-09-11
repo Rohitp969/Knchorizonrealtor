@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ArrowLeft, ArrowUpRight, Check, Search, X } from 'lucide-react';
 import { Link, useRoute } from 'wouter';
-import { apiFetch, type Post, type Project, type RemoteProperty } from '@/lib/api';
+import { apiFetch, type Post, type Project, type RemoteProperty, type Developer } from '@/lib/api';
 import { ContactForm, PageHero, PropertyCard, SectionLabel } from '@/components/blocks';
 import {
   defaultGallery,
@@ -648,6 +648,209 @@ export function GalleryPage() {
           </figure>
         </div>
       )}
+    </main>
+  );
+}
+
+export function PropertiesFilterPage({ category }: { category: string }) {
+  const [items, setItems] = useState<RemoteProperty[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  usePageMeta(`${category.charAt(0).toUpperCase() + category.slice(1)} Properties`, `Explore ${category} properties in Dubai.`);
+
+  useEffect(() => {
+    setLoading(true);
+    let filterQuery = '';
+    if (category === 'residential') filterQuery = '?type=residential';
+    else if (category === 'commercial') filterQuery = '?type=commercial';
+    else if (category === 'investment') filterQuery = '?listingType=investment';
+    else if (category === 'off-plan') filterQuery = '?status=off-plan';
+    
+    apiFetch<{ properties: RemoteProperty[] }>(`/public/properties${filterQuery}`)
+      .then((data) => setItems(data.properties))
+      .catch((reason) => setError(reason instanceof Error ? reason.message : 'Please try again.'))
+      .finally(() => setLoading(false));
+  }, [category]);
+
+  const titles: Record<string, React.ReactNode> = {
+    residential: <>Residential<br /><em className="text-[#c97352]">properties.</em></>,
+    commercial: <>Commercial<br /><em className="text-[#c97352]">spaces.</em></>,
+    investment: <>Investment<br /><em className="text-[#c97352]">opportunities.</em></>,
+    'off-plan': <>Off-Plan<br /><em className="text-[#c97352]">launches.</em></>
+  };
+
+  return (
+    <main>
+      <PageHero
+        label={`${category} properties`}
+        title={titles[category] || titles['residential']}
+        copy={`A considered selection of ${category} properties in Dubai.`}
+        image="/images/penthouse-marina.jpg"
+      />
+      <section className="bg-[#f5f0e6] px-5 py-16 md:px-10 md:py-24">
+        <div className="mx-auto max-w-[1380px]">
+          {loading ? <LoadingState /> : error ? <ErrorState message={error} /> : items.length === 0 ? (
+            <div className="py-24 text-center">
+              <p className="display text-4xl">No properties found in this category.</p>
+            </div>
+          ) : (
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {items.map((item) => (
+                <PropertyCard key={item.id} property={propertyCard(item)} featured={false} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+export function ProjectsFilterPage({ filter }: { filter: string }) {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  usePageMeta(`${filter.replace('-', ' ')} Projects`, `Explore ${filter.replace('-', ' ')} projects in Dubai.`);
+
+  useEffect(() => {
+    setLoading(true);
+    let query = '';
+    if (filter === 'featured') query = '?featured=true';
+    else if (filter === 'new-launches') query = '?newLaunch=true';
+    else if (filter === 'off-plan') query = '?offPlan=true';
+
+    apiFetch<{ projects: Project[] }>(`/public/projects${query}`)
+      .then((data) => setProjects(data.projects))
+      .catch((reason) => setError(reason instanceof Error ? reason.message : 'Please try again.'))
+      .finally(() => setLoading(false));
+  }, [filter]);
+
+  const titles: Record<string, React.ReactNode> = {
+    featured: <>Featured<br /><em className="text-[#c97352]">projects.</em></>,
+    'new-launches': <>New<br /><em className="text-[#c97352]">launches.</em></>,
+    'off-plan': <>Off-Plan<br /><em className="text-[#c97352]">developments.</em></>
+  };
+
+  return (
+    <main>
+      <PageHero
+        label={filter.replace('-', ' ')}
+        title={titles[filter] || titles['featured']}
+        copy={`Explore our curated selection of ${filter.replace('-', ' ')} in Dubai.`}
+        image="/images/creek-waterfront.jpg"
+      />
+      <section className="bg-[#e9e4da] px-5 py-16 md:px-10 md:py-24">
+        <div className="mx-auto max-w-[1380px]">
+          {loading ? <LoadingState /> : error ? <ErrorState message={error} /> : projects.length === 0 ? (
+             <div className="py-24 text-center">
+               <p className="display text-4xl">No projects found for this selection.</p>
+             </div>
+          ) : (
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {projects.map((project) => (
+                <Link
+                  href={`/projects/${project.slug}`}
+                  key={project.id}
+                  className="card-editorial flex flex-col justify-between p-6 group"
+                >
+                  <div>
+                    <div className="card-thumb aspect-[16/10] h-[190px] sm:h-[210px] md:h-[220px] w-full">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        onError={(event) => {
+                          event.currentTarget.src = '/images/creek-waterfront.jpg';
+                        }}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                    <p className="mt-5 eyebrow text-[#c97352]">
+                      {project.developer} · {project.location}
+                    </p>
+                    <h2 className="font-serif text-2xl md:text-3xl mt-2 leading-snug">{project.title}</h2>
+                    <p className="mt-3 text-sm leading-6 text-[#202635]/65 line-clamp-2">{project.description}</p>
+                  </div>
+                  <div className="mt-6 border-t border-[#202635]/12 pt-4">
+                    <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/65">
+                      <span>From {price(project.startingPrice)}</span>
+                      <span>Handover {project.handover}</span>
+                    </div>
+                    <span className="mt-4 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] group-hover:underline">
+                      Explore project <ArrowUpRight size={14} />
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+export function DevelopersPage() {
+  const [developers, setDevelopers] = useState<Developer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  usePageMeta('Developers', 'Verified Dubai developers and their projects.');
+
+  useEffect(() => {
+    apiFetch<{ developers: Developer[] }>('/public/developers')
+      .then((data) => setDevelopers(data.developers))
+      .catch((reason) => setError(reason instanceof Error ? reason.message : 'Please try again.'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <main>
+      <PageHero
+        label="Developers"
+        title={
+          <>
+            Shaping the<br />
+            <em className="text-[#c97352]">skyline.</em>
+          </>
+        }
+        copy="Profiles of established Dubai developers and their latest opportunities."
+        image="/images/hills-villa.jpg"
+      />
+      <section className="bg-[#f5f0e6] px-5 py-16 md:px-10 md:py-24">
+        <div className="mx-auto max-w-[1380px]">
+          {loading ? <LoadingState /> : error ? <ErrorState message={error} /> : developers.length === 0 ? (
+             <div className="py-24 text-center">
+               <p className="display text-4xl">No developers listed yet.</p>
+             </div>
+          ) : (
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {developers.map((dev) => (
+                <div key={dev.id} className="border border-[#202635]/12 bg-[#fcfaf6] p-6 flex flex-col justify-between">
+                  <div>
+                    {dev.logo ? (
+                      <div className="h-16 w-32 mb-6 opacity-80 mix-blend-multiply">
+                        <img src={dev.logo} alt={dev.name} className="h-full w-full object-contain object-left" />
+                      </div>
+                    ) : (
+                      <div className="h-16 mb-6 flex items-center">
+                        <h3 className="font-serif text-3xl text-[#202635]">{dev.name}</h3>
+                      </div>
+                    )}
+                    <h3 className="font-serif text-xl text-[#202635] mb-2">{dev.name}</h3>
+                    <p className="text-sm leading-6 text-[#202635]/65 line-clamp-4">{dev.description}</p>
+                    {dev.established && <p className="mt-3 font-mono text-[10px] uppercase tracking-[.1em] text-[#c97352]">Est. {dev.established}</p>}
+                  </div>
+                  <Link href={`/projects?developer=${encodeURIComponent(dev.name)}`} className="mt-8 inline-flex items-center justify-center gap-2 border border-[#202635]/30 py-3 w-full font-mono text-[10px] uppercase tracking-[.14em] text-[#202635] hover:bg-[#202635] hover:text-[#f5f0e6] transition-colors">
+                    View Projects <ArrowUpRight size={13} />
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
     </main>
   );
 }

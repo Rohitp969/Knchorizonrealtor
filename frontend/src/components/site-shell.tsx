@@ -11,24 +11,27 @@ const navItems = [
 
 const propertyItems = [
   { label: 'All Properties', href: '/properties' },
-  { label: 'Residential', href: '/properties?category=residential' },
-  { label: 'Commercial', href: '/properties?category=commercial' },
-  { label: 'Investment', href: '/properties?category=investment' },
-  { label: 'Off-Plan', href: '/properties?category=off-plan' },
+  { label: 'Residential', href: '/properties/residential' },
+  { label: 'Commercial', href: '/properties/commercial' },
+  { label: 'Investment', href: '/properties/investment' },
+  { label: 'Off-Plan', href: '/properties/off-plan' },
 ];
 
 const projectItems = [
   { label: 'All Projects', href: '/projects' },
-  { label: 'Featured Projects', href: '/projects?filter=featured' },
-  { label: 'New Launches', href: '/projects?filter=new-launches' },
-  { label: 'Off-Plan Projects', href: '/projects?filter=off-plan' },
+  { label: 'Featured Projects', href: '/projects/featured' },
+  { label: 'New Launches', href: '/projects/new-launches' },
+  { label: 'Off-Plan Projects', href: '/projects/off-plan' },
 ];
 
 const serviceItems = [
   { label: 'Property Sales & Advisory', href: '/services#sales' },
+  { label: 'Property Buying Advisory', href: '/services#buying' },
+  { label: 'Investment Advisory', href: '/services#investment' },
+  { label: 'Off-Plan Property', href: '/properties/off-plan' },
+  { label: 'Property Management', href: '/services#management' },
   { label: 'Design & Build', href: '/design-build' },
   { label: 'Interior & Furniture', href: '/interiors' },
-  { label: 'Property Management', href: '/services#management' },
 ];
 
 const exploreItems = [
@@ -104,6 +107,7 @@ export function Navbar() {
             <button type="button" onClick={() => setDropdown(dropdown === 'projects' ? null : 'projects')} className="line-link flex items-center gap-1 font-mono text-[10px] uppercase tracking-[.16em] opacity-85 hover:opacity-100" aria-expanded={dropdown === 'projects'}>Projects <ChevronDown size={12} className={dropdown === 'projects' ? 'rotate-180 transition-transform' : 'transition-transform'} /></button>
             {dropdown === 'projects' && <div className="absolute right-0 top-full w-52 border border-[#d8cdbc] bg-[#f5f0e6] p-2 text-[#202635] shadow-xl">{projectItems.map((item) => <Link key={item.href} href={item.href} onClick={() => setDropdown(null)} className="block px-3 py-2.5 font-mono text-[10px] uppercase tracking-[.12em] hover:bg-[#e9e4da]">{item.label}</Link>)}</div>}
           </div>
+          <Link href="/developers" className="line-link font-mono text-[10px] uppercase tracking-[.16em] opacity-85 hover:opacity-100">Developers</Link>
           <div className="relative" onMouseLeave={() => setDropdown(null)}>
             <button type="button" onClick={() => setDropdown(dropdown === 'services' ? null : 'services')} className="line-link flex items-center gap-1 font-mono text-[10px] uppercase tracking-[.16em] opacity-85 hover:opacity-100" aria-expanded={dropdown === 'services'}>Services <ChevronDown size={12} className={dropdown === 'services' ? 'rotate-180 transition-transform' : 'transition-transform'} /></button>
             {dropdown === 'services' && <div className="absolute right-0 top-full w-56 border border-[#d8cdbc] bg-[#f5f0e6] p-2 text-[#202635] shadow-xl">{serviceItems.map((item) => <Link key={item.href} href={item.href} onClick={() => setDropdown(null)} className="block px-3 py-2.5 font-mono text-[10px] uppercase tracking-[.12em] hover:bg-[#e9e4da]">{item.label}</Link>)}</div>}
@@ -132,6 +136,7 @@ export function Navbar() {
           <div className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-200 ${mobileAccordion === 'properties' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}><div className="min-h-0 border-l border-[#c97352]/35 pl-2">{propertyItems.map((item) => <Link key={item.href} href={item.href} onClick={closeMenu} className="block rounded-sm px-3 py-2 font-mono text-[.64rem] uppercase tracking-[.1em] transition-colors hover:bg-[#e9e4da]">{item.label}</Link>)}</div></div>
           <button type="button" onClick={() => setMobileAccordion(mobileAccordion === 'projects' ? null : 'projects')} className="mt-2 flex w-full items-center justify-between border-t border-[#202635]/10 px-3 pt-3 font-mono text-[.68rem] uppercase tracking-[.12em] text-[#c97352]" aria-expanded={mobileAccordion === 'projects'}>Projects <ChevronDown size={14} className={`transition-transform ${mobileAccordion === 'projects' ? 'rotate-180' : ''}`} /></button>
           <div className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-200 ${mobileAccordion === 'projects' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}><div className="min-h-0 border-l border-[#c97352]/35 pl-2">{projectItems.map((item) => <Link key={item.href} href={item.href} onClick={closeMenu} className="block rounded-sm px-3 py-2 font-mono text-[.64rem] uppercase tracking-[.1em] transition-colors hover:bg-[#e9e4da]">{item.label}</Link>)}</div></div>
+          <Link href="/developers" onClick={closeMenu} className="mt-2 block border-t border-[#202635]/10 px-3 pt-3 font-mono text-[.68rem] uppercase tracking-[.12em] text-[#c97352]">Developers</Link>
           <button type="button" onClick={() => setMobileAccordion(mobileAccordion === 'services' ? null : 'services')} className="mt-2 flex w-full items-center justify-between border-t border-[#202635]/10 px-3 pt-3 font-mono text-[.68rem] uppercase tracking-[.12em] text-[#c97352]" aria-expanded={mobileAccordion === 'services'}>Services <ChevronDown size={14} className={`transition-transform ${mobileAccordion === 'services' ? 'rotate-180' : ''}`} /></button>
           <div className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-200 ${mobileAccordion === 'services' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}><div className="min-h-0 border-l border-[#c97352]/35 pl-2">{serviceItems.map((item) => <Link key={item.href} href={item.href} onClick={closeMenu} className="block rounded-sm px-3 py-2 font-mono text-[.64rem] uppercase tracking-[.1em] transition-colors hover:bg-[#e9e4da]">{item.label}</Link>)}</div></div>
           <button type="button" onClick={() => setMobileAccordion(mobileAccordion === 'explore' ? null : 'explore')} className="mt-2 flex w-full items-center justify-between border-t border-[#202635]/10 px-3 pt-3 font-mono text-[.68rem] uppercase tracking-[.12em] text-[#c97352]" aria-expanded={mobileAccordion === 'explore'}>Explore <ChevronDown size={14} className={`transition-transform ${mobileAccordion === 'explore' ? 'rotate-180' : ''}`} /></button>
@@ -182,7 +187,7 @@ export function Footer() {
           </div>
         </div>
         <div className="flex flex-col justify-between gap-3 pt-7 font-mono text-[9px] uppercase tracking-[.14em] text-[#f5f0e6]/40 md:flex-row">
-          <span data-testid="text-footer-copyright">© 2026 KNC Horizon Realtor · Dubai, UAE</span>
+          <span data-testid="text-footer-copyright">© 2026 KNC Horizon Realtor · Dubai, UAE | India Office: {CONTACT.indiaAddress}</span>
           <span>Private property advisory</span>
         </div>
       </div>
