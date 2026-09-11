@@ -11,6 +11,9 @@ import { BlogPage, BlogPostPage, GalleryPage, ProjectsPage, PropertiesLivePage, 
 import { SiteShell } from '@/components/site-shell';
 import { PrivacyPage, TermsPage } from '@/pages/legal-pages';
 import { usePageMeta } from '@/lib/seo';
+// import { TermsPage } from "./pages/TermsPage";
+// import { PrivacyPage } from "./pages/PrivacyPage";
+
 import {
   Route,
   Switch,
@@ -71,6 +74,7 @@ function Router() {
           <Route path="/login" component={LoginPage} />
           <Route path="/register" component={RegisterPage} />
           <Route path="/admin" component={AdminPage} />
+          
           <Route component={NotFound} />
         </Switch>
       </SiteShell>

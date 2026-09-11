@@ -6,13 +6,153 @@ import { ContactForm, FaqSection, PageHero, PropertyCard, SectionIntro, SectionL
 import { areas, properties, services } from '@/lib/site-data';
 import { CONTACT } from '@/lib/contact-info';
 
+// export function AboutPage() {
+//   return <main>
+//     <PageHero label="About KNC" title={<>A steady point<br />in a moving city.</>} copy="We are an independent Dubai property advisory for people who value context, candour, and an exceptionally well-handled move." image="/images/creek-waterfront.jpg" />
+//     <section className="bg-[#f5f0e6] px-5 py-24 md:px-10 md:py-36"><div className="mx-auto grid max-w-[1380px] gap-12 md:grid-cols-[.65fr_1.35fr] md:gap-24"><div><SectionLabel>Our point of view</SectionLabel></div><div><h2 className="display max-w-4xl text-5xl leading-[.94] md:text-7xl">The best property advice starts with a better <em className="text-[#c97352]">question.</em></h2><p className="mt-10 max-w-2xl text-base leading-7 text-[#202635]/65 md:ml-[18%]">What does home need to make possible? What would make this investment resilient? Which parts of the city feel like you? These are the questions that shape our work — long before we send a listing.</p><p className="mt-6 max-w-2xl text-base leading-7 text-[#202635]/65 md:ml-[18%]">KNC was founded to make the Dubai property experience feel more human. Our clients come from everywhere, but they all want the same thing: someone local enough to know the detail, and independent enough to tell the truth.</p></div></div></section>
+//     <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28"><div className="mx-auto max-w-[1380px]"><SectionIntro label="How we work" title={<>Calm is not passive.<br /><em className="text-[#c97352]">It is prepared.</em></>} copy="A high-touch process, built around the detail that makes decisions feel simple." /><div className="mt-16 grid gap-10 md:grid-cols-3">{[{ n: '01', t: 'Listen before we look', d: 'A proper brief makes everything downstream sharper. We learn the practicals, the preferences, and the non-negotiables.' }, { n: '02', t: 'Edit with context', d: 'Every recommendation comes with the why: the community, the quality, the value, and the questions worth asking.' }, { n: '03', t: 'Stay close to completion', d: 'Our work does not end when the offer is accepted. We keep momentum through the details, right up to the handover.' }].map((item) => <div key={item.n} className="border-t border-[#202635]/20 pt-5"><span className="font-mono text-[10px] text-[#c97352]">{item.n}</span><h3 className="mt-12 font-serif text-3xl">{item.t}</h3><p className="mt-4 text-sm leading-6 text-[#202635]/60">{item.d}</p></div>)}</div></div></section>
+//     <section className="bg-[#202635] px-5 py-24 text-[#f5f0e6] md:px-10 md:py-32"><div className="mx-auto grid max-w-[1380px] gap-12 md:grid-cols-[1fr_.8fr] md:items-end"><div><SectionLabel light>Our promise</SectionLabel><h2 className="display mt-6 max-w-3xl text-5xl leading-[.9] md:text-7xl">Useful honesty,<br /><em className="text-[#d9c6a4]">beautifully delivered.</em></h2></div><p className="max-w-sm text-sm leading-7 text-[#f5f0e6]/60">We will always tell you what we see, what we know, and what we would do if it were our decision. That is the foundation of trust — and the reason our business is built on referrals.</p></div></section>
+//   </main>;
+// }
+
 export function AboutPage() {
-  return <main>
-    <PageHero label="About KNC" title={<>A steady point<br />in a moving city.</>} copy="We are an independent Dubai property advisory for people who value context, candour, and an exceptionally well-handled move." image="/images/creek-waterfront.jpg" />
-    <section className="bg-[#f5f0e6] px-5 py-24 md:px-10 md:py-36"><div className="mx-auto grid max-w-[1380px] gap-12 md:grid-cols-[.65fr_1.35fr] md:gap-24"><div><SectionLabel>Our point of view</SectionLabel></div><div><h2 className="display max-w-4xl text-5xl leading-[.94] md:text-7xl">The best property advice starts with a better <em className="text-[#c97352]">question.</em></h2><p className="mt-10 max-w-2xl text-base leading-7 text-[#202635]/65 md:ml-[18%]">What does home need to make possible? What would make this investment resilient? Which parts of the city feel like you? These are the questions that shape our work — long before we send a listing.</p><p className="mt-6 max-w-2xl text-base leading-7 text-[#202635]/65 md:ml-[18%]">KNC was founded to make the Dubai property experience feel more human. Our clients come from everywhere, but they all want the same thing: someone local enough to know the detail, and independent enough to tell the truth.</p></div></div></section>
-    <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28"><div className="mx-auto max-w-[1380px]"><SectionIntro label="How we work" title={<>Calm is not passive.<br /><em className="text-[#c97352]">It is prepared.</em></>} copy="A high-touch process, built around the detail that makes decisions feel simple." /><div className="mt-16 grid gap-10 md:grid-cols-3">{[{ n: '01', t: 'Listen before we look', d: 'A proper brief makes everything downstream sharper. We learn the practicals, the preferences, and the non-negotiables.' }, { n: '02', t: 'Edit with context', d: 'Every recommendation comes with the why: the community, the quality, the value, and the questions worth asking.' }, { n: '03', t: 'Stay close to completion', d: 'Our work does not end when the offer is accepted. We keep momentum through the details, right up to the handover.' }].map((item) => <div key={item.n} className="border-t border-[#202635]/20 pt-5"><span className="font-mono text-[10px] text-[#c97352]">{item.n}</span><h3 className="mt-12 font-serif text-3xl">{item.t}</h3><p className="mt-4 text-sm leading-6 text-[#202635]/60">{item.d}</p></div>)}</div></div></section>
-    <section className="bg-[#202635] px-5 py-24 text-[#f5f0e6] md:px-10 md:py-32"><div className="mx-auto grid max-w-[1380px] gap-12 md:grid-cols-[1fr_.8fr] md:items-end"><div><SectionLabel light>Our promise</SectionLabel><h2 className="display mt-6 max-w-3xl text-5xl leading-[.9] md:text-7xl">Useful honesty,<br /><em className="text-[#d9c6a4]">beautifully delivered.</em></h2></div><p className="max-w-sm text-sm leading-7 text-[#f5f0e6]/60">We will always tell you what we see, what we know, and what we would do if it were our decision. That is the foundation of trust — and the reason our business is built on referrals.</p></div></section>
-  </main>;
+  return (
+    <main className="overflow-hidden">
+
+      {/* HERO */}
+      <PageHero
+        label="About KNC"
+        title={
+          <>
+            A steady point
+            <br />
+            in a moving city.
+          </>
+        }
+        copy="We are an independent Dubai property advisory for people who value context, candour, and an exceptionally well-handled move."
+        image="/images/creek-waterfront.jpg"
+      />
+
+      {/* OUR POINT OF VIEW */}
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1380px]">
+
+          <div className="grid items-start gap-12 md:grid-cols-[0.9fr_1.1fr] md:gap-20">
+
+            {/* LEFT */}
+            <div>
+              <SectionLabel>Our point of view</SectionLabel>
+
+              <h2 className="display mt-8 max-w-3xl text-5xl leading-[0.94] md:text-6xl lg:text-7xl">
+                The best property advice starts with a better{" "}
+                <em className="text-[#c97352]">question.</em>
+              </h2>
+            </div>
+
+            {/* RIGHT */}
+            <div className="max-w-2xl pt-1 md:pt-12">
+              <p className="text-base leading-7 text-[#202635]/70 md:text-lg">
+                What does home need to make possible? What would make this
+                investment resilient? Which parts of the city feel like you?
+                These are the questions that shape our work — long before we
+                send a listing.
+              </p>
+
+              <p className="mt-7 text-base leading-7 text-[#202635]/70 md:text-lg">
+                KNC was founded to make the Dubai property experience feel
+                more human. Our clients come from everywhere, but they all want
+                the same thing: someone local enough to know the detail, and
+                independent enough to tell the truth.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* HOW WE WORK */}
+      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1380px]">
+
+          <SectionIntro
+            label="How we work"
+            title={
+              <>
+                Calm is not passive.
+                <br />
+                <em className="text-[#c97352]">It is prepared.</em>
+              </>
+            }
+            copy="A high-touch process, built around the detail that makes decisions feel simple."
+          />
+
+          <div className="mt-14 grid gap-10 md:mt-16 md:grid-cols-3 md:gap-12">
+
+            {[
+              {
+                n: "01",
+                t: "Listen before we look",
+                d: "A proper brief makes everything downstream sharper. We learn the practicals, the preferences, and the non-negotiables.",
+              },
+              {
+                n: "02",
+                t: "Edit with context",
+                d: "Every recommendation comes with the why: the community, the quality, the value, and the questions worth asking.",
+              },
+              {
+                n: "03",
+                t: "Stay close to completion",
+                d: "Our work does not end when the offer is accepted. We keep momentum through the details, right up to the handover.",
+              },
+            ].map((item) => (
+              <div
+                key={item.n}
+                className="border-t border-[#202635]/20 pt-5"
+              >
+                <span className="font-mono text-[10px] tracking-[0.2em] text-[#c97352]">
+                  {item.n}
+                </span>
+
+                <h3 className="mt-10 max-w-sm font-serif text-2xl leading-tight md:text-3xl">
+                  {item.t}
+                </h3>
+
+                <p className="mt-4 max-w-sm text-sm leading-6 text-[#202635]/65">
+                  {item.d}
+                </p>
+              </div>
+            ))}
+
+          </div>
+        </div>
+      </section>
+
+      {/* OUR PROMISE */}
+      {/* Changed background so it does NOT merge with the footer */}
+      <section className="bg-[#d9d2c5] px-5 py-20 text-[#202635] md:px-10 md:py-28">
+        <div className="mx-auto grid max-w-[1380px] items-end gap-12 md:grid-cols-[1fr_0.8fr] md:gap-20">
+
+          <div>
+            <SectionLabel>Our promise</SectionLabel>
+
+            <h2 className="display mt-6 max-w-3xl text-5xl leading-[0.92] md:text-6xl lg:text-7xl">
+              Useful honesty,
+              <br />
+              <em className="text-[#c97352]">beautifully delivered.</em>
+            </h2>
+          </div>
+
+          <p className="max-w-md text-sm leading-7 text-[#202635]/65 md:pb-2 md:text-base">
+            We will always tell you what we see, what we know, and what we
+            would do if it were our decision. That is the foundation of trust
+            — and the reason our business is built on referrals.
+          </p>
+
+        </div>
+      </section>
+
+    </main>
+  );
 }
 
 export function PropertiesPage() {

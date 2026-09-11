@@ -4,6 +4,7 @@ import { ArrowUp, ArrowUpRight, ChevronDown, Menu, Phone, X } from 'lucide-react
 import { FaWhatsapp } from 'react-icons/fa';
 import { CONTACT } from '@/lib/contact-info';
 
+
 const navItems = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
@@ -150,57 +151,297 @@ export function Navbar() {
   );
 }
 
+// export function Footer() {
+//   return (
+//     <footer className="bg-[#202635] px-5 py-14 text-[#f5f0e6] md:px-10 md:py-20">
+//       <div className="mx-auto max-w-[1380px]">
+//         <div className="grid gap-12 border-b border-[#f5f0e6]/15 pb-14 md:grid-cols-[1.35fr_.7fr_.85fr_.9fr] md:gap-8">
+//           <div>
+//             <BrandMark inverse />
+//             <p className="mt-9 max-w-sm font-serif text-3xl leading-[1.05] text-[#d9c6a4] md:text-4xl">A more considered way to move through Dubai.</p>
+//           </div>
+//           <div>
+//             <p className="eyebrow text-[#c97352]">Explore</p>
+//             <div className="mt-5 flex flex-col items-start gap-3 font-mono text-[10px] uppercase tracking-[.13em] text-[#f5f0e6]/70">
+//               <Link href="/properties" className="line-link hover:text-[#f5f0e6]">Properties</Link>
+//               <Link href="/projects" className="line-link hover:text-[#f5f0e6]">Projects</Link>
+//               <Link href="/services" className="line-link hover:text-[#f5f0e6]">Services</Link>
+//               <Link href="/areas" className="line-link hover:text-[#f5f0e6]">Dubai Areas</Link>
+//               <Link href="/blog" className="line-link hover:text-[#f5f0e6]" data-testid="link-footer-blog">Blog</Link>
+//               <Link href="/gallery" className="line-link hover:text-[#f5f0e6]">Gallery</Link>
+//               <Link href="/contact" className="line-link hover:text-[#f5f0e6]" data-testid="link-footer-contact">Contact</Link>
+//             </div>
+//           </div>
+//           <div>
+//             <p className="eyebrow text-[#c97352]">Speak with us</p>
+//             <a href={`tel:${CONTACT.phoneHref}`} className="mt-5 flex items-center gap-2 font-serif text-2xl text-[#f5f0e6] hover:text-[#d9c6a4]" data-testid="link-footer-phone"><Phone size={16} /> {CONTACT.phoneDisplay}</a>
+//             <a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noreferrer" className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[.14em] text-[#d9c6a4] line-link" data-testid="link-footer-whatsapp">WhatsApp us</a>
+//           </div>
+//           <div>
+//             <p className="eyebrow text-[#c97352]">Services</p>
+//             <div className="mt-5 flex flex-col items-start gap-3 font-mono text-[10px] uppercase tracking-[.13em] text-[#f5f0e6]/70">
+//               <Link href="/services#sales" className="line-link hover:text-[#f5f0e6]">Property sales & advisory</Link>
+//               <Link href="/design-build" className="line-link hover:text-[#f5f0e6]">Design & Build</Link>
+//               <Link href="/interiors" className="line-link hover:text-[#f5f0e6]">Interior & Furniture</Link>
+//               <Link href="/services#management" className="line-link hover:text-[#f5f0e6]">Property management</Link>
+//             </div>
+//           </div>
+//         </div>
+//         <div className="flex flex-col justify-between gap-3 pt-7 font-mono text-[9px] uppercase tracking-[.14em] text-[#f5f0e6]/40 md:flex-row">
+//           <span data-testid="text-footer-copyright">© 2026 KNC Horizon Realtor · Dubai, UAE | India Office: {CONTACT.indiaAddress}</span>
+//           <span>Private property advisory</span>
+//         </div>
+//       </div>
+//     </footer>
+//   );
+// }
+
+// export function SiteShell({ children }: { children: ReactNode }) {
+//   const [showTop, setShowTop] = useState(false);
+//   useEffect(() => {
+//     const onScroll = () => setShowTop(window.scrollY > 500);
+//     window.addEventListener('scroll', onScroll, { passive: true });
+//     return () => window.removeEventListener('scroll', onScroll);
+//   }, []);
+//   return <div className="grain min-h-[100dvh] overflow-x-hidden"><Navbar />{children}<Footer /><a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noreferrer" className="fixed bottom-5 left-5 z-30 grid h-12 w-12 place-items-center rounded-full bg-[#55735f] text-white shadow-lg transition-transform hover:scale-105" aria-label="Chat on WhatsApp" title="Chat on WhatsApp"><FaWhatsapp size={23} /></a>{showTop && <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="fixed bottom-5 right-5 z-30 grid h-12 w-12 place-items-center rounded-full bg-[#202635] text-[#f5f0e6] shadow-lg" aria-label="Scroll to top"><ArrowUp size={16} /></button>}</div>;
+// }
+
+
 export function Footer() {
   return (
-    <footer className="bg-[#202635] px-5 py-14 text-[#f5f0e6] md:px-10 md:py-20">
+    <footer className="bg-[#202635] px-5 py-16 text-[#f5f0e6] md:px-10 md:py-20">
       <div className="mx-auto max-w-[1380px]">
-        <div className="grid gap-12 border-b border-[#f5f0e6]/15 pb-14 md:grid-cols-[1.35fr_.7fr_.85fr_.9fr] md:gap-8">
+
+        {/* Main Footer */}
+        <div className="grid gap-12 border-b border-[#f5f0e6]/15 pb-14 md:grid-cols-[1.3fr_.8fr_.9fr_.9fr] md:gap-10">
+
+          {/* Brand */}
           <div>
             <BrandMark inverse />
-            <p className="mt-9 max-w-sm font-serif text-3xl leading-[1.05] text-[#d9c6a4] md:text-4xl">A more considered way to move through Dubai.</p>
+
+            <p className="mt-8 max-w-sm font-serif text-3xl leading-[1.05] text-[#d9c6a4] md:text-4xl">
+              A more considered way to move through Dubai.
+            </p>
+
+            <p className="mt-6 max-w-sm text-sm leading-6 text-[#f5f0e6]/55">
+              Independent property advisory for considered decisions across
+              Dubai and the UAE.
+            </p>
           </div>
+
+          {/* Explore */}
           <div>
-            <p className="eyebrow text-[#c97352]">Explore</p>
+            <p className="eyebrow text-[#c97352]">
+              Explore
+            </p>
+
             <div className="mt-5 flex flex-col items-start gap-3 font-mono text-[10px] uppercase tracking-[.13em] text-[#f5f0e6]/70">
-              <Link href="/properties" className="line-link hover:text-[#f5f0e6]">Properties</Link>
-              <Link href="/projects" className="line-link hover:text-[#f5f0e6]">Projects</Link>
-              <Link href="/services" className="line-link hover:text-[#f5f0e6]">Services</Link>
-              <Link href="/areas" className="line-link hover:text-[#f5f0e6]">Dubai Areas</Link>
-              <Link href="/blog" className="line-link hover:text-[#f5f0e6]" data-testid="link-footer-blog">Blog</Link>
-              <Link href="/gallery" className="line-link hover:text-[#f5f0e6]">Gallery</Link>
-              <Link href="/contact" className="line-link hover:text-[#f5f0e6]" data-testid="link-footer-contact">Contact</Link>
+
+              <Link
+                href="/properties"
+                className="line-link hover:text-[#f5f0e6]"
+              >
+                Properties
+              </Link>
+
+              <Link
+                href="/projects"
+                className="line-link hover:text-[#f5f0e6]"
+              >
+                Projects
+              </Link>
+
+              <Link
+                href="/developers"
+                className="line-link hover:text-[#f5f0e6]"
+              >
+                Developers
+              </Link>
+
+              <Link
+                href="/services"
+                className="line-link hover:text-[#f5f0e6]"
+              >
+                Services
+              </Link>
+
+              <Link
+                href="/areas"
+                className="line-link hover:text-[#f5f0e6]"
+              >
+                Dubai Areas
+              </Link>
+
+              <Link
+                href="/blog"
+                className="line-link hover:text-[#f5f0e6]"
+              >
+                Blog / Insights
+              </Link>
+
+              <Link
+                href="/gallery"
+                className="line-link hover:text-[#f5f0e6]"
+              >
+                Gallery
+              </Link>
+
+              <Link
+                href="/contact"
+                className="line-link hover:text-[#f5f0e6]"
+              >
+                Contact
+              </Link>
+
             </div>
           </div>
+
+          {/* Offices */}
           <div>
-            <p className="eyebrow text-[#c97352]">Speak with us</p>
-            <a href={`tel:${CONTACT.phoneHref}`} className="mt-5 flex items-center gap-2 font-serif text-2xl text-[#f5f0e6] hover:text-[#d9c6a4]" data-testid="link-footer-phone"><Phone size={16} /> {CONTACT.phoneDisplay}</a>
-            <a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noreferrer" className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[.14em] text-[#d9c6a4] line-link" data-testid="link-footer-whatsapp">WhatsApp us</a>
+            <p className="eyebrow text-[#c97352]">
+              Our offices
+            </p>
+
+            <div className="mt-5 space-y-7">
+
+              {/* Dubai */}
+              <div>
+                <p className="font-serif text-xl text-[#f5f0e6]">
+                  Dubai
+                </p>
+
+                <p className="mt-2 text-sm leading-6 text-[#f5f0e6]/55">
+                  Dubai, UAE
+                </p>
+              </div>
+
+              {/* India */}
+              <div>
+                <p className="font-serif text-xl text-[#f5f0e6]">
+                  India
+                </p>
+
+                <p className="mt-2 text-sm leading-6 text-[#f5f0e6]/55">
+                  DLF Phase 1,
+                  <br />
+                  Gurugram, Haryana, India
+                </p>
+              </div>
+
+            </div>
+
+            {/* Phone */}
+            <a
+              href={`tel:${CONTACT.phoneHref}`}
+              className="mt-7 flex items-center gap-2 font-serif text-xl text-[#f5f0e6] transition-colors hover:text-[#d9c6a4]"
+              data-testid="link-footer-phone"
+            >
+              <Phone size={15} />
+              {CONTACT.phoneDisplay}
+            </a>
+
           </div>
+
+          {/* Connect + Legal */}
           <div>
-            <p className="eyebrow text-[#c97352]">Services</p>
+            <p className="eyebrow text-[#c97352]">
+              Connect
+            </p>
+
             <div className="mt-5 flex flex-col items-start gap-3 font-mono text-[10px] uppercase tracking-[.13em] text-[#f5f0e6]/70">
-              <Link href="/services#sales" className="line-link hover:text-[#f5f0e6]">Property sales & advisory</Link>
-              <Link href="/design-build" className="line-link hover:text-[#f5f0e6]">Design & Build</Link>
-              <Link href="/interiors" className="line-link hover:text-[#f5f0e6]">Interior & Furniture</Link>
-              <Link href="/services#management" className="line-link hover:text-[#f5f0e6]">Property management</Link>
+
+              <Link
+                href="/contact"
+                className="line-link hover:text-[#f5f0e6]"
+              >
+                Contact Us
+              </Link>
+
+              <Link
+                href="/terms"
+                className="line-link hover:text-[#f5f0e6]"
+              >
+                Terms & Conditions
+              </Link>
+
+              <Link
+                href="/privacy"
+                className="line-link hover:text-[#f5f0e6]"
+              >
+                Privacy Policy
+              </Link>
+
             </div>
           </div>
+
         </div>
-        <div className="flex flex-col justify-between gap-3 pt-7 font-mono text-[9px] uppercase tracking-[.14em] text-[#f5f0e6]/40 md:flex-row">
-          <span data-testid="text-footer-copyright">© 2026 KNC Horizon Realtor · Dubai, UAE | India Office: {CONTACT.indiaAddress}</span>
-          <span>Private property advisory</span>
+
+        {/* Bottom Footer */}
+        <div className="flex flex-col gap-4 pt-7 font-mono text-[9px] uppercase tracking-[.14em] text-[#f5f0e6]/40 md:flex-row md:items-center md:justify-between">
+
+          <span data-testid="text-footer-copyright">
+            © 2026 KNC Horizon Realtor · Dubai, UAE
+          </span>
+
+          <span>
+            India Office: DLF Phase 1, Gurugram, Haryana, India
+          </span>
+
+          <span>
+            Private property advisory
+          </span>
+
         </div>
+
       </div>
     </footer>
   );
 }
 
+
 export function SiteShell({ children }: { children: ReactNode }) {
   const [showTop, setShowTop] = useState(false);
+
   useEffect(() => {
-    const onScroll = () => setShowTop(window.scrollY > 500);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    const onScroll = () => {
+      setShowTop(window.scrollY > 500);
+    };
+
+    window.addEventListener("scroll", onScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
-  return <div className="grain min-h-[100dvh] overflow-x-hidden"><Navbar />{children}<Footer /><a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noreferrer" className="fixed bottom-5 left-5 z-30 grid h-12 w-12 place-items-center rounded-full bg-[#55735f] text-white shadow-lg transition-transform hover:scale-105" aria-label="Chat on WhatsApp" title="Chat on WhatsApp"><FaWhatsapp size={23} /></a>{showTop && <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="fixed bottom-5 right-5 z-30 grid h-12 w-12 place-items-center rounded-full bg-[#202635] text-[#f5f0e6] shadow-lg" aria-label="Scroll to top"><ArrowUp size={16} /></button>}</div>;
+
+  return (
+    <div className="grain min-h-[100dvh] overflow-x-hidden">
+
+      <Navbar />
+
+      {children}
+
+      <Footer />
+
+      {/* Back to top button */}
+      {showTop && (
+        <button
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            })
+          }
+          className="fixed bottom-5 right-5 z-30 grid h-12 w-12 place-items-center rounded-full bg-[#202635] text-[#f5f0e6] shadow-lg transition-transform hover:scale-105"
+          aria-label="Scroll to top"
+          title="Back to top"
+        >
+          <ArrowUp size={16} />
+        </button>
+      )}
+
+    </div>
+  );
 }
