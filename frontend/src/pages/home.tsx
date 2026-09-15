@@ -646,27 +646,35 @@ export default function Home() {
           INVESTMENT
           SMALLER IMAGE
       ========================================================= */}
-      <section
-        className="
-          grid
-          bg-[#c6d0c9]
-          md:grid-cols-[.85fr_1.15fr]
-        "
-      >
+      
 
-        {/* IMAGE */}
+{/* 06 / Investment */}
+ {/* 06 / Investment */}
+<section className="w-full bg-[#c6d0c9] px-5 py-14 sm:px-8 md:px-10 md:py-20 lg:py-24">
+  <div className="mx-auto w-full max-w-[1280px]">
+    <div
+      className="
+        grid
+        w-full
+        items-center
+        gap-10
+        md:gap-12
+        lg:grid-cols-[0.9fr_1.1fr]
+        lg:gap-16
+        xl:gap-20
+      "
+    >
+      {/* IMAGE */}
+      <div className="order-1 w-full lg:order-1">
         <div
           className="
             relative
-            order-2
-            aspect-[16/10]
-            h-[260px]
+            mx-auto
+            w-full
+            max-w-[520px]
             overflow-hidden
             rounded-sm
-            sm:h-[320px]
-            md:order-1
-            md:h-[380px]
-            lg:h-[420px]
+            shadow-sm
           "
         >
           <img
@@ -674,110 +682,118 @@ export default function Home() {
             alt="Warm stone and brass details in a Dubai interior"
             loading="lazy"
             className="
-              h-full
+              block
+              h-[250px]
               w-full
               object-cover
+              object-center
+              sm:h-[300px]
+              md:h-[340px]
+              lg:h-[370px]
+              xl:h-[400px]
             "
             data-testid="img-investment"
           />
 
-          <div className="absolute inset-0 bg-[#202635]/10" />
+          <div className="absolute inset-0 bg-[#202635]/8" />
         </div>
+      </div>
 
-        {/* CONTENT */}
-        <div
-          className="
-            order-1
-            flex
-            items-center
-            px-5
-            py-14
-            md:order-2
-            md:px-16
-            md:py-20
-          "
-        >
-          <div className="max-w-xl">
-            <SectionLabel>
-              06 / A longer view
-            </SectionLabel>
+      {/* CONTENT */}
+      <div className="order-2 flex w-full min-w-0 items-center lg:order-2">
+        <div className="w-full max-w-[570px]">
+          <SectionLabel>
+            06 / A longer view
+          </SectionLabel>
 
-            <h2
-              className="
-                display
-                mt-5
-                text-4xl
-                leading-[.92]
-                text-[#202635]
-                sm:text-5xl
-                md:text-7xl
-              "
-            >
-              Invest
-              <br />
-              <em className="text-[#c97352]">
-                in Dubai.
-              </em>
-            </h2>
+          <h2
+            className="
+              display
+              mt-4
+              max-w-[560px]
+              text-5xl
+              leading-[.9]
+              text-[#202635]
+              sm:text-6xl
+              md:text-7xl
+              lg:text-[clamp(3.8rem,5vw,5.8rem)]
+            "
+          >
+            Invest
+            <br />
+            <em className="text-[#c97352]">
+              in Dubai.
+            </em>
+          </h2>
 
-            <p
-              className="
-                mt-6
-                max-w-md
-                text-sm
-                leading-7
-                text-[#202635]/65
-              "
-            >
-              Explore opportunities in one of the world’s most dynamic real
-              estate markets. We bring local perspective to residential
-              investments, off-plan opportunities, high-growth locations,
-              and luxury properties.
-            </p>
+          <p
+            className="
+              mt-6
+              max-w-[520px]
+              text-sm
+              leading-6
+              text-[#202635]/65
+              sm:text-base
+              sm:leading-7
+            "
+          >
+            Explore opportunities in one of the world’s most dynamic real
+            estate markets. We bring local perspective to residential
+            investments, off-plan opportunities, high-growth locations,
+            and luxury properties.
+          </p>
 
-            <div
-              className="
-                mt-6
-                grid
-                max-w-md
-                grid-cols-2
-                gap-x-5
-                gap-y-3
-                border-t
-                border-[#202635]/20
-                pt-5
-                font-mono
-                text-[10px]
-                uppercase
-                tracking-[.1em]
-                text-[#202635]/70
-              "
-            >
-              <span>Residential investments</span>
-              <span>Off-plan opportunities</span>
-              <span>High-growth locations</span>
-              <span>Luxury properties</span>
-            </div>
-
-            <Link
-              href="/services#investment"
-              className="
-                mt-7
-                inline-flex
-                items-center gap-3
-                font-mono text-[10px]
-                uppercase tracking-[.14em]
-                text-[#c97352]
-                line-link
-              "
-              data-testid="link-home-investment"
-            >
-              Talk to our property advisor
-              <ArrowUpRight size={14} />
-            </Link>
+          {/* INVESTMENT POINTS */}
+          <div
+            className="
+              mt-6
+              grid
+              max-w-[520px]
+              grid-cols-2
+              gap-x-8
+              gap-y-3
+              border-t
+              border-[#202635]/20
+              pt-4
+              font-mono
+              text-[9px]
+              uppercase
+              tracking-[.1em]
+              text-[#202635]/70
+            "
+          >
+            <span>Residential investments</span>
+            <span>Off-plan opportunities</span>
+            <span>High-growth locations</span>
+            <span>Luxury properties</span>
           </div>
+
+          {/* CTA */}
+          <Link
+            href="/services#investment"
+            className="
+              mt-7
+              inline-flex
+              items-center
+              gap-3
+              font-mono
+              text-[10px]
+              uppercase
+              tracking-[.14em]
+              text-[#c97352]
+              line-link
+            "
+            data-testid="link-home-investment"
+          >
+            Talk to our property advisor
+            <ArrowUpRight size={14} />
+          </Link>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 
       {/* =========================================================
