@@ -42,6 +42,8 @@ export type RemoteProperty = {
   size: number;
   description: string;
   images: string[];
+  imageUrl?: string;
+  imagePath?: string;
   amenities: string[];
   featured: boolean;
   published: boolean;
@@ -57,6 +59,8 @@ export type Project = {
   handover: string;
   description: string;
   image: string;
+  imageUrl?: string;
+  imagePath?: string;
   coverImage?: string;
   gallery?: string[];
   category?: string;
@@ -73,11 +77,23 @@ export type Developer = {
   id: string;
   slug: string;
   name: string;
+  shortDescription?: string;
   description: string;
   logo?: string;
+  coverImage?: string;
+  imageUrl?: string;
+  imagePath?: string;
+  officialWebsite?: string;
   website?: string;
   established?: string;
+  featured?: boolean;
   published: boolean;
+  sortOrder?: number;
+  areas?: string[];
+  createdAt?: string;
+  updatedAt?: string;
+  projectCount?: number;
+  projects?: { title: string; slug: string }[];
 };
 
 export type Post = {
@@ -88,6 +104,8 @@ export type Post = {
   content: string;
   category: string;
   image: string;
+  imageUrl?: string;
+  imagePath?: string;
   featuredImage?: string;
   author: string;
   publishedAt: string;

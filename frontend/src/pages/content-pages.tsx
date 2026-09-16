@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { ArrowLeft, ArrowUpRight, Check, Search, X } from 'lucide-react';
-import { Link, useRoute } from 'wouter';
+import { ArrowLeft, ArrowUpRight, Check, ExternalLink, Globe, Search, X } from 'lucide-react';
+import { Link, useLocation, useRoute } from 'wouter';
 import { apiFetch, type Post, type Project, type RemoteProperty, type Developer } from '@/lib/api';
 import { ContactForm, PageHero, PropertyCard, SectionLabel } from '@/components/blocks';
 import {
@@ -652,7 +652,18 @@ export function GalleryPage() {
   );
 }
 
-export function PropertiesFilterPage({ category }: { category: string }) {
+export type PropertiesFilterPageProps = {
+  category?: string;
+  params?: { category?: string; [key: string]: unknown };
+};
+
+export function PropertiesFilterPage(props: PropertiesFilterPageProps = {}) {
+  const [location] = useLocation();
+  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const pathCategory = location.startsWith('/properties/') ? location.replace('/properties/', '').split('/')[0].split('?')[0] : '';
+  const resolvedCategory = (props.category || (typeof props.params?.category === 'string' ? props.params.category : undefined) || searchParams.get('category') || (['residential', 'commercial', 'investment', 'off-plan'].includes(pathCategory) ? pathCategory : 'residential')).toLowerCase();
+  const category = ['residential', 'commercial', 'investment', 'off-plan'].includes(resolvedCategory) ? resolvedCategory : 'residential';
+
   const [items, setItems] = useState<RemoteProperty[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -707,7 +718,18 @@ export function PropertiesFilterPage({ category }: { category: string }) {
   );
 }
 
-export function ProjectsFilterPage({ filter }: { filter: string }) {
+export type ProjectsFilterPageProps = {
+  filter?: string;
+  params?: { filter?: string; [key: string]: unknown };
+};
+
+export function ProjectsFilterPage(props: ProjectsFilterPageProps = {}) {
+  const [location] = useLocation();
+  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const pathFilter = location.startsWith('/projects/') ? location.replace('/projects/', '').split('/')[0].split('?')[0] : '';
+  const resolvedFilter = (props.filter || (typeof props.params?.filter === 'string' ? props.params.filter : undefined) || searchParams.get('filter') || (['featured', 'new-launches', 'off-plan'].includes(pathFilter) ? pathFilter : 'featured')).toLowerCase();
+  const filter = ['featured', 'new-launches', 'off-plan'].includes(resolvedFilter) ? resolvedFilter : 'featured';
+
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -791,64 +813,296 @@ export function ProjectsFilterPage({ filter }: { filter: string }) {
   );
 }
 
+const defaultVerifiedDevelopers: Developer[] = [
+  {
+    id: 'emaar',
+    slug: 'emaar',
+    name: 'Emaar Properties',
+    shortDescription: 'Dubai-based property developer known for major master-planned communities and residential developments.',
+    description: 'Emaar Properties is a publicly listed Dubai-based real estate developer established in 1997. The company is responsible for shaping landmark master communities across Dubai, including Downtown Dubai, Dubai Marina, Dubai Hills Estate, and Dubai Creek Harbour.',
+    officialWebsite: 'https://www.emaar.com',
+    website: 'https://www.emaar.com',
+    published: true,
+    featured: true,
+    sortOrder: 1,
+    areas: ['Downtown Dubai', 'Dubai Marina', 'Dubai Hills Estate', 'Dubai Creek Harbour', 'Arabian Ranches'],
+  },
+  {
+    id: 'damac',
+    slug: 'damac',
+    name: 'DAMAC Properties',
+    shortDescription: 'Dubai-based property developer with residential, hospitality and branded-development projects.',
+    description: 'DAMAC Properties was founded in 2002 as a private residential, leisure, and commercial developer in Dubai. The developer is recognised for large-scale master communities including DAMAC Hills and luxury branded residential collaborations.',
+    officialWebsite: 'https://www.damacproperties.com',
+    website: 'https://www.damacproperties.com',
+    published: true,
+    featured: true,
+    sortOrder: 2,
+    areas: ['Dubai Marina', 'Business Bay', 'DAMAC Hills', 'Dubai Maritime City'],
+  },
+  {
+    id: 'sobha-realty',
+    slug: 'sobha-realty',
+    name: 'Sobha Realty',
+    shortDescription: 'Dubai-based developer known for residential communities and its vertically integrated development approach.',
+    description: 'Sobha Realty is an international luxury developer active in the UAE since 2003. Known for its backward-integrated construction and design model, its flagship Dubai developments include Sobha Hartland and Sobha Hartland II in Mohammed Bin Rashid City.',
+    officialWebsite: 'https://www.sobharealty.com',
+    website: 'https://www.sobharealty.com',
+    published: true,
+    featured: true,
+    sortOrder: 3,
+    areas: ['Mohammed Bin Rashid City', 'Sobha Hartland', 'Ras Al Khor', 'Dubai Marina'],
+  },
+  {
+    id: 'binghatti',
+    slug: 'binghatti',
+    name: 'Binghatti',
+    shortDescription: 'Dubai-based developer with residential and branded developments across several Dubai communities.',
+    description: 'Binghatti Developers is a Dubai-headquartered property brand recognised for its distinct architectural styling and portfolio of branded residential partnerships across major central and residential districts.',
+    officialWebsite: 'https://www.binghatti.com',
+    website: 'https://www.binghatti.com',
+    published: true,
+    featured: true,
+    sortOrder: 4,
+    areas: ['Business Bay', 'Downtown Dubai', 'Jumeirah Village Circle', 'Al Jaddaf'],
+  },
+  {
+    id: 'nakheel',
+    slug: 'nakheel',
+    name: 'Nakheel',
+    shortDescription: 'Dubai-based master developer known for landmark waterfront destinations and master-planned residential communities.',
+    description: 'Nakheel is a major Dubai master developer celebrated for landmark coastal projects including Palm Jumeirah and Dubai Islands, alongside extensive family residential master communities throughout the emirate.',
+    officialWebsite: 'https://www.nakheel.com',
+    website: 'https://www.nakheel.com',
+    published: true,
+    featured: true,
+    sortOrder: 5,
+    areas: ['Palm Jumeirah', 'Dubai Islands', 'Jumeirah Islands', 'Jumeirah Park'],
+  },
+  {
+    id: 'danube',
+    slug: 'danube',
+    name: 'Danube Properties',
+    shortDescription: 'Dubai-based property developer focusing on residential developments and private residences across Dubai.',
+    description: 'Danube Properties is the property development arm of the Danube Group, launched in 2014. The developer focuses on contemporary urban apartments with flexible payment models across established Dubai residential corridors.',
+    officialWebsite: 'https://www.danubeproperties.com',
+    website: 'https://www.danubeproperties.com',
+    published: true,
+    featured: false,
+    sortOrder: 6,
+    areas: ['Al Furjan', 'JLT', 'Business Bay', 'Arjan'],
+  },
+  {
+    id: 'ellington',
+    slug: 'ellington',
+    name: 'Ellington Properties',
+    shortDescription: 'Dubai-based boutique design-led property developer creating residential properties and communities.',
+    description: 'Ellington Properties, established in 2014, is a design-focused Dubai boutique developer producing high-specification residences across prime and emerging neighbourhoods.',
+    officialWebsite: 'https://www.ellingtonproperties.ae',
+    website: 'https://www.ellingtonproperties.ae',
+    published: true,
+    featured: false,
+    sortOrder: 7,
+    areas: ['Downtown Dubai', 'Palm Jumeirah', 'MBR City', 'JVC'],
+  },
+  {
+    id: 'meraas',
+    slug: 'meraas',
+    name: 'Meraas',
+    shortDescription: 'Dubai-based developer known for destination-led residential, mixed-use, and waterfront communities.',
+    description: 'Meraas is a Dubai-based master development company with a portfolio of urban and coastal residential destinations including City Walk, Bluewaters Island, and Port de La Mer.',
+    officialWebsite: 'https://www.meraas.com',
+    website: 'https://www.meraas.com',
+    published: true,
+    featured: false,
+    sortOrder: 8,
+    areas: ['City Walk', 'Bluewaters Island', 'Port de La Mer', 'Jumeirah'],
+  },
+];
+
 export function DevelopersPage() {
-  const [developers, setDevelopers] = useState<Developer[]>([]);
+  const [developers, setDevelopers] = useState<Developer[]>(defaultVerifiedDevelopers);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  usePageMeta('Developers', 'Verified Dubai developers and their projects.');
+  usePageMeta(
+    'Dubai Developers | KNC Horizon Realtor',
+    'Explore established developers shaping residential, investment and mixed-use communities across Dubai.'
+  );
 
   useEffect(() => {
-    apiFetch<{ developers: Developer[] }>('/public/developers')
-      .then((data) => setDevelopers(data.developers))
-      .catch((reason) => setError(reason instanceof Error ? reason.message : 'Please try again.'))
-      .finally(() => setLoading(false));
+    let active = true;
+    apiFetch<{ developers: Developer[] }>('/developers')
+      .then((data) => {
+        if (!active) return;
+        if (data?.developers && data.developers.length > 0) {
+          setDevelopers(data.developers);
+        }
+      })
+      .catch((reason) => {
+        if (!active) return;
+        // Keep verified defaults on network fallback
+        setError(reason instanceof Error ? reason.message : 'Unable to refresh developer list.');
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   return (
-    <main>
+    <main className="min-h-screen bg-[#f5f0e6]">
       <PageHero
-        label="Developers"
+        label="Dubai developers"
         title={
           <>
-            Shaping the<br />
-            <em className="text-[#c97352]">skyline.</em>
+            Names behind<br />
+            <em className="text-[#c97352]">Dubai's next chapter.</em>
           </>
         }
-        copy="Profiles of established Dubai developers and their latest opportunities."
+        copy="Explore established developers shaping residential, investment and mixed-use communities across Dubai."
         image="/images/hills-villa.jpg"
       />
-      <section className="bg-[#f5f0e6] px-5 py-16 md:px-10 md:py-24">
+
+      {/* Main Developers Listing Section */}
+      <section className="px-5 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-[1380px]">
-          {loading ? <LoadingState /> : error ? <ErrorState message={error} /> : developers.length === 0 ? (
-             <div className="py-24 text-center">
-               <p className="display text-4xl">No developers listed yet.</p>
-             </div>
+          <div className="mb-10 flex flex-col justify-between gap-4 border-b border-[#202635]/12 pb-6 sm:flex-row sm:items-end">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#c97352]">Selected Profiles</p>
+              <h2 className="display mt-2 text-3xl md:text-4xl text-[#202635]">Established master builders</h2>
+            </div>
+            <p className="max-w-md font-mono text-[11px] uppercase tracking-[.1em] text-[#202635]/50">
+              {developers.length} verified developer profiles
+            </p>
+          </div>
+
+          {loading && developers.length === 0 ? (
+            <LoadingState />
           ) : (
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {developers.map((dev) => (
-                <div key={dev.id} className="border border-[#202635]/12 bg-[#fcfaf6] p-6 flex flex-col justify-between">
-                  <div>
-                    {dev.logo ? (
-                      <div className="h-16 w-32 mb-6 opacity-80 mix-blend-multiply">
-                        <img src={dev.logo} alt={dev.name} className="h-full w-full object-contain object-left" />
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {developers.map((dev) => {
+                const websiteUrl = dev.officialWebsite || dev.website || '';
+                return (
+                  <article
+                    key={dev.id || dev.slug}
+                    className="group flex h-full flex-col justify-between border border-[#202635]/12 bg-[#fcfaf6] p-6 transition-all duration-300 hover:border-[#c97352]/50 hover:shadow-md"
+                    data-testid={`card-developer-${dev.slug}`}
+                  >
+                    <div>
+                      {/* Logo / Header Visual Treatment */}
+                      <div className="mb-5 flex h-16 w-full items-center justify-between border-b border-[#202635]/10 pb-4">
+                        {dev.logo ? (
+                          <div className="h-10 max-w-[140px] opacity-85 mix-blend-multiply">
+                            <img
+                              src={dev.logo}
+                              alt={`${dev.name} official logo`}
+                              className="h-full w-full object-contain object-left"
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-[#202635]/5 font-serif text-lg font-medium text-[#202635]">
+                            {dev.name.charAt(0)}
+                          </div>
+                        )}
+                        {dev.featured && (
+                          <span className="border border-[#c97352]/30 bg-[#c97352]/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-[.14em] text-[#c97352]">
+                            Featured
+                          </span>
+                        )}
                       </div>
-                    ) : (
-                      <div className="h-16 mb-6 flex items-center">
-                        <h3 className="font-serif text-3xl text-[#202635]">{dev.name}</h3>
-                      </div>
-                    )}
-                    <h3 className="font-serif text-xl text-[#202635] mb-2">{dev.name}</h3>
-                    <p className="text-sm leading-6 text-[#202635]/65 line-clamp-4">{dev.description}</p>
-                    {dev.established && <p className="mt-3 font-mono text-[10px] uppercase tracking-[.1em] text-[#c97352]">Est. {dev.established}</p>}
-                  </div>
-                  <Link href={`/projects?developer=${encodeURIComponent(dev.name)}`} className="mt-8 inline-flex items-center justify-center gap-2 border border-[#202635]/30 py-3 w-full font-mono text-[10px] uppercase tracking-[.14em] text-[#202635] hover:bg-[#202635] hover:text-[#f5f0e6] transition-colors">
-                    View Projects <ArrowUpRight size={13} />
-                  </Link>
-                </div>
-              ))}
+
+                      {/* Name & Short Description */}
+                      <h3 className="font-serif text-2xl leading-tight text-[#202635] transition-colors group-hover:text-[#c97352]">
+                        {dev.name}
+                      </h3>
+                      <p className="mt-3 text-xs leading-relaxed text-[#202635]/70 line-clamp-3">
+                        {dev.shortDescription || dev.description}
+                      </p>
+
+                      {/* Verified Areas */}
+                      {dev.areas && dev.areas.length > 0 && (
+                        <div className="mt-4 flex flex-wrap gap-1.5 pt-3 border-t border-[#202635]/8">
+                          {dev.areas.slice(0, 3).map((area) => (
+                            <span
+                              key={area}
+                              className="bg-[#202635]/5 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-[#202635]/60"
+                            >
+                              {area}
+                            </span>
+                          ))}
+                          {dev.areas.length > 3 && (
+                            <span className="font-mono text-[9px] text-[#202635]/40 self-center">
+                              +{dev.areas.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Actions & Official Website */}
+                    <div className="mt-6 pt-4 border-t border-[#202635]/10 flex flex-col gap-3">
+                      {websiteUrl && (
+                        <a
+                          href={websiteUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[.12em] text-[#202635]/55 hover:text-[#c97352] transition-colors"
+                          aria-label={`Visit official website for ${dev.name}`}
+                        >
+                          <Globe size={11} className="text-[#c97352]" />
+                          <span>Official website</span>
+                          <ExternalLink size={10} className="opacity-70" />
+                        </a>
+                      )}
+
+                      <Link
+                        href={`/developers/${dev.slug}`}
+                        className="inline-flex items-center justify-center gap-2 border border-[#202635]/30 bg-[#202635] py-2.5 px-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6] transition-colors hover:bg-[#c97352] hover:border-[#c97352]"
+                        data-testid={`btn-view-developer-${dev.slug}`}
+                      >
+                        View developer <ArrowUpRight size={13} />
+                      </Link>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Professional Advisory CTA Section */}
+      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-24 border-t border-[#202635]/12">
+        <div className="mx-auto max-w-[1380px] grid gap-10 md:grid-cols-[1.2fr_.8fr] md:items-center">
+          <div>
+            <SectionLabel>Developer Advisory</SectionLabel>
+            <h2 className="display mt-4 text-4xl sm:text-5xl md:text-6xl text-[#202635]">
+              Looking for the <em className="text-[#c97352]">right developer?</em>
+            </h2>
+            <p className="mt-5 max-w-xl text-sm md:text-base leading-relaxed text-[#202635]/70">
+              Every developer in Dubai brings distinct architectural standards, community masterplans, and delivery horizons. Our independent advisory helps you compare opportunities objectively based on your investment goals and lifestyle criteria.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 bg-[#202635] px-7 py-4 font-mono text-[10px] uppercase tracking-[.15em] text-[#f5f0e6] transition-colors hover:bg-[#c97352]"
+            >
+              Speak with an advisor <ArrowUpRight size={14} />
+            </Link>
+            <a
+              href="https://wa.me/971500000000"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 border border-[#202635]/30 bg-[#fcfaf6] px-6 py-4 font-mono text-[10px] uppercase tracking-[.15em] text-[#202635] transition-colors hover:border-[#c97352] hover:text-[#c97352]"
+            >
+              WhatsApp enquiry
+            </a>
+          </div>
         </div>
       </section>
     </main>

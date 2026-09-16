@@ -20,6 +20,8 @@ export type PropertyDoc = {
   area?: number;
   description: string;
   images: string[];
+  imageUrl?: string;
+  imagePath?: string;
   amenities: string[];
   highlights?: string[];
   featured: boolean;
@@ -40,6 +42,8 @@ export type ProjectDoc = {
   startingPrice: number;
   handover: string;
   image: string;
+  imageUrl?: string;
+  imagePath?: string;
   coverImage?: string;
   gallery?: string[];
   amenities?: string[];
@@ -57,11 +61,19 @@ export type DeveloperDoc = {
   _id?: ObjectId;
   slug: string;
   name: string;
+  shortDescription?: string;
   description: string;
   logo?: string;
+  coverImage?: string;
+  imageUrl?: string;
+  imagePath?: string;
+  officialWebsite?: string;
   website?: string;
-  established?: string;
+  featured?: boolean;
   published: boolean;
+  sortOrder?: number;
+  areas?: string[];
+  established?: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -75,6 +87,8 @@ export type BlogPostDoc = {
   category: string;
   coverImage?: string;
   image: string;
+  imageUrl?: string;
+  imagePath?: string;
   featuredImage?: string;
   author: string;
   published: boolean;
@@ -91,6 +105,8 @@ export type GalleryItemDoc = {
   title: string;
   category: string;
   image: string;
+  imageUrl?: string;
+  imagePath?: string;
   alt: string;
   createdAt: Date;
 };

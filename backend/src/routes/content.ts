@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getDb, objectId, serializeDocument } from "../lib/mongodb";
-import type { BlogPostDoc, GalleryItemDoc, ProjectDoc, PropertyDoc, TestimonialDoc } from "../lib/models";
+import type { BlogPostDoc, DeveloperDoc, GalleryItemDoc, ProjectDoc, PropertyDoc, TestimonialDoc } from "../lib/models";
 
 const router = Router();
 
@@ -68,10 +68,59 @@ router.get("/public/projects", async (req, res, next) => {
   }
 });
 
-router.get("/public/developers", async (_req, res, next) => {
+function escapeRegex(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+router.get(["/public/developers", "/developers"], async (_req, res, next) => {
   try {
-    const docs = await getDb().collection("developers").find(publicFilter()).sort({ name: 1 }).toArray();
+    const docs = await getDb()
+      .collection<DeveloperDoc>("developers")
+      .find(publicFilter())
+      .sort({ sortOrder: 1, name: 1 })
+      .toArray();
     return res.json({ developers: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.get(["/public/developers/:slug", "/developers/:slug"], async (req, res, next) => {
+  try {
+    const rawSlug = Array.isArray(req.params.slug) ? req.params.slug[0] : req.params.slug;
+    const slug = String(rawSlug ?? "").trim().toLowerCase();
+    const doc = await getDb().collection<DeveloperDoc>("developers").findOne({
+      ...publicFilter(),
+      $or: [{ slug }, { name: { $regex: new RegExp(`^${escapeRegex(String(rawSlug ?? "").trim())}$`, "i") } }],
+    });
+    if (!doc) return res.status(404).json({ message: "Developer not found." });
+
+    // Find verified projects assigned to this developer
+    const shortName = doc.name.replace(/\s+(Properties|Realty)$/i, "").trim();
+    const developerRegexes = [
+      new RegExp(`^${escapeRegex(doc.name)}$`, "i"),
+      new RegExp(`^${escapeRegex(shortName)}$`, "i"),
+      new RegExp(`^${escapeRegex(doc.slug)}$`, "i"),
+    ];
+
+    const projectFilter: Record<string, unknown> = {
+      ...publicFilter(),
+      $or: [
+        { developer: { $in: developerRegexes } },
+        { developerSlug: doc.slug },
+      ],
+    };
+
+    const projects = await getDb()
+      .collection<ProjectDoc>("projects")
+      .find(projectFilter)
+      .sort({ featured: -1, createdAt: -1 })
+      .toArray();
+
+    return res.json({
+      developer: serializeDocument(doc as unknown as Record<string, unknown>),
+      projects: projects.map((p) => serializeDocument(p as unknown as Record<string, unknown>)),
+    });
   } catch (error) {
     return next(error);
   }

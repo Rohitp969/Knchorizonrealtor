@@ -11,7 +11,7 @@
 import bcrypt from "bcryptjs";
 import type { Collection } from "mongodb";
 import { getDb } from "./mongodb";
-import type { BlogPostDoc, GalleryItemDoc, ProjectDoc, PropertyDoc, UserDoc } from "./models";
+import type { BlogPostDoc, DeveloperDoc, GalleryItemDoc, ProjectDoc, PropertyDoc, UserDoc } from "./models";
 
 const now = new Date();
 
@@ -397,11 +397,134 @@ const testimonials = [
   { name: "Omar H.", designation: "Landlord · Jumeirah", review: "Clear communication, excellent positioning, and a team that stayed close from listing to handover.", rating: 5, published: true, createdAt: now, updatedAt: now },
 ];
 
+const developers: Omit<DeveloperDoc, "_id">[] = [
+  {
+    name: "Emaar Properties",
+    slug: "emaar",
+    shortDescription: "Dubai-based property developer known for major master-planned communities and residential developments.",
+    description: "Emaar Properties is a publicly listed Dubai-based real estate developer established in 1997. The company is responsible for shaping landmark master communities across Dubai, including Downtown Dubai, Dubai Marina, Dubai Hills Estate, and Dubai Creek Harbour.",
+    officialWebsite: "https://www.emaar.com",
+    website: "https://www.emaar.com",
+    featured: true,
+    published: true,
+    sortOrder: 1,
+    areas: ["Downtown Dubai", "Dubai Marina", "Dubai Hills Estate", "Dubai Creek Harbour", "Arabian Ranches", "The Oasis", "Emaar South"],
+    established: "1997",
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    name: "DAMAC Properties",
+    slug: "damac",
+    shortDescription: "Dubai-based property developer with residential, hospitality and branded-development projects.",
+    description: "DAMAC Properties was founded in 2002 as a private residential, leisure, and commercial developer in Dubai. The developer is recognised for large-scale master communities including DAMAC Hills and luxury branded residential collaborations.",
+    officialWebsite: "https://www.damacproperties.com",
+    website: "https://www.damacproperties.com",
+    featured: true,
+    published: true,
+    sortOrder: 2,
+    areas: ["Dubai Marina", "Business Bay", "DAMAC Hills", "DAMAC Hills 2", "Dubai Maritime City", "Downtown Dubai"],
+    established: "2002",
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    name: "Sobha Realty",
+    slug: "sobha-realty",
+    shortDescription: "Dubai-based developer known for residential communities and its vertically integrated development approach.",
+    description: "Sobha Realty is an international luxury developer active in the UAE since 2003. Known for its backward-integrated construction and design model, its flagship Dubai developments include Sobha Hartland and Sobha Hartland II in Mohammed Bin Rashid City.",
+    officialWebsite: "https://www.sobharealty.com",
+    website: "https://www.sobharealty.com",
+    featured: true,
+    published: true,
+    sortOrder: 3,
+    areas: ["Mohammed Bin Rashid City", "Sobha Hartland", "Ras Al Khor", "Dubai Marina", "Sheikh Zayed Road"],
+    established: "2003",
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    name: "Binghatti",
+    slug: "binghatti",
+    shortDescription: "Dubai-based developer with residential and branded developments across several Dubai communities.",
+    description: "Binghatti Developers is a Dubai-headquartered property brand recognised for its distinct architectural styling and portfolio of branded residential partnerships across major central and residential districts.",
+    officialWebsite: "https://www.binghatti.com",
+    website: "https://www.binghatti.com",
+    featured: true,
+    published: true,
+    sortOrder: 4,
+    areas: ["Business Bay", "Downtown Dubai", "Jumeirah Village Circle", "Al Jaddaf", "Dubai Silicon Oasis"],
+    established: "2008",
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    name: "Nakheel",
+    slug: "nakheel",
+    shortDescription: "Dubai-based master developer known for landmark waterfront destinations and master-planned residential communities.",
+    description: "Nakheel is a major Dubai master developer celebrated for landmark coastal projects including Palm Jumeirah and Dubai Islands, alongside extensive family residential master communities throughout the emirate.",
+    officialWebsite: "https://www.nakheel.com",
+    website: "https://www.nakheel.com",
+    featured: true,
+    published: true,
+    sortOrder: 5,
+    areas: ["Palm Jumeirah", "Dubai Islands", "Jumeirah Islands", "Jumeirah Park", "Jumeirah Village Circle", "Al Furjan"],
+    established: "2000",
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    name: "Danube Properties",
+    slug: "danube",
+    shortDescription: "Dubai-based property developer focusing on residential developments and private residences across Dubai.",
+    description: "Danube Properties is the property development arm of the Danube Group, launched in 2014. The developer focuses on contemporary urban apartments with flexible payment models across established Dubai residential corridors.",
+    officialWebsite: "https://www.danubeproperties.com",
+    website: "https://www.danubeproperties.com",
+    featured: false,
+    published: true,
+    sortOrder: 6,
+    areas: ["Al Furjan", "Jumeirah Lake Towers", "Business Bay", "Arjan", "Dubai Silicon Oasis"],
+    established: "2014",
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    name: "Ellington Properties",
+    slug: "ellington",
+    shortDescription: "Dubai-based boutique design-led property developer creating residential properties and communities.",
+    description: "Ellington Properties, established in 2014, is a design-focused Dubai boutique developer producing high-specification residences across prime and emerging neighbourhoods.",
+    officialWebsite: "https://www.ellingtonproperties.ae",
+    website: "https://www.ellingtonproperties.ae",
+    featured: false,
+    published: true,
+    sortOrder: 7,
+    areas: ["Downtown Dubai", "Palm Jumeirah", "Mohammed Bin Rashid City", "Jumeirah Village Circle", "Business Bay"],
+    established: "2014",
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    name: "Meraas",
+    slug: "meraas",
+    shortDescription: "Dubai-based developer known for destination-led residential, mixed-use, and waterfront communities.",
+    description: "Meraas is a Dubai-based master development company with a portfolio of urban and coastal residential destinations including City Walk, Bluewaters Island, and Port de La Mer.",
+    officialWebsite: "https://www.meraas.com",
+    website: "https://www.meraas.com",
+    featured: false,
+    published: true,
+    sortOrder: 8,
+    areas: ["City Walk", "Bluewaters Island", "Port de La Mer", "Jumeirah", "Pearl Jumeira"],
+    established: "2007",
+    createdAt: now,
+    updatedAt: now,
+  },
+];
+
 async function seedCollection(collection: Collection<any>, documents: any[]) {
   if (!documents.length) return;
   if (typeof documents[0].slug === "string") {
     await collection.bulkWrite(documents.map((document) => ({
-      updateOne: { filter: { slug: document.slug }, update: { $setOnInsert: document }, upsert: true },
+      updateOne: { filter: { slug: document.slug }, update: { $set: document }, upsert: true },
     })));
     return;
   }
@@ -416,6 +539,7 @@ export async function seedDatabase() {
     { slug: "azure-house-palm-jumeirah" },
     { $set: { slug: "palm-jumeirah-azure", updatedAt: new Date() } },
   );
+  await seedCollection(db.collection<DeveloperDoc>("developers"), developers);
   await seedCollection(db.collection<PropertyDoc>("properties"), properties);
   await seedCollection(db.collection<ProjectDoc>("projects"), projects);
   await seedCollection(db.collection<BlogPostDoc>("posts"), posts);

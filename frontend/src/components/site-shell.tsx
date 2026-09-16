@@ -400,6 +400,7 @@ export function Footer() {
 
 
 export function SiteShell({ children }: { children: ReactNode }) {
+  const [location] = useLocation();
   const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
@@ -415,6 +416,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
+
+  if (location === '/admin' || location.startsWith('/admin/')) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="grain min-h-[100dvh] overflow-x-hidden">
