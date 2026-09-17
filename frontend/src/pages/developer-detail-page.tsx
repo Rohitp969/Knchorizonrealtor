@@ -5,6 +5,7 @@ import { ContactForm, ErrorState, PageHero, SectionLabel } from '@/components/bl
 import { apiFetch, type Developer, type Project } from '@/lib/api';
 import { defaultProjects } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
+import { CONTACT } from '@/lib/contact-info';
 
 const fallbackImage = '/images/creek-waterfront.jpg';
 
@@ -380,7 +381,7 @@ export function DeveloperDetailPage() {
                 </p>
                 <div className="mt-3 flex items-center justify-between">
                   <a
-                    href="https://wa.me/971500000000"
+                    href={`https://wa.me/${CONTACT.whatsapp}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] hover:underline"

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'wouter';
 import { ArrowUp, ArrowUpRight, ChevronDown, Menu, Phone, X } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { CONTACT } from '@/lib/contact-info';
+import { NewsletterForm } from '@/components/blocks';
 
 
 const navItems = [
@@ -151,62 +152,6 @@ export function Navbar() {
   );
 }
 
-// export function Footer() {
-//   return (
-//     <footer className="bg-[#202635] px-5 py-14 text-[#f5f0e6] md:px-10 md:py-20">
-//       <div className="mx-auto max-w-[1380px]">
-//         <div className="grid gap-12 border-b border-[#f5f0e6]/15 pb-14 md:grid-cols-[1.35fr_.7fr_.85fr_.9fr] md:gap-8">
-//           <div>
-//             <BrandMark inverse />
-//             <p className="mt-9 max-w-sm font-serif text-3xl leading-[1.05] text-[#d9c6a4] md:text-4xl">A more considered way to move through Dubai.</p>
-//           </div>
-//           <div>
-//             <p className="eyebrow text-[#c97352]">Explore</p>
-//             <div className="mt-5 flex flex-col items-start gap-3 font-mono text-[10px] uppercase tracking-[.13em] text-[#f5f0e6]/70">
-//               <Link href="/properties" className="line-link hover:text-[#f5f0e6]">Properties</Link>
-//               <Link href="/projects" className="line-link hover:text-[#f5f0e6]">Projects</Link>
-//               <Link href="/services" className="line-link hover:text-[#f5f0e6]">Services</Link>
-//               <Link href="/areas" className="line-link hover:text-[#f5f0e6]">Dubai Areas</Link>
-//               <Link href="/blog" className="line-link hover:text-[#f5f0e6]" data-testid="link-footer-blog">Blog</Link>
-//               <Link href="/gallery" className="line-link hover:text-[#f5f0e6]">Gallery</Link>
-//               <Link href="/contact" className="line-link hover:text-[#f5f0e6]" data-testid="link-footer-contact">Contact</Link>
-//             </div>
-//           </div>
-//           <div>
-//             <p className="eyebrow text-[#c97352]">Speak with us</p>
-//             <a href={`tel:${CONTACT.phoneHref}`} className="mt-5 flex items-center gap-2 font-serif text-2xl text-[#f5f0e6] hover:text-[#d9c6a4]" data-testid="link-footer-phone"><Phone size={16} /> {CONTACT.phoneDisplay}</a>
-//             <a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noreferrer" className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[.14em] text-[#d9c6a4] line-link" data-testid="link-footer-whatsapp">WhatsApp us</a>
-//           </div>
-//           <div>
-//             <p className="eyebrow text-[#c97352]">Services</p>
-//             <div className="mt-5 flex flex-col items-start gap-3 font-mono text-[10px] uppercase tracking-[.13em] text-[#f5f0e6]/70">
-//               <Link href="/services#sales" className="line-link hover:text-[#f5f0e6]">Property sales & advisory</Link>
-//               <Link href="/design-build" className="line-link hover:text-[#f5f0e6]">Design & Build</Link>
-//               <Link href="/interiors" className="line-link hover:text-[#f5f0e6]">Interior & Furniture</Link>
-//               <Link href="/services#management" className="line-link hover:text-[#f5f0e6]">Property management</Link>
-//             </div>
-//           </div>
-//         </div>
-//         <div className="flex flex-col justify-between gap-3 pt-7 font-mono text-[9px] uppercase tracking-[.14em] text-[#f5f0e6]/40 md:flex-row">
-//           <span data-testid="text-footer-copyright">© 2026 KNC Horizon Realtor · Dubai, UAE | India Office: {CONTACT.indiaAddress}</span>
-//           <span>Private property advisory</span>
-//         </div>
-//       </div>
-//     </footer>
-//   );
-// }
-
-// export function SiteShell({ children }: { children: ReactNode }) {
-//   const [showTop, setShowTop] = useState(false);
-//   useEffect(() => {
-//     const onScroll = () => setShowTop(window.scrollY > 500);
-//     window.addEventListener('scroll', onScroll, { passive: true });
-//     return () => window.removeEventListener('scroll', onScroll);
-//   }, []);
-//   return <div className="grain min-h-[100dvh] overflow-x-hidden"><Navbar />{children}<Footer /><a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noreferrer" className="fixed bottom-5 left-5 z-30 grid h-12 w-12 place-items-center rounded-full bg-[#55735f] text-white shadow-lg transition-transform hover:scale-105" aria-label="Chat on WhatsApp" title="Chat on WhatsApp"><FaWhatsapp size={23} /></a>{showTop && <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="fixed bottom-5 right-5 z-30 grid h-12 w-12 place-items-center rounded-full bg-[#202635] text-[#f5f0e6] shadow-lg" aria-label="Scroll to top"><ArrowUp size={16} /></button>}</div>;
-// }
-
-
 export function Footer() {
   return (
     <footer className="bg-[#202635] px-5 py-16 text-[#f5f0e6] md:px-10 md:py-20">
@@ -340,16 +285,35 @@ export function Footer() {
               {CONTACT.phoneDisplay}
             </a>
 
+            {/* WhatsApp Direct */}
+            <a
+              href={`https://wa.me/${CONTACT.whatsapp}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#d9c6a4] transition-colors hover:text-white"
+              data-testid="link-footer-whatsapp"
+            >
+              <FaWhatsapp size={14} className="text-[#25D366]" />
+              <span>WhatsApp us</span>
+            </a>
+
           </div>
 
-          {/* Connect + Legal */}
+          {/* Stay Informed & Connect */}
           <div>
             <p className="eyebrow text-[#c97352]">
-              Connect
+              Stay Informed
             </p>
 
-            <div className="mt-5 flex flex-col items-start gap-3 font-mono text-[10px] uppercase tracking-[.13em] text-[#f5f0e6]/70">
+            <p className="mt-4 text-xs leading-5 text-[#f5f0e6]/60">
+              Receive curated notes on prime Dubai residential & investment opportunities.
+            </p>
 
+            <div className="mt-2">
+              <NewsletterForm />
+            </div>
+
+            <div className="mt-6 flex flex-col items-start gap-2.5 font-mono text-[10px] uppercase tracking-[.13em] text-[#f5f0e6]/70">
               <Link
                 href="/contact"
                 className="line-link hover:text-[#f5f0e6]"
@@ -370,7 +334,6 @@ export function Footer() {
               >
                 Privacy Policy
               </Link>
-
             </div>
           </div>
 
@@ -430,6 +393,25 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
       <Footer />
 
+      {/* Floating WhatsApp Action Button - Icon Only, Fixed Left */}
+      <a
+        href={`https://wa.me/${CONTACT.whatsapp}`}
+        target="_blank"
+        rel="noreferrer"
+        className="group fixed bottom-6 left-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_8px_24px_rgba(37,211,102,0.35)] transition-all duration-300 hover:scale-110 hover:bg-[#20ba5a] hover:shadow-[0_12px_28px_rgba(37,211,102,0.5)] focus:outline-none focus:ring-4 focus:ring-[#25D366]/30"
+        aria-label="Chat with KNC Horizon property advisor on WhatsApp"
+        title="Chat with our Dubai property advisor on WhatsApp"
+        data-testid="floating-whatsapp-btn"
+      >
+        <div className="relative flex items-center justify-center">
+          <FaWhatsapp size={28} className="transition-transform duration-300 group-hover:scale-105" />
+          <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-100"></span>
+          </span>
+        </div>
+      </a>
+
       {/* Back to top button */}
       {showTop && (
         <button
@@ -439,7 +421,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               behavior: "smooth",
             })
           }
-          className="fixed bottom-5 right-5 z-30 grid h-12 w-12 place-items-center rounded-full bg-[#202635] text-[#f5f0e6] shadow-lg transition-transform hover:scale-105"
+          className="fixed bottom-6 right-6 z-30 grid h-12 w-12 place-items-center rounded-full bg-[#202635] text-[#f5f0e6] shadow-lg transition-transform hover:scale-105"
           aria-label="Scroll to top"
           title="Back to top"
         >

@@ -12,6 +12,7 @@ import {
   type Property,
 } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
+import { CONTACT } from '@/lib/contact-info';
 
 const price = (value: number) => `AED ${new Intl.NumberFormat('en-AE').format(value)}`;
 const propertyCard = (item: RemoteProperty): Property => ({
@@ -1095,7 +1096,7 @@ export function DevelopersPage() {
               Speak with an advisor <ArrowUpRight size={14} />
             </Link>
             <a
-              href="https://wa.me/971500000000"
+              href={`https://wa.me/${CONTACT.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 border border-[#202635]/30 bg-[#fcfaf6] px-6 py-4 font-mono text-[10px] uppercase tracking-[.15em] text-[#202635] transition-colors hover:border-[#c97352] hover:text-[#c97352]"

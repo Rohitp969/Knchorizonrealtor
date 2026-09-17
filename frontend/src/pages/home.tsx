@@ -8,7 +8,6 @@ import {
   ContactForm,
   FaqSection,
   FeaturedProperties,
-  NewsletterForm,
   SectionIntro,
   SectionLabel,
   ServiceRow,
@@ -170,90 +169,80 @@ export default function Home() {
 
 
       {/* =========================================================
-          INTRODUCTION
+          THE KNC APPROACH / INTRODUCTION
       ========================================================= */}
       <section
         id="introduction"
         className="
           bg-[#f5f0e6]
-          px-5 py-16
-          sm:py-20
+          px-5 py-20
+          sm:py-24
           md:px-10 md:py-28
         "
       >
-        <div
-          className="
-            mx-auto grid
-            max-w-[1380px]
-            gap-10
-            md:grid-cols-[.7fr_1.6fr]
-            md:gap-20
-          "
-        >
-          <div>
-            <SectionLabel>
-              01 / The KNC approach
-            </SectionLabel>
-
-            <p className="mt-6 max-w-[180px] text-sm leading-6 text-[#202635]/55">
-              For those who know that the right address is more than a pin on a map.
-            </p>
-          </div>
-
+        <div className="mx-auto max-w-[1100px]">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-80px' }}
             variants={fadeUp}
+            className="flex flex-col items-start"
           >
+            <SectionLabel>
+              The KNC Approach
+            </SectionLabel>
+
             <h2
               className="
                 display
+                mt-6
                 max-w-4xl
                 text-4xl
                 leading-[.95]
                 text-[#202635]
                 sm:text-5xl
-                md:text-[5rem]
+                md:text-6xl
+                lg:text-[5.5rem]
               "
             >
               Your trusted real estate partner in{' '}
               <em className="text-[#c97352]">Dubai.</em>
             </h2>
 
-            <p
-              className="
-                mt-7
-                max-w-2xl
-                text-base
-                leading-7
-                text-[#202635]/65
-                md:ml-[18%]
-              "
-            >
-              KNC Horizon Realtor connects clients with exceptional
-              residential and commercial real estate opportunities across
-              Dubai and the UAE. Our approach combines local market
-              knowledge, professional service and a commitment to helping
-              every client find the right property.
+            <p className="mt-8 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:text-lg sm:leading-8">
+              KNC Horizon Realtor connects discerning clients with exceptional residential and commercial real estate opportunities across Dubai and the UAE. Our approach combines grounded local market intelligence, high-touch professional advisory, and a dedication to helping every client secure the right property with absolute confidence.
             </p>
 
-            <Link
-              href="/about"
-              className="
-                mt-7
-                inline-flex items-center gap-3
-                font-mono text-[10px]
-                uppercase tracking-[.14em]
-                text-[#c97352]
-                line-link
-                md:ml-[18%]
-              "
-              data-testid="link-home-about"
-            >
-              Discover more
-              <ArrowUpRight size={14} />
-            </Link>
+            <div className="mt-8 flex flex-wrap items-center gap-5">
+              <Link
+                href="/about"
+                className="
+                  inline-flex items-center gap-3
+                  bg-[#202635]
+                  px-6 py-3.5
+                  font-mono text-[10px]
+                  uppercase tracking-[.14em]
+                  text-[#f5f0e6]
+                  transition-colors
+                  hover:bg-[#c97352]
+                "
+                data-testid="link-home-about"
+              >
+                Discover our story
+                <ArrowUpRight size={14} />
+              </Link>
+              <Link
+                href="/properties"
+                className="
+                  font-mono text-[10px]
+                  uppercase tracking-[.14em]
+                  text-[#c97352]
+                  line-link
+                "
+              >
+                Browse property portfolio
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -272,7 +261,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-[1380px]">
           <SectionIntro
-            label="02 / What we do"
+            label="Advisory Services"
             title={
               <>
                 The right advice,
@@ -311,7 +300,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-[1380px]">
           <SectionIntro
-            label="KNC Studio / Specialist services"
+            label="Specialist Design & Living Solutions"
             title={
               <>
                 Spaces with
@@ -379,7 +368,7 @@ export default function Home() {
                       text-[#c97352]
                     "
                   >
-                    {service.index} / KNC studio
+                    KNC Studio
                   </p>
 
                   <h3 className="mt-2 font-serif text-2xl md:text-3xl text-[#202635] transition-colors group-hover:text-[#c97352]">
@@ -412,7 +401,7 @@ export default function Home() {
 
 
       {/* =========================================================
-          03 / THE EDIT
+          THE PROPERTY EDIT
       ========================================================= */}
       <section
         className="
@@ -426,7 +415,7 @@ export default function Home() {
 
           <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
             <SectionIntro
-              label="03 / The Edit"
+              label="The Property Edit"
               title={
                 <>
                   Properties with
@@ -496,7 +485,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-[1380px]">
           <SectionIntro
-            label="04 / Why KNC"
+            label="Why KNC Horizon"
             title={
               <>
                 A clear head in
@@ -588,7 +577,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-[1380px]">
           <SectionIntro
-            label="05 / Neighbourhood notes"
+            label="Dubai Communities"
             title={
               <>
                 Know the feeling
@@ -644,70 +633,65 @@ export default function Home() {
 
       {/* =========================================================
           INVESTMENT
-          SMALLER IMAGE
       ========================================================= */}
-      
-
-{/* 06 / Investment */}
- {/* 06 / Investment */}
-<section className="w-full bg-[#c6d0c9] px-5 py-14 sm:px-8 md:px-10 md:py-20 lg:py-24">
-  <div className="mx-auto w-full max-w-[1280px]">
-    <div
-      className="
-        grid
-        w-full
-        items-center
-        gap-10
-        md:gap-12
-        lg:grid-cols-[0.9fr_1.1fr]
-        lg:gap-16
-        xl:gap-20
-      "
-    >
-      {/* IMAGE */}
-      <div className="order-1 w-full lg:order-1">
-        <div
-          className="
-            relative
-            mx-auto
-            w-full
-            max-w-[520px]
-            overflow-hidden
-            rounded-sm
-            shadow-sm
-          "
-        >
-          <img
-            src="/images/interior-detail.jpg"
-            alt="Warm stone and brass details in a Dubai interior"
-            loading="lazy"
+      <section className="w-full bg-[#c6d0c9] px-5 py-14 sm:px-8 md:px-10 md:py-20 lg:py-24">
+        <div className="mx-auto w-full max-w-[1280px]">
+          <div
             className="
-              block
-              h-[250px]
+              grid
               w-full
-              object-cover
-              object-center
-              sm:h-[300px]
-              md:h-[340px]
-              lg:h-[370px]
-              xl:h-[400px]
+              items-center
+              gap-10
+              md:gap-12
+              lg:grid-cols-[0.9fr_1.1fr]
+              lg:gap-16
+              xl:gap-20
             "
-            data-testid="img-investment"
-          />
+          >
+            {/* IMAGE */}
+            <div className="order-1 w-full lg:order-1">
+              <div
+                className="
+                  relative
+                  mx-auto
+                  w-full
+                  max-w-[520px]
+                  overflow-hidden
+                  rounded-sm
+                  shadow-sm
+                "
+              >
+                <img
+                  src="/images/interior-detail.jpg"
+                  alt="Warm stone and brass details in a Dubai interior"
+                  loading="lazy"
+                  className="
+                    block
+                    h-[250px]
+                    w-full
+                    object-cover
+                    object-center
+                    sm:h-[300px]
+                    md:h-[340px]
+                    lg:h-[370px]
+                    xl:h-[400px]
+                  "
+                  data-testid="img-investment"
+                />
 
-          <div className="absolute inset-0 bg-[#202635]/8" />
-        </div>
-      </div>
+                <div className="absolute inset-0 bg-[#202635]/8" />
+              </div>
+            </div>
 
-      {/* CONTENT */}
-      <div className="order-2 flex w-full min-w-0 items-center lg:order-2">
-        <div className="w-full max-w-[570px]">
-          <SectionLabel>
-            06 / A longer view
-          </SectionLabel>
+            {/* CONTENT */}
+            <div className="order-2 flex w-full min-w-0 items-center lg:order-2">
+              <div className="w-full max-w-[570px]">
+                <SectionLabel>
+                  Strategic Investment
+                </SectionLabel>
 
-          <h2
-            className="
+                <h2
+                  className="
               display
               mt-4
               max-w-[560px]
@@ -718,16 +702,16 @@ export default function Home() {
               md:text-7xl
               lg:text-[clamp(3.8rem,5vw,5.8rem)]
             "
-          >
-            Invest
-            <br />
-            <em className="text-[#c97352]">
-              in Dubai.
-            </em>
-          </h2>
+                >
+                  Invest
+                  <br />
+                  <em className="text-[#c97352]">
+                    in Dubai.
+                  </em>
+                </h2>
 
-          <p
-            className="
+                <p
+                  className="
               mt-6
               max-w-[520px]
               text-sm
@@ -736,16 +720,16 @@ export default function Home() {
               sm:text-base
               sm:leading-7
             "
-          >
-            Explore opportunities in one of the world’s most dynamic real
-            estate markets. We bring local perspective to residential
-            investments, off-plan opportunities, high-growth locations,
-            and luxury properties.
-          </p>
+                >
+                  Explore opportunities in one of the world’s most dynamic real
+                  estate markets. We bring local perspective to residential
+                  investments, off-plan opportunities, high-growth locations,
+                  and luxury properties.
+                </p>
 
-          {/* INVESTMENT POINTS */}
-          <div
-            className="
+                {/* INVESTMENT POINTS */}
+                <div
+                  className="
               mt-6
               grid
               max-w-[520px]
@@ -761,17 +745,17 @@ export default function Home() {
               tracking-[.1em]
               text-[#202635]/70
             "
-          >
-            <span>Residential investments</span>
-            <span>Off-plan opportunities</span>
-            <span>High-growth locations</span>
-            <span>Luxury properties</span>
-          </div>
+                >
+                  <span>Residential investments</span>
+                  <span>Off-plan opportunities</span>
+                  <span>High-growth locations</span>
+                  <span>Luxury properties</span>
+                </div>
 
-          {/* CTA */}
-          <Link
-            href="/services#investment"
-            className="
+                {/* CTA */}
+                <Link
+                  href="/services#investment"
+                  className="
               mt-7
               inline-flex
               items-center
@@ -783,16 +767,16 @@ export default function Home() {
               text-[#c97352]
               line-link
             "
-            data-testid="link-home-investment"
-          >
-            Talk to our property advisor
-            <ArrowUpRight size={14} />
-          </Link>
+                  data-testid="link-home-investment"
+                >
+                  Talk to our property advisor
+                  <ArrowUpRight size={14} />
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
 
 
@@ -800,66 +784,6 @@ export default function Home() {
           FAQ
       ========================================================= */}
       <FaqSection />
-
-
-      {/* =========================================================
-          JOURNAL
-      ========================================================= */}
-      <section
-        className="
-          bg-[#202635]
-          px-5 py-16
-          text-[#f5f0e6]
-          sm:py-20
-          md:px-10 md:py-24
-        "
-      >
-        <div
-          className="
-            mx-auto
-            flex
-            max-w-[1380px]
-            flex-col
-            justify-between
-            gap-8
-            md:flex-row
-            md:items-end
-          "
-        >
-          <div>
-            <SectionLabel light>
-              08 / The blog
-            </SectionLabel>
-
-            <h2
-              className="
-                display
-                mt-5
-                max-w-xl
-                text-4xl
-                leading-[.9]
-                sm:text-5xl
-                md:text-7xl
-              "
-            >
-              A little more
-              <br />
-              <em className="text-[#d9c6a4]">
-                context.
-              </em>
-            </h2>
-          </div>
-
-          <div className="max-w-sm">
-            <p className="text-sm leading-6 text-[#f5f0e6]/60">
-              Occasional notes on Dubai property, neighbourhoods, and making
-              a move with more clarity.
-            </p>
-
-            <NewsletterForm />
-          </div>
-        </div>
-      </section>
 
 
       {/* =========================================================
@@ -911,9 +835,9 @@ export default function Home() {
             md:flex-row
           "
         >
-          <div>
+          {/* <div>
             <SectionLabel light>
-              07 / Your next move
+              Private Advisory
             </SectionLabel>
 
             <h2
@@ -933,6 +857,45 @@ export default function Home() {
                 next property.
               </em>
             </h2>
+          </div> */}
+
+
+          <div>
+            <SectionLabel light>
+              Private Advisory
+            </SectionLabel>
+
+            <h2
+              className="
+      display
+      mt-6
+      max-w-3xl
+      text-4xl
+      leading-[.86]
+      sm:text-5xl
+      md:text-[6rem]
+    "
+            >
+              Let’s find your
+              <br />
+              <em className="text-[#d9c6a4]">
+                next property.
+              </em>
+            </h2>
+
+            <p
+              className="
+      mt-8
+      max-w-2xl
+      text-sm
+      leading-7
+      text-white/70
+      sm:text-base
+    "
+            >
+              A considered approach to Dubai property, helping you discover
+              the right opportunity and move forward with clarity and confidence.
+            </p>
           </div>
 
           <div
@@ -1034,7 +997,7 @@ export default function Home() {
         >
           <div>
             <SectionLabel>
-              08 / Connect
+              Start a Conversation
             </SectionLabel>
 
             <h2

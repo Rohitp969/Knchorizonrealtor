@@ -147,12 +147,17 @@ export function FeaturedProperties() {
 }
 
 export function ServiceRow({ service }: { service: Service }) {
+  const targetHref = service.href || `/services#${service.id}`;
   return (
-    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={fadeUp} className="group grid grid-cols-[42px_1fr_auto] items-start gap-4 border-t border-[#202635]/15 py-7 md:grid-cols-[80px_1fr_1.1fr_auto] md:gap-8 md:py-9" data-testid={`row-service-${service.id}`}>
-      <span className="font-mono text-[10px] text-[#c97352]">{service.index}</span>
-      <h3 className="font-serif text-3xl leading-none text-[#202635] md:text-4xl">{service.title}</h3>
-      <p className="hidden max-w-xs text-sm leading-6 text-[#202635]/60 md:block">{service.description}</p>
-      <Link href={`/services#${service.id}`} className="mt-1 grid h-9 w-9 place-items-center rounded-full border border-[#202635]/25 transition-colors group-hover:border-[#c97352] group-hover:bg-[#c97352] group-hover:text-[#f5f0e6]" aria-label={`Read more about ${service.title}`} data-testid={`link-service-${service.id}`}><ArrowRight size={15} /></Link>
+    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={fadeUp} className="group grid grid-cols-[1fr_auto] items-center gap-4 border-t border-[#202635]/15 py-6 md:grid-cols-[1.1fr_1.4fr_auto] md:gap-8 md:py-8" data-testid={`row-service-${service.id}`}>
+      <div>
+        <span className="font-mono text-[9px] uppercase tracking-[.16em] text-[#c97352]">Advisory Practice</span>
+        <Link href={targetHref} className="block mt-1">
+          <h3 className="font-serif text-2xl leading-tight text-[#202635] md:text-3xl transition-colors group-hover:text-[#c97352]">{service.title}</h3>
+        </Link>
+      </div>
+      <p className="hidden max-w-md text-sm leading-6 text-[#202635]/65 md:block">{service.description}</p>
+      <Link href={targetHref} className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#202635]/25 transition-all group-hover:border-[#c97352] group-hover:bg-[#c97352] group-hover:text-[#f5f0e6]" aria-label={`Explore ${service.title}`} data-testid={`link-service-${service.id}`}><ArrowRight size={15} /></Link>
     </motion.div>
   );
 }
@@ -165,7 +170,7 @@ export function AreaCard({ area, index }: { area: Area; index: number }) {
           <img src={area.image} alt={area.name} loading="lazy" className="h-full w-full object-cover opacity-85 transition-transform duration-700 ease-out group-hover:scale-105" data-testid={`img-area-${area.id}`} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#202635]/85 via-[#202635]/20 to-transparent" />
           <div className="absolute inset-x-5 bottom-5 text-[#f5f0e6]">
-            <p className="font-mono text-[9px] uppercase tracking-[.15em] text-[#d9c6a4]">0{index + 1} / Dubai</p>
+            <p className="font-mono text-[9px] uppercase tracking-[.15em] text-[#d9c6a4]">Dubai · Community</p>
             <h3 className="mt-2 font-serif text-3xl leading-none">{area.name}</h3>
             <p className="mt-1.5 text-xs text-[#f5f0e6]/75">{area.descriptor}</p>
           </div>
@@ -236,15 +241,116 @@ export function NewsletterForm() {
   </form>;
 }
 
+// export function FaqSection({ compact = false }: { compact?: boolean }) {
+//   const [open, setOpen] = useState<string | null>(null);
+//   return (
+//     <section className={`${compact ? 'bg-[#e9e4da]' : 'bg-[#dfe2dc]'} px-5 py-20 md:px-10 md:py-28`}>
+//       <div className="mx-auto grid max-w-[1380px] gap-12 md:grid-cols-[.7fr_1.3fr] md:gap-24">
+//         <div><SectionLabel>Questions, answered</SectionLabel><h2 className="display mt-6 text-5xl leading-[.92] md:text-7xl">A clearer<br /><em className="text-[#c97352]">first step.</em></h2><p className="mt-7 max-w-sm text-sm leading-7 text-[#202635]/60">A few useful details before we start a conversation about your next move.</p></div>
+//         <div className="border-t border-[#202635]/20">
+//           {faqs.map((faq) => <div key={faq.question} className="border-b border-[#202635]/20"><button type="button" onClick={() => setOpen(open === faq.question ? null : faq.question)} className="flex w-full items-center justify-between gap-6 py-6 text-left" aria-expanded={open === faq.question}><span className="font-serif text-2xl md:text-3xl">{faq.question}</span><ChevronDown size={18} className={`shrink-0 text-[#c97352] transition-transform ${open === faq.question ? 'rotate-180' : ''}`} /></button>{open === faq.question && <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="max-w-2xl overflow-hidden pb-6 text-sm leading-7 text-[#202635]/65">{faq.answer}</motion.p>}</div>)}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+
 export function FaqSection({ compact = false }: { compact?: boolean }) {
   const [open, setOpen] = useState<string | null>(null);
+
   return (
-    <section className={`${compact ? 'bg-[#e9e4da]' : 'bg-[#dfe2dc]'} px-5 py-20 md:px-10 md:py-28`}>
-      <div className="mx-auto grid max-w-[1380px] gap-12 md:grid-cols-[.7fr_1.3fr] md:gap-24">
-        <div><SectionLabel>Questions, answered</SectionLabel><h2 className="display mt-6 text-5xl leading-[.92] md:text-7xl">A clearer<br /><em className="text-[#c97352]">first step.</em></h2><p className="mt-7 max-w-sm text-sm leading-7 text-[#202635]/60">A few useful details before we start a conversation about your next move.</p></div>
-        <div className="border-t border-[#202635]/20">
-          {faqs.map((faq) => <div key={faq.question} className="border-b border-[#202635]/20"><button type="button" onClick={() => setOpen(open === faq.question ? null : faq.question)} className="flex w-full items-center justify-between gap-6 py-6 text-left" aria-expanded={open === faq.question}><span className="font-serif text-2xl md:text-3xl">{faq.question}</span><ChevronDown size={18} className={`shrink-0 text-[#c97352] transition-transform ${open === faq.question ? 'rotate-180' : ''}`} /></button>{open === faq.question && <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="max-w-2xl overflow-hidden pb-6 text-sm leading-7 text-[#202635]/65">{faq.answer}</motion.p>}</div>)}
+    <section
+      className={`${
+        compact ? 'bg-[#e9e4da]' : 'bg-[#dfe2dc]'
+      } px-5 py-20 md:px-10 md:py-24 lg:py-28`}
+    >
+      <div className="mx-auto grid max-w-[1200px] gap-14 md:grid-cols-[0.8fr_1.2fr] md:gap-20 lg:gap-28">
+
+        {/* LEFT CONTENT */}
+        <div className="md:pt-2">
+          <SectionLabel>
+            Before you enquire
+          </SectionLabel>
+
+          <h2 className="display mt-6 max-w-xl text-5xl leading-[0.9] sm:text-6xl md:text-7xl">
+            Your Dubai
+            <br />
+            <em className="text-[#c97352]">
+              property questions.
+            </em>
+          </h2>
+
+          <p className="mt-7 max-w-md text-sm leading-7 text-[#202635]/60 md:text-base">
+            A few useful answers about finding, buying and exploring
+            property opportunities with KNC Horizon Realtor.
+          </p>
         </div>
+
+        {/* FAQ LIST */}
+        <div className="border-t border-[#202635]/15">
+          {faqs.map((faq) => {
+            const isOpen = open === faq.question;
+
+            return (
+              <div
+                key={faq.question}
+                className="border-b border-[#202635]/15"
+              >
+                <button
+                  type="button"
+                  onClick={() =>
+                    setOpen(isOpen ? null : faq.question)
+                  }
+                  className="group flex w-full items-center justify-between gap-6 py-6 text-left md:py-7"
+                  aria-expanded={isOpen}
+                >
+                  <span className="max-w-[90%] font-serif text-xl leading-snug text-[#202635] transition-colors group-hover:text-[#c97352] md:text-2xl">
+                    {faq.question}
+                  </span>
+
+                  <span
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-[#202635]/15
+                      transition-all
+                      duration-300
+                      group-hover:border-[#c97352]/50
+                    "
+                  >
+                    <ChevronDown
+                      size={17}
+                      className={`text-[#c97352] transition-transform duration-300 ${
+                        isOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </span>
+                </button>
+
+                {isOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <p className="max-w-2xl pb-7 pr-10 text-sm leading-7 text-[#202635]/65 md:text-[15px]">
+                      {faq.answer}
+                    </p>
+                  </motion.div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
       </div>
     </section>
   );

@@ -16,6 +16,7 @@ export type Service = {
   title: string;
   description: string;
   link: string;
+  href: string;
 };
 
 export type SpecialistService = {
@@ -83,13 +84,13 @@ export const properties: Property[] = [
 ];
 
 export const services: Service[] = [
-  { id: 'sales', index: '01', title: 'Property Sales & Advisory', description: 'Position your property with precision, reach the right audience, and move from valuation to completion with a clear strategy.', link: 'Explore sales' },
-  { id: 'buying', index: '02', title: 'Property Buying', description: 'A considered search shaped around how you want to live, not just what is available. From first brief to handover, we keep the signal clear.', link: 'Explore buying' },
-  { id: 'consultation', index: '03', title: 'Property Consultation', description: 'Get a clear second perspective on your next move, from market context and shortlisting to the practical questions worth asking.', link: 'Book a consultation' },
-  { id: 'residential', index: '04', title: 'Residential Properties', description: 'Find a home that fits your everyday life, with local guidance on communities, buildings, value, and the buying process.', link: 'Explore residential' },
-  { id: 'commercial', index: '05', title: 'Commercial Properties', description: 'Explore commercial opportunities with a focused brief, practical due diligence, and clear communication through each stage.', link: 'Discuss commercial' },
-  { id: 'investment', index: '06', title: 'Investment Advisory', description: 'Understand location, timing, and opportunity with an informed property conversation shaped around your goals.', link: 'Discuss investment' },
-  { id: 'management', index: '07', title: 'Property Management', description: 'End-to-end management for home owners and property investors in Dubai, handling tenant relations, renewals, maintenance, and asset oversight.', link: 'Discuss management' },
+  { id: 'sales', index: '01', title: 'Property Sales & Advisory', description: 'Position your property with precision, reach the right audience, and move from valuation to completion with a clear strategy.', link: 'Explore sales', href: '/contact?service=sales' },
+  { id: 'buying', index: '02', title: 'Property Buying', description: 'A considered search shaped around how you want to live, not just what is available. From first brief to handover, we keep the signal clear.', link: 'Explore buying', href: '/properties' },
+  { id: 'consultation', index: '03', title: 'Property Consultation', description: 'Get a clear second perspective on your next move, from market context and shortlisting to the practical questions worth asking.', link: 'Book a consultation', href: '/contact?service=consultation' },
+  { id: 'residential', index: '04', title: 'Residential Properties', description: 'Find a home that fits your everyday life, with local guidance on communities, buildings, value, and the buying process.', link: 'Explore residential', href: '/properties/residential' },
+  { id: 'commercial', index: '05', title: 'Commercial Properties', description: 'Explore commercial opportunities with a focused brief, practical due diligence, and clear communication through each stage.', link: 'Discuss commercial', href: '/properties/commercial' },
+  { id: 'investment', index: '06', title: 'Investment Advisory', description: 'Understand location, timing, and opportunity with an informed property conversation shaped around your goals.', link: 'Discuss investment', href: '/properties/investment' },
+  { id: 'management', index: '07', title: 'Property Management', description: 'End-to-end management for home owners and property investors in Dubai, handling tenant relations, renewals, maintenance, and asset oversight.', link: 'Discuss management', href: '/contact?service=management' },
 ];
 
 export const specialistServices: SpecialistService[] = [
