@@ -9,8 +9,12 @@ import { usePageMeta } from '@/lib/seo';
 const fallbackImage = '/images/creek-waterfront.jpg';
 
 export function ProjectDetailPage() {
-  const [, params] = useRoute('/projects/:slug');
-  const defaultMatch = defaultProjects.find((p) => p.slug === params?.slug);
+  // Both /projects/:slug and the /project/:id alias registered in App.tsx land here
+  const [, slugParams] = useRoute('/projects/:slug');
+  const [, idParams] = useRoute('/project/:id');
+  const slug = slugParams?.slug ?? idParams?.id;
+  const params = slug ? { slug } : undefined;
+  const defaultMatch = defaultProjects.find((p) => p.slug === slug || p.id === slug);
   const [project, setProject] = useState<Project | null>((defaultMatch as unknown as Project) || null);
   const [error, setError] = useState('');
 
@@ -46,7 +50,7 @@ export function ProjectDetailPage() {
   if (!project) {
     return (
       <main className="bg-[#f5f0e6] px-5 py-40">
-        <div className="mx-auto max-w-[1380px]">
+        <div className="mx-auto max-w-[1280px]">
           <p className="eyebrow text-[#c97352]">KNC Horizon</p>
           <p className="display mt-5 text-4xl">Loading project…</p>
         </div>
@@ -59,7 +63,7 @@ export function ProjectDetailPage() {
   return (
     <main>
       <PageHero
-        label={`${project.category ?? 'New address'} · ${project.status ?? 'Coming soon'}`}
+        label={[project.category, project.status].filter(Boolean).join(' \u00b7 ') || 'Off-plan development'}
         title={
           <>
             {project.title}
@@ -70,8 +74,8 @@ export function ProjectDetailPage() {
         copy={project.description}
         image={project.image || fallbackImage}
       />
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-32">
-        <div className="mx-auto grid max-w-[1380px] gap-14 md:grid-cols-[1fr_.8fr] md:gap-24">
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto grid max-w-[1280px] gap-14 md:grid-cols-[1fr_.8fr] md:gap-24">
           <div>
             <div className="grid gap-4 sm:grid-cols-2">
               {images.map((image) => (
@@ -108,7 +112,7 @@ export function ProjectDetailPage() {
               <span>{project.location}</span>
               <span>Handover {project.handover}</span>
             </div>
-            <h3 className="display mt-12 text-4xl">
+            <h3 className="block-title mt-12">
               Request the<br />
               <em className="text-[#c97352]">project brief.</em>
             </h3>
@@ -132,7 +136,7 @@ export function LoginPage() {
     try { const result = await apiFetch<{ token: string; user: { role: string } }>('/auth/login', { method: 'POST', body: JSON.stringify(form) }); localStorage.setItem('knc_admin_token', result.token); setLocation(result.user.role === 'admin' || result.user.role === 'agent' ? '/admin' : '/'); }
     catch (reason) { setError(reason instanceof Error ? reason.message : 'Unable to sign in.'); } finally { setLoading(false); }
   }
-  return <main className="bg-[#e9e4da] px-5 py-36 md:px-10 md:py-48"><div className="mx-auto grid max-w-[1080px] gap-14 md:grid-cols-[1fr_.8fr] md:items-center"><div><SectionLabel>Private client portal</SectionLabel><h1 className="display mt-6 text-7xl leading-[.86]">A clearer<br /><em className="text-[#c97352]">next move.</em></h1><p className="mt-7 max-w-md text-sm leading-7 text-[#202635]/65">Sign in to manage your saved conversations and access the KNC advisory dashboard.</p></div><form onSubmit={submit} className="border-t border-[#202635]/20 pt-5"><SectionLabel>Sign in</SectionLabel><label className="mt-8 block"><span className="eyebrow text-[#202635]/45">Email</span><input required type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label><label className="mt-6 block"><span className="eyebrow text-[#202635]/45">Password</span><input required type="password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label>{error && <p className="mt-5 text-sm text-[#c97352]" role="alert">{error}</p>}<button disabled={loading} className="mt-8 flex items-center gap-3 bg-[#202635] px-6 py-4 font-mono text-[10px] uppercase tracking-[.15em] text-[#f5f0e6] hover:bg-[#c97352]">{loading ? 'Signing in…' : 'Sign in'} <ArrowUpRight size={14} /></button><p className="mt-7 text-sm text-[#202635]/60">Need an account? <Link href="/register" className="text-[#c97352] line-link">Create one</Link></p></form></div></main>;
+  return <main className="bg-[#e9e4da] px-5 py-36 md:px-10 md:py-48"><div className="mx-auto grid max-w-[1280px] gap-14 md:grid-cols-[1fr_.8fr] md:items-center"><div><SectionLabel>Private client portal</SectionLabel><h1 className="page-title mt-6">A clearer<br /><em className="text-[#c97352]">next move.</em></h1><p className="mt-7 max-w-md text-sm leading-7 text-[#202635]/65">Sign in to manage your saved conversations and access the KNC advisory dashboard.</p></div><form onSubmit={submit} className="border-t border-[#202635]/20 pt-5"><SectionLabel>Sign in</SectionLabel><label className="mt-8 block"><span className="eyebrow text-[#202635]/45">Email</span><input required type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label><label className="mt-6 block"><span className="eyebrow text-[#202635]/45">Password</span><input required type="password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label>{error && <p className="mt-5 text-sm text-[#c97352]" role="alert">{error}</p>}<button disabled={loading} className="mt-8 flex items-center gap-3 bg-[#202635] px-6 py-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6] hover:bg-[#c97352]">{loading ? 'Signing in…' : 'Sign in'} <ArrowUpRight size={14} /></button><p className="mt-7 text-sm text-[#202635]/60">Need an account? <Link href="/register" className="text-[#c97352] line-link">Create one</Link></p></form></div></main>;
 }
 
 export function RegisterPage() {
@@ -145,7 +149,7 @@ export function RegisterPage() {
     try { await apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(form) }); setSent(true); setTimeout(() => setLocation('/login'), 800); }
     catch (reason) { setError(reason instanceof Error ? reason.message : 'Unable to create account.'); }
   }
-  return <main className="bg-[#f5f0e6] px-5 py-36 md:px-10 md:py-48"><div className="mx-auto max-w-[620px]"><SectionLabel>Join KNC Horizon</SectionLabel><h1 className="display mt-6 text-7xl leading-[.86]">Your property<br /><em className="text-[#c97352]">journey starts here.</em></h1><form onSubmit={submit} className="mt-14 border-t border-[#202635]/20 pt-5"><label className="block"><span className="eyebrow text-[#202635]/45">Full name</span><input required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label><label className="mt-6 block"><span className="eyebrow text-[#202635]/45">Email</span><input required type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label><label className="mt-6 block"><span className="eyebrow text-[#202635]/45">Password</span><input required minLength={8} type="password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label>{error && <p className="mt-5 text-sm text-[#c97352]">{error}</p>}{sent && <p className="mt-5 text-sm text-[#55735f]">Account created. Taking you to sign in…</p>}<button className="mt-8 flex items-center gap-3 bg-[#202635] px-6 py-4 font-mono text-[10px] uppercase tracking-[.15em] text-[#f5f0e6] hover:bg-[#c97352]">Create account <ArrowUpRight size={14} /></button></form></div></main>;
+  return <main className="bg-[#f5f0e6] px-5 py-36 md:px-10 md:py-48"><div className="mx-auto max-w-[620px]"><SectionLabel>Join KNC Horizon</SectionLabel><h1 className="page-title mt-6">Your property<br /><em className="text-[#c97352]">journey starts here.</em></h1><form onSubmit={submit} className="mt-14 border-t border-[#202635]/20 pt-5"><label className="block"><span className="eyebrow text-[#202635]/45">Full name</span><input required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label><label className="mt-6 block"><span className="eyebrow text-[#202635]/45">Email</span><input required type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label><label className="mt-6 block"><span className="eyebrow text-[#202635]/45">Password</span><input required minLength={8} type="password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label>{error && <p className="mt-5 text-sm text-[#c97352]">{error}</p>}{sent && <p className="mt-5 text-sm text-[#55735f]">Account created. Taking you to sign in…</p>}<button className="mt-8 flex items-center gap-3 bg-[#202635] px-6 py-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6] hover:bg-[#c97352]">Create account <ArrowUpRight size={14} /></button></form></div></main>;
 }
 
 type AdminItem = Record<string, any> & { id: string };
@@ -184,7 +188,7 @@ function InquiryPanel({
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-3">
             <p className="font-serif text-xl">{item.name}</p>
-            <span className={`font-mono text-[9px] uppercase tracking-[.12em] ${statusColors[currentStatus]}`}>
+            <span className={`font-mono text-[10px] uppercase tracking-[.12em] ${statusColors[currentStatus]}`}>
               {currentStatus}
             </span>
           </div>
@@ -194,7 +198,7 @@ function InquiryPanel({
             {item.interest ? ` · ${item.interest}` : ''}
           </p>
         </div>
-        <span className={`mt-0.5 font-mono text-[9px] uppercase tracking-[.1em] text-[#202635]/45 ${expanded ? 'rotate-180 block' : ''} transition-transform`}>
+        <span className={`mt-0.5 font-mono text-[10px] uppercase tracking-[.1em] text-[#202635]/45 ${expanded ? 'rotate-180 block' : ''} transition-transform`}>
           {expanded ? '▲' : '▼'}
         </span>
       </button>
@@ -213,14 +217,14 @@ function InquiryPanel({
               Project: <Link href={`/projects/${item.projectSlug}`} className="text-[#c97352] underline">{item.projectSlug}</Link>
             </p>
           )}
-          <p className="mb-4 font-mono text-[9px] uppercase tracking-[.1em] text-[#202635]/40">
+          <p className="mb-4 font-mono text-[10px] uppercase tracking-[.1em] text-[#202635]/40">
             Received: {item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-GB', { dateStyle: 'long' }) : 'Unknown date'}
           </p>
           <div className="flex gap-3">
             <button
               type="button"
               onClick={() => onStatusUpdate(item.id, nextStatus[currentStatus].value)}
-              className="border border-[#55735f] px-4 py-2 font-mono text-[9px] uppercase tracking-[.12em] text-[#55735f] hover:bg-[#55735f] hover:text-white transition-colors"
+              className="border border-[#55735f] px-4 py-2 font-mono text-[10px] uppercase tracking-[.12em] text-[#55735f] hover:bg-[#55735f] hover:text-white transition-colors"
             >
               {nextStatus[currentStatus].label}
             </button>
@@ -229,7 +233,7 @@ function InquiryPanel({
                 href={`https://wa.me/${item.phone.replace(/\D/g, '')}`}
                 target="_blank"
                 rel="noreferrer"
-                className="border border-[#202635]/20 px-4 py-2 font-mono text-[9px] uppercase tracking-[.12em] text-[#202635]/60 hover:bg-[#202635] hover:text-[#f5f0e6] transition-colors"
+                className="border border-[#202635]/20 px-4 py-2 font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/60 hover:bg-[#202635] hover:text-[#f5f0e6] transition-colors"
               >
                 WhatsApp
               </a>
@@ -237,7 +241,7 @@ function InquiryPanel({
             {item.email && (
               <a
                 href={`mailto:${item.email}`}
-                className="border border-[#202635]/20 px-4 py-2 font-mono text-[9px] uppercase tracking-[.12em] text-[#202635]/60 hover:bg-[#202635] hover:text-[#f5f0e6] transition-colors"
+                className="border border-[#202635]/20 px-4 py-2 font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/60 hover:bg-[#202635] hover:text-[#f5f0e6] transition-colors"
               >
                 Email
               </a>
@@ -267,7 +271,7 @@ function BlogManagement() {
   async function remove(id: string) { if (!window.confirm('Delete this blog post?')) return; await adminFetch(`/admin/blog/${id}`, { method: 'DELETE' }); load(); }
   async function toggle(post: AdminItem) { await adminFetch(`/admin/blog/${post.id}`, { method: 'PATCH', body: JSON.stringify({ ...post, status: post.status === 'published' || post.published ? 'draft' : 'published' }) }); load(); }
   const fields: Array<[keyof typeof emptyDraft, string]> = [['title', 'Title'], ['slug', 'Slug'], ['excerpt', 'Excerpt'], ['content', 'Content'], ['featuredImage', 'Featured image URL'], ['category', 'Category'], ['author', 'Author'], ['seoTitle', 'SEO title'], ['seoDescription', 'SEO description']];
-  return <section className="mt-16 border-t border-[#202635]/15 pt-10"><div className="flex flex-wrap items-end justify-between gap-5"><div><SectionLabel>Blog management</SectionLabel><h2 className="display mt-4 text-5xl">Publish a <em className="text-[#c97352]">new note.</em></h2></div>{message && <p className="text-sm text-[#c97352]">{message}</p>}</div><form onSubmit={save} className="mt-8 grid gap-5 border-y border-[#202635]/15 py-7 md:grid-cols-2">{fields.map(([field, label]) => <label key={field} className={field === 'content' || field === 'excerpt' || field === 'seoDescription' ? 'md:col-span-2' : ''}><span className="eyebrow text-[#202635]/50">{label}</span>{field === 'content' || field === 'excerpt' || field === 'seoDescription' ? <textarea required={field === 'content'} value={draft[field]} onChange={(event) => updateDraft(field, event.target.value)} className="mt-2 min-h-24 w-full border-b border-[#202635]/25 bg-transparent py-2 text-sm outline-none focus:border-[#c97352]" /> : <input required={field === 'title' || field === 'slug'} value={draft[field]} onChange={(event) => updateDraft(field, event.target.value)} className="mt-2 w-full border-b border-[#202635]/25 bg-transparent py-2 text-sm outline-none focus:border-[#c97352]" />}</label>)}<label><span className="eyebrow text-[#202635]/50">Status</span><select value={draft.status} onChange={(event) => updateDraft('status', event.target.value)} className="mt-2 w-full border-b border-[#202635]/25 bg-transparent py-2 text-sm"><option value="draft">Draft</option><option value="published">Published</option></select></label><div className="flex items-end gap-3"><button className="bg-[#202635] px-5 py-3 font-mono text-[10px] uppercase tracking-[.13em] text-[#f5f0e6]">{editingId ? 'Update post' : 'Create post'}</button>{editingId && <button type="button" onClick={() => { setEditingId(''); setDraft(emptyDraft); }} className="border border-[#202635]/25 px-5 py-3 font-mono text-[10px] uppercase tracking-[.13em]">Cancel</button>}</div></form><div className="divide-y divide-[#202635]/15 border-y border-[#202635]/15">{posts.map((post) => <div key={post.id} className="flex flex-wrap items-center justify-between gap-4 py-5"><div><p className="font-serif text-2xl">{post.title}</p><p className="mt-1 text-xs text-[#202635]/55">{post.status === 'published' || post.published ? 'Published' : 'Draft'} · {post.category}</p></div><div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[.1em]"><button onClick={() => toggle(post)} className="text-[#55735f]">{post.status === 'published' || post.published ? 'Unpublish' : 'Publish'}</button><button onClick={() => edit(post)} className="text-[#202635]/65">Edit</button><button onClick={() => remove(post.id)} className="text-[#c97352]" aria-label={`Delete ${post.title}`}><Trash2 size={16} /></button></div></div>)}</div></section>;
+  return <section className="mt-16 border-t border-[#202635]/15 pt-10"><div className="flex flex-wrap items-end justify-between gap-5"><div><SectionLabel>Blog management</SectionLabel><h2 className="section-title mt-4">Publish a <em className="text-[#c97352]">new note.</em></h2></div>{message && <p className="text-sm text-[#c97352]">{message}</p>}</div><form onSubmit={save} className="mt-8 grid gap-5 border-y border-[#202635]/15 py-7 md:grid-cols-2">{fields.map(([field, label]) => <label key={field} className={field === 'content' || field === 'excerpt' || field === 'seoDescription' ? 'md:col-span-2' : ''}><span className="eyebrow text-[#202635]/50">{label}</span>{field === 'content' || field === 'excerpt' || field === 'seoDescription' ? <textarea required={field === 'content'} value={draft[field]} onChange={(event) => updateDraft(field, event.target.value)} className="mt-2 min-h-24 w-full border-b border-[#202635]/25 bg-transparent py-2 text-sm outline-none focus:border-[#c97352]" /> : <input required={field === 'title' || field === 'slug'} value={draft[field]} onChange={(event) => updateDraft(field, event.target.value)} className="mt-2 w-full border-b border-[#202635]/25 bg-transparent py-2 text-sm outline-none focus:border-[#c97352]" />}</label>)}<label><span className="eyebrow text-[#202635]/50">Status</span><select value={draft.status} onChange={(event) => updateDraft('status', event.target.value)} className="mt-2 w-full border-b border-[#202635]/25 bg-transparent py-2 text-sm"><option value="draft">Draft</option><option value="published">Published</option></select></label><div className="flex items-end gap-3"><button className="bg-[#202635] px-5 py-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6]">{editingId ? 'Update post' : 'Create post'}</button>{editingId && <button type="button" onClick={() => { setEditingId(''); setDraft(emptyDraft); }} className="border border-[#202635]/25 px-5 py-3 font-mono text-[10px] uppercase tracking-[.13em]">Cancel</button>}</div></form><div className="divide-y divide-[#202635]/15 border-y border-[#202635]/15">{posts.map((post) => <div key={post.id} className="flex flex-wrap items-center justify-between gap-4 py-5"><div><p className="font-serif text-2xl">{post.title}</p><p className="mt-1 text-xs text-[#202635]/55">{post.status === 'published' || post.published ? 'Published' : 'Draft'} · {post.category}</p></div><div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[.1em]"><button onClick={() => toggle(post)} className="text-[#55735f]">{post.status === 'published' || post.published ? 'Unpublish' : 'Publish'}</button><button onClick={() => edit(post)} className="text-[#202635]/65">Edit</button><button onClick={() => remove(post.id)} className="text-[#c97352]" aria-label={`Delete ${post.title}`}><Trash2 size={16} /></button></div></div>)}</div></section>;
 }
 
 export function AdminPage() {
@@ -337,12 +341,12 @@ export function AdminPage() {
 
   return (
     <main className="min-h-screen bg-[#e9e4da] px-5 py-32 md:px-10">
-      <div className="mx-auto max-w-[1380px]">
+      <div className="mx-auto max-w-[1280px]">
         {/* Header */}
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <SectionLabel>Protected workspace</SectionLabel>
-            <h1 className="display mt-4 text-6xl">KNC <em className="text-[#c97352]">dashboard.</em></h1>
+            <h1 className="page-title mt-4">KNC <em className="text-[#c97352]">dashboard.</em></h1>
           </div>
           <button onClick={logout} className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/65 hover:text-[#c97352]">
             <LogOut size={14} /> Sign out
@@ -367,7 +371,7 @@ export function AdminPage() {
               <SectionIntro label="Content management" title={<>Keep the edit<br /><em className="text-[#c97352]">alive.</em></>} />
               <div className="flex gap-2">
                 {(['properties', 'projects', 'developers', 'posts'] as const).map((key) => (
-                  <button key={key} onClick={() => setResource(key)} className={`px-3 py-2 font-mono text-[9px] uppercase tracking-[.12em] ${resource === key ? 'bg-[#202635] text-[#f5f0e6]' : 'border border-[#202635]/20'}`}>{key}</button>
+                  <button key={key} onClick={() => setResource(key)} className={`px-3 py-2 font-mono text-[10px] uppercase tracking-[.12em] ${resource === key ? 'bg-[#202635] text-[#f5f0e6]' : 'border border-[#202635]/20'}`}>{key}</button>
                 ))}
               </div>
             </div>
@@ -387,7 +391,7 @@ export function AdminPage() {
             </div>
             <div className="mt-5 flex items-center gap-2">
               <Plus size={14} className="text-[#c97352]" />
-              <span className="font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/50">
+              <span className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/50">
                 Use the blog management section below to add content
               </span>
             </div>
@@ -396,7 +400,7 @@ export function AdminPage() {
           {/* Enquiry / Lead management */}
           <div>
             <SectionLabel>Lead management</SectionLabel>
-            <h2 className="display mt-4 text-4xl">Enquiries &amp; <em className="text-[#c97352]">leads.</em></h2>
+            <h2 className="section-title mt-4">Enquiries &amp; <em className="text-[#c97352]">leads.</em></h2>
 
             {/* Status filter tabs */}
             <div className="mt-7 flex flex-wrap gap-2 border-b border-[#202635]/15 pb-5">
@@ -404,12 +408,12 @@ export function AdminPage() {
                 <button
                   key={status}
                   onClick={() => setInquiryFilter(status)}
-                  className={`flex items-center gap-1.5 px-3 py-2 font-mono text-[9px] uppercase tracking-[.12em] transition-colors ${
+                  className={`flex items-center gap-1.5 px-3 py-2 font-mono text-[10px] uppercase tracking-[.12em] transition-colors ${
                     inquiryFilter === status ? 'bg-[#202635] text-[#f5f0e6]' : 'border border-[#202635]/20 text-[#202635]/60 hover:border-[#c97352] hover:text-[#c97352]'
                   }`}
                 >
                   {status}
-                  <span className={`grid h-4 w-4 place-items-center rounded-full text-[8px] ${inquiryFilter === status ? 'bg-[#c97352]' : 'bg-[#202635]/15'}`}>
+                  <span className={`grid h-4 w-4 place-items-center rounded-full text-[9px] ${inquiryFilter === status ? 'bg-[#c97352]' : 'bg-[#202635]/15'}`}>
                     {inquiryCounts[status]}
                   </span>
                 </button>

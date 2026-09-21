@@ -11,6 +11,10 @@ import {
   UserCheck,
   Palette,
   Settings,
+  MapPin,
+  LineChart,
+  Images,
+  FolderOpen,
   ExternalLink,
   X,
 } from 'lucide-react';
@@ -20,7 +24,11 @@ export type AdminResource =
   | 'properties'
   | 'projects'
   | 'developers'
+  | 'communities'
   | 'posts'
+  | 'insights'
+  | 'gallery'
+  | 'media'
   | 'inquiries'
   | 'subscribers'
   | 'content'
@@ -51,9 +59,13 @@ export function AdminSidebar({
   const items: SidebarItem[] = [
     { key: 'overview', label: 'Overview', icon: <Home size={16} /> },
     { key: 'properties', label: 'Properties', icon: <Building2 size={16} /> },
-    { key: 'projects', label: 'Projects', icon: <FolderGit2 size={16} /> },
+    { key: 'projects', label: 'Off-Plan Projects', icon: <FolderGit2 size={16} /> },
     { key: 'developers', label: 'Developers', icon: <Users2 size={16} /> },
+    { key: 'communities', label: 'Communities', icon: <MapPin size={16} /> },
     { key: 'posts', label: 'Blog', icon: <FileText size={16} /> },
+    { key: 'insights', label: 'Market Insights', icon: <LineChart size={16} /> },
+    { key: 'gallery', label: 'Gallery', icon: <Images size={16} /> },
+    { key: 'media', label: 'Media Library', icon: <FolderOpen size={16} /> },
     { key: 'inquiries', label: 'Leads / Inquiries', icon: <Mail size={16} /> },
     { key: 'subscribers', label: 'Subscribers', icon: <UserCheck size={16} /> },
     { key: 'content', label: 'Website Content', icon: <Palette size={16} /> },
@@ -131,6 +143,7 @@ export function AdminSidebar({
                 <button
                   key={item.key}
                   type="button"
+                  data-testid={`sidebar-${item.key}`}
                   onClick={() => handleSelect(item.key)}
                   className={`group flex w-full items-center justify-between rounded-sm px-3 py-2.5 text-left text-xs font-medium transition-all ${
                     isLogout

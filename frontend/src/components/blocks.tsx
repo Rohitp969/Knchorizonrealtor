@@ -2,8 +2,8 @@ import { useEffect, useState, type ChangeEvent, type FormEvent, type ReactNode }
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, MapPin, Send } from 'lucide-react';
 import { Link } from 'wouter';
-import { areas, properties, services, type Area, type Property, type Service, faqs } from '@/lib/site-data';
-import { apiFetch, type RemoteProperty } from '@/lib/api';
+import { areas, defaultPosts, defaultProjects, properties, services, type Area, type Property, type Service, faqs } from '@/lib/site-data';
+import { apiFetch, type Post, type Project, type RemoteProperty } from '@/lib/api';
 
 export const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -14,35 +14,35 @@ export function SectionLabel({ children, light = false }: { children: string; li
   return <p className={`eyebrow ${light ? 'text-[#d9c6a4]' : 'text-[#c97352]'}`}>{children}</p>;
 }
 
-export function SectionIntro({ label, title, copy, light = false, children }: { label: string; title: ReactNode; copy?: string; light?: boolean; children?: ReactNode }) {
+export function SectionIntro({ label, title, copy, light = false, children, className = '' }: { label: string; title: ReactNode; copy?: string; light?: boolean; children?: ReactNode; className?: string }) {
   return (
-    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={fadeUp} className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
+    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={fadeUp} className={`flex w-full flex-col justify-between gap-6 lg:flex-row lg:items-end lg:gap-12 ${className}`}>
       <div className="max-w-3xl">
         <SectionLabel light={light}>{label}</SectionLabel>
-        <h2 className={`display mt-5 text-5xl leading-[.95] md:text-7xl ${light ? 'text-[#f5f0e6]' : 'text-[#202635]'}`}>{title}</h2>
+        <h2 className={`section-title mt-5 ${light ? 'text-[#f5f0e6]' : 'text-[#202635]'}`}>{title}</h2>
       </div>
-      <div className={`max-w-sm text-sm leading-7 ${light ? 'text-[#f5f0e6]/65' : 'text-[#202635]/65'}`}>{copy}</div>
+      {copy && <div className={`max-w-md text-sm leading-7 lg:max-w-sm lg:shrink-0 ${light ? 'text-[#f5f0e6]/65' : 'text-[#202635]/65'}`}>{copy}</div>}
       {children}
     </motion.div>
   );
 }
 
-export function PropertyCard({ property, featured = false }: { property: Property; featured?: boolean }) {
+export function PropertyCard({ property, featured = false, className = '' }: { property: Property; featured?: boolean; className?: string }) {
   return (
     <motion.article
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-40px' }}
       variants={fadeUp}
-      className={`group flex flex-col ${featured ? 'md:col-span-2' : ''}`}
+      className={`group flex flex-col ${featured ? 'md:col-span-2' : ''} ${className}`}
       data-testid={`card-property-${property.id}`}
     >
       <Link
         href={`/properties/${property.slug ?? property.id}`}
-        className="group flex h-full flex-col border border-[#202635]/12 bg-[#fcfaf6] p-3 transition-all duration-300 hover:border-[#c97352]/50 hover:shadow-lg sm:p-3.5"
+        className="card-editorial group flex h-full flex-col p-6"
         data-testid={`link-property-${property.id}`}
       >
-        <div className={`mobile-card-image image-reveal relative w-full overflow-hidden rounded-sm bg-[#202635]/10 ${featured ? 'h-[260px] md:h-[320px]' : 'h-[190px] sm:h-[210px] md:h-[220px]'}`}>
+        <div className={`mobile-card-image image-reveal card-media ${featured ? 'card-media-wide' : ''}`}>
           <img
             src={property.image}
             alt={`${property.title}, ${property.location}`}
@@ -53,7 +53,7 @@ export function PropertyCard({ property, featured = false }: { property: Propert
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#202635]/50 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-35" />
           {property.note && (
-            <span className="absolute left-3 top-3 border border-[#f5f0e6]/30 bg-[#202635]/80 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[.12em] text-[#f5f0e6] backdrop-blur-xs">
+            <span className="absolute left-3 top-3 border border-[#f5f0e6]/30 bg-[#202635]/80 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[.12em] text-[#f5f0e6] backdrop-blur-xs">
               {property.note}
             </span>
           )}
@@ -64,26 +64,26 @@ export function PropertyCard({ property, featured = false }: { property: Propert
 
         <div className="flex flex-1 flex-col justify-between pt-3.5">
           <div>
-            <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-[.12em] text-[#202635]/55">
-              <span className="font-semibold text-[#c97352]">{property.type}</span>
-              <span className="flex items-center gap-1"><MapPin size={10} className="text-[#c97352]" /> {property.location}</span>
+            <div className="flex items-center justify-between gap-3 text-[10px] font-mono uppercase tracking-[.12em] text-[#202635]/55">
+              <span className="shrink-0 font-semibold text-[#c97352]">{property.type}</span>
+              <span className="flex min-w-0 items-center gap-1"><MapPin size={10} className="shrink-0 text-[#c97352]" /> <span className="truncate">{property.location}</span></span>
             </div>
 
-            <h3 className="mt-2 font-serif text-2xl leading-tight text-[#202635] transition-colors group-hover:text-[#c97352]">
+            <h3 className="card-title mt-2 line-clamp-2 text-[#202635] transition-colors group-hover:text-[#c97352]">
               {property.title}
             </h3>
 
-            <p className="mt-1.5 text-xs text-[#202635]/65">
+            <p className="mt-1.5 line-clamp-1 text-xs text-[#202635]/65">
               {property.details}
             </p>
           </div>
 
-          <div className="mt-4 flex items-center justify-between border-t border-[#202635]/10 pt-3">
-            <span className="font-mono text-xs font-semibold text-[#202635]">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[#202635]/10 pt-3">
+            <span className="whitespace-nowrap font-mono text-xs font-semibold text-[#202635]">
               {property.price}
             </span>
-            <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-[.13em] text-[#c97352] group-hover:underline">
-              View details <ArrowUpRight size={12} />
+            <span className="flex items-center gap-1 whitespace-nowrap font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] group-hover:underline">
+              View property <ArrowUpRight size={12} />
             </span>
           </div>
         </div>
@@ -111,7 +111,7 @@ export function FeaturedProperties() {
 
   useEffect(() => {
     let active = true;
-    apiFetch<{ properties: RemoteProperty[] }>('/public/properties?featured=true&limit=4')
+    apiFetch<{ properties: RemoteProperty[] }>('/public/properties?featured=true&limit=6')
       .then((data) => {
         if (!active || !data?.properties || data.properties.length === 0) return;
         const mapped = data.properties.map(remotePropertyCard);
@@ -137,11 +137,129 @@ export function FeaturedProperties() {
     };
   }, []);
 
+  // Swipeable row on phones, 2-up grid on tablets, 4-up once cards have room for their price row.
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {items.slice(0, 4).map((property) => (
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {items.slice(0, 3).map((property) => (
         <PropertyCard key={property.id || property.slug} property={property} featured={false} />
       ))}
+    </div>
+  );
+}
+
+
+export const aed = (value: number) => `AED ${new Intl.NumberFormat('en-AE').format(value)}`;
+const FALLBACK_IMAGE = '/images/creek-waterfront.jpg';
+
+/* One project card used by the home page, /projects, /off-plan and their filters. */
+export function ProjectCard({ project }: { project: Project }) {
+  return (
+    <Link
+      href={`/projects/${project.slug}`}
+      className="card-editorial group flex flex-col justify-between p-6"
+      data-testid={`card-project-${project.slug}`}
+    >
+      <div>
+        <div className="card-media image-reveal">
+          <img
+            src={project.image || FALLBACK_IMAGE}
+            alt={`${project.title} by ${project.developer}, ${project.location}`}
+            loading="lazy"
+            onError={(event) => { event.currentTarget.src = FALLBACK_IMAGE; }}
+            className="transition-transform duration-700 group-hover:scale-105"
+          />
+          <span className="absolute left-3 top-3 border border-[#f5f0e6]/30 bg-[#202635]/80 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[.12em] text-[#f5f0e6] backdrop-blur-xs">
+            {project.status || 'Off-Plan'}
+          </span>
+        </div>
+        <p className="eyebrow mt-5 text-[#c97352]">{project.developer} · {project.location}</p>
+        <h3 className="card-title mt-2 line-clamp-2">{project.title}</h3>
+        <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#202635]/65">{project.description}</p>
+      </div>
+      <div className="mt-6 border-t border-[#202635]/12 pt-4">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/65">
+          <span>From {aed(project.startingPrice)}</span>
+          <span>Handover {project.handover}</span>
+        </div>
+        <span className="mt-4 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] group-hover:underline">
+          View project <ArrowUpRight size={14} />
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+/* One post card used by the home page and /blog. */
+export function PostCard({ post }: { post: Post }) {
+  return (
+    <Link
+      key={post.id}
+      href={`/blog/${post.slug}`}
+      className="card-editorial group flex flex-col justify-between p-6"
+      data-testid={`card-post-${post.slug}`}
+    >
+      <div>
+        <div className="card-media image-reveal">
+          <img
+            src={post.image || FALLBACK_IMAGE}
+            alt={post.title}
+            loading="lazy"
+            onError={(event) => { event.currentTarget.src = FALLBACK_IMAGE; }}
+            className="transition-transform duration-700 group-hover:scale-105"
+          />
+        </div>
+        <p className="eyebrow mt-5 text-[#c97352]">{post.category} · {post.author}</p>
+        <h3 className="card-title mt-2 line-clamp-2">{post.title}</h3>
+        <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#202635]/60">{post.excerpt}</p>
+      </div>
+      <div className="mt-6 border-t border-[#202635]/12 pt-4">
+        <p className="font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/45">
+          {new Date(post.publishedAt).toLocaleDateString('en-GB', { dateStyle: 'long' })}
+        </p>
+        <span className="mt-3 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] group-hover:underline">
+          Read note <ArrowUpRight size={14} />
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+/* Home: featured off-plan projects, live when the API answers and the existing edit otherwise. */
+export function FeaturedProjects() {
+  const [items, setItems] = useState<Project[]>(defaultProjects as unknown as Project[]);
+
+  useEffect(() => {
+    let active = true;
+    apiFetch<{ projects: Project[] }>('/public/projects?featured=true')
+      .then((data) => { if (active && data?.projects?.length) setItems(data.projects); })
+      .catch(() => { /* keep the existing edit */ });
+    return () => { active = false; };
+  }, []);
+
+  if (!items.length) return null;
+  return (
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {items.slice(0, 3).map((project) => <ProjectCard key={project.id || project.slug} project={project} />)}
+    </div>
+  );
+}
+
+/* Home: the three most recent notes. */
+export function LatestInsights() {
+  const [items, setItems] = useState<Post[]>(defaultPosts as unknown as Post[]);
+
+  useEffect(() => {
+    let active = true;
+    apiFetch<{ posts: Post[] }>('/public/blog')
+      .then((data) => { if (active && data?.posts?.length) setItems(data.posts); })
+      .catch(() => { /* keep the existing notes */ });
+    return () => { active = false; };
+  }, []);
+
+  if (!items.length) return null;
+  return (
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {items.slice(0, 3).map((post) => <PostCard key={post.id || post.slug} post={post} />)}
     </div>
   );
 }
@@ -151,9 +269,9 @@ export function ServiceRow({ service }: { service: Service }) {
   return (
     <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={fadeUp} className="group grid grid-cols-[1fr_auto] items-center gap-4 border-t border-[#202635]/15 py-6 md:grid-cols-[1.1fr_1.4fr_auto] md:gap-8 md:py-8" data-testid={`row-service-${service.id}`}>
       <div>
-        <span className="font-mono text-[9px] uppercase tracking-[.16em] text-[#c97352]">Advisory Practice</span>
+        <span className="font-mono text-[10px] uppercase tracking-[.16em] text-[#c97352]">Advisory Practice</span>
         <Link href={targetHref} className="block mt-1">
-          <h3 className="font-serif text-2xl leading-tight text-[#202635] md:text-3xl transition-colors group-hover:text-[#c97352]">{service.title}</h3>
+          <h3 className="block-title text-[#202635] transition-colors group-hover:text-[#c97352]">{service.title}</h3>
         </Link>
       </div>
       <p className="hidden max-w-md text-sm leading-6 text-[#202635]/65 md:block">{service.description}</p>
@@ -162,16 +280,16 @@ export function ServiceRow({ service }: { service: Service }) {
   );
 }
 
-export function AreaCard({ area, index }: { area: Area; index: number }) {
+export function AreaCard({ area, index, className = 'w-full' }: { area: Area; index: number; className?: string }) {
   return (
-    <motion.article initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={fadeUp} transition={{ delay: index * .08 }} className="group w-full" data-testid={`card-area-${area.id}`}>
-      <Link href={`/areas#${area.id}`} className="block" data-testid={`link-area-${area.id}`}>
-        <div className="relative h-[200px] sm:h-[220px] md:h-[230px] w-full overflow-hidden rounded-sm bg-[#202635]">
+    <motion.article initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={fadeUp} transition={{ delay: index * .08 }} className={`group ${className}`} data-testid={`card-area-${area.id}`}>
+      <Link href={`/communities/${area.id}`} className="block" data-testid={`link-area-${area.id}`}>
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm bg-[#202635]">
           <img src={area.image} alt={area.name} loading="lazy" className="h-full w-full object-cover opacity-85 transition-transform duration-700 ease-out group-hover:scale-105" data-testid={`img-area-${area.id}`} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#202635]/85 via-[#202635]/20 to-transparent" />
           <div className="absolute inset-x-5 bottom-5 text-[#f5f0e6]">
-            <p className="font-mono text-[9px] uppercase tracking-[.15em] text-[#d9c6a4]">Dubai · Community</p>
-            <h3 className="mt-2 font-serif text-3xl leading-none">{area.name}</h3>
+            <p className="font-mono text-[10px] uppercase tracking-[.15em] text-[#d9c6a4]">Dubai · Community</p>
+            <h3 className="card-title mt-2">{area.name}</h3>
             <p className="mt-1.5 text-xs text-[#f5f0e6]/75">{area.descriptor}</p>
           </div>
         </div>
@@ -205,7 +323,7 @@ export function ContactForm({ compact = false, propertySlug, projectSlug, inquir
       setSubmitting(false);
     }
   };
-  if (sent) return <div className="border border-[#c97352]/40 bg-[#c97352]/10 p-7 md:p-10" data-testid="status-contact-success"><Check className="text-[#c97352]" size={26} /><h3 className="display mt-6 text-4xl text-[#202635]">We'll be in touch shortly.</h3><p className="mt-3 max-w-md text-sm leading-6 text-[#202635]/60">Thank you, {form.name || 'there'}. A member of our advisory team will reach out to understand what you're looking for.</p><button onClick={() => { setSent(false); setForm({ name: '', email: '', phone: '', interest: '', budget: '', propertyType: '', location: '', message: '' }); }} className="mt-7 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] line-link" data-testid="button-contact-reset">Send another enquiry</button></div>;
+  if (sent) return <div className="border border-[#c97352]/40 bg-[#c97352]/10 p-7 md:p-10" data-testid="status-contact-success"><Check className="text-[#c97352]" size={26} /><h3 className="block-title mt-6 text-[#202635]">We'll be in touch shortly.</h3><p className="mt-3 max-w-md text-sm leading-6 text-[#202635]/60">Thank you, {form.name || 'there'}. A member of our advisory team will reach out to understand what you're looking for.</p><button onClick={() => { setSent(false); setForm({ name: '', email: '', phone: '', interest: '', budget: '', propertyType: '', location: '', message: '' }); }} className="mt-7 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] line-link" data-testid="button-contact-reset">Send another enquiry</button></div>;
   return (
     <form onSubmit={submit} className={`grid gap-5 ${compact ? '' : 'md:grid-cols-2 md:gap-x-7'}`} data-testid="form-contact">
       <label className="block"><span className="eyebrow text-[#202635]/45">Your name</span><input required value={form.name} onChange={update('name')} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#202635]/30 focus:border-[#c97352]" placeholder="Full name" data-testid="input-contact-name" /></label>
@@ -221,7 +339,7 @@ export function ContactForm({ compact = false, propertySlug, projectSlug, inquir
       )}
       <label className={`block ${compact ? '' : 'md:col-span-2'}`}><span className="eyebrow text-[#202635]/45">A little about your plans</span><textarea required value={form.message} onChange={update('message')} rows={3} className="mt-3 w-full resize-none border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#202635]/30 focus:border-[#c97352]" placeholder="Tell us what would make this move feel right." data-testid="textarea-contact-message" /></label>
       {error && <p className={`text-sm text-[#c97352] ${compact ? '' : 'md:col-span-2'}`} role="alert">{error}</p>}
-      <button disabled={submitting} type="submit" className={`group mt-3 flex w-fit items-center gap-3 bg-[#202635] px-6 py-4 font-mono text-[10px] uppercase tracking-[.15em] text-[#f5f0e6] transition-colors hover:bg-[#c97352] disabled:cursor-wait disabled:opacity-60 ${compact ? '' : 'md:col-span-2'}`} data-testid="button-contact-submit">{submitting ? 'Sending…' : 'Send enquiry'} <Send size={14} className="transition-transform group-hover:translate-x-1" /></button>
+      <button disabled={submitting} type="submit" className={`group mt-3 flex w-full items-center justify-between gap-3 bg-[#202635] sm:w-fit sm:justify-start px-6 py-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6] transition-colors hover:bg-[#c97352] disabled:cursor-wait disabled:opacity-60 ${compact ? '' : 'md:col-span-2'}`} data-testid="button-contact-submit">{submitting ? 'Sending…' : 'Send enquiry'} <Send size={14} className="transition-transform group-hover:translate-x-1" /></button>
     </form>
   );
 }
@@ -245,8 +363,8 @@ export function NewsletterForm() {
 //   const [open, setOpen] = useState<string | null>(null);
 //   return (
 //     <section className={`${compact ? 'bg-[#e9e4da]' : 'bg-[#dfe2dc]'} px-5 py-20 md:px-10 md:py-28`}>
-//       <div className="mx-auto grid max-w-[1380px] gap-12 md:grid-cols-[.7fr_1.3fr] md:gap-24">
-//         <div><SectionLabel>Questions, answered</SectionLabel><h2 className="display mt-6 text-5xl leading-[.92] md:text-7xl">A clearer<br /><em className="text-[#c97352]">first step.</em></h2><p className="mt-7 max-w-sm text-sm leading-7 text-[#202635]/60">A few useful details before we start a conversation about your next move.</p></div>
+//       <div className="mx-auto grid max-w-[1280px] gap-12 md:grid-cols-[.7fr_1.3fr] md:gap-24">
+//         <div><SectionLabel>Questions, answered</SectionLabel><h2 className="section-title mt-6">A clearer<br /><em className="text-[#c97352]">first step.</em></h2><p className="mt-7 max-w-sm text-sm leading-7 text-[#202635]/60">A few useful details before we start a conversation about your next move.</p></div>
 //         <div className="border-t border-[#202635]/20">
 //           {faqs.map((faq) => <div key={faq.question} className="border-b border-[#202635]/20"><button type="button" onClick={() => setOpen(open === faq.question ? null : faq.question)} className="flex w-full items-center justify-between gap-6 py-6 text-left" aria-expanded={open === faq.question}><span className="font-serif text-2xl md:text-3xl">{faq.question}</span><ChevronDown size={18} className={`shrink-0 text-[#c97352] transition-transform ${open === faq.question ? 'rotate-180' : ''}`} /></button>{open === faq.question && <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="max-w-2xl overflow-hidden pb-6 text-sm leading-7 text-[#202635]/65">{faq.answer}</motion.p>}</div>)}
 //         </div>
@@ -261,19 +379,17 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
 
   return (
     <section
-      className={`${
-        compact ? 'bg-[#e9e4da]' : 'bg-[#dfe2dc]'
-      } px-5 py-20 md:px-10 md:py-24 lg:py-28`}
+      className={`${ compact ? 'bg-[#e9e4da]' : 'bg-[#dfe2dc]' } px-5 py-20 md:px-10 md:py-28`}
     >
-      <div className="mx-auto grid max-w-[1200px] gap-14 md:grid-cols-[0.8fr_1.2fr] md:gap-20 lg:gap-28">
+      <div className="mx-auto grid max-w-[1280px] gap-10 md:gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20 xl:gap-28">
 
         {/* LEFT CONTENT */}
-        <div className="md:pt-2">
+        <div className="lg:pt-2">
           <SectionLabel>
             Before you enquire
           </SectionLabel>
 
-          <h2 className="display mt-6 max-w-xl text-5xl leading-[0.9] sm:text-6xl md:text-7xl">
+          <h2 className="section-title mt-6 max-w-xl">
             Your Dubai
             <br />
             <em className="text-[#c97352]">
@@ -341,7 +457,7 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
                     transition={{ duration: 0.25 }}
                     className="overflow-hidden"
                   >
-                    <p className="max-w-2xl pb-7 pr-10 text-sm leading-7 text-[#202635]/65 md:text-[15px]">
+                    <p className="max-w-2xl pb-7 pr-10 text-sm leading-7 text-[#202635]/65">
                       {faq.answer}
                     </p>
                   </motion.div>
@@ -359,11 +475,11 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
 export function PageHero({ label, title, copy, image, children }: { label: string; title: ReactNode; copy: string; image?: string; children?: ReactNode }) {
   return (
     <section className={`page-hero relative flex min-h-[48vh] md:min-h-[55vh] items-end overflow-hidden px-5 pb-12 pt-28 md:px-10 md:pb-16 md:pt-36 ${image ? 'bg-[#202635]' : 'bg-[#dfe2dc]'}`}>
-      {image && <><img src={image} alt="" className="page-hero-image absolute inset-0 h-full w-full object-cover opacity-65" /><div className="absolute inset-0 bg-gradient-to-t from-[#202635]/90 via-[#202635]/20 to-[#202635]/35" /></>}
-      <div className="relative z-10 mx-auto w-full max-w-[1380px]">
+      {image && <><img src={image} alt="" loading="eager" fetchPriority="high" className="page-hero-image absolute inset-0 h-full w-full object-cover opacity-65" /><div className="absolute inset-0 bg-gradient-to-t from-[#202635]/90 via-[#202635]/20 to-[#202635]/35" /></>}
+      <div className="relative z-10 mx-auto w-full max-w-[1280px]">
         <SectionLabel light={!!image}>{label}</SectionLabel>
-        <h1 className={`display mt-5 max-w-5xl text-5xl leading-[.9] sm:text-6xl md:text-7xl lg:text-8xl ${image ? 'text-[#f5f0e6]' : 'text-[#202635]'}`}>{title}</h1>
-        <p className={`mt-5 max-w-lg text-sm md:text-base leading-relaxed ${image ? 'text-[#f5f0e6]/70' : 'text-[#202635]/65'}`}>{copy}</p>
+        <h1 className={`page-title mt-5 max-w-4xl ${image ? 'text-[#f5f0e6]' : 'text-[#202635]'}`}>{title}</h1>
+        <p className={`mt-5 max-w-lg text-sm leading-relaxed ${image ? 'text-[#f5f0e6]/70' : 'text-[#202635]/65'}`}>{copy}</p>
         {children}
       </div>
     </section>

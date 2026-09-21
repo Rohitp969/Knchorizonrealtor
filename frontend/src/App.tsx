@@ -9,11 +9,15 @@ import NotFound from '@/pages/not-found';
 import Home from '@/pages/home';
 
 import {
+  AboutApproachPage,
   AboutPage,
   AreasPage,
+  CommunitiesPage,
   ContactPage,
   DesignBuildPage,
+  IndiaOfficePage,
   InteriorsPage,
+  MarketInsightsPage,
   ServicesPage,
 } from '@/pages/interior-pages';
 
@@ -28,6 +32,7 @@ import {
 import {
   BlogPage,
   BlogPostPage,
+  CommunityDetailPage,
   GalleryPage,
   ProjectsPage,
   PropertiesLivePage,
@@ -112,9 +117,64 @@ function Router() {
       'Find the Dubai neighbourhood that fits the way you want to live.',
     ],
 
+    '/communities': [
+      'Dubai Communities',
+      'Explore premier Dubai neighbourhoods, waterfront communities, and master developments.',
+    ],
+
     '/about': [
       'About',
       'Meet KNC Horizon Realtor, an independent Dubai property advisory built around context, candour, and care.',
+    ],
+
+    '/about/approach': [
+      'Our Approach',
+      'Learn about KNC Horizon Realtor’s disciplined advisory framework, due diligence, and client care.',
+    ],
+
+    '/about/india-office': [
+      'India Office · DLF Phase 1 Gurugram',
+      'Connecting Indian HNIs and NRI investors to prime Dubai real estate through our Gurugram advisory desk.',
+    ],
+
+    '/market-insights': [
+      'Dubai Market Insights',
+      'Essential market fundamentals, freehold regulations, rental yields, and investment intelligence.',
+    ],
+
+    '/properties/sale': [
+      'Properties for Sale',
+      'Curated freehold homes, luxury villas, and prime penthouses for sale across Dubai.',
+    ],
+
+    '/properties/rent': [
+      'Properties for Rent',
+      'Exceptional luxury residences and prime commercial properties available for lease in Dubai.',
+    ],
+
+    '/off-plan': [
+      'Off-Plan Developments',
+      'Explore premier off-plan developments and payment plans from Dubai’s top master developers.',
+    ],
+
+    '/off-plan/new-launches': [
+      'New Launches',
+      'The newest property launches from leading Dubai developers including Emaar, Sobha, and Meraas.',
+    ],
+
+    '/off-plan/apartments': [
+      'Off-Plan Apartments',
+      'Prime waterfront and skyline off-plan apartments across Dubai’s highest-performing corridors.',
+    ],
+
+    '/off-plan/villas-townhouses': [
+      'Off-Plan Villas & Townhouses',
+      'Master-planned off-plan villas and family townhouses in Dubai’s premier gated communities.',
+    ],
+
+    '/off-plan/developers': [
+      'Top Dubai Developers',
+      'Explore verified developments by Emaar, Sobha, Omniyat, Nakheel, Meraas, and Ellington.',
     ],
 
     '/services': [
@@ -241,8 +301,33 @@ function Router() {
           />
 
           <Route
+            path="/about/approach"
+            component={AboutApproachPage}
+          />
+
+          <Route
+            path="/about/india-office"
+            component={IndiaOfficePage}
+          />
+
+          <Route
             path="/areas"
             component={AreasPage}
+          />
+
+          <Route
+            path="/communities"
+            component={CommunitiesPage}
+          />
+
+          <Route
+            path="/communities/:slug"
+            component={CommunityDetailPage}
+          />
+
+          <Route
+            path="/market-insights"
+            component={MarketInsightsPage}
           />
 
           <Route
@@ -272,6 +357,16 @@ function Router() {
           <Route
             path="/properties"
             component={PropertiesLivePage}
+          />
+
+          <Route
+            path="/properties/sale"
+            component={PropertiesFilterPage}
+          />
+
+          <Route
+            path="/properties/rent"
+            component={PropertiesFilterPage}
           />
 
           <Route
@@ -315,8 +410,33 @@ function Router() {
           />
 
           {/* ================================================== */}
-          {/* PROJECTS */}
+          {/* PROJECTS & OFF-PLAN */}
           {/* ================================================== */}
+
+          <Route
+            path="/off-plan"
+            component={ProjectsPage}
+          />
+
+          <Route
+            path="/off-plan/new-launches"
+            component={ProjectsFilterPage}
+          />
+
+          <Route
+            path="/off-plan/apartments"
+            component={ProjectsFilterPage}
+          />
+
+          <Route
+            path="/off-plan/villas-townhouses"
+            component={ProjectsFilterPage}
+          />
+
+          <Route
+            path="/off-plan/developers"
+            component={DevelopersPage}
+          />
 
           <Route
             path="/projects"

@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, Check, ChevronDown, Globe2 } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Building2, Check, ChevronDown, Coins, Compass, Globe2, Landmark, MapPin, Phone, ShieldCheck, TrendingUp } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'wouter';
 import { ContactForm, FaqSection, PageHero, PropertyCard, SectionIntro, SectionLabel, ServiceRow } from '@/components/blocks';
 import { areas, properties, services, specialistServices } from '@/lib/site-data';
 import { CONTACT } from '@/lib/contact-info';
+import { apiFetch, type Project, type RemoteProperty } from '@/lib/api';
 
 export function AboutPage() {
   return (
@@ -25,23 +27,23 @@ export function AboutPage() {
       />
 
       {/* OUR POINT OF VIEW */}
-      <section className="bg-[#f5f0e6] px-5 py-20 sm:py-24 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1100px]">
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
           <SectionLabel>Our Point of View</SectionLabel>
 
-          <h2 className="display mt-6 max-w-4xl text-4xl leading-[0.95] text-[#202635] sm:text-5xl md:text-6xl lg:text-7xl">
+          <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
             The best property advice starts with a better{" "}
             <em className="text-[#c97352]">question.</em>
           </h2>
 
-          <p className="mt-8 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:text-lg sm:leading-8">
+          <p className="mt-8 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:leading-8">
             What does home need to make possible? What would make this
             investment resilient? Which parts of the city feel like you?
             These are the questions that shape our work — long before we
             send a listing.
           </p>
 
-          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:text-lg sm:leading-8">
+          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:leading-8">
             KNC was founded to make the Dubai property experience feel
             more human. Our clients come from everywhere, but they all want
             the same thing: someone local enough to know the detail, and
@@ -52,7 +54,7 @@ export function AboutPage() {
 
       {/* HOW WE WORK */}
       <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1380px]">
+        <div className="mx-auto max-w-[1280px]">
           <SectionIntro
             label="Our Working Method"
             title={
@@ -87,11 +89,11 @@ export function AboutPage() {
                 key={item.step}
                 className="border-t border-[#202635]/20 pt-6"
               >
-                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#c97352]">
+                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
                   {item.step}
                 </span>
 
-                <h3 className="mt-4 max-w-sm font-serif text-2xl leading-tight text-[#202635] md:text-3xl">
+                <h3 className="block-title mt-4 max-w-sm text-[#202635]">
                   {item.title}
                 </h3>
 
@@ -105,21 +107,30 @@ export function AboutPage() {
       </section>
 
       {/* OUR COMMITMENT */}
-      <section className="bg-[#d9d2c5] px-5 py-20 text-[#202635] sm:py-24 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1100px]">
+      <section className="bg-[#d9d2c5] px-5 py-20 md:px-10 md:py-28 text-[#202635]">
+        <div className="mx-auto max-w-[1280px]">
           <SectionLabel>Our Commitment</SectionLabel>
 
-          <h2 className="display mt-6 max-w-4xl text-4xl leading-[0.94] text-[#202635] sm:text-5xl md:text-6xl lg:text-7xl">
+          <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
             Useful honesty,
             <br />
             <em className="text-[#c97352]">beautifully delivered.</em>
           </h2>
 
-          <p className="mt-8 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:text-lg sm:leading-8">
+          <p className="mt-8 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:leading-8">
             We will always tell you what we see, what we know, and what we
             would do if it were our decision. That is the foundation of trust
             — and the reason our business is built on referrals.
           </p>
+
+          <div className="mt-10 flex flex-wrap gap-3">
+            <Link href="/contact" className="btn btn-primary" data-testid="link-about-contact">
+              Start a conversation <ArrowUpRight size={14} />
+            </Link>
+            <Link href="/about/approach" className="btn btn-secondary" data-testid="link-about-approach">
+              Our approach <ArrowUpRight size={14} />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -139,8 +150,8 @@ export function PropertiesPage() {
         copy="A considered selection of Dubai homes and opportunities, selected for their quality, position, and possibility."
         image="/images/penthouse-marina.jpg"
       />
-      <section className="bg-[#f5f0e6] px-5 py-16 md:px-10 md:py-24">
-        <div className="mx-auto max-w-[1380px]">
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
           <div className="flex flex-wrap gap-2 border-b border-[#202635]/15 pb-6">
             {filters.map((item) => (
               <button
@@ -154,7 +165,7 @@ export function PropertiesPage() {
               </button>
             ))}
           </div>
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((property) => (
               <PropertyCard key={property.id} property={property} featured={false} />
             ))}
@@ -195,8 +206,8 @@ export function ServicesPage() {
       />
 
       {/* CORE ADVISORY SERVICES */}
-      <section className="bg-[#e9e4da] px-5 py-20 sm:px-8 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1380px]">
+      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
           <SectionIntro
             label="Advisory Practices"
             title={
@@ -223,8 +234,8 @@ export function ServicesPage() {
       </section>
 
       {/* SPECIALIST PRACTICES (DESIGN & BUILD / INTERIORS) */}
-      <section className="bg-[#dfe2dc] px-5 py-20 sm:px-8 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1380px]">
+      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
           <SectionIntro
             label="Specialist Practices"
             title={
@@ -237,14 +248,14 @@ export function ServicesPage() {
             copy="Beyond advisory, we support clients with dedicated design, procurement, and furnishing coordination for their Dubai residences."
           />
 
-          <div className="mt-14 grid gap-8 md:grid-cols-2">
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {specialistServices.map((specialist) => (
               <div
                 key={specialist.id}
-                className="group flex flex-col justify-between rounded-sm border border-[#202635]/15 bg-[#f5f0e6] p-8 shadow-xs transition-shadow hover:shadow-md md:p-10"
+                className="card-editorial group flex h-full flex-col justify-between p-6"
               >
                 <div>
-                  <div className="relative mb-6 h-52 w-full overflow-hidden rounded-xs bg-[#202635]">
+                  <div className="card-media mb-6">
                     <img
                       src={specialist.image}
                       alt={specialist.title}
@@ -252,10 +263,10 @@ export function ServicesPage() {
                       className="h-full w-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
                     />
                   </div>
-                  <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#c97352]">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
                     Specialist Practice
                   </span>
-                  <h3 className="mt-2 font-serif text-3xl text-[#202635]">
+                  <h3 className="block-title mt-2 text-[#202635]">
                     {specialist.title}
                   </h3>
                   <p className="mt-4 text-sm leading-7 text-[#202635]/70">
@@ -278,11 +289,11 @@ export function ServicesPage() {
       </section>
 
       {/* WHAT YOU CAN EXPECT */}
-      <section className="bg-[#c6d0c9] px-5 py-20 sm:px-8 md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-[1380px] gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
+      <section className="bg-[#c6d0c9] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto grid max-w-[1280px] gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
           <div>
             <SectionLabel>What you can expect</SectionLabel>
-            <h2 className="display mt-6 text-5xl leading-[.9] sm:text-6xl md:text-7xl">
+            <h2 className="section-title mt-6">
               No noise.
               <br />
               <em className="text-[#c97352]">Just movement.</em>
@@ -358,13 +369,13 @@ export function DesignBuildPage() {
       />
 
       {/* INTRO */}
-      <section className="bg-[#f5f0e6] px-5 py-20 sm:px-8 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1100px]">
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto w-full max-w-[1280px]">
           <SectionLabel>
             Design & build coordination
           </SectionLabel>
 
-          <h2 className="display mt-6 max-w-4xl text-4xl leading-[0.94] text-[#202635] sm:text-5xl md:text-6xl lg:text-7xl">
+          <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
             A better property deserves
             <br />
             a better{" "}
@@ -373,14 +384,14 @@ export function DesignBuildPage() {
             </em>
           </h2>
 
-          <p className="mt-8 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:text-lg sm:leading-8">
+          <p className="mt-8 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:leading-8">
             Whether you are preparing a new home, improving a property
             before letting it, or considering how a space can work harder
             as an investment, the right decisions start with understanding
             the property and the people it needs to serve.
           </p>
 
-          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:text-lg sm:leading-8">
+          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:leading-8">
             Property decisions do not always stop at the purchase. KNC brings
             the property perspective first, helping you coordinate the design
             direction and specialist requirements that make sense for your project.
@@ -388,7 +399,7 @@ export function DesignBuildPage() {
         </div>
 
         {/* SERVICE CARDS */}
-        <div className="mx-auto mt-16 max-w-[1380px] grid border-t border-[#202635]/20 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto mt-16 max-w-[1280px] grid border-t border-[#202635]/20 sm:grid-cols-2 lg:grid-cols-4">
           {services.map((service) => (
             <div
               key={service.badge}
@@ -406,11 +417,11 @@ export function DesignBuildPage() {
                 lg:last:pr-0
               "
             >
-              <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#c97352]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
                 {service.badge}
               </span>
 
-              <h3 className="mt-4 max-w-xs font-serif text-2xl leading-tight text-[#202635]">
+              <h3 className="block-title mt-4 max-w-xs text-[#202635]">
                 {service.title}
               </h3>
 
@@ -423,8 +434,8 @@ export function DesignBuildPage() {
       </section>
 
       {/* WHAT CLIENTS CAN ASK FOR */}
-      <section className="bg-[#e9e4da] px-5 py-20 sm:px-8 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1380px]">
+      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto w-full max-w-[1280px]">
           <SectionIntro
             label="What we can help with"
             title={
@@ -439,10 +450,10 @@ export function DesignBuildPage() {
 
           <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div className="border-t border-[#202635]/20 pt-6">
-              <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#c97352]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
                 Preparation
               </span>
-              <h3 className="mt-3 font-serif text-2xl text-[#202635]">
+              <h3 className="block-title mt-3 text-[#202635]">
                 New home setup
               </h3>
               <p className="mt-3 text-sm leading-6 text-[#202635]/65">
@@ -452,10 +463,10 @@ export function DesignBuildPage() {
             </div>
 
             <div className="border-t border-[#202635]/20 pt-6">
-              <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#c97352]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
                 Optimization
               </span>
-              <h3 className="mt-3 font-serif text-2xl text-[#202635]">
+              <h3 className="block-title mt-3 text-[#202635]">
                 Investment property
               </h3>
               <p className="mt-3 text-sm leading-6 text-[#202635]/65">
@@ -465,10 +476,10 @@ export function DesignBuildPage() {
             </div>
 
             <div className="border-t border-[#202635]/20 pt-6">
-              <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#c97352]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
                 Aesthetic
               </span>
-              <h3 className="mt-3 font-serif text-2xl text-[#202635]">
+              <h3 className="block-title mt-3 text-[#202635]">
                 Interior direction
               </h3>
               <p className="mt-3 text-sm leading-6 text-[#202635]/65">
@@ -478,10 +489,10 @@ export function DesignBuildPage() {
             </div>
 
             <div className="border-t border-[#202635]/20 pt-6">
-              <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#c97352]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
                 Delivery
               </span>
-              <h3 className="mt-3 font-serif text-2xl text-[#202635]">
+              <h3 className="block-title mt-3 text-[#202635]">
                 Specialist coordination
               </h3>
               <p className="mt-3 text-sm leading-6 text-[#202635]/65">
@@ -495,8 +506,8 @@ export function DesignBuildPage() {
       </section>
 
       {/* CONSULTATION */}
-      <section className="bg-[#c6d0c9] px-5 py-20 sm:px-8 md:px-10 md:py-28 lg:py-32">
-        <div className="mx-auto w-full max-w-[1180px]">
+      <section className="bg-[#c6d0c9] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto w-full max-w-[1280px]">
 
           {/* HEADER */}
           <div className="max-w-3xl">
@@ -504,7 +515,7 @@ export function DesignBuildPage() {
               Start with the brief
             </SectionLabel>
 
-            <h2 className="display mt-6 text-5xl leading-[0.9] text-[#202635] sm:text-6xl md:text-7xl">
+            <h2 className="section-title mt-6 text-[#202635]">
               Tell us about the
               <br />
               <em className="text-[#c97352]">
@@ -530,7 +541,7 @@ export function DesignBuildPage() {
                   Property enquiry
                 </p>
 
-                <h3 className="mt-5 max-w-sm font-serif text-3xl leading-tight text-[#202635] sm:text-4xl">
+                <h3 className="block-title mt-5 max-w-sm text-[#202635]">
                   A considered conversation starts here.
                 </h3>
 
@@ -592,7 +603,7 @@ export function InteriorsPage() {
       />
 
       {/* INTRO / IMAGE */}
-      <section className="bg-[#dfe2dc] px-5 py-16 sm:px-8 md:px-10 md:py-24">
+      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto w-full max-w-[1280px]">
           <div className="grid items-center gap-10 md:grid-cols-2 md:gap-14">
 
@@ -612,19 +623,19 @@ export function InteriorsPage() {
             <div className="min-w-0">
               <SectionLabel>Interior direction</SectionLabel>
 
-              <h2 className="display mt-6 max-w-xl text-4xl leading-[0.92] text-[#202635] sm:text-5xl md:text-6xl">
+              <h2 className="section-title mt-6 max-w-xl text-[#202635]">
                 A home should feel{" "}
                 <em className="text-[#c97352]">collected.</em>
               </h2>
 
-              <p className="mt-6 text-base leading-relaxed text-[#202635]/75 sm:text-lg sm:leading-8">
+              <p className="mt-6 text-base leading-relaxed text-[#202635]/75 sm:leading-8">
                 From a newly purchased apartment to an investment property
                 being prepared for its next tenant, we help shape a clear
                 interior direction that feels practical, refined, and
                 appropriate to the property.
               </p>
 
-              <p className="mt-4 text-base leading-relaxed text-[#202635]/75 sm:text-lg sm:leading-8">
+              <p className="mt-4 text-base leading-relaxed text-[#202635]/75 sm:leading-8">
                 The focus is not on adding more. It is on choosing the right
                 pieces, proportions, materials, and finishing details for the
                 space.
@@ -635,7 +646,7 @@ export function InteriorsPage() {
       </section>
 
       {/* SERVICES */}
-      <section className="bg-[#f5f0e6] px-5 py-20 sm:px-8 md:px-10 md:py-28 lg:py-32">
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto w-full max-w-[1280px]">
           <SectionIntro
             label="What we can shape"
@@ -659,7 +670,7 @@ export function InteriorsPage() {
                   {service.badge}
                 </span>
 
-                <h3 className="mt-8 max-w-sm font-serif text-2xl leading-tight text-[#202635] sm:text-3xl">
+                <h3 className="block-title mt-8 max-w-sm text-[#202635]">
                   {service.title}
                 </h3>
 
@@ -673,7 +684,7 @@ export function InteriorsPage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="bg-[#e9e4da] px-5 py-20 sm:px-8 md:px-10 md:py-28">
+      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto w-full max-w-[1280px]">
           <SectionIntro
             label="Our approach"
@@ -693,7 +704,7 @@ export function InteriorsPage() {
                 Phase · Understand
               </span>
 
-              <h3 className="mt-4 font-serif text-2xl text-[#202635] sm:text-3xl">
+              <h3 className="block-title mt-4 text-[#202635]">
                 Start with the property
               </h3>
 
@@ -709,7 +720,7 @@ export function InteriorsPage() {
                 Phase · Curate
               </span>
 
-              <h3 className="mt-4 font-serif text-2xl text-[#202635] sm:text-3xl">
+              <h3 className="block-title mt-4 text-[#202635]">
                 Choose what belongs
               </h3>
 
@@ -724,7 +735,7 @@ export function InteriorsPage() {
                 Phase · Complete
               </span>
 
-              <h3 className="mt-4 font-serif text-2xl text-[#202635] sm:text-3xl">
+              <h3 className="block-title mt-4 text-[#202635]">
                 Prepare the space
               </h3>
 
@@ -738,12 +749,12 @@ export function InteriorsPage() {
       </section>
 
       {/* CONTACT */}
-      <section className="bg-[#c6d0c9] px-5 py-20 sm:px-8 md:px-10 md:py-28 lg:py-32">
-        <div className="mx-auto w-full max-w-[1180px]">
+      <section className="bg-[#c6d0c9] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto w-full max-w-[1280px]">
           <div className="max-w-3xl">
             <SectionLabel>Talk to the studio</SectionLabel>
 
-            <h2 className="display mt-6 text-5xl leading-[0.9] text-[#202635] sm:text-6xl md:text-7xl">
+            <h2 className="section-title mt-6 text-[#202635]">
               Bring us
               <br />
               <em className="text-[#c97352]">the room.</em>
@@ -763,7 +774,7 @@ export function InteriorsPage() {
                   Interior enquiry
                 </p>
 
-                <h3 className="mt-5 max-w-sm font-serif text-3xl leading-tight text-[#202635] sm:text-4xl">
+                <h3 className="block-title mt-5 max-w-sm text-[#202635]">
                   Let's understand the space.
                 </h3>
 
@@ -791,7 +802,28 @@ export function InteriorsPage() {
 
 
 export function AreasPage() {
-  const [open, setOpen] = useState<string | null>("palm-jumeirah");
+  // Live stock per community, so a card says what is actually behind it before it is opened.
+  const [counts, setCounts] = useState<Record<string, { properties: number; projects: number }>>({});
+  useEffect(() => {
+    let live = true;
+    Promise.all([
+      apiFetch<{ properties: RemoteProperty[] }>('/public/properties?limit=50').catch(() => ({ properties: [] as RemoteProperty[] })),
+      apiFetch<{ projects: Project[] }>('/public/projects').catch(() => ({ projects: [] as Project[] })),
+    ]).then(([p, j]) => {
+      if (!live) return;
+      const next: Record<string, { properties: number; projects: number }> = {};
+      for (const area of areas) {
+        const is = (value: string) => value.trim().toLowerCase() === area.name.toLowerCase();
+        next[area.id] = {
+          properties: (p.properties ?? []).filter((item) => is(item.community ?? '') || (item.location ?? '').split(',').some(is)).length,
+          projects: (j.projects ?? []).filter((item) => is(item.location ?? '')).length,
+        };
+      }
+      setCounts(next);
+    });
+    return () => { live = false; };
+  }, []);
+
 
   return (
     <main className="overflow-hidden">
@@ -809,13 +841,13 @@ export function AreasPage() {
       />
 
       {/* AREA NOTES */}
-      <section className="bg-[#f5f0e6] px-5 py-16 sm:px-8 md:px-10 md:py-24 lg:py-28">
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto w-full max-w-[1280px]">
 
           <div className="max-w-3xl">
             <SectionLabel>Area notes</SectionLabel>
 
-            <h2 className="display mt-6 text-5xl leading-[0.92] text-[#202635] sm:text-6xl md:text-7xl">
+            <h2 className="section-title mt-6 text-[#202635]">
               Understand Dubai
               <br />
               <em className="text-[#c97352]">by address.</em>
@@ -829,88 +861,57 @@ export function AreasPage() {
             </p>
           </div>
 
-          {/* AREA LIST */}
-          <div className="mt-14 border-t border-[#202635]/20">
+          {/* AREA GRID — one card per community, identical media ratio and CTA */}
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {areas.map((area) => (
-              <div
+              <article
                 key={area.id}
                 id={area.id}
-                className="border-b border-[#202635]/15"
+                className="card-editorial group scroll-mt-28 p-4"
+                data-testid={`card-community-${area.id}`}
               >
-                <button
-                  onClick={() =>
-                    setOpen(open === area.id ? null : area.id)
-                  }
-                  className="group flex w-full items-center justify-between gap-6 py-6 text-left sm:py-7"
-                  aria-expanded={open === area.id}
-                  data-testid={`button-area-toggle-${area.id}`}
-                >
-                  <div className="min-w-0">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[#c97352]">
-                      Dubai area
-                    </span>
+                <div className="card-media image-reveal">
+                  <img
+                    src={area.image}
+                    alt={`${area.name}, Dubai`}
+                    loading="lazy"
+                    className="transition-transform duration-700 group-hover:scale-105"
+                    data-testid={`img-area-detail-${area.id}`}
+                  />
+                </div>
 
-                    <span className="mt-2 block font-serif text-3xl leading-tight text-[#202635] transition-colors group-hover:text-[#c97352] sm:text-4xl">
-                      {area.name}
-                    </span>
-                  </div>
+                <div className="mt-5 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                  <p className="eyebrow text-[#c97352]">{area.descriptor}</p>
+                  {counts[area.id] && (
+                    <p className="font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/45" data-testid={`text-area-count-${area.id}`}>
+                      {counts[area.id].properties + counts[area.id].projects === 0
+                        ? 'By request'
+                        : [
+                            counts[area.id].properties && `${counts[area.id].properties} ${counts[area.id].properties === 1 ? 'property' : 'properties'}`,
+                            counts[area.id].projects && `${counts[area.id].projects} off-plan`,
+                          ].filter(Boolean).join(' \u00b7 ')}
+                    </p>
+                  )}
+                </div>
+                <h3 className="card-title mt-2">{area.name}</h3>
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#202635]/65">{area.detail}</p>
 
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#202635]/15">
-                    <ChevronDown
-                      size={17}
-                      className={`text-[#c97352] transition-transform duration-300 ${open === area.id ? "rotate-180" : ""
-                        }`}
-                    />
-                  </span>
-                </button>
-
-                {open === area.id && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
+                <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[#202635]/12 pt-4">
+                  <Link
+                    href={`/communities/${area.id}`}
+                    className="line-link inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
+                    data-testid={`link-area-properties-${area.id}`}
                   >
-                    <div className="grid gap-8 pb-9 pt-1 md:grid-cols-[0.85fr_1.15fr] md:gap-12 lg:gap-16">
-
-                      {/* IMAGE */}
-                      <div className="w-full">
-                        <div className="mx-auto w-full max-w-[420px] overflow-hidden rounded-sm">
-                          <img
-                            src={area.image}
-                            alt={`${area.name} Dubai`}
-                            loading="lazy"
-                            className="block h-[180px] w-full object-cover object-center sm:h-[195px] md:h-[215px] lg:h-[240px]"
-                            data-testid={`img-area-detail-${area.id}`}
-                          />
-                        </div>
-                      </div>
-
-                      {/* DETAILS */}
-                      <div className="flex min-w-0 flex-col justify-center">
-                        <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#c97352]">
-                          {area.descriptor}
-                        </p>
-
-                        <p className="mt-5 max-w-2xl text-sm leading-7 text-[#202635]/65 sm:text-base">
-                          {area.detail}
-                        </p>
-
-                        <div className="mt-7">
-                          <Link
-                            href={`/properties#${area.id}`}
-                            className="inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[#c97352] line-link"
-                            data-testid={`link-area-properties-${area.id}`}
-                          >
-                            Explore properties
-                            <ArrowUpRight size={14} />
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </div>
+                    View community <ArrowUpRight size={13} />
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55"
+                  >
+                    Ask an advisor
+                  </Link>
+                </div>
+              </article>
             ))}
           </div>
 
@@ -920,7 +921,7 @@ export function AreasPage() {
               Local perspective
             </span>
 
-            <p className="mt-3 text-base leading-relaxed text-[#202635]/70 sm:text-lg sm:leading-8">
+            <p className="mt-3 text-base leading-relaxed text-[#202635]/70 sm:leading-8">
               Choosing a Dubai property starts with choosing the right
               location. If you are unsure which community fits your
               requirements, speak with our property advisory team before
@@ -931,13 +932,13 @@ export function AreasPage() {
       </section>
 
       {/* AREA ADVISORY CTA */}
-      <section className="bg-[#c6d0c9] px-5 py-16 sm:px-8 md:px-10 md:py-24">
-        <div className="mx-auto w-full max-w-[1180px]">
+      <section className="bg-[#c6d0c9] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto w-full max-w-[1280px]">
 
           <div className="max-w-3xl">
             <SectionLabel>Need a local view?</SectionLabel>
 
-            <h2 className="display mt-5 text-5xl leading-[0.9] text-[#202635] sm:text-6xl md:text-7xl">
+            <h2 className="section-title mt-5 text-[#202635]">
               Start with the{" "}
               <em className="text-[#c97352]">right area.</em>
             </h2>
@@ -957,7 +958,7 @@ export function AreasPage() {
                   Area advisory
                 </span>
 
-                <h3 className="mt-4 max-w-sm font-serif text-3xl leading-tight text-[#202635] sm:text-4xl">
+                <h3 className="block-title mt-4 max-w-sm text-[#202635]">
                   Let&apos;s find the right neighbourhood.
                 </h3>
 
@@ -1000,7 +1001,7 @@ export function ContactPage() {
       />
 
       {/* CONTACT INFORMATION + FORM */}
-      <section className="bg-[#f5f0e6] px-5 py-16 sm:px-8 md:px-10 md:py-24 lg:py-28">
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto w-full max-w-[1280px]">
 
           <div className="grid gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
@@ -1086,7 +1087,7 @@ export function ContactPage() {
                   Property enquiry
                 </span>
 
-                <h2 className="mt-4 font-serif text-3xl leading-tight text-[#202635] sm:text-4xl">
+                <h2 className="section-title mt-4 text-[#202635]">
                   Tell us what you&apos;re looking for.
                 </h2>
 
@@ -1107,8 +1108,8 @@ export function ContactPage() {
       </section>
 
       {/* BOTTOM CONTACT STRIP */}
-      <section className="bg-[#c6d0c9] px-5 py-14 sm:px-8 md:px-10 md:py-20">
-        <div className="mx-auto grid w-full max-w-[1180px] gap-8 md:grid-cols-3 md:gap-10">
+      <section className="bg-[#c6d0c9] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto grid w-full max-w-[1280px] gap-8 md:grid-cols-3 md:gap-10">
 
           <div>
             <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#c97352]">
@@ -1144,6 +1145,501 @@ export function ContactPage() {
         </div>
       </section>
 
+    </main>
+  );
+}
+
+/* ============================================================
+   COMMUNITIES PAGE (ALIAS OF AREAS WITH SPECIALIZED TITLE)
+============================================================ */
+export const CommunitiesPage = AreasPage;
+
+/* ============================================================
+   OUR APPROACH PAGE
+============================================================ */
+export function AboutApproachPage() {
+  const pillars = [
+    {
+      icon: Compass,
+      title: 'Discovery & Requirement Scoping',
+      description: 'We begin by understanding the lifestyle horizons, investment benchmarks, and holding timelines that matter to you. Real advisory begins with listening, not pushing inventory.',
+    },
+    {
+      icon: ShieldCheck,
+      title: 'Independent Due Diligence',
+      description: 'Every project and title deed is cross-referenced against Dubai Land Department records, developer construction milestones, service charge models, and historical resale velocity.',
+    },
+    {
+      icon: Landmark,
+      title: 'Structured Acquisition & Terms',
+      description: 'Whether buying directly from a master developer or negotiating private resales, we protect your interests through transparent conveyancing, escrow verification, and milestone alignment.',
+    },
+    {
+      icon: Building2,
+      title: 'Handover & Ongoing Asset Care',
+      description: 'Our engagement continues through professional snagging inspections, key handover, utility registrations, and seamless transition to tenant leasing or interior styling coordination.',
+    },
+  ];
+
+  return (
+    <main className="overflow-hidden">
+      <PageHero
+        label="Our Advisory Method"
+        title={
+          <>
+            Calm is not passive.
+            <br />
+            <em className="text-[#c97352]">It is prepared.</em>
+          </>
+        }
+        copy="A disciplined, transparent advisory practice shaped around the reality of Dubai real estate. No pressure, no developer bias — just considered guidance at every turn."
+        image="/images/creek-waterfront.jpg"
+      />
+
+      {/* CORE PHILOSOPHY */}
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
+          <SectionLabel>Core Philosophy</SectionLabel>
+
+          <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
+            The standard of care should match the magnitude of the{' '}
+            <em className="text-[#c97352]">decision.</em>
+          </h2>
+
+          <div className="mt-10 space-y-6 text-base leading-relaxed text-[#202635]/75 sm:text-lg sm:leading-8">
+            <p>
+              In a fast-moving market like Dubai, speed is often confused with competence. We take the contrary view: that the best property moves are made with deliberation, contextual analysis, and an honest reading of both upside and downside.
+            </p>
+            <p>
+              KNC Horizon Realtor was built to provide clients with a trusted, independent sounding board. We maintain direct relationships with Dubai’s leading master developers, yet our allegiance remains exclusively with the client we advise.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ADVISORY PILLARS */}
+      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
+          <SectionIntro
+            label="Structured Process"
+            title={
+              <>
+                Four phases of
+                <br />
+                <em className="text-[#c97352]">considered advisory.</em>
+              </>
+            }
+            copy="From initial consultation through to post-handover asset management, our process ensures total clarity and legal security."
+          />
+
+          <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {pillars.map((pillar) => {
+              const Icon = pillar.icon;
+              return (
+                <div
+                  key={pillar.title}
+                  className="rounded-sm border border-[#202635]/15 bg-[#f5f0e6] p-8 shadow-xs transition-shadow hover:shadow-md"
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xs bg-[#202635] text-[#d9c6a4]">
+                    <Icon size={22} />
+                  </div>
+                  <h3 className="block-title mt-6 text-[#202635]">
+                    {pillar.title}
+                  </h3>
+                  <p className="mt-4 text-sm leading-6 text-[#202635]/65">
+                    {pillar.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* CONVERSATION STRIP */}
+      <section className="bg-[#202635] px-5 py-20 md:px-10 md:py-28 text-[#f5f0e6]">
+        <div className="mx-auto max-w-[1280px] text-center">
+          <SectionLabel>Connect With An Advisor</SectionLabel>
+
+          <h2 className="section-title mt-6">
+            Start with an honest{' '}
+            <em className="text-[#d9c6a4]">conversation.</em>
+          </h2>
+
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[#f5f0e6]/70">
+            No sales pitches. Just a thoughtful discussion on your Dubai property plans, community options, and investment goals.
+          </p>
+
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 rounded-xs bg-[#c97352] px-8 py-4 font-mono text-xs uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#b05f40]"
+            >
+              Contact Us <ArrowRight size={15} />
+            </Link>
+            <a
+              href={`https://wa.me/${CONTACT.whatsapp}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-xs border border-[#f5f0e6]/30 bg-transparent px-8 py-4 font-mono text-xs uppercase tracking-[0.14em] text-[#f5f0e6] transition-colors hover:border-white hover:bg-white/10"
+            >
+              <FaWhatsapp size={16} className="text-[#25D366]" /> Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+/* ============================================================
+   INDIA OFFICE PAGE
+============================================================ */
+export function IndiaOfficePage() {
+  const benefits = [
+    {
+      title: 'In-Person Consultations in Delhi NCR',
+      description: 'Meet our advisory leadership face-to-face at DLF Phase 1, Gurugram to review master plans, floor layouts, and live developer allocations before traveling.',
+    },
+    {
+      title: 'RBI LRS & FEMA Compliance',
+      description: 'Clear guidance on structuring capital transfers under the Reserve Bank of India’s Liberalised Remittance Scheme (LRS) up to USD 250,000 per financial year per individual.',
+    },
+    {
+      title: 'UAE Golden Visa Direct Pathways',
+      description: 'Comprehensive assistance securing the renewable 10-Year UAE Golden Visa through qualifying property acquisitions of AED 2,000,000 or above for investors and families.',
+    },
+    {
+      title: 'Direct Master Developer Portfolios',
+      description: 'Direct institutional access to prime developments from Emaar, Sobha, Meraas, Nakheel, Omniyat, and Ellington without third-party markups.',
+    },
+    {
+      title: 'Remote Digital Transactions & Escrow Security',
+      description: 'Execute reservations, DLD escrow-linked deposits, and title trustee processes securely and legally from your office or home in India.',
+    },
+    {
+      title: 'Dual-City Post-Handover Management',
+      description: 'Continuous asset care: in-person reviews in Gurugram paired with on-the-ground snagging inspections, leasing coordination, and rental collection in Dubai.',
+    },
+  ];
+
+  return (
+    <main className="overflow-hidden">
+      <PageHero
+        label="India Advisory Desk · Gurugram"
+        title={
+          <>
+            Connecting India to
+            <br />
+            <em className="text-[#c97352]">prime Dubai real estate.</em>
+          </>
+        }
+        copy="Dedicated, local advisory for Indian business families, NRIs, and global investors seeking high-calibre residential and investment property in Dubai."
+        image="/images/hero-dubai-villa.jpg"
+      />
+
+      {/* OVERVIEW */}
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
+          <SectionLabel>Local Presence, International Reach</SectionLabel>
+
+          <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
+            A trusted bridge between{' '}
+            <em className="text-[#c97352]">India and Dubai.</em>
+          </h2>
+
+          <div className="mt-10 space-y-6 text-base leading-relaxed text-[#202635]/75 sm:text-lg sm:leading-8">
+            <p>
+              For Indian residents and global NRI investors, Dubai represents one of the world’s most accessible, tax-efficient, and currency-stable real estate environments. However, cross-border property transactions require accurate regulatory context, reliable due diligence, and dedicated post-purchase coordination.
+            </p>
+            <p>
+              Our India Office in DLF Phase 1, Gurugram provides you with direct personal access to experienced advisors who understand both Indian regulatory nuances (FEMA, LRS, repatriation) and the ground reality of Dubai’s property landscape.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* SERVICES FOR INDIAN INVESTORS */}
+      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
+          <SectionIntro
+            label="Cross-Border Services"
+            title={
+              <>
+                Tailored solutions for
+                <br />
+                <em className="text-[#c97352]">Indian & NRI clients.</em>
+              </>
+            }
+            copy="Every step of the acquisition process is handled with complete regulatory compliance and transparent communication."
+          />
+
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {benefits.map((item) => (
+              <div
+                key={item.title}
+                className="rounded-sm border border-[#202635]/15 bg-[#f5f0e6] p-8 shadow-xs transition-shadow hover:shadow-md"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-xs bg-[#c97352] text-white">
+                  <Check size={20} />
+                </div>
+                <h3 className="block-title mt-6 text-[#202635]">
+                  {item.title}
+                </h3>
+                <p className="mt-4 text-sm leading-6 text-[#202635]/65">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* OFFICE DETAILS & CONSULTATION FORM */}
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto grid max-w-[1280px] gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <div>
+            <SectionLabel>India Office</SectionLabel>
+
+            <h2 className="section-title mt-6 text-[#202635]">
+              Meet our team in{' '}
+              <em className="text-[#c97352]">Gurugram.</em>
+            </h2>
+
+            <p className="mt-6 text-sm leading-7 text-[#202635]/70 sm:text-base">
+              Schedule an in-person advisory meeting at our Gurugram desk or request a private video consultation with our senior UAE team.
+            </p>
+
+            <div className="mt-8 space-y-6 rounded-sm border border-[#202635]/15 bg-[#e9e4da] p-6 sm:p-8">
+              <div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">Address</span>
+                <p className="mt-2 font-serif text-xl text-[#202635]">DLF Phase 1, Gurugram</p>
+                <p className="text-xs text-[#202635]/60">Haryana, India</p>
+              </div>
+
+              <div className="border-t border-[#202635]/15 pt-6">
+                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">Direct Contact</span>
+                <a
+                  href={`tel:${CONTACT.phoneHref}`}
+                  className="mt-2 block font-serif text-xl text-[#202635] transition-colors hover:text-[#c97352]"
+                >
+                  {CONTACT.phoneDisplay}
+                </a>
+                <a
+                  href={`https://wa.me/${CONTACT.whatsapp}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-[#25D366] hover:underline"
+                >
+                  <FaWhatsapp size={15} /> Chat on WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-6">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">Enquiry Form</span>
+              <h3 className="block-title mt-2 text-[#202635]">Request an India Desk Consultation</h3>
+            </div>
+            <div className="rounded-sm bg-[#e9e4da] p-6 sm:p-8 md:p-10">
+              <ContactForm inquiryType="india-office" />
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+/* ============================================================
+   MARKET INSIGHTS PAGE
+============================================================ */
+type PublishedInsight = { id: string; slug: string; title: string; category?: string; summary?: string; date?: string };
+
+export function MarketInsightsPage() {
+  // Anything published in the admin's Market Insights section leads the page.
+  const [published, setPublished] = useState<PublishedInsight[]>([]);
+  useEffect(() => {
+    let live = true;
+    apiFetch<{ insights: PublishedInsight[] }>('/public/insights')
+      .then((data) => { if (live) setPublished(data.insights ?? []); })
+      .catch(() => {});
+    return () => { live = false; };
+  }, []);
+
+  const insights = [
+    {
+      icon: Landmark,
+      title: 'Freehold Ownership Legal Framework',
+      description: 'Enacted under Law No. 7 of 2006, foreign nationals of any nationality can purchase 100% freehold titles in designated investment zones across Dubai, with absolute ownership rights guaranteed by the Dubai Land Department (DLD).',
+    },
+    {
+      icon: ShieldCheck,
+      title: 'DLD Escrow Account Protections',
+      description: 'Under Law No. 8 of 2007, every off-plan project must maintain an official DLD escrow account. Buyer funds can only be released to developers against verified construction milestones certified by government-appointed engineers.',
+    },
+    {
+      icon: TrendingUp,
+      title: 'Attractive Net Rental Yields (6% to 9%)',
+      description: 'Dubai consistently yields between 6% and 9% gross rental returns across prime and emerging communities, supported by strong global talent migration, high occupancy rates, and corporate headquarters relocations.',
+    },
+    {
+      icon: Coins,
+      title: '0% Property and Capital Gains Taxes',
+      description: 'The UAE levies 0% personal income tax, 0% annual recurring property tax, and 0% capital gains tax on property sales. Transactions involve only a transparent one-time 4% DLD transfer fee.',
+    },
+    {
+      icon: Building2,
+      title: 'UAE 10-Year Golden Residency Visa',
+      description: 'Investors acquiring properties with a minimum aggregate purchase value of AED 2,000,000 (approx. USD 545,000) are eligible for the prestigious 10-Year Golden Visa, covering spouse, children, and domestic staff.',
+    },
+    {
+      icon: Globe2,
+      title: 'Monetary Stability & Dollar Peg',
+      description: 'The UAE Dirham (AED) has been pegged to the US Dollar at a fixed rate of 3.6725 since 1997, providing global investors with immunity against emerging-market currency fluctuations and inflation erosion.',
+    },
+  ];
+
+  return (
+    <main className="overflow-hidden">
+      <PageHero
+        label="Market Intelligence & Research"
+        title={
+          <>
+            Dubai property fundamentals,
+            <br />
+            <em className="text-[#c97352]">grounded in fact.</em>
+          </>
+        }
+        copy="Independent regulatory context, rental yield mechanics, and macroeconomic foundations for informed property decisions across Dubai."
+        image="/images/penthouse-marina.jpg"
+      />
+
+      {/* CORE MARKET PILLARS */}
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
+          <SectionIntro
+            label="Market Fundamentals"
+            title={
+              <>
+                The structural pillars of
+                <br />
+                <em className="text-[#c97352]">Dubai real estate.</em>
+              </>
+            }
+            copy="Dubai’s property market is built on robust legal security, government escrow regulations, and global capital preservation."
+          />
+
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {insights.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.title}
+                  className="flex flex-col justify-between rounded-sm border border-[#202635]/15 bg-[#e9e4da] p-8 shadow-xs transition-shadow hover:shadow-md"
+                >
+                  <div>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xs bg-[#202635] text-[#d9c6a4]">
+                      <Icon size={22} />
+                    </div>
+                    <h3 className="block-title mt-6 text-[#202635]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-4 text-sm leading-6 text-[#202635]/70">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* GLOBAL COMPARISON TABLE */}
+      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
+          <SectionLabel>Global Comparison</SectionLabel>
+
+          <h2 className="section-title mt-6 text-[#202635]">
+            Why global capital{' '}
+            <em className="text-[#c97352]">chooses Dubai.</em>
+          </h2>
+
+          <div className="mt-10 overflow-x-auto rounded-sm border border-[#202635]/15 bg-[#f5f0e6] shadow-xs">
+            <table className="w-full text-left font-sans text-sm text-[#202635]">
+              <thead>
+                <tr className="border-b border-[#202635]/15 bg-[#202635] font-mono text-[10px] uppercase tracking-[0.14em] text-[#f5f0e6]">
+                  <th className="p-4 sm:p-5">Indicator</th>
+                  <th className="p-4 sm:p-5 text-[#d9c6a4]">Dubai</th>
+                  <th className="p-4 sm:p-5">London</th>
+                  <th className="p-4 sm:p-5">New York</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#202635]/10">
+                <tr>
+                  <td className="p-4 font-serif text-base sm:p-5">Annual Property Tax</td>
+                  <td className="p-4 font-mono font-bold text-[#c97352] sm:p-5">0%</td>
+                  <td className="p-4 sm:p-5">Council Tax & Band Rates</td>
+                  <td className="p-4 sm:p-5">Approx. 1.2% – 2.0%</td>
+                </tr>
+                <tr>
+                  <td className="p-4 font-serif text-base sm:p-5">Capital Gains Tax</td>
+                  <td className="p-4 font-mono font-bold text-[#c97352] sm:p-5">0%</td>
+                  <td className="p-4 sm:p-5">Up to 24%</td>
+                  <td className="p-4 sm:p-5">Up to 20% + State Tax</td>
+                </tr>
+                <tr>
+                  <td className="p-4 font-serif text-base sm:p-5">Gross Rental Yields</td>
+                  <td className="p-4 font-mono font-bold text-[#c97352] sm:p-5">6.0% – 9.0%</td>
+                  <td className="p-4 sm:p-5">2.5% – 4.0%</td>
+                  <td className="p-4 sm:p-5">3.0% – 4.5%</td>
+                </tr>
+                <tr>
+                  <td className="p-4 font-serif text-base sm:p-5">Investor Residency Visa</td>
+                  <td className="p-4 font-mono font-bold text-[#c97352] sm:p-5">10-Year Golden Visa</td>
+                  <td className="p-4 sm:p-5">Not Applicable</td>
+                  <td className="p-4 sm:p-5">EB-5 ($800k+ USD)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ADVISORY BRIEFING CTA */}
+      <section className="bg-[#202635] px-5 py-20 md:px-10 md:py-28 text-[#f5f0e6]">
+        <div className="mx-auto max-w-[1280px] text-center">
+          <SectionLabel>Private Research Briefing</SectionLabel>
+
+          <h2 className="section-title mt-6">
+            Request a bespoke{' '}
+            <em className="text-[#d9c6a4]">market analysis.</em>
+          </h2>
+
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[#f5f0e6]/70">
+            Connect with our advisory desk for detailed yield modeling, historical transaction data, and off-plan allocation strategies tailored to your investment mandate.
+          </p>
+
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 rounded-xs bg-[#c97352] px-8 py-4 font-mono text-xs uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#b05f40]"
+            >
+              Consult With An Advisor <ArrowRight size={15} />
+            </Link>
+            <a
+              href={`https://wa.me/${CONTACT.whatsapp}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-xs border border-[#f5f0e6]/30 bg-transparent px-8 py-4 font-mono text-xs uppercase tracking-[0.14em] text-[#f5f0e6] transition-colors hover:border-white hover:bg-white/10"
+            >
+              <FaWhatsapp size={16} className="text-[#25D366]" /> Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

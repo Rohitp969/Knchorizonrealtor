@@ -1,6 +1,6 @@
 const configuredApiUrl = String(import.meta.env.VITE_API_URL ?? '').trim().replace(/\/$/, '');
 const localApiRoot = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/api`;
-const apiRoot = import.meta.env.DEV
+export const apiRoot = import.meta.env.DEV
   ? localApiRoot
   : configuredApiUrl
     ? configuredApiUrl.endsWith('/api') ? configuredApiUrl : `${configuredApiUrl}/api`
@@ -34,6 +34,7 @@ export type RemoteProperty = {
   location: string;
   community: string;
   type: string;
+  listingType?: 'sale' | 'rent' | string;
   status: string;
   price: number;
   currency: string;

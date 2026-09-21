@@ -40,11 +40,24 @@ export type ImageRecord = {
  * All local paths correspond to real assets in frontend/public/images/.
  */
 export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
+  hero_dubai_sunset: {
+    id: 'hero_dubai_sunset',
+    name: 'Dubai Skyline at Sunset',
+    description: 'The Dubai skyline and Burj Khalifa silhouetted against a golden sunset across the water. CC0 public domain (Rupak Chatterjee, via Wikimedia Commons), no attribution required',
+    usedIn: 'Home → Hero Section',
+    option1_url: 'https://commons.wikimedia.org/wiki/File:Dubai_UAE_Landscape.jpg',
+    option2_local: {
+      filename: 'hero-dubai-sunset.jpg',
+      folder: 'frontend/public/images/',
+      fullPath: 'frontend/public/images/hero-dubai-sunset.jpg',
+      websitePath: '/images/hero-dubai-sunset.jpg',
+    },
+  },
   hero_dubai_villa: {
     id: 'hero_dubai_villa',
     name: 'Palm Jumeirah Luxury Villa',
     description: 'Modern luxury beachfront villa with infinity pool and palm trees',
-    usedIn: 'Home → Hero Section, Palm Jumeirah Property Card, Interiors Hero',
+    usedIn: 'Palm Jumeirah Property Card, Interiors Hero',
     option1_url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1920&q=80',
     option2_local: {
       filename: 'hero-dubai-villa.jpg',

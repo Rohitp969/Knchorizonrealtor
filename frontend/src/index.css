@@ -137,6 +137,35 @@
   .eyebrow { font-family: var(--app-font-mono); font-size: 0.66rem; line-height: 1.2; letter-spacing: .16em; text-transform: uppercase; }
   .display { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.035em; }
   .text-balance { text-wrap: balance; }
+
+  /* ---- Shared type scale (one size per role, site-wide) ---- */
+  /* Section headings: 2.35rem on phones → 4.5rem on desktop */
+  .section-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.035em; line-height: .95; font-size: clamp(2.35rem, 5.2vw, 4.5rem); }
+  /* Page hero headings sit one step above section headings */
+  .page-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.04em; line-height: .92; font-size: clamp(2.75rem, 6.4vw, 6rem); }
+  /* Card headings across property, project, developer, community and blog cards */
+  .card-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.02em; line-height: 1.2; font-size: 1.5rem; }
+
+  /* Sub-section headings inside a section (feature blocks, form headings, detail pages) */
+  .block-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.02em; line-height: 1.15; font-size: clamp(1.6rem, 2.2vw, 1.875rem); }
+
+  /* ---- Shared buttons: one size, padding and tracking everywhere ---- */
+  .btn { display: inline-flex; align-items: center; gap: .75rem; padding: .875rem 1.5rem; font-family: var(--app-font-mono); font-size: 10px; line-height: 1; text-transform: uppercase; letter-spacing: .14em; white-space: nowrap; transition: background-color .3s ease, color .3s ease, border-color .3s ease; }
+  .btn-primary { background-color: #202635; color: #f5f0e6; }
+  .btn-primary:hover { background-color: #c97352; }
+  .btn-secondary { border: 1px solid rgba(32, 38, 53, .3); color: #202635; }
+  .btn-secondary:hover { background-color: #202635; color: #f5f0e6; }
+  .btn-sand { background-color: #d9c6a4; color: #202635; }
+  .btn-sand:hover { background-color: #f5f0e6; }
+  .btn-outline-light { border: 1px solid rgba(245, 240, 230, .45); color: #f5f0e6; }
+  .btn-outline-light:hover { background-color: #f5f0e6; color: #202635; }
+
+  /* ---- Shared card media: identical ratio for every repeated card ---- */
+  .card-media { position: relative; width: 100%; overflow: hidden; border-radius: .125rem; background-color: rgba(32, 38, 53, .08); aspect-ratio: 4 / 3; }
+  .card-media > img { height: 100%; width: 100%; object-fit: cover; object-position: center; }
+  .card-media-wide { aspect-ratio: 16 / 10; }
+  .card-media-portrait { aspect-ratio: 4 / 5; }
+
   .grain::after { content: ""; position: fixed; pointer-events: none; inset: 0; z-index: 50; opacity: .035; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.52'/%3E%3C/svg%3E"); }
   .image-reveal { overflow: hidden; }
   .image-reveal img { transition: transform 900ms cubic-bezier(.2,.75,.2,1), filter 700ms ease; }
@@ -144,6 +173,8 @@
   .line-link { position: relative; }
   .line-link::after { content: ""; position: absolute; bottom: -.35rem; left: 0; height: 1px; width: 100%; transform: scaleX(0); transform-origin: right; background: currentColor; transition: transform 280ms ease; }
   .line-link:hover::after, .line-link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+  .scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
 
   /* Reusable Card & Image System */
   .card-editorial {
@@ -180,9 +211,46 @@
 }
 
 @keyframes rise-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes ken-burns { from { transform: scale(1.04); } to { transform: scale(1.1); } }
+@keyframes ken-burns { from { transform: scale(1); } to { transform: scale(1.05); } }
 .animate-rise { animation: rise-in .8s cubic-bezier(.2,.65,.2,1) both; }
 .hero-image { animation: ken-burns 12s ease-out both; }
+
+/*
+ * Home hero.
+ * The text column sits on the left, over the open sky in the photo, so the crop only has to
+ * protect what is on the right: the Burj Khalifa and the golden band along the horizon. The
+ * hero box is wider than the 16:9 photo, so the vertical anchor sits low — that trims the
+ * empty upper sky and keeps the waterline in frame. On phones the box turns portrait and the
+ * crop is horizontal instead, so the anchor pans across to the tower.
+ * The Ken Burns zoom shares the anchor, so the framing never drifts off those two subjects.
+ */
+.home-hero {
+  --hero-focus-x: 50%;                            /* crop anchor, horizontal */
+  --hero-focus-y: 50%;                            /* crop anchor, vertical   */
+  --hero-display: clamp(2.35rem, 5.4vw, 4rem);    /* headline size */
+}
+.home-hero-media { position: absolute; inset: 0; }
+.home-hero-media .hero-image {
+  object-position: var(--hero-focus-x) var(--hero-focus-y);
+  transform-origin: var(--hero-focus-x) var(--hero-focus-y);
+}
+/* Wins over the phone rule for first-section headings, so the hero scales on one curve */
+.home-hero h1.hero-title {
+  font-size: var(--hero-display);
+}
+.hero-title {
+  font-family: var(--app-font-serif);
+  font-weight: 400;
+  letter-spacing: -.035em;
+  line-height: 1.04;
+  font-size: var(--hero-display);
+}
+
+/* Wide screens see nearly the whole panorama, so the crop is biased left to carry the
+   Burj clear of the headline; narrower boxes crop hard and centre on the tower instead. */
+@media (min-width: 1024px) {
+  .home-hero { --hero-focus-x: 22%; }
+}
 
 @media (max-width: 767px) {
   .page-hero {
@@ -240,6 +308,16 @@
 
   main > section:first-child:not(.page-hero) {
     min-height: 60svh;
+  }
+
+  /* Compact hero on phones: tall enough for the column and search bar, never full screen. */
+  main > section.home-hero:first-child {
+    min-height: 32rem;
+  }
+
+  /* Sections that continue the previous section's background open with a divider, not a second full padding. */
+  main > section.home-flush-top {
+    padding-top: 0;
   }
 
   main > section.min-h-\[640px\] {

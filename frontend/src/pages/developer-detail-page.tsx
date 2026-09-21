@@ -174,9 +174,9 @@ export function DeveloperDetailPage() {
   if (loading && !developer) {
     return (
       <main className="min-h-screen bg-[#f5f0e6] px-5 py-40">
-        <div className="mx-auto max-w-[1380px] text-center">
+        <div className="mx-auto max-w-[1280px] text-center">
           <p className="eyebrow text-[#c97352]">Dubai Developers</p>
-          <h1 className="display mt-5 text-4xl">Loading developer profile…</h1>
+          <h1 className="page-title mt-5">Loading developer profile…</h1>
         </div>
       </main>
     );
@@ -220,7 +220,7 @@ export function DeveloperDetailPage() {
         <div className="mt-8 flex items-center gap-4">
           <Link
             href="/developers"
-            className="inline-flex items-center gap-2 border border-[#f5f0e6]/30 bg-[#202635]/60 px-4 py-2 font-mono text-[9px] uppercase tracking-[.14em] text-[#f5f0e6] backdrop-blur-xs transition-colors hover:bg-[#c97352]"
+            className="inline-flex items-center gap-2 border border-[#f5f0e6]/30 bg-[#202635]/60 px-4 py-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6] backdrop-blur-xs transition-colors hover:bg-[#c97352]"
           >
             <ArrowLeft size={12} /> All developers
           </Link>
@@ -228,8 +228,8 @@ export function DeveloperDetailPage() {
       </PageHero>
 
       {/* Developer Overview & Detail Grid */}
-      <section className="px-5 py-16 md:px-10 md:py-24">
-        <div className="mx-auto grid max-w-[1380px] gap-14 lg:grid-cols-[1.15fr_.85fr] lg:gap-20">
+      <section className="px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto grid max-w-[1280px] gap-14 lg:grid-cols-[1.15fr_.85fr] lg:gap-20">
           {/* Left Column: Profile Details */}
           <div>
             {/* Header with Logo and Official Link */}
@@ -238,7 +238,7 @@ export function DeveloperDetailPage() {
                 <span className="font-mono text-[10px] uppercase tracking-[.18em] text-[#c97352]">
                   Developer Profile
                 </span>
-                <h2 className="mt-2 font-serif text-4xl text-[#202635] md:text-5xl">{developer.name}</h2>
+                <h2 className="section-title mt-2 text-[#202635]">{developer.name}</h2>
               </div>
               {websiteUrl && (
                 <a
@@ -277,7 +277,7 @@ export function DeveloperDetailPage() {
                   {developer.areas.map((area) => (
                     <span
                       key={area}
-                      className="inline-flex items-center gap-1.5 border border-[#202635]/15 bg-[#fcfaf6] px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]"
+                      className="inline-flex items-center gap-1.5 border border-[#202635]/15 bg-[#fcfaf6] px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]"
                     >
                       <MapPin size={11} className="text-[#c97352]" />
                       {area}
@@ -292,9 +292,9 @@ export function DeveloperDetailPage() {
               <div className="flex items-end justify-between gap-4 mb-8">
                 <div>
                   <SectionLabel>Portfolio</SectionLabel>
-                  <h3 className="display mt-2 text-3xl md:text-4xl text-[#202635]">Assigned projects</h3>
+                  <h3 className="block-title mt-2 text-[#202635]">Assigned projects</h3>
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/50">
+                <span className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/50">
                   {projects.length} {projects.length === 1 ? 'project' : 'projects'} on record
                 </span>
               </div>
@@ -314,9 +314,10 @@ export function DeveloperDetailPage() {
                     <article
                       key={project.id || project.slug}
                       className="group flex flex-col justify-between border border-[#202635]/12 bg-[#fcfaf6] p-4 transition-all duration-300 hover:border-[#c97352]/50 hover:shadow-md"
+                      data-testid={`card-project-${project.slug}`}
                     >
                       <div>
-                        <div className="aspect-[16/10] overflow-hidden rounded-sm bg-[#202635]/10">
+                        <div className="card-media image-reveal">
                           <img
                             src={project.image || fallbackImage}
                             alt={project.title}
@@ -326,7 +327,7 @@ export function DeveloperDetailPage() {
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
                         </div>
-                        <div className="mt-4 flex items-center justify-between font-mono text-[9px] uppercase tracking-[.14em] text-[#202635]/55">
+                        <div className="mt-4 flex items-center justify-between font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55">
                           <span className="text-[#c97352]">{project.category || 'Development'}</span>
                           <span>{project.location}</span>
                         </div>
@@ -344,7 +345,7 @@ export function DeveloperDetailPage() {
                         </span>
                         <Link
                           href={`/projects/${project.slug}`}
-                          className="inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[.13em] text-[#c97352] hover:underline"
+                          className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] hover:underline"
                         >
                           View project <ArrowUpRight size={11} />
                         </Link>
@@ -360,7 +361,7 @@ export function DeveloperDetailPage() {
           <aside className="h-fit lg:sticky lg:top-28">
             <div className="border border-[#202635]/15 bg-[#fcfaf6] p-7 md:p-9 shadow-sm">
               <SectionLabel>Advisory Brief</SectionLabel>
-              <h3 className="display mt-3 text-3xl text-[#202635] md:text-4xl">
+              <h3 className="block-title mt-3 text-[#202635]">
                 Enquire regarding <em className="text-[#c97352]">{developer.name}.</em>
               </h3>
               <p className="mt-4 text-xs leading-6 text-[#202635]/65">
@@ -376,7 +377,7 @@ export function DeveloperDetailPage() {
               </div>
 
               <div className="mt-8 border-t border-[#202635]/12 pt-5">
-                <p className="font-mono text-[9px] uppercase tracking-[.14em] text-[#202635]/50">
+                <p className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/50">
                   Immediate assistance
                 </p>
                 <div className="mt-3 flex items-center justify-between">
@@ -386,7 +387,7 @@ export function DeveloperDetailPage() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] hover:underline"
                   >
-                    WhatsApp an advisor <ArrowUpRight size={12} />
+                    Chat on WhatsApp <ArrowUpRight size={12} />
                   </a>
                   <Link
                     href="/contact"

@@ -158,3 +158,41 @@ export type TestimonialDoc = {
   createdAt: Date;
   updatedAt?: Date;
 };
+
+export type CommunityDoc = {
+  _id?: ObjectId;
+  slug: string;
+  name: string;
+  shortDescription?: string;
+  description: string;
+  location?: string;
+  image?: string;
+  imageUrl?: string;
+  imagePath?: string;
+  highlights?: string[];
+  propertyTypes?: string[];
+  featured?: boolean;
+  published: boolean;
+  sortOrder?: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type MarketInsightDoc = {
+  _id?: ObjectId;
+  slug: string;
+  title: string;
+  category: string;
+  summary: string;
+  content: string;
+  source?: string;
+  sourceUrl?: string;
+  date?: string;
+  image?: string;
+  imageUrl?: string;
+  published: boolean;
+  featured?: boolean;
+  sortOrder?: number;
+  createdAt: Date;
+  updatedAt: Date;
+};

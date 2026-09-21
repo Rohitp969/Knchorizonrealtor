@@ -1,13 +1,17 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ArrowLeft, ArrowUpRight, Check, ExternalLink, Globe, Search, X } from 'lucide-react';
-import { Link, useLocation, useRoute } from 'wouter';
+import { Link, useLocation, useRoute, useSearch } from 'wouter';
 import { apiFetch, type Post, type Project, type RemoteProperty, type Developer } from '@/lib/api';
-import { ContactForm, PageHero, PropertyCard, SectionLabel } from '@/components/blocks';
+import { ContactForm, PageHero, PostCard, ProjectCard, PropertyCard, SectionLabel } from '@/components/blocks';
+import { PropertySearch } from '@/components/property-search';
+import { categoryOf, clearSearchHref, describeSearch, hasPropertySearch, isNewLaunchProject, matchesProjectSearch, matchesPropertySearch, parsePropertySearch, projectSegment } from '@/lib/property-search';
 import {
+  areas,
   defaultGallery,
   defaultPosts,
   defaultProjects,
   defaultRemoteProperties,
+  defaultDevelopers,
   type GalleryItem,
   type Property,
 } from '@/lib/site-data';
@@ -26,6 +30,53 @@ const propertyCard = (item: RemoteProperty): Property => ({
   image: item.images[0] || '/images/creek-waterfront.jpg',
   note: item.status,
 });
+
+/** Applies an off-plan page's own meaning to a list of published projects. */
+function narrowProjects(list: Project[], filter: string) {
+  if (filter === 'new-launches') return list.filter(isNewLaunchProject);
+  if (filter === 'apartments') return list.filter((project) => projectSegment(project) === 'apartments');
+  if (filter === 'villas-townhouses') return list.filter((project) => projectSegment(project) === 'villas');
+  return list;
+}
+
+/** Applies a /properties/<category> page's own meaning to a list of published properties. */
+function narrowToCategory(list: RemoteProperty[], category: string) {
+  if (category === 'residential' || category === 'commercial') {
+    const wanted = category === 'residential' ? 'Residential' : 'Commercial';
+    return list.filter((item) => categoryOf(item.type ?? '') === wanted);
+  }
+  if (category === 'off-plan') return list.filter(isOffPlan);
+  // sale, rent and investment are already narrowed by the request itself.
+  return list;
+}
+
+/** The filters the client chose, spelled out, so a search stays readable after it runs. */
+function AppliedFilters({ query, onClear, count }: { query: ReturnType<typeof parsePropertySearch>; onClear: string; count: ReactNode }) {
+  const applied = describeSearch(query);
+  return (
+    <div className="mt-6 border-b border-[#202635]/10 pb-6" data-testid="applied-filters">
+      <div className="flex flex-wrap items-center gap-2">
+        {applied.map((entry) => (
+          <span
+            key={entry.label}
+            className="inline-flex items-center gap-1.5 rounded-sm border border-[#202635]/15 bg-white px-3 py-1.5 font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]"
+            data-testid={`filter-chip-${entry.label.toLowerCase().replace(/[^a-z]+/g, '-')}`}
+          >
+            <span className="text-[#202635]/45">{entry.label}</span>
+            <span className="font-semibold">{entry.value}</span>
+          </span>
+        ))}
+      </div>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[.14em]">
+        <p className="text-[#202635]/60" aria-live="polite">{count}</p>
+        <Link href={onClear} className="line-link text-[#c97352]" data-testid="link-clear-search">Clear filters</Link>
+      </div>
+    </div>
+  );
+}
+
+const isNewLaunch = (project: Project) => /launching|new/i.test(project.status ?? '');
+const isOffPlan = (item: RemoteProperty) => /off-plan|launching|construction/i.test(item.status ?? '');
 
 function LoadingState() {
   return (
@@ -49,21 +100,19 @@ export function PropertiesLivePage() {
   const [filter, setFilter] = useState('All');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const search = useSearch();
+  const query = parsePropertySearch(search);
+  const searching = hasPropertySearch(query);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const cat = params.get('category');
-    if (cat) {
-      const lower = cat.toLowerCase();
-      if (lower === 'residential') setFilter('Residential');
-      else if (lower === 'commercial') setFilter('Commercial');
-      else if (lower === 'investment') setFilter('Investment');
-      else if (lower === 'off-plan') setFilter('Off-Plan');
-    }
+    const category = new URLSearchParams(window.location.search).get('category');
+    // Anything the collection does not hold falls through to All, below.
+    if (category) setFilter(category.toLowerCase() === 'off-plan' ? 'Off-Plan' : category.replace(/\w/, (c) => c.toUpperCase()));
   }, []);
 
   useEffect(() => {
-    apiFetch<{ properties: RemoteProperty[] }>('/public/properties')
+    // Search filters run client-side, so fetch the API's maximum page rather than the default 24.
+    apiFetch<{ properties: RemoteProperty[] }>('/public/properties?limit=50')
       .then((data) => {
         if (data.properties?.length) setItems(data.properties);
       })
@@ -75,17 +124,23 @@ export function PropertiesLivePage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const filters = ['All', 'Residential', 'Commercial', 'Investment', 'Off-Plan', 'Villa', 'Apartment', 'Penthouse'];
-  const filtered = filter === 'All' ? items : items.filter((item) => {
-    const f = filter.toLowerCase();
-    const type = item.type.toLowerCase();
-    const status = (item.status || '').toLowerCase();
-    if (f === 'residential') return type.includes('villa') || type.includes('apartment') || type.includes('penthouse');
-    if (f === 'commercial') return type.includes('commercial') || item.title.toLowerCase().includes('office');
-    if (f === 'investment') return true;
-    if (f === 'off-plan') return status.includes('off-plan') || status.includes('launching') || status.includes('construction');
-    return type.includes(f);
-  });
+  // Chips mirror what the collection actually holds, so none of them can come back empty.
+  const filters = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const item of items) {
+      const type = item.type?.trim();
+      if (type) counts.set(type, (counts.get(type) ?? 0) + 1);
+    }
+    const types = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([type]) => type);
+    return ['All', ...types, ...(items.some(isOffPlan) ? ['Off-Plan'] : [])];
+  }, [items]);
+
+  const active = filters.includes(filter) ? filter : 'All';
+  const byCategory =
+    active === 'All' ? items
+    : active === 'Off-Plan' ? items.filter(isOffPlan)
+    : items.filter((item) => (item.type ?? '').toLowerCase() === active.toLowerCase());
+  const filtered = byCategory.filter((item) => matchesPropertySearch(item, query));
 
   return (
     <main>
@@ -100,15 +155,19 @@ export function PropertiesLivePage() {
         copy="A considered selection of Dubai homes and opportunities, updated from our live property collection."
         image="/images/penthouse-marina.jpg"
       />
-      <section className="bg-[#f5f0e6] px-5 py-16 md:px-10 md:py-24">
-        <div className="mx-auto max-w-[1380px]">
-          <div className="flex flex-wrap gap-2 border-b border-[#202635]/15 pb-6">
+      {/* The home hero search links to #results; scroll-margin keeps the fixed header off the search bar. */}
+      <section id="results" className="scroll-mt-16 bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28 md:scroll-mt-20">
+        <div className="mx-auto max-w-[1280px]">
+          {/* Remount when the URL changes so the fields always mirror the active search */}
+          <PropertySearch key={search} initial={query} tone="light" />
+
+          <div className="mt-8 flex flex-wrap gap-2 border-b border-[#202635]/15 pb-6">
             {filters.map((item) => (
               <button
                 key={item}
                 onClick={() => setFilter(item)}
                 className={`px-4 py-2 font-mono text-[10px] uppercase tracking-[.13em] transition-colors ${
-                  filter === item
+                  active === item
                     ? 'bg-[#202635] text-[#f5f0e6]'
                     : 'border border-[#202635]/20 text-[#202635]/60 hover:border-[#c97352] hover:text-[#c97352]'
                 }`}
@@ -117,6 +176,13 @@ export function PropertiesLivePage() {
               </button>
             ))}
           </div>
+          {searching && !loading && (
+            <AppliedFilters
+              query={query}
+              onClear={clearSearchHref(query)}
+              count={<span data-testid="text-search-count">{filtered.length} {filtered.length === 1 ? 'property matches' : 'properties match'} your search</span>}
+            />
+          )}
           <div className="mt-12">
             {loading ? (
               <LoadingState />
@@ -124,10 +190,17 @@ export function PropertiesLivePage() {
               <ErrorState message={error} />
             ) : filtered.length === 0 ? (
               <div className="py-24 text-center">
-                <p className="display text-4xl">Nothing in this edit yet.</p>
+                <p className="display text-4xl">{searching ? 'No properties found.' : 'Nothing in this edit yet.'}</p>
+                {searching && (
+                  <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-[#202635]/65">
+                    Our recommendations are not limited to what is listed here.{' '}
+                    <Link href="/contact" className="text-[#c97352] underline underline-offset-4">Share your brief</Link>
+                    {' '}with an advisor, or try a wider search.
+                  </p>
+                )}
               </div>
             ) : (
-              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered.map((item) => (
                   <PropertyCard key={item.id} property={propertyCard(item)} featured={false} />
                 ))}
@@ -140,9 +213,161 @@ export function PropertiesLivePage() {
   );
 }
 
+/*
+ * One community, with the live stock behind it: the properties and the off-plan projects
+ * that actually sit in that community. The editorial copy comes from the curated area notes,
+ * or from the communities collection once the admin has filled it in.
+ */
+export function CommunityDetailPage() {
+  const [, params] = useRoute('/communities/:slug');
+  const slug = params?.slug ?? '';
+  const area = areas.find((entry) => entry.id === slug);
+
+  const [community, setCommunity] = useState<CommunityRecord | null>(null);
+  const [properties, setProperties] = useState<RemoteProperty[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!slug) return;
+    // An admin-managed community overrides the curated notes when one exists.
+    apiFetch<{ community: CommunityRecord }>(`/public/communities/${slug}`)
+      .then((data) => setCommunity(data.community ?? null))
+      .catch(() => setCommunity(null));
+
+    Promise.all([
+      apiFetch<{ properties: RemoteProperty[] }>('/public/properties?limit=50').catch(() => ({ properties: [] })),
+      apiFetch<{ projects: Project[] }>('/public/projects').catch(() => ({ projects: [] })),
+    ])
+      .then(([p, j]) => {
+        setProperties(p.properties ?? []);
+        setProjects(j.projects ?? []);
+      })
+      .finally(() => setLoading(false));
+  }, [slug]);
+
+  const name = community?.name ?? area?.name ?? '';
+  const image = community?.image || area?.image || '/images/creek-waterfront.jpg';
+  const copy = community?.description || area?.detail || '';
+
+  usePageMeta(
+    name ? `${name} property guide` : 'Community',
+    copy || `Properties and off-plan projects in ${name}, Dubai.`,
+  );
+
+  const inCommunity = (value: string) => value.trim().toLowerCase() === name.trim().toLowerCase();
+  const matchingProperties = properties.filter(
+    (item) => inCommunity(item.community ?? '') || (item.location ?? '').split(',').some(inCommunity),
+  );
+  const matchingProjects = projects.filter((item) => inCommunity(item.location ?? ''));
+
+  if (!name) {
+    return (
+      <main>
+        <PageHero label="Communities" title={<>Community<br /><em className="text-[#c97352]">not found.</em></>} copy="This community is not on our list yet." image="/images/creek-waterfront.jpg" />
+        <section className="bg-[#f5f0e6] px-5 py-20 text-center md:px-10 md:py-28">
+          <Link href="/communities" className="btn btn-primary">Back to communities <ArrowUpRight size={14} /></Link>
+        </section>
+      </main>
+    );
+  }
+
+  return (
+    <main>
+      <PageHero
+        label={community?.shortDescription ?? area?.descriptor ?? 'Dubai, by neighbourhood'}
+        title={<>{name}<br /><em className="text-[#c97352]">at a glance.</em></>}
+        copy={copy}
+        image={image}
+      />
+
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
+          <div className="flex flex-wrap items-end justify-between gap-6 border-b border-[#202635]/15 pb-6">
+            <div>
+              <SectionLabel>Available now</SectionLabel>
+              <h2 className="section-title mt-5 text-[#202635]">Properties in <em className="text-[#c97352]">{name}.</em></h2>
+            </div>
+            <p className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55" data-testid="text-community-property-count">
+              {loading ? 'Loading' : `${matchingProperties.length} ${matchingProperties.length === 1 ? 'property' : 'properties'}`}
+            </p>
+          </div>
+
+          {loading ? (
+            <LoadingState />
+          ) : matchingProperties.length === 0 ? (
+            <div className="py-20 text-center">
+              <p className="display text-3xl">No listings in {name} right now.</p>
+              <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-[#202635]/65">
+                Our recommendations are not limited to what is listed here.{' '}
+                <Link href="/contact" className="text-[#c97352] underline underline-offset-4">Share your brief</Link>
+                {' '}and an advisor will come back with what is quietly available.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {matchingProperties.map((item) => (
+                <PropertyCard key={item.id} property={propertyCard(item)} featured={false} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {matchingProjects.length > 0 && (
+        <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
+          <div className="mx-auto max-w-[1280px]">
+            <div className="flex flex-wrap items-end justify-between gap-6 border-b border-[#202635]/15 pb-6">
+              <div>
+                <SectionLabel>Under construction</SectionLabel>
+                <h2 className="section-title mt-5 text-[#202635]">Off-plan in <em className="text-[#c97352]">{name}.</em></h2>
+              </div>
+              <p className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55" data-testid="text-community-project-count">
+                {matchingProjects.length} {matchingProjects.length === 1 ? 'project' : 'projects'}
+              </p>
+            </div>
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {matchingProjects.map((project) => (
+                <ProjectCard key={project.id || project.slug} project={project} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="bg-[#f5f0e6] px-5 pb-20 md:px-10 md:pb-28">
+        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-6 gap-y-3 border-t border-[#202635]/15 pt-8">
+          <Link href="/communities" className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]" data-testid="link-back-communities">
+            All communities
+          </Link>
+          <Link href={`/properties?location=${encodeURIComponent(name)}`} className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55">
+            Search {name}
+          </Link>
+          <Link href="/contact" className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55">
+            Ask an advisor
+          </Link>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+/** Shape of a community record once the admin has published one. */
+type CommunityRecord = {
+  slug: string;
+  name: string;
+  shortDescription?: string;
+  description?: string;
+  image?: string;
+};
+
 export function PropertyDetailPage() {
-  const [, params] = useRoute('/properties/:slug');
-  const defaultMatch = defaultRemoteProperties.find((p) => p.slug === params?.slug);
+  // Both /properties/:slug and the /property/:id alias registered in App.tsx land here
+  const [, slugParams] = useRoute('/properties/:slug');
+  const [, idParams] = useRoute('/property/:id');
+  const slug = slugParams?.slug ?? idParams?.id;
+  const params = slug ? { slug } : undefined;
+  const defaultMatch = defaultRemoteProperties.find((p) => p.slug === slug || p.id === slug);
   const [property, setProperty] = useState<RemoteProperty | null>(
     (defaultMatch as unknown as RemoteProperty) || null
   );
@@ -199,8 +424,8 @@ export function PropertyDetailPage() {
         copy={property.description}
         image={property.images[0] || '/images/creek-waterfront.jpg'}
       />
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-32">
-        <div className="mx-auto grid max-w-[1380px] gap-14 md:grid-cols-[1fr_.8fr] md:gap-24">
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto grid max-w-[1280px] gap-14 md:grid-cols-[1fr_.8fr] md:gap-24">
           <div>
             <div className="grid gap-4 sm:grid-cols-2">
               {property.images.map((image) => (
@@ -238,7 +463,7 @@ export function PropertyDetailPage() {
               <span>{new Intl.NumberFormat('en-AE').format(property.size)} sq ft</span>
               <span>{property.location}</span>
             </div>
-            <h3 className="display mt-12 text-4xl">
+            <h3 className="block-title mt-12">
               Interested in<br />
               <em className="text-[#c97352]">this address?</em>
             </h3>
@@ -256,15 +481,17 @@ export function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>(defaultProjects as unknown as Project[]);
   const [filter, setFilter] = useState('All');
   const [error, setError] = useState('');
+  const search = useSearch();
+  const query = parsePropertySearch(search);
+  const searching = hasPropertySearch(query);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const f = params.get('filter');
     if (f) {
       const lower = f.toLowerCase();
-      if (lower === 'featured') setFilter('Featured Projects');
-      else if (lower === 'new-launches') setFilter('New Launches');
-      else if (lower === 'off-plan') setFilter('Off-Plan Projects');
+      if (lower === 'featured') setFilter('Featured');
+      else if (lower === 'new-launches') setFilter('New launches');
     }
   }, []);
 
@@ -278,16 +505,19 @@ export function ProjectsPage() {
       });
   }, []);
 
-  const filters = ['All', 'Featured Projects', 'New Launches', 'Off-Plan Projects'];
+  // Chips mirror what the collection actually holds, so none of them can come back empty.
+  const filters = useMemo(() => [
+    'All',
+    ...(projects.some((project) => project.featured) ? ['Featured'] : []),
+    ...(projects.some(isNewLaunch) ? ['New launches'] : []),
+  ], [projects]);
 
-  const filtered = filter === 'All' ? projects : projects.filter((project) => {
-    const f = filter.toLowerCase();
-    const status = (project.status || '').toLowerCase();
-    if (f.includes('featured')) return project.featured;
-    if (f.includes('new launches')) return status.includes('launching') || status.includes('new');
-    if (f.includes('off-plan')) return true;
-    return true;
-  });
+  const active = filters.includes(filter) ? filter : 'All';
+  const byCategory =
+    active === 'Featured' ? projects.filter((project) => project.featured)
+    : active === 'New launches' ? projects.filter(isNewLaunch)
+    : projects;
+  const filtered = byCategory.filter((project) => matchesProjectSearch(project, query));
 
   return (
     <main>
@@ -302,15 +532,19 @@ export function ProjectsPage() {
         copy="A live edit of Dubai’s most considered new addresses, from established developers and emerging neighbourhoods."
         image="/images/creek-waterfront.jpg"
       />
-      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-32">
-        <div className="mx-auto max-w-[1380px]">
-          <div className="flex flex-wrap gap-2 border-b border-[#202635]/15 pb-6 mb-12">
+      {/* The hero search links here with #results when off-plan is the chosen mode. */}
+      <section id="results" className="scroll-mt-16 bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28 md:scroll-mt-20">
+        <div className="mx-auto max-w-[1280px]">
+          {/* Remount when the URL changes so the fields always mirror the active search */}
+          <PropertySearch key={search} initial={{ ...query, listing: 'offplan' }} tone="light" />
+
+          <div className="mt-8 flex flex-wrap gap-2 border-b border-[#202635]/15 pb-6">
             {filters.map((item) => (
               <button
                 key={item}
                 onClick={() => setFilter(item)}
                 className={`px-4 py-2 font-mono text-[10px] uppercase tracking-[.13em] transition-colors ${
-                  filter === item
+                  active === item
                     ? 'bg-[#202635] text-[#f5f0e6]'
                     : 'border border-[#202635]/20 text-[#202635]/60 hover:border-[#c97352] hover:text-[#c97352]'
                 }`}
@@ -319,46 +553,37 @@ export function ProjectsPage() {
               </button>
             ))}
           </div>
-          {error && !projects.length ? (
-            <ErrorState message={error} />
-          ) : (
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((project) => (
-                <Link
-                  href={`/projects/${project.slug}`}
-                  key={project.id}
-                  className="card-editorial flex flex-col justify-between p-6 group"
-                >
-                  <div>
-                    <div className="card-thumb aspect-[16/10] h-[190px] sm:h-[210px] md:h-[220px] w-full">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        onError={(event) => {
-                          event.currentTarget.src = '/images/creek-waterfront.jpg';
-                        }}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    </div>
-                    <p className="mt-5 eyebrow text-[#c97352]">
-                      {project.developer} · {project.location}
-                    </p>
-                    <h2 className="font-serif text-2xl md:text-3xl mt-2 leading-snug">{project.title}</h2>
-                    <p className="mt-3 text-sm leading-6 text-[#202635]/65 line-clamp-2">{project.description}</p>
-                  </div>
-                  <div className="mt-6 border-t border-[#202635]/12 pt-4">
-                    <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/65">
-                      <span>From {price(project.startingPrice)}</span>
-                      <span>Handover {project.handover}</span>
-                    </div>
-                    <span className="mt-4 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] group-hover:underline">
-                      Explore project <ArrowUpRight size={14} />
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
+
+          {searching && (
+            <AppliedFilters
+              query={{ ...query, listing: 'offplan' }}
+              onClear={clearSearchHref({ ...query, listing: 'offplan' })}
+              count={<span data-testid="text-project-search-count">{filtered.length} {filtered.length === 1 ? 'project matches' : 'projects match'} your search</span>}
+            />
           )}
+
+          <div className="mt-12">
+            {error && !projects.length ? (
+              <ErrorState message={error} />
+            ) : filtered.length === 0 ? (
+              <div className="py-24 text-center">
+                <p className="display text-4xl">{searching ? 'No projects found.' : 'Nothing in this edit yet.'}</p>
+                {searching && (
+                  <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-[#202635]/65">
+                    New releases reach us before they reach the portals.{' '}
+                    <Link href="/contact" className="text-[#c97352] underline underline-offset-4">Share your brief</Link>
+                    {' '}with an advisor, or try a wider search.
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {filtered.map((project) => (
+                  <ProjectCard key={project.id || project.slug} project={project} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </section>
     </main>
@@ -403,8 +628,8 @@ export function BlogPage() {
         copy="Practical guidance, local perspective, and thoughtful notes for your next move in Dubai real estate."
         image="/images/interior-detail.jpg"
       />
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-32">
-        <div className="mx-auto max-w-[1380px]">
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
           <div className="flex flex-col gap-5 border-b border-[#202635]/15 pb-7 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-wrap gap-2">
               {categories.map((item) => (
@@ -440,39 +665,9 @@ export function BlogPage() {
               <p className="mt-4 text-sm text-[#202635]/60">Try another phrase or category.</p>
             </div>
           ) : (
-            <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((post) => (
-                <Link
-                  key={post.id}
-                  href={`/blog/${post.slug}`}
-                  className="card-editorial flex flex-col justify-between p-6 group"
-                >
-                  <div>
-                    <div className="card-thumb aspect-[16/10] h-[190px] sm:h-[210px] md:h-[220px] w-full">
-                      <img
-                        src={post.image || '/images/creek-waterfront.jpg'}
-                        alt={post.title}
-                        onError={(event) => {
-                          event.currentTarget.src = '/images/creek-waterfront.jpg';
-                        }}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    </div>
-                    <p className="mt-5 eyebrow text-[#c97352]">
-                      {post.category} · {post.author}
-                    </p>
-                    <h2 className="font-serif text-2xl mt-2 leading-snug">{post.title}</h2>
-                    <p className="mt-3 text-sm leading-6 text-[#202635]/60 line-clamp-3">{post.excerpt}</p>
-                  </div>
-                  <div className="mt-6 border-t border-[#202635]/12 pt-4">
-                    <p className="font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/45">
-                      {new Date(post.publishedAt).toLocaleDateString('en-GB', { dateStyle: 'long' })}
-                    </p>
-                    <span className="mt-3 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] group-hover:underline">
-                      Read note <ArrowUpRight size={14} />
-                    </span>
-                  </div>
-                </Link>
+                <PostCard key={post.id || post.slug} post={post} />
               ))}
             </div>
           )}
@@ -558,6 +753,7 @@ export function BlogPostPage() {
                       <img
                         src={item.featuredImage || item.image || '/images/creek-waterfront.jpg'}
                         alt={item.title}
+                        loading="lazy"
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
@@ -601,18 +797,19 @@ export function GalleryPage() {
         copy="A closer look at the textures, horizons, and details that shape the KNC point of view."
         image="/images/hero-dubai-villa.jpg"
       />
-      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-32">
-        <div className="mx-auto grid max-w-[1380px] gap-6 sm:grid-cols-2 md:grid-cols-3">
+      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto grid max-w-[1280px] gap-6 sm:grid-cols-2 md:grid-cols-3">
           {items.map((item) => (
             <button
               key={item.id}
               onClick={() => setActive(item)}
               className="group card-editorial p-4 text-left transition-all"
             >
-              <div className="card-thumb aspect-[4/3] h-[220px] sm:h-[240px] md:h-[260px] w-full">
+              <div className="card-media">
                 <img
                   src={item.image}
                   alt={item.alt}
+                  loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
@@ -662,26 +859,46 @@ export function PropertiesFilterPage(props: PropertiesFilterPageProps = {}) {
   const [location] = useLocation();
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
   const pathCategory = location.startsWith('/properties/') ? location.replace('/properties/', '').split('/')[0].split('?')[0] : '';
-  const resolvedCategory = (props.category || (typeof props.params?.category === 'string' ? props.params.category : undefined) || searchParams.get('category') || (['residential', 'commercial', 'investment', 'off-plan'].includes(pathCategory) ? pathCategory : 'residential')).toLowerCase();
-  const category = ['residential', 'commercial', 'investment', 'off-plan'].includes(resolvedCategory) ? resolvedCategory : 'residential';
+  const validCategories = ['residential', 'commercial', 'investment', 'off-plan', 'sale', 'rent'];
+  const rawCategory = (props.category || (typeof props.params?.category === 'string' ? props.params.category : undefined) || searchParams.get('category') || (validCategories.includes(pathCategory) ? pathCategory : 'residential')).toLowerCase();
+  const category = validCategories.includes(rawCategory) ? rawCategory : 'residential';
 
   const [items, setItems] = useState<RemoteProperty[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  usePageMeta(`${category.charAt(0).toUpperCase() + category.slice(1)} Properties`, `Explore ${category} properties in Dubai.`);
+  const displayTitles: Record<string, string> = {
+    residential: 'Residential Properties',
+    commercial: 'Commercial Properties',
+    investment: 'Investment Opportunities',
+    'off-plan': 'Off-Plan Properties',
+    sale: 'Properties for Sale',
+    rent: 'Properties for Rent'
+  };
 
+  usePageMeta(displayTitles[category] || 'Properties', `Explore ${category} real estate opportunities in Dubai.`);
+
+  /*
+   * The API only filters on fields it holds, so the category itself is applied here against
+   * the same taxonomy the search bar uses. An empty result is now shown as an empty result:
+   * it used to fall back to the whole list, which put apartments under "Commercial spaces"
+   * and completed stock under "Off-Plan launches".
+   */
   useEffect(() => {
     setLoading(true);
-    let filterQuery = '';
-    if (category === 'residential') filterQuery = '?type=residential';
-    else if (category === 'commercial') filterQuery = '?type=commercial';
-    else if (category === 'investment') filterQuery = '?listingType=investment';
-    else if (category === 'off-plan') filterQuery = '?status=off-plan';
-    
-    apiFetch<{ properties: RemoteProperty[] }>(`/public/properties${filterQuery}`)
-      .then((data) => setItems(data.properties))
-      .catch((reason) => setError(reason instanceof Error ? reason.message : 'Please try again.'))
+    setError('');
+    const query = category === 'sale' || category === 'investment'
+      ? '?listingType=sale&limit=50'
+      : category === 'rent'
+      ? '?listingType=rent&limit=50'
+      : '?limit=50';
+
+    apiFetch<{ properties: RemoteProperty[] }>(`/public/properties${query}`)
+      .then((data) => setItems(narrowToCategory(data.properties ?? [], category)))
+      .catch((reason) => {
+        setError(reason instanceof Error ? reason.message : 'Please try again.');
+        setItems(narrowToCategory(defaultRemoteProperties as unknown as RemoteProperty[], category));
+      })
       .finally(() => setLoading(false));
   }, [category]);
 
@@ -689,25 +906,46 @@ export function PropertiesFilterPage(props: PropertiesFilterPageProps = {}) {
     residential: <>Residential<br /><em className="text-[#c97352]">properties.</em></>,
     commercial: <>Commercial<br /><em className="text-[#c97352]">spaces.</em></>,
     investment: <>Investment<br /><em className="text-[#c97352]">opportunities.</em></>,
-    'off-plan': <>Off-Plan<br /><em className="text-[#c97352]">launches.</em></>
+    'off-plan': <>Off-Plan<br /><em className="text-[#c97352]">launches.</em></>,
+    sale: <>Properties<br /><em className="text-[#c97352]">for sale.</em></>,
+    rent: <>Properties<br /><em className="text-[#c97352]">for rent.</em></>
+  };
+
+  const copyMap: Record<string, string> = {
+    residential: 'A considered selection of residential properties in Dubai.',
+    commercial: 'Prime commercial office spaces and retail assets across Dubai.',
+    investment: 'High-yield residential and commercial investment assets across Dubai.',
+    'off-plan': 'Exciting new developments and off-plan launches across the UAE.',
+    sale: 'Curated freehold and prime properties for sale across Dubai.',
+    rent: 'Exceptional long-term luxury residences and commercial spaces for lease.'
   };
 
   return (
     <main>
       <PageHero
-        label={`${category} properties`}
+        label={displayTitles[category] || `${category} properties`}
         title={titles[category] || titles['residential']}
-        copy={`A considered selection of ${category} properties in Dubai.`}
+        copy={copyMap[category] || `A considered selection of ${category} properties in Dubai.`}
         image="/images/penthouse-marina.jpg"
       />
-      <section className="bg-[#f5f0e6] px-5 py-16 md:px-10 md:py-24">
-        <div className="mx-auto max-w-[1380px]">
+      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
           {loading ? <LoadingState /> : error ? <ErrorState message={error} /> : items.length === 0 ? (
             <div className="py-24 text-center">
               <p className="display text-4xl">No properties found in this category.</p>
+              <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-[#202635]/65">
+                {category === 'off-plan' ? (
+                  <>Completed stock is listed here. For launches still under construction, see our{' '}
+                    <Link href="/off-plan" className="text-[#c97352] underline underline-offset-4">off-plan projects</Link>.</>
+                ) : (
+                  <>Our recommendations are not limited to what is listed here.{' '}
+                    <Link href="/contact" className="text-[#c97352] underline underline-offset-4">Share your brief</Link>
+                    {' '}and an advisor will come back to you.</>
+                )}
+              </p>
             </div>
           ) : (
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((item) => (
                 <PropertyCard key={item.id} property={propertyCard(item)} featured={false} />
               ))}
@@ -727,84 +965,89 @@ export type ProjectsFilterPageProps = {
 export function ProjectsFilterPage(props: ProjectsFilterPageProps = {}) {
   const [location] = useLocation();
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
-  const pathFilter = location.startsWith('/projects/') ? location.replace('/projects/', '').split('/')[0].split('?')[0] : '';
-  const resolvedFilter = (props.filter || (typeof props.params?.filter === 'string' ? props.params.filter : undefined) || searchParams.get('filter') || (['featured', 'new-launches', 'off-plan'].includes(pathFilter) ? pathFilter : 'featured')).toLowerCase();
-  const filter = ['featured', 'new-launches', 'off-plan'].includes(resolvedFilter) ? resolvedFilter : 'featured';
+  const pathFilter = location.startsWith('/projects/')
+    ? location.replace('/projects/', '').split('/')[0].split('?')[0]
+    : location.startsWith('/off-plan/')
+    ? location.replace('/off-plan/', '').split('/')[0].split('?')[0]
+    : '';
+  const validFilters = ['featured', 'new-launches', 'off-plan', 'apartments', 'villas-townhouses'];
+  const rawFilter = (props.filter || (typeof props.params?.filter === 'string' ? props.params.filter : undefined) || searchParams.get('filter') || (validFilters.includes(pathFilter) ? pathFilter : 'featured')).toLowerCase();
+  const filter = validFilters.includes(rawFilter) ? rawFilter : 'featured';
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  usePageMeta(`${filter.replace('-', ' ')} Projects`, `Explore ${filter.replace('-', ' ')} projects in Dubai.`);
+  const displayFilterTitles: Record<string, string> = {
+    featured: 'Featured Developments',
+    'new-launches': 'New Project Launches',
+    'off-plan': 'Off-Plan Developments',
+    apartments: 'Off-Plan Apartments',
+    'villas-townhouses': 'Villas & Townhouses'
+  };
 
+  usePageMeta(displayFilterTitles[filter] || `${filter.replace('-', ' ')} Projects`, `Explore ${filter.replace('-', ' ')} projects in Dubai.`);
+
+  /*
+   * Only 'featured' is a flag the API can filter on. New launches also read the status the
+   * admin typed, and the two segment pages classify the project itself, so neither page can
+   * show something it does not describe.
+   */
   useEffect(() => {
     setLoading(true);
-    let query = '';
-    if (filter === 'featured') query = '?featured=true';
-    else if (filter === 'new-launches') query = '?newLaunch=true';
-    else if (filter === 'off-plan') query = '?offPlan=true';
+    setError('');
+    const query = filter === 'featured' ? '?featured=true' : '';
 
     apiFetch<{ projects: Project[] }>(`/public/projects${query}`)
-      .then((data) => setProjects(data.projects))
-      .catch((reason) => setError(reason instanceof Error ? reason.message : 'Please try again.'))
+      .then((data) => setProjects(narrowProjects(data.projects ?? [], filter)))
+      .catch((reason) => {
+        setError(reason instanceof Error ? reason.message : 'Please try again.');
+        setProjects(narrowProjects(defaultProjects as unknown as Project[], filter));
+      })
       .finally(() => setLoading(false));
   }, [filter]);
 
   const titles: Record<string, React.ReactNode> = {
     featured: <>Featured<br /><em className="text-[#c97352]">projects.</em></>,
     'new-launches': <>New<br /><em className="text-[#c97352]">launches.</em></>,
-    'off-plan': <>Off-Plan<br /><em className="text-[#c97352]">developments.</em></>
+    'off-plan': <>Off-Plan<br /><em className="text-[#c97352]">developments.</em></>,
+    apartments: <>Off-Plan<br /><em className="text-[#c97352]">apartments.</em></>,
+    'villas-townhouses': <>Villas &<br /><em className="text-[#c97352]">townhouses.</em></>
+  };
+
+  const copyMap: Record<string, string> = {
+    featured: 'A selected portfolio of distinguished Dubai developments and master communities.',
+    'new-launches': 'The newest property releases from Dubai’s most reputable master developers.',
+    'off-plan': 'High-potential off-plan developments with structured construction-linked payment plans.',
+    apartments: 'Prime waterfront and urban off-plan residences across Dubai’s key investment corridors.',
+    'villas-townhouses': 'Private gated communities, waterfront villas, and family residences across Dubai.'
   };
 
   return (
     <main>
       <PageHero
-        label={filter.replace('-', ' ')}
+        label={displayFilterTitles[filter] || filter.replace('-', ' ')}
         title={titles[filter] || titles['featured']}
-        copy={`Explore our curated selection of ${filter.replace('-', ' ')} in Dubai.`}
+        copy={copyMap[filter] || `Explore our curated selection of ${filter.replace('-', ' ')} in Dubai.`}
         image="/images/creek-waterfront.jpg"
       />
-      <section className="bg-[#e9e4da] px-5 py-16 md:px-10 md:py-24">
-        <div className="mx-auto max-w-[1380px]">
+      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
           {loading ? <LoadingState /> : error ? <ErrorState message={error} /> : projects.length === 0 ? (
              <div className="py-24 text-center">
                <p className="display text-4xl">No projects found for this selection.</p>
+               <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-[#202635]/65">
+                 See{' '}
+                 <Link href="/off-plan" className="text-[#c97352] underline underline-offset-4">every off-plan project</Link>
+                 {' '}on record, or{' '}
+                 <Link href="/contact" className="text-[#c97352] underline underline-offset-4">share your brief</Link>
+                 {' '}with an advisor.
+               </p>
              </div>
           ) : (
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {projects.map((project) => (
-                <Link
-                  href={`/projects/${project.slug}`}
-                  key={project.id}
-                  className="card-editorial flex flex-col justify-between p-6 group"
-                >
-                  <div>
-                    <div className="card-thumb aspect-[16/10] h-[190px] sm:h-[210px] md:h-[220px] w-full">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        onError={(event) => {
-                          event.currentTarget.src = '/images/creek-waterfront.jpg';
-                        }}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    </div>
-                    <p className="mt-5 eyebrow text-[#c97352]">
-                      {project.developer} · {project.location}
-                    </p>
-                    <h2 className="font-serif text-2xl md:text-3xl mt-2 leading-snug">{project.title}</h2>
-                    <p className="mt-3 text-sm leading-6 text-[#202635]/65 line-clamp-2">{project.description}</p>
-                  </div>
-                  <div className="mt-6 border-t border-[#202635]/12 pt-4">
-                    <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/65">
-                      <span>From {price(project.startingPrice)}</span>
-                      <span>Handover {project.handover}</span>
-                    </div>
-                    <span className="mt-4 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] group-hover:underline">
-                      Explore project <ArrowUpRight size={14} />
-                    </span>
-                  </div>
-                </Link>
+                <ProjectCard key={project.id || project.slug} project={project} />
               ))}
             </div>
           )}
@@ -814,115 +1057,10 @@ export function ProjectsFilterPage(props: ProjectsFilterPageProps = {}) {
   );
 }
 
-const defaultVerifiedDevelopers: Developer[] = [
-  {
-    id: 'emaar',
-    slug: 'emaar',
-    name: 'Emaar Properties',
-    shortDescription: 'Dubai-based property developer known for major master-planned communities and residential developments.',
-    description: 'Emaar Properties is a publicly listed Dubai-based real estate developer established in 1997. The company is responsible for shaping landmark master communities across Dubai, including Downtown Dubai, Dubai Marina, Dubai Hills Estate, and Dubai Creek Harbour.',
-    officialWebsite: 'https://www.emaar.com',
-    website: 'https://www.emaar.com',
-    published: true,
-    featured: true,
-    sortOrder: 1,
-    areas: ['Downtown Dubai', 'Dubai Marina', 'Dubai Hills Estate', 'Dubai Creek Harbour', 'Arabian Ranches'],
-  },
-  {
-    id: 'damac',
-    slug: 'damac',
-    name: 'DAMAC Properties',
-    shortDescription: 'Dubai-based property developer with residential, hospitality and branded-development projects.',
-    description: 'DAMAC Properties was founded in 2002 as a private residential, leisure, and commercial developer in Dubai. The developer is recognised for large-scale master communities including DAMAC Hills and luxury branded residential collaborations.',
-    officialWebsite: 'https://www.damacproperties.com',
-    website: 'https://www.damacproperties.com',
-    published: true,
-    featured: true,
-    sortOrder: 2,
-    areas: ['Dubai Marina', 'Business Bay', 'DAMAC Hills', 'Dubai Maritime City'],
-  },
-  {
-    id: 'sobha-realty',
-    slug: 'sobha-realty',
-    name: 'Sobha Realty',
-    shortDescription: 'Dubai-based developer known for residential communities and its vertically integrated development approach.',
-    description: 'Sobha Realty is an international luxury developer active in the UAE since 2003. Known for its backward-integrated construction and design model, its flagship Dubai developments include Sobha Hartland and Sobha Hartland II in Mohammed Bin Rashid City.',
-    officialWebsite: 'https://www.sobharealty.com',
-    website: 'https://www.sobharealty.com',
-    published: true,
-    featured: true,
-    sortOrder: 3,
-    areas: ['Mohammed Bin Rashid City', 'Sobha Hartland', 'Ras Al Khor', 'Dubai Marina'],
-  },
-  {
-    id: 'binghatti',
-    slug: 'binghatti',
-    name: 'Binghatti',
-    shortDescription: 'Dubai-based developer with residential and branded developments across several Dubai communities.',
-    description: 'Binghatti Developers is a Dubai-headquartered property brand recognised for its distinct architectural styling and portfolio of branded residential partnerships across major central and residential districts.',
-    officialWebsite: 'https://www.binghatti.com',
-    website: 'https://www.binghatti.com',
-    published: true,
-    featured: true,
-    sortOrder: 4,
-    areas: ['Business Bay', 'Downtown Dubai', 'Jumeirah Village Circle', 'Al Jaddaf'],
-  },
-  {
-    id: 'nakheel',
-    slug: 'nakheel',
-    name: 'Nakheel',
-    shortDescription: 'Dubai-based master developer known for landmark waterfront destinations and master-planned residential communities.',
-    description: 'Nakheel is a major Dubai master developer celebrated for landmark coastal projects including Palm Jumeirah and Dubai Islands, alongside extensive family residential master communities throughout the emirate.',
-    officialWebsite: 'https://www.nakheel.com',
-    website: 'https://www.nakheel.com',
-    published: true,
-    featured: true,
-    sortOrder: 5,
-    areas: ['Palm Jumeirah', 'Dubai Islands', 'Jumeirah Islands', 'Jumeirah Park'],
-  },
-  {
-    id: 'danube',
-    slug: 'danube',
-    name: 'Danube Properties',
-    shortDescription: 'Dubai-based property developer focusing on residential developments and private residences across Dubai.',
-    description: 'Danube Properties is the property development arm of the Danube Group, launched in 2014. The developer focuses on contemporary urban apartments with flexible payment models across established Dubai residential corridors.',
-    officialWebsite: 'https://www.danubeproperties.com',
-    website: 'https://www.danubeproperties.com',
-    published: true,
-    featured: false,
-    sortOrder: 6,
-    areas: ['Al Furjan', 'JLT', 'Business Bay', 'Arjan'],
-  },
-  {
-    id: 'ellington',
-    slug: 'ellington',
-    name: 'Ellington Properties',
-    shortDescription: 'Dubai-based boutique design-led property developer creating residential properties and communities.',
-    description: 'Ellington Properties, established in 2014, is a design-focused Dubai boutique developer producing high-specification residences across prime and emerging neighbourhoods.',
-    officialWebsite: 'https://www.ellingtonproperties.ae',
-    website: 'https://www.ellingtonproperties.ae',
-    published: true,
-    featured: false,
-    sortOrder: 7,
-    areas: ['Downtown Dubai', 'Palm Jumeirah', 'MBR City', 'JVC'],
-  },
-  {
-    id: 'meraas',
-    slug: 'meraas',
-    name: 'Meraas',
-    shortDescription: 'Dubai-based developer known for destination-led residential, mixed-use, and waterfront communities.',
-    description: 'Meraas is a Dubai-based master development company with a portfolio of urban and coastal residential destinations including City Walk, Bluewaters Island, and Port de La Mer.',
-    officialWebsite: 'https://www.meraas.com',
-    website: 'https://www.meraas.com',
-    published: true,
-    featured: false,
-    sortOrder: 8,
-    areas: ['City Walk', 'Bluewaters Island', 'Port de La Mer', 'Jumeirah'],
-  },
-];
+
 
 export function DevelopersPage() {
-  const [developers, setDevelopers] = useState<Developer[]>(defaultVerifiedDevelopers);
+  const [developers, setDevelopers] = useState<Developer[]>(defaultDevelopers as unknown as Developer[]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -969,12 +1107,12 @@ export function DevelopersPage() {
       />
 
       {/* Main Developers Listing Section */}
-      <section className="px-5 py-16 md:px-10 md:py-24">
-        <div className="mx-auto max-w-[1380px]">
+      <section className="px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1280px]">
           <div className="mb-10 flex flex-col justify-between gap-4 border-b border-[#202635]/12 pb-6 sm:flex-row sm:items-end">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#c97352]">Selected Profiles</p>
-              <h2 className="display mt-2 text-3xl md:text-4xl text-[#202635]">Established master builders</h2>
+              <h2 className="section-title mt-2 text-[#202635]">Established master builders</h2>
             </div>
             <p className="max-w-md font-mono text-[11px] uppercase tracking-[.1em] text-[#202635]/50">
               {developers.length} verified developer profiles
@@ -984,7 +1122,7 @@ export function DevelopersPage() {
           {loading && developers.length === 0 ? (
             <LoadingState />
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {developers.map((dev) => {
                 const websiteUrl = dev.officialWebsite || dev.website || '';
                 return (
@@ -1001,6 +1139,7 @@ export function DevelopersPage() {
                             <img
                               src={dev.logo}
                               alt={`${dev.name} official logo`}
+                              loading="lazy"
                               className="h-full w-full object-contain object-left"
                             />
                           </div>
@@ -1010,14 +1149,14 @@ export function DevelopersPage() {
                           </div>
                         )}
                         {dev.featured && (
-                          <span className="border border-[#c97352]/30 bg-[#c97352]/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-[.14em] text-[#c97352]">
+                          <span className="border border-[#c97352]/30 bg-[#c97352]/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[.14em] text-[#c97352]">
                             Featured
                           </span>
                         )}
                       </div>
 
                       {/* Name & Short Description */}
-                      <h3 className="font-serif text-2xl leading-tight text-[#202635] transition-colors group-hover:text-[#c97352]">
+                      <h3 className="card-title line-clamp-2 text-[#202635] transition-colors group-hover:text-[#c97352]">
                         {dev.name}
                       </h3>
                       <p className="mt-3 text-xs leading-relaxed text-[#202635]/70 line-clamp-3">
@@ -1030,13 +1169,13 @@ export function DevelopersPage() {
                           {dev.areas.slice(0, 3).map((area) => (
                             <span
                               key={area}
-                              className="bg-[#202635]/5 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-[#202635]/60"
+                              className="bg-[#202635]/5 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[#202635]/60"
                             >
                               {area}
                             </span>
                           ))}
                           {dev.areas.length > 3 && (
-                            <span className="font-mono text-[9px] text-[#202635]/40 self-center">
+                            <span className="font-mono text-[10px] text-[#202635]/40 self-center">
                               +{dev.areas.length - 3}
                             </span>
                           )}
@@ -1051,7 +1190,7 @@ export function DevelopersPage() {
                           href={websiteUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[.12em] text-[#202635]/55 hover:text-[#c97352] transition-colors"
+                          className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/55 hover:text-[#c97352] transition-colors"
                           aria-label={`Visit official website for ${dev.name}`}
                         >
                           <Globe size={11} className="text-[#c97352]" />
@@ -1077,21 +1216,21 @@ export function DevelopersPage() {
       </section>
 
       {/* Professional Advisory CTA Section */}
-      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-24 border-t border-[#202635]/12">
-        <div className="mx-auto max-w-[1380px] grid gap-10 md:grid-cols-[1.2fr_.8fr] md:items-center">
+      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28 border-t border-[#202635]/12">
+        <div className="mx-auto max-w-[1280px] grid gap-10 md:grid-cols-[1.2fr_.8fr] md:items-center">
           <div>
             <SectionLabel>Developer Advisory</SectionLabel>
-            <h2 className="display mt-4 text-4xl sm:text-5xl md:text-6xl text-[#202635]">
+            <h2 className="section-title mt-4 text-[#202635]">
               Looking for the <em className="text-[#c97352]">right developer?</em>
             </h2>
-            <p className="mt-5 max-w-xl text-sm md:text-base leading-relaxed text-[#202635]/70">
+            <p className="mt-5 max-w-xl text-sm leading-relaxed text-[#202635]/70">
               Every developer in Dubai brings distinct architectural standards, community masterplans, and delivery horizons. Our independent advisory helps you compare opportunities objectively based on your investment goals and lifestyle criteria.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 bg-[#202635] px-7 py-4 font-mono text-[10px] uppercase tracking-[.15em] text-[#f5f0e6] transition-colors hover:bg-[#c97352]"
+              className="inline-flex items-center gap-2 bg-[#202635] px-7 py-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6] transition-colors hover:bg-[#c97352]"
             >
               Speak with an advisor <ArrowUpRight size={14} />
             </Link>
@@ -1099,9 +1238,9 @@ export function DevelopersPage() {
               href={`https://wa.me/${CONTACT.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 border border-[#202635]/30 bg-[#fcfaf6] px-6 py-4 font-mono text-[10px] uppercase tracking-[.15em] text-[#202635] transition-colors hover:border-[#c97352] hover:text-[#c97352]"
+              className="inline-flex items-center gap-2 border border-[#202635]/30 bg-[#fcfaf6] px-6 py-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#202635] transition-colors hover:border-[#c97352] hover:text-[#c97352]"
             >
-              WhatsApp enquiry
+              Chat on WhatsApp
             </a>
           </div>
         </div>
