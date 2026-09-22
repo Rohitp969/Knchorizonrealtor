@@ -18,3 +18,23 @@ export const CONTACT = {
   indiaAddress: 'DLF Phase 1, Gurugram, Haryana, India',
   studioHours: 'Monday — Saturday, 09:00 — 18:00 GST',
 };
+
+/*
+ * Social profiles.
+ * Each of these opens its network when clicked. They currently point at the network itself
+ * because KNC's own handles are not set yet — swap in the full profile URL and the same icon
+ * goes straight to the account, with nothing else to change:
+ *
+ *   instagram: 'https://www.instagram.com/knchorizonrealtor/',
+ *
+ * Set a value to an empty string to drop that icon from the footer altogether. WhatsApp and
+ * email are built from the number and address above, so they are always there.
+ */
+export const SOCIAL = {
+  instagram: 'https://www.instagram.com/',
+  facebook: '',
+  x: 'https://x.com/',
+  linkedin: 'https://www.linkedin.com/',
+  youtube: '',
+  tiktok: '',
+};

@@ -1,3 +1,4 @@
+import { SEARCH_TYPES } from '@/lib/property-search';
 /*
  * One entry per admin section. Endpoints and field names come from the existing
  * Express routes (backend/src/routes/admin.ts) and Mongo models (backend/src/lib/models.ts) —
@@ -93,7 +94,9 @@ const FEATURED_FILTER: FilterConfig = {
   ],
 };
 
-export const PROPERTY_TYPES = ['Apartment', 'Villa', 'Townhouse', 'Penthouse', 'Plot', 'Office', 'Retail', 'Commercial'];
+// One list for the admin form and the public category filter, so a type chosen here is
+// always one the website can place under Residential or Commercial.
+export const PROPERTY_TYPES = SEARCH_TYPES;
 export const LISTING_TYPES = ['sale', 'rent'];
 export const PROPERTY_STATUS = ['For sale', 'For rent', 'Off-plan', 'Under construction', 'Sold', 'Leased'];
 

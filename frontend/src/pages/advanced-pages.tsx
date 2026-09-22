@@ -126,32 +126,6 @@ export function ProjectDetailPage() {
   );
 }
 
-export function LoginPage() {
-  const [, setLocation] = useLocation();
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  async function submit(event: FormEvent) {
-    event.preventDefault(); setLoading(true); setError('');
-    try { const result = await apiFetch<{ token: string; user: { role: string } }>('/auth/login', { method: 'POST', body: JSON.stringify(form) }); localStorage.setItem('knc_admin_token', result.token); setLocation(result.user.role === 'admin' || result.user.role === 'agent' ? '/admin' : '/'); }
-    catch (reason) { setError(reason instanceof Error ? reason.message : 'Unable to sign in.'); } finally { setLoading(false); }
-  }
-  return <main className="bg-[#e9e4da] px-5 py-36 md:px-10 md:py-48"><div className="mx-auto grid max-w-[1280px] gap-14 md:grid-cols-[1fr_.8fr] md:items-center"><div><SectionLabel>Private client portal</SectionLabel><h1 className="page-title mt-6">A clearer<br /><em className="text-[#c97352]">next move.</em></h1><p className="mt-7 max-w-md text-sm leading-7 text-[#202635]/65">Sign in to manage your saved conversations and access the KNC advisory dashboard.</p></div><form onSubmit={submit} className="border-t border-[#202635]/20 pt-5"><SectionLabel>Sign in</SectionLabel><label className="mt-8 block"><span className="eyebrow text-[#202635]/45">Email</span><input required type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label><label className="mt-6 block"><span className="eyebrow text-[#202635]/45">Password</span><input required type="password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label>{error && <p className="mt-5 text-sm text-[#c97352]" role="alert">{error}</p>}<button disabled={loading} className="mt-8 flex items-center gap-3 bg-[#202635] px-6 py-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6] hover:bg-[#c97352]">{loading ? 'Signing in…' : 'Sign in'} <ArrowUpRight size={14} /></button><p className="mt-7 text-sm text-[#202635]/60">Need an account? <Link href="/register" className="text-[#c97352] line-link">Create one</Link></p></form></div></main>;
-}
-
-export function RegisterPage() {
-  const [, setLocation] = useLocation();
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
-  const [error, setError] = useState('');
-  const [sent, setSent] = useState(false);
-  async function submit(event: FormEvent) {
-    event.preventDefault(); setError('');
-    try { await apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(form) }); setSent(true); setTimeout(() => setLocation('/login'), 800); }
-    catch (reason) { setError(reason instanceof Error ? reason.message : 'Unable to create account.'); }
-  }
-  return <main className="bg-[#f5f0e6] px-5 py-36 md:px-10 md:py-48"><div className="mx-auto max-w-[620px]"><SectionLabel>Join KNC Horizon</SectionLabel><h1 className="page-title mt-6">Your property<br /><em className="text-[#c97352]">journey starts here.</em></h1><form onSubmit={submit} className="mt-14 border-t border-[#202635]/20 pt-5"><label className="block"><span className="eyebrow text-[#202635]/45">Full name</span><input required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label><label className="mt-6 block"><span className="eyebrow text-[#202635]/45">Email</span><input required type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label><label className="mt-6 block"><span className="eyebrow text-[#202635]/45">Password</span><input required minLength={8} type="password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 outline-none focus:border-[#c97352]" /></label>{error && <p className="mt-5 text-sm text-[#c97352]">{error}</p>}{sent && <p className="mt-5 text-sm text-[#55735f]">Account created. Taking you to sign in…</p>}<button className="mt-8 flex items-center gap-3 bg-[#202635] px-6 py-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6] hover:bg-[#c97352]">Create account <ArrowUpRight size={14} /></button></form></div></main>;
-}
-
 type AdminItem = Record<string, any> & { id: string };
 
 type InquiryStatus = 'new' | 'contacted' | 'closed';

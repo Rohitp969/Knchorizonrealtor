@@ -220,6 +220,12 @@ function projectBody(body: Record<string, unknown>, _unknown?: unknown, existing
 }
 
 
+/*
+ * The commercial tile used to look for a type literally called "commercial", so an office or
+ * a retail unit never counted. These are the commercial types the public search offers.
+ */
+const COMMERCIAL_TYPES = ["Office", "Retail", "Shop", "Showroom", "Warehouse", "Staff Accommodation", "Commercial Plot"];
+
 router.get("/admin/dashboard", async (_req, res, next) => {
   try {
     const db = getDb();
@@ -245,7 +251,9 @@ router.get("/admin/dashboard", async (_req, res, next) => {
       db.collection("insights").countDocuments(),
       db.collection("properties").countDocuments({ $or: [{ listingType: "sale" }, { status: { $regex: "sale", $options: "i" } }] }),
       db.collection("properties").countDocuments({ $or: [{ listingType: "rent" }, { status: { $regex: "rent", $options: "i" } }] }),
-      db.collection("properties").countDocuments({ $or: [{ type: { $regex: "commercial", $options: "i" } }, { propertyType: { $regex: "commercial", $options: "i" } }] }),
+      db.collection("properties").countDocuments({
+        $or: [{ type: { $in: COMMERCIAL_TYPES } }, { propertyType: { $in: COMMERCIAL_TYPES } }],
+      }),
       db.collection("projects").countDocuments(),
       db.collection("developers").countDocuments(),
       db.collection("communities").countDocuments(),

@@ -52,7 +52,7 @@ router.get("/public/property-filters", async (_req, res, next) => {
     const docs = await getDb()
       .collection<PropertyDoc>("properties")
       .find(publicFilter())
-      .project({ community: 1, location: 1, type: 1, propertyType: 1, listingType: 1, status: 1, price: 1, bedrooms: 1 })
+      .project({ community: 1, location: 1, type: 1, propertyType: 1, listingType: 1, status: 1, price: 1, bedrooms: 1, bathrooms: 1, featured: 1 })
       .limit(2000)
       .toArray();
 
@@ -65,7 +65,10 @@ router.get("/public/property-filters", async (_req, res, next) => {
       location: String(doc.community || doc.location || "").trim(),
       type: String(doc.type || doc.propertyType || "").trim(),
       developer: "",
+      project: "",
       beds: Number(doc.bedrooms) || 0,
+      baths: Number(doc.bathrooms) || 0,
+      featured: doc.featured === true,
       handover: "",
       price: Number(doc.price) || 0,
     }));
@@ -73,7 +76,7 @@ router.get("/public/property-filters", async (_req, res, next) => {
     const projects = await getDb()
       .collection<ProjectDoc>("projects")
       .find(publicFilter())
-      .project({ location: 1, developer: 1, startingPrice: 1, handover: 1, category: 1 })
+      .project({ location: 1, developer: 1, startingPrice: 1, handover: 1, category: 1, slug: 1, title: 1, featured: 1 })
       .limit(2000)
       .toArray();
 
@@ -86,7 +89,12 @@ router.get("/public/property-filters", async (_req, res, next) => {
       location: String(doc.location || "").trim(),
       type: unitType(doc),
       developer: String(doc.developer || "").trim(),
+      // The project itself is a filter on off-plan, so the row carries how to name it.
+      project: String(doc.slug || "").trim(),
+      projectTitle: String(doc.title || "").trim(),
       beds: 0,
+      baths: 0,
+      featured: doc.featured === true,
       handover: String(doc.handover || "").trim(),
       price: Number(doc.startingPrice) || 0,
     }));

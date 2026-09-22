@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'wouter';
-import { ArrowUp, ArrowUpRight, ChevronDown, Menu, Phone, X } from 'lucide-react';
-import { FaWhatsapp } from 'react-icons/fa';
-import { CONTACT } from '@/lib/contact-info';
+import { ArrowUp, ArrowUpRight, ChevronDown, Mail, Menu, Phone, X } from 'lucide-react';
+import { FaWhatsapp, FaInstagram, FaFacebookF, FaLinkedinIn, FaYoutube, FaXTwitter, FaTiktok } from 'react-icons/fa6';
+import { CONTACT, SOCIAL } from '@/lib/contact-info';
 import { NewsletterForm } from '@/components/blocks';
 import { apiFetch } from '@/lib/api';
 import { categoryOf, projectSegment, isNewLaunchProject, type SearchRow } from '@/lib/property-search';
@@ -76,7 +76,7 @@ export function BrandMark({ inverse = false }: { inverse?: boolean }) {
       </span>
       <span className={`leading-none ${inverse ? 'text-[#f5f0e6]' : 'text-[#202635]'}`}>
         <span className="block font-sans text-[11px] font-semibold tracking-[.27em]">KNC</span>
-        <span className="mt-1 block font-mono text-[9px] tracking-[.2em] opacity-70">HORIZON REALTOR</span>
+        <span className="mt-1 block font-mono text-[10px] tracking-[.2em] opacity-70">HORIZON REALTOR</span>
       </span>
     </Link>
   );
@@ -179,7 +179,7 @@ export function Navbar() {
 
             {/* CONTACT CTA */}
             <button onClick={goContact} className={`group flex items-center gap-2 border px-4 py-2 font-mono text-[10px] uppercase tracking-[.14em] transition-colors ${inverse ? 'border-[#ead8b8]/60 hover:bg-[#ead8b8] hover:text-[#202635]' : 'border-[#202635]/35 hover:bg-[#202635] hover:text-[#f5f0e6]'}`} data-testid="button-nav-contact">
-              Contact <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              Contact us <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </button>
           </nav>
           <button ref={menuButtonRef} className="grid h-10 w-10 place-items-center lg:hidden" onClick={() => open ? closeMenu() : setOpen(true)} aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
@@ -222,10 +222,46 @@ export function Navbar() {
           {/* CONTACT & WHATSAPP */}
           <button onClick={goContact} className="mt-4 flex min-h-10 w-full items-center justify-between border border-[#202635]/30 px-3 py-2 font-mono text-[.64rem] uppercase tracking-[.12em]" data-testid="button-mobile-contact">Contact us <ArrowUpRight size={13} /></button>
           <a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noreferrer" className="mt-1 flex min-h-10 items-center justify-between border-t border-[#202635]/10 px-3 pt-3 text-sm" data-testid="link-mobile-whatsapp"><span className="flex items-center gap-2"><FaWhatsapp size={18} className="text-[#55735f]" /> WhatsApp us</span><ArrowUpRight size={13} /></a>
-          <div className="mt-3 flex gap-3 border-t border-[#202635]/10 px-3 pt-3 font-mono text-[.58rem] uppercase tracking-[.1em] text-[#202635]/55"><Link href="/terms-and-conditions" onClick={closeMenu} data-testid="link-mobile-terms">Terms & Conditions</Link><Link href="/privacy-policy" onClick={closeMenu} data-testid="link-mobile-privacy">Privacy Policy</Link></div>
+          <div className="mt-3 flex gap-3 border-t border-[#202635]/10 px-3 pt-3 font-mono text-[10px] uppercase tracking-[.1em] text-[#202635]/55"><Link href="/terms-and-conditions" onClick={closeMenu} data-testid="link-mobile-terms">Terms & Conditions</Link><Link href="/privacy-policy" onClick={closeMenu} data-testid="link-mobile-privacy">Privacy Policy</Link></div>
         </nav>
       </div>
     </>
+  );
+}
+
+/*
+ * Social links. WhatsApp and email always appear because they are built from the numbers in
+ * contact-info; the rest only appear once a profile URL is filled in there, so the footer
+ * never shows an icon that leads nowhere.
+ */
+function SocialLinks() {
+  const links = [
+    { key: 'whatsapp', label: 'WhatsApp', href: `https://wa.me/${CONTACT.whatsapp}`, icon: <FaWhatsapp size={15} /> },
+    { key: 'instagram', label: 'Instagram', href: SOCIAL.instagram, icon: <FaInstagram size={15} /> },
+    { key: 'facebook', label: 'Facebook', href: SOCIAL.facebook, icon: <FaFacebookF size={14} /> },
+    { key: 'linkedin', label: 'LinkedIn', href: SOCIAL.linkedin, icon: <FaLinkedinIn size={14} /> },
+    { key: 'youtube', label: 'YouTube', href: SOCIAL.youtube, icon: <FaYoutube size={15} /> },
+    { key: 'x', label: 'X', href: SOCIAL.x, icon: <FaXTwitter size={14} /> },
+    { key: 'tiktok', label: 'TikTok', href: SOCIAL.tiktok, icon: <FaTiktok size={14} /> },
+  ].filter((link) => Boolean(link.href));
+
+  return (
+    <div className="flex flex-wrap items-center gap-2" data-testid="footer-social">
+      {links.map((link) => (
+        <a
+          key={link.key}
+          href={link.href}
+          target={link.href.startsWith('http') ? '_blank' : undefined}
+          rel={link.href.startsWith('http') ? 'noreferrer' : undefined}
+          aria-label={link.label}
+          title={link.label}
+          data-testid={`link-social-${link.key}`}
+          className="grid h-9 w-9 place-items-center rounded-full border border-[#f5f0e6]/20 text-[#f5f0e6]/75 transition-colors hover:border-[#d9c6a4] hover:bg-[#d9c6a4] hover:text-[#202635]"
+        >
+          {link.icon}
+        </a>
+      ))}
+    </div>
   );
 }
 
@@ -316,25 +352,29 @@ export function Footer() {
               <NewsletterForm />
             </div>
 
-            <div className="mt-6 space-y-2.5">
+            <div className="mt-7 border-t border-[#f5f0e6]/12 pt-6">
+              <p className="eyebrow text-[#c97352]">Speak to an advisor</p>
               <a
                 href={`tel:${CONTACT.phoneHref}`}
-                className="flex items-center gap-2 font-serif text-lg text-[#f5f0e6] transition-colors hover:text-[#d9c6a4]"
+                className="mt-3 flex items-center gap-2.5 font-serif text-2xl leading-none tracking-tight text-[#f5f0e6] transition-colors hover:text-[#d9c6a4] md:text-[1.75rem]"
                 data-testid="link-footer-phone"
               >
-                <Phone size={14} />
+                <Phone size={17} className="shrink-0 text-[#d9c6a4]" />
                 {CONTACT.phoneDisplay}
               </a>
               <a
-                href={`https://wa.me/${CONTACT.whatsapp}`}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#d9c6a4] transition-colors hover:text-white"
-                data-testid="link-footer-whatsapp"
+                href={`mailto:${CONTACT.email}`}
+                className="mt-2.5 inline-flex items-center gap-2 text-xs text-[#f5f0e6]/65 transition-colors hover:text-[#d9c6a4]"
+                data-testid="link-footer-email"
               >
-                <FaWhatsapp size={14} className="text-[#25D366]" />
-                <span>Chat on WhatsApp</span>
+                <Mail size={13} className="shrink-0 text-[#d9c6a4]/70" />
+                {CONTACT.email}
               </a>
+              <p className="mt-2 text-[11px] leading-5 text-[#f5f0e6]/45">{CONTACT.studioHours}</p>
+
+              <div className="mt-5">
+                <SocialLinks />
+              </div>
             </div>
 
             <div className="mt-6 flex flex-col items-start gap-2 font-mono text-[10px] uppercase tracking-[.13em] text-[#f5f0e6]/50">
@@ -403,13 +443,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         title="Chat with our Dubai property advisor on WhatsApp"
         data-testid="floating-whatsapp-btn"
       >
-        <div className="relative flex items-center justify-center">
-          <FaWhatsapp className="h-6 w-6 transition-transform duration-300 group-hover:scale-105 md:h-7 md:w-7" />
-          <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-100"></span>
-          </span>
-        </div>
+        <FaWhatsapp className="h-6 w-6 transition-transform duration-300 group-hover:scale-105 md:h-7 md:w-7" />
       </a>
 
       {/* Back to top button */}

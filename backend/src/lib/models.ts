@@ -108,6 +108,8 @@ export type GalleryItemDoc = {
   imageUrl?: string;
   imagePath?: string;
   alt: string;
+  /** Older items predate this flag, so anything that is not explicitly false stays visible. */
+  published?: boolean;
   createdAt: Date;
 };
 

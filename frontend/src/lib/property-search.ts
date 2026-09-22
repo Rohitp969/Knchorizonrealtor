@@ -31,6 +31,9 @@ export type PropertySearchQuery = {
   minPrice: string;
   maxPrice: string;
   beds: string;
+  baths: string;
+  /** Off-plan only: a single project, by slug. */
+  project: string;
   handover: string;
 };
 
@@ -42,6 +45,8 @@ export const EMPTY_PROPERTY_SEARCH: PropertySearchQuery = {
   minPrice: '',
   maxPrice: '',
   beds: '',
+  baths: '',
+  project: '',
   handover: '',
 };
 
@@ -58,6 +63,10 @@ export const SEARCH_CATEGORIES: { value: string; types: string[] }[] = [
     types: ['Office', 'Retail', 'Shop', 'Showroom', 'Warehouse', 'Staff Accommodation', 'Commercial Plot'],
   },
 ];
+
+/** Every property type the site understands, in category order. The admin form offers the
+ *  same list, so a type an admin picks is always one the public category filter can place. */
+export const SEARCH_TYPES = SEARCH_CATEGORIES.flatMap((category) => category.types);
 
 // Rent budgets are annual, which is how Dubai rents are quoted; off-plan budgets track the
 // starting price of a unit, which sits lower than completed stock.
@@ -114,6 +123,8 @@ export function describeSearch(query: PropertySearchQuery): { label: string; val
     { label: labels.type, value: query.type },
     { label: labels.budget, value: band?.label ?? '' },
     { label: labels.fourth, value: mode === 'offplan' ? query.handover : bedLabel },
+    { label: 'Bathrooms', value: query.baths ? `${query.baths}+ ${query.baths === '1' ? 'bath' : 'baths'}` : '' },
+    { label: 'Project', value: query.project ? query.project.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) : '' },
   ].filter((entry) => entry.value);
 }
 
@@ -136,6 +147,8 @@ export function parsePropertySearch(search: string): PropertySearchQuery {
     minPrice: params.get('minPrice') ?? '',
     maxPrice: params.get('maxPrice') ?? '',
     beds: params.get('beds') ?? '',
+    baths: params.get('baths') ?? '',
+    project: params.get('project') ?? '',
     handover: params.get('handover') ?? '',
   };
 }
@@ -171,7 +184,12 @@ export type SearchRow = {
   type: string;
   /** Off-plan only: the developer, which takes the place of a category. */
   developer: string;
+  /** Off-plan only: the project's slug, and the title to show for it. */
+  project: string;
+  projectTitle: string;
   beds: number;
+  baths: number;
+  featured: boolean;
   handover: string;
   price: number;
 };
@@ -187,10 +205,14 @@ export type SearchOptions = {
   budgets: Option[];
   /** Bedroom steps on buy and rent, handover windows on off-plan. */
   fourth: Option[];
+  /** Bathroom steps; buy and rent only. */
+  baths: Option[];
+  /** The projects themselves; off-plan only. */
+  projects: Option[];
 };
 
 export const EMPTY_SEARCH_OPTIONS: SearchOptions = {
-  total: 0, locations: [], categories: [], types: [], budgets: [], fourth: [],
+  total: 0, locations: [], categories: [], types: [], budgets: [], fourth: [], baths: [], projects: [],
 };
 
 export function rowsFromProperties(items: RemoteProperty[]): SearchRow[] {
@@ -202,7 +224,11 @@ export function rowsFromProperties(items: RemoteProperty[]): SearchRow[] {
       category: categoryOf(type) ?? '',
       type,
       developer: '',
+      project: '',
+      projectTitle: '',
       beds: Number(item.bedrooms) || 0,
+      baths: Number(item.bathrooms) || 0,
+      featured: item.featured === true,
       handover: '',
       price: Number(item.price) || 0,
     };
@@ -216,7 +242,11 @@ export function rowsFromProjects(items: Project[]): SearchRow[] {
     category: (item.developer || '').trim(),
     type: projectUnitType(item),
     developer: (item.developer || '').trim(),
+    project: (item.slug || '').trim(),
+    projectTitle: (item.title || '').trim(),
     beds: 0,
+    baths: 0,
+    featured: item.featured === true,
     handover: (item.handover || '').trim(),
     price: Number(item.startingPrice) || 0,
   }));
@@ -243,9 +273,13 @@ function matchesHandover(handover: string, wanted: string) {
   return open ? handoverYear(handover) >= year : handoverYear(handover) === year;
 }
 
-function matchesBeds(beds: number, wanted: string) {
+/*
+ * Bedrooms. A commercial floor also records zero bedrooms, so "Studio" only ever means a
+ * home with no separate bedroom, never an office that happens to have none.
+ */
+function matchesBeds(beds: number, wanted: string, residential = true) {
   if (!wanted) return true;
-  return wanted === 'studio' ? beds === 0 : beds >= Number(wanted);
+  return wanted === 'studio' ? beds === 0 && residential : beds >= Number(wanted);
 }
 
 /** Predicates for a query, one per field, so a field can be counted with its own left out. */
@@ -260,7 +294,11 @@ function tests(query: PropertySearchQuery) {
       !query.category || (row.mode === 'offplan' ? row.developer === query.category : !row.category || row.category === query.category),
     type: (row: SearchRow) => !query.type || row.type === query.type,
     budget: (row: SearchRow) => (!query.minPrice || row.price >= min) && (!query.maxPrice || row.price < max),
-    fourth: (row: SearchRow) => matchesBeds(row.beds, query.beds) && matchesHandover(row.handover, query.handover),
+    fourth: (row: SearchRow) =>
+      matchesBeds(row.beds, query.beds, row.category === 'Residential') && matchesHandover(row.handover, query.handover),
+    // Bathrooms are a floor too; featured and project are exact.
+    baths: (row: SearchRow) => !query.baths || row.baths >= Number(query.baths),
+    extra: (row: SearchRow) => !query.project || row.project === query.project,
   };
 }
 
@@ -269,7 +307,8 @@ export function countRows(rows: SearchRow[], query: PropertySearchQuery) {
   const check = tests(query);
   return rows.filter(
     (row) => row.mode === mode
-      && check.location(row) && check.category(row) && check.type(row) && check.budget(row) && check.fourth(row),
+      && check.location(row) && check.category(row) && check.type(row) && check.budget(row)
+      && check.fourth(row) && check.baths(row) && check.extra(row),
   ).length;
 }
 
@@ -287,6 +326,17 @@ function tally(rows: SearchRow[], read: (row: SearchRow) => string): Option[] {
 
 const bedLabel = (beds: number) => (beds === 0 ? 'Studio' : `${beds}+ ${beds === 1 ? 'bed' : 'beds'}`);
 
+/*
+ * A list is narrowed by the other choices, which can leave the value already in the URL out
+ * of its own list - "3+ baths" disappears once a type is chosen whose stock starts at five,
+ * even though the search itself still holds. Put the active value back so the control always
+ * shows what is actually being applied.
+ */
+function keepSelected(list: Option[], value: string, label: (value: string) => string): Option[] {
+  if (!value || list.some((option) => option.value === value)) return list;
+  return [...list, { value, label: label(value), count: 0 }];
+}
+
 export function searchOptions(rows: SearchRow[], query: PropertySearchQuery): SearchOptions {
   const mode: ListingMode = query.listing || 'buy';
   const offPlan = mode === 'offplan';
@@ -296,14 +346,16 @@ export function searchOptions(rows: SearchRow[], query: PropertySearchQuery): Se
   // and every combination the bar can reach still has something behind it.
   const except = (...keep: ((row: SearchRow) => boolean)[]) => inMode.filter((row) => keep.every((fn) => fn(row)));
 
-  const forType = except(check.location, check.category, check.budget, check.fourth);
-  const forBudget = except(check.location, check.category, check.type, check.fourth);
-  const forFourth = except(check.location, check.category, check.type, check.budget);
+  const forType = except(check.location, check.category, check.budget, check.fourth, check.baths, check.extra);
+  const forBudget = except(check.location, check.category, check.type, check.fourth, check.baths, check.extra);
+  const forFourth = except(check.location, check.category, check.type, check.budget, check.baths, check.extra);
+  const forBaths = except(check.location, check.category, check.type, check.budget, check.fourth, check.extra);
+  const forProject = except(check.location, check.category, check.type, check.budget, check.fourth, check.baths);
 
   // Bedroom steps present in the remaining stock: "3 beds" means 3 or more, and a studio is
   // its own step rather than a floor.
-  const bedSteps = [...new Set(forFourth.map((row) => row.beds))]
-    .filter((beds) => beds >= 0)
+  // A zero only becomes "Studio" when a home sits behind it, not a commercial floor.
+  const bedSteps = [...new Set(forFourth.filter((row) => row.beds > 0 || row.category === 'Residential').map((row) => row.beds))]
     .sort((a, b) => a - b)
     .map((beds) => ({ value: beds === 0 ? 'studio' : String(beds), label: bedLabel(beds) }));
 
@@ -312,12 +364,14 @@ export function searchOptions(rows: SearchRow[], query: PropertySearchQuery): Se
     .sort((a, b) => a - b)
     .map((year) => (year ? { value: String(year), label: String(year) } : { value: 'ready', label: 'Ready / completed' }));
 
+  const same = (value: string) => value;
+
   return {
     total: countRows(rows, query),
-    locations: tally(except(check.category, check.type, check.budget, check.fourth), (row) => row.location),
-    categories: tally(except(check.location, check.type, check.budget, check.fourth), (row) => row.category),
-    types: tally(forType, (row) => row.type),
-    budgets: SEARCH_BUDGETS[mode]
+    locations: keepSelected(tally(except(check.category, check.type, check.budget, check.fourth, check.baths, check.extra), (row) => row.location), query.location, same),
+    categories: keepSelected(tally(except(check.location, check.type, check.budget, check.fourth, check.baths, check.extra), (row) => row.category), query.category, same),
+    types: keepSelected(tally(forType, (row) => row.type), query.type, same),
+    budgets: keepSelected(SEARCH_BUDGETS[mode]
       .map((band) => ({
         value: `${band.min ?? ''}-${band.max ?? ''}`,
         label: band.label,
@@ -325,14 +379,43 @@ export function searchOptions(rows: SearchRow[], query: PropertySearchQuery): Se
         count: forBudget.filter((row) => (band.min == null || row.price >= band.min) && (band.max == null || row.price < band.max)).length,
       }))
       .filter((band) => band.count > 0),
-    fourth: (offPlan ? handoverSteps : bedSteps)
+      query.minPrice || query.maxPrice ? `${query.minPrice}-${query.maxPrice}` : '',
+      (value) => SEARCH_BUDGETS[mode].find((band) => `${band.min ?? ''}-${band.max ?? ''}` === value)?.label ?? value),
+    fourth: keepSelected((offPlan ? handoverSteps : bedSteps)
       .map((option) => ({
         ...option,
         count: forFourth.filter((row) =>
-          offPlan ? matchesHandover(row.handover, option.value) : matchesBeds(row.beds, option.value),
+          offPlan
+            ? matchesHandover(row.handover, option.value)
+            : matchesBeds(row.beds, option.value, row.category === 'Residential'),
         ).length,
       }))
       .filter((option) => option.count > 0),
+      offPlan ? query.handover : query.beds,
+      (value) => (offPlan
+        ? (value === 'ready' ? 'Ready / completed' : value)
+        : bedLabel(value === 'studio' ? 0 : Number(value)))),
+    // Bathroom steps present in the remaining stock; off-plan projects hold no bathrooms.
+    baths: offPlan ? [] : keepSelected([...new Set(forBaths.map((row) => row.baths))]
+      .filter((baths) => baths > 0)
+      .sort((a, b) => a - b)
+      .map((baths) => ({
+        value: String(baths),
+        label: `${baths}+ ${baths === 1 ? 'bath' : 'baths'}`,
+        count: forBaths.filter((row) => row.baths >= baths).length,
+      }))
+      .filter((option) => option.count > 0),
+      query.baths,
+      (value) => `${value}+ ${value === '1' ? 'bath' : 'baths'}`),
+    projects: offPlan
+      ? keepSelected(
+          [...new Map(forProject.filter((row) => row.project).map((row) => [row.project, row.projectTitle])).entries()]
+            .sort((a, b) => a[1].localeCompare(b[1]))
+            .map(([value, label]) => ({ value, label, count: 1 })),
+          query.project,
+          (value) => value.replace(/-/g, ' ').replace(/\w/g, (c) => c.toUpperCase()),
+        )
+      : [],
   };
 }
 
@@ -370,7 +453,8 @@ export function matchesPropertySearch(item: RemoteProperty, query: PropertySearc
   if (query.type && !matchesType(item, query.type)) return false;
   if (query.minPrice && item.price < Number(query.minPrice)) return false;
   if (query.maxPrice && item.price >= Number(query.maxPrice)) return false;
-  if (!matchesBeds(Number(item.bedrooms) || 0, query.beds)) return false;
+  if (!matchesBeds(Number(item.bedrooms) || 0, query.beds, categoryOf(item.type ?? '') === 'Residential')) return false;
+  if (query.baths && (Number(item.bathrooms) || 0) < Number(query.baths)) return false;
   return true;
 }
 
@@ -383,6 +467,7 @@ export function matchesProjectSearch(project: Project, query: PropertySearchQuer
   if (query.location && (project.location ?? '').trim() !== query.location) return false;
   if (query.category && (project.developer ?? '').trim() !== query.category) return false;
   if (query.type && projectUnitType(project) !== query.type) return false;
+  if (query.project && (project.slug ?? '').trim() !== query.project) return false;
   if (!matchesHandover(project.handover ?? '', query.handover)) return false;
   const price = Number(project.startingPrice) || 0;
   if (query.minPrice && price < Number(query.minPrice)) return false;

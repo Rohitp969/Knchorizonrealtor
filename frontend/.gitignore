@@ -68,6 +68,9 @@ web_modules/
 .env
 .env.*
 !.env.example
+# The production API URL is public configuration, not a secret, and the deployed build
+# needs it from the repo. Keep it committed.
+!.env.production
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache

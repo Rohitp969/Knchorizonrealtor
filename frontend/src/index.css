@@ -312,7 +312,24 @@
 
   /* Compact hero on phones: tall enough for the column and search bar, never full screen. */
   main > section.home-hero:first-child {
-    min-height: 32rem;
+    min-height: 26rem;
+  }
+
+  /* The two hero actions sit side by side rather than stacking, which is what pushed the
+     whole section down on a narrow phone. */
+  .home-hero .btn {
+    padding-inline: .9rem;
+    font-size: .625rem;
+  }
+
+  /* Two fields to a row on a phone, so the value needs the smaller size to read in full
+     rather than being cut to "All categori...". */
+  [data-testid="form-property-search"] [data-testid^="select-search-"] {
+    padding-block: .5rem;
+    padding-inline: .75rem;
+  }
+  [data-testid="form-property-search"] [data-testid^="select-search-"] span:last-child span:first-child {
+    font-size: .8125rem;
   }
 
   /* Sections that continue the previous section's background open with a divider, not a second full padding. */

@@ -23,11 +23,7 @@ import {
 
 import { AdminPage } from '@/pages/admin/AdminPage';
 
-import {
-  LoginPage,
-  ProjectDetailPage,
-  RegisterPage,
-} from '@/pages/advanced-pages';
+import { ProjectDetailPage } from '@/pages/advanced-pages';
 
 import {
   BlogPage,
@@ -501,6 +497,17 @@ function Router() {
             component={BlogPage}
           />
 
+          {/* The blog is also referred to as the journal, so that URL lands on it too. */}
+          <Route
+            path="/journal"
+            component={BlogPage}
+          />
+
+          <Route
+            path="/journal/:slug"
+            component={BlogPostPage}
+          />
+
           <Route
             path="/blog/:slug"
             component={BlogPostPage}
@@ -519,15 +526,7 @@ function Router() {
           {/* AUTHENTICATION */}
           {/* ================================================== */}
 
-          <Route
-            path="/login"
-            component={LoginPage}
-          />
 
-          <Route
-            path="/register"
-            component={RegisterPage}
-          />
 
           {/* ================================================== */}
           {/* LEGAL PAGES */}

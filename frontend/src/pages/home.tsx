@@ -33,9 +33,9 @@ export default function Home() {
         className="
           home-hero relative flex flex-col overflow-hidden
           bg-[#202635] text-[#f5f0e6]
-          min-h-[520px]
-          px-5 pb-10 pt-24
-          sm:min-h-[560px]
+          min-h-[26rem]
+          px-5 pb-6 pt-20
+          sm:min-h-[32rem] sm:pb-10 sm:pt-24
           md:min-h-[620px] md:px-10 md:pb-12 md:pt-28
           lg:min-h-[660px] lg:max-h-[720px] lg:pb-12
         "
@@ -69,12 +69,12 @@ export default function Home() {
                 Find your <em className="text-[#d9c6a4]">horizon</em> in Dubai.
               </h1>
 
-              <p className="mt-4 max-w-md text-sm leading-relaxed text-[#f5f0e6]/75 sm:text-base">
+              <p className="mt-3 max-w-md text-[.8125rem] leading-relaxed text-[#f5f0e6]/75 sm:mt-4 sm:text-base">
                 Discover exceptional properties and trusted real estate
                 opportunities across Dubai and the UAE.
               </p>
 
-              <div className="mt-5 flex flex-wrap gap-3">
+              <div className="mt-4 flex flex-wrap gap-2 sm:mt-5 sm:gap-3">
                 <Link href="/properties" className="btn btn-sand" data-testid="link-hero-properties">
                   Explore properties <ArrowUpRight size={14} />
                 </Link>
@@ -101,7 +101,7 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <div className="mt-auto pt-6 md:pt-8">
+          <div className="mt-auto pt-4 sm:pt-6 md:pt-8">
             <PropertySearch />
           </div>
         </div>
