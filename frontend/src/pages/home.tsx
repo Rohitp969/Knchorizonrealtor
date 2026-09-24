@@ -120,9 +120,14 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <motion.div variants={heroItem} className="mt-auto pt-4 sm:pt-6 md:pt-8">
+          <motion.div variants={heroItem} className="pt-4 sm:pt-6 md:pt-8">
             <PropertySearch />
           </motion.div>
+
+          {/* Takes an equal share of the leftover height with the block above, so the search
+              bar keeps the same breathing room above and below it at any window height rather
+              than the gap under the buttons absorbing all of it. */}
+          <div aria-hidden="true" className="flex-1" />
         </div>
       </section>
 

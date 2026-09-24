@@ -305,12 +305,14 @@
   --hero-focus-y: 50%;                            /* crop anchor, vertical   */
   --hero-display: clamp(2.3rem, 5vw, 3.75rem);    /* headline size */
   /*
-   * The hero fills the window exactly, so the section under it starts below the fold instead
-   * of peeking through as a half-cut heading. At 70svh the words "Properties with" were being
-   * sliced through the middle on every common laptop height. svh (not vh) so mobile browser
-   * chrome cannot stretch it past the viewport and push the search bar out of reach.
+   * The hero is the window minus exactly one block of section padding. That leaves the next
+   * section's own top padding showing and nothing else: a clean band of its background, never
+   * a half-cut heading, which is what 70svh produced. Subtracting the padding rather than
+   * filling the whole window also takes a block of slack out of the hero, which is what used
+   * to stretch the gap between the buttons and the search bar. svh (not vh) so mobile browser
+   * chrome cannot push the search bar out of reach.
    */
-  min-height: 100svh;
+  min-height: calc(100svh - var(--site-block));
 }
 .home-hero-media { position: absolute; inset: 0; }
 .home-hero-media .hero-image {
@@ -375,9 +377,9 @@
     max-width: calc(100vw - 1.5rem);
   }
 
-  /* Phones get the same full-window hero, for the same reason: nothing half-cut at the fold. */
+  /* Phones follow the same rule, against the phone-sized block. */
   main > section.home-hero:first-child {
-    min-height: 100svh;
+    min-height: calc(100svh - var(--site-block));
   }
 
   /* The two hero actions sit side by side rather than stacking, which is what pushed the
