@@ -53,4 +53,4 @@ npm install
 npm run dev
 ```
 
-Backend ko MongoDB connection aur `.env` chahiye hoga (`ADMIN_EMAIL`, `ADMIN_PASSWORD`, `MONGODB_URI` waghera).
+Backend ko Supabase PostgreSQL connection aur `.env` chahiye hoga (`DATABASE_URL`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` waghera).

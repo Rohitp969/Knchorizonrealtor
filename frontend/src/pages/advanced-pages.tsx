@@ -36,7 +36,7 @@ export function ProjectDetailPage() {
 
   if (error && !project) {
     return (
-      <main className="bg-[#f5f0e6] px-5 py-40 md:px-10">
+      <main className="bg-[#f5f0e6] site-section pt-40">
         <div className="mx-auto max-w-[900px]">
           <ErrorState message={error} />
           <Link href="/projects" className="mt-7 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
@@ -49,10 +49,10 @@ export function ProjectDetailPage() {
 
   if (!project) {
     return (
-      <main className="bg-[#f5f0e6] px-5 py-40">
-        <div className="mx-auto max-w-[1280px]">
+      <main className="site-section pt-40">
+        <div className="site-container">
           <p className="eyebrow text-[#c97352]">KNC Horizon</p>
-          <p className="display mt-5 text-4xl">Loading project…</p>
+          <p className="block-title mt-4 text-[#202635]">Loading project…</p>
         </div>
       </main>
     );
@@ -74,12 +74,12 @@ export function ProjectDetailPage() {
         copy={project.description}
         image={project.image || fallbackImage}
       />
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-[1280px] gap-14 md:grid-cols-[1fr_.8fr] md:gap-24">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container grid gap-12 lg:grid-cols-[1fr_.75fr] lg:gap-16 xl:gap-20">
           <div>
             <div className="grid gap-4 sm:grid-cols-2">
               {images.map((image) => (
-                <div key={image} className="card-thumb aspect-[16/10] h-[220px] sm:h-[260px] md:h-[300px] w-full">
+                <div key={image} className="card-media card-media-wide">
                   <img
                     src={image}
                     alt={project.title}
@@ -93,7 +93,7 @@ export function ProjectDetailPage() {
             </div>
             <div className="mt-12">
               <SectionLabel>About the project</SectionLabel>
-              <p className="mt-5 max-w-2xl text-base leading-8 text-[#202635]/65">{project.description}</p>
+              <p className="body-copy measure mt-5 text-[#202635]/65">{project.description}</p>
               <div className="mt-8 grid grid-cols-2 gap-3 border-t border-[#202635]/15 pt-5 sm:grid-cols-3">
                 {(project.amenities ?? ['Design-led architecture', 'Resident amenities', 'Long-term value']).map((item) => (
                   <span key={item} className="flex items-start gap-2 text-sm text-[#202635]/65">
@@ -104,22 +104,22 @@ export function ProjectDetailPage() {
               </div>
             </div>
           </div>
-          <div className="h-fit border-t border-[#202635]/20 pt-5">
+          <aside className="h-fit rounded-sm border border-[#202635]/15 bg-[#fcfaf6] p-6 shadow-sm sm:p-8 lg:sticky lg:top-28">
             <SectionLabel>Project details</SectionLabel>
-            <p className="mt-5 font-serif text-4xl">From AED {new Intl.NumberFormat('en-AE').format(project.startingPrice)}</p>
-            <div className="mt-8 grid gap-y-5 border-y border-[#202635]/15 py-6 text-sm">
+            <p className="display mt-4 text-[2rem] leading-none text-[#202635] sm:text-[2.35rem]">From AED {new Intl.NumberFormat('en-AE').format(project.startingPrice)}</p>
+            <div className="mt-6 grid gap-y-3 border-y border-[#202635]/15 py-5 text-sm text-[#202635]/75">
               <span>{project.developer}</span>
               <span>{project.location}</span>
               <span>Handover {project.handover}</span>
             </div>
-            <h3 className="block-title mt-12">
+            <h3 className="block-title mt-10">
               Request the<br />
               <em className="text-[#c97352]">project brief.</em>
             </h3>
-            <div className="mt-7">
+            <div className="mt-6">
               <ContactForm compact inquiryType="project" projectSlug={project.slug} />
             </div>
-          </div>
+          </aside>
         </div>
       </section>
     </main>
@@ -303,7 +303,7 @@ export function AdminPage() {
   };
 
   if (error) return (
-    <main className="bg-[#f5f0e6] px-5 py-40 md:px-10">
+    <main className="bg-[#f5f0e6] site-section pt-40">
       <div className="mx-auto max-w-[900px]">
         <ErrorState message={error} />
         <Link href="/login" className="mt-7 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
@@ -315,7 +315,7 @@ export function AdminPage() {
 
   return (
     <main className="min-h-screen bg-[#e9e4da] px-5 py-32 md:px-10">
-      <div className="mx-auto max-w-[1280px]">
+      <div className="site-container">
         {/* Header */}
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>

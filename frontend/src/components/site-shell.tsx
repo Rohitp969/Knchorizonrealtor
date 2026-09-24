@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'wouter';
 import { ArrowUp, ArrowUpRight, ChevronDown, Mail, Menu, Phone, X } from 'lucide-react';
 import { FaWhatsapp, FaInstagram, FaFacebookF, FaLinkedinIn, FaYoutube, FaXTwitter, FaTiktok } from 'react-icons/fa6';
-import { CONTACT, SOCIAL } from '@/lib/contact-info';
+import { SOCIAL } from '@/lib/contact-info';
+import { useContact } from '@/lib/site-settings';
 import { NewsletterForm } from '@/components/blocks';
 import { apiFetch } from '@/lib/api';
 import { categoryOf, projectSegment, isNewLaunchProject, type SearchRow } from '@/lib/property-search';
@@ -83,6 +84,7 @@ export function BrandMark({ inverse = false }: { inverse?: boolean }) {
 }
 
 export function Navbar() {
+  const contact = useContact();
   const inStock = useStockedNav();
   const [location, setLocation] = useLocation();
   const [scrolled, setScrolled] = useState(false);
@@ -141,48 +143,48 @@ export function Navbar() {
 
   return (
     <>
-      <header className={`fixed inset-x-0 top-0 z-40 px-5 transition-all duration-500 md:px-10 ${inverse ? 'bg-transparent text-[#f5f0e6]' : 'border-b border-[#d8cdbc]/80 bg-[#f5f0e6]/95 text-[#202635] backdrop-blur-md'} ${scrolled ? 'py-3' : 'py-5'}`}>
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-6">
+      <header className={`site-gutter fixed inset-x-0 top-0 z-40 transition-all duration-500 ${inverse ? 'bg-transparent text-[#f5f0e6]' : 'border-b border-[#d8cdbc]/80 bg-[#f5f0e6]/95 text-[#202635] backdrop-blur-md'} ${scrolled ? 'py-3' : 'py-4 md:py-5'}`}>
+        <div className="site-container flex items-center justify-between gap-6">
           <BrandMark inverse={inverse} />
-          <nav ref={navRef} className="hidden items-center gap-5 lg:flex xl:gap-7" aria-label="Primary navigation">
-            <Link href="/" className="line-link font-mono text-[10px] uppercase tracking-[.14em] opacity-85 hover:opacity-100" data-testid="link-nav-home">Home</Link>
+          <nav ref={navRef} className="hidden items-center gap-6 lg:flex xl:gap-8" aria-label="Primary navigation">
+            <Link href="/" className="line-link flex items-center font-mono text-[10px] uppercase leading-none tracking-[.14em] opacity-85 hover:opacity-100" data-testid="link-nav-home">Home</Link>
             
             {/* PROPERTIES */}
-            <div className="relative" onMouseEnter={() => setDropdown('properties')} onMouseLeave={() => setDropdown(null)}>
-              <button type="button" onClick={() => setDropdown(dropdown === 'properties' ? null : 'properties')} aria-haspopup="true" className="line-link flex items-center gap-1 font-mono text-[10px] uppercase tracking-[.16em] opacity-85 hover:opacity-100" aria-expanded={dropdown === 'properties'}>Properties <ChevronDown size={12} className={dropdown === 'properties' ? 'rotate-180 transition-transform' : 'transition-transform'} /></button>
-              {dropdown === 'properties' && <div className="absolute left-0 top-full w-48 border border-[#d8cdbc] bg-[#f5f0e6] p-2 text-[#202635] shadow-xl">{inStock(propertyItems).map((item) => <Link key={item.href} href={item.href} onClick={() => setDropdown(null)} className="block px-3 py-2 font-mono text-[10px] uppercase tracking-[.12em] hover:bg-[#e9e4da]">{item.label}</Link>)}</div>}
+            <div className="relative py-3 -my-3" onMouseEnter={() => setDropdown('properties')} onMouseLeave={() => setDropdown(null)}>
+              <button type="button" onClick={() => setDropdown(dropdown === 'properties' ? null : 'properties')} aria-haspopup="true" className="line-link flex items-center gap-1.5 font-mono text-[10px] uppercase leading-none tracking-[.14em] opacity-85 hover:opacity-100" aria-expanded={dropdown === 'properties'}>Properties <ChevronDown size={12} aria-hidden="true" className={dropdown === 'properties' ? '-mt-px rotate-180 transition-transform' : '-mt-px transition-transform'} /></button>
+              {dropdown === 'properties' && <div className="nav-dropdown absolute left-0 top-full w-52 border border-[#d8cdbc] bg-[#f5f0e6] p-2 text-[#202635] shadow-xl">{inStock(propertyItems).map((item) => <Link key={item.href} href={item.href} onClick={() => setDropdown(null)} className="block px-3 py-2 font-mono text-[10px] uppercase tracking-[.12em] hover:bg-[#e9e4da]">{item.label}</Link>)}</div>}
             </div>
 
             {/* OFF-PLAN */}
-            <div className="relative" onMouseEnter={() => setDropdown('offplan')} onMouseLeave={() => setDropdown(null)}>
-              <button type="button" onClick={() => setDropdown(dropdown === 'offplan' ? null : 'offplan')} aria-haspopup="true" className="line-link flex items-center gap-1 font-mono text-[10px] uppercase tracking-[.16em] opacity-85 hover:opacity-100" aria-expanded={dropdown === 'offplan'}>Off-Plan <ChevronDown size={12} className={dropdown === 'offplan' ? 'rotate-180 transition-transform' : 'transition-transform'} /></button>
-              {dropdown === 'offplan' && <div className="absolute left-0 top-full w-52 border border-[#d8cdbc] bg-[#f5f0e6] p-2 text-[#202635] shadow-xl">{inStock(offPlanItems).map((item) => <Link key={item.href} href={item.href} onClick={() => setDropdown(null)} className="block px-3 py-2 font-mono text-[10px] uppercase tracking-[.12em] hover:bg-[#e9e4da]">{item.label}</Link>)}</div>}
+            <div className="relative py-3 -my-3" onMouseEnter={() => setDropdown('offplan')} onMouseLeave={() => setDropdown(null)}>
+              <button type="button" onClick={() => setDropdown(dropdown === 'offplan' ? null : 'offplan')} aria-haspopup="true" className="line-link flex items-center gap-1.5 font-mono text-[10px] uppercase leading-none tracking-[.14em] opacity-85 hover:opacity-100" aria-expanded={dropdown === 'offplan'}>Off-Plan <ChevronDown size={12} aria-hidden="true" className={dropdown === 'offplan' ? '-mt-px rotate-180 transition-transform' : '-mt-px transition-transform'} /></button>
+              {dropdown === 'offplan' && <div className="nav-dropdown absolute left-0 top-full w-56 border border-[#d8cdbc] bg-[#f5f0e6] p-2 text-[#202635] shadow-xl">{inStock(offPlanItems).map((item) => <Link key={item.href} href={item.href} onClick={() => setDropdown(null)} className="block px-3 py-2 font-mono text-[10px] uppercase tracking-[.12em] hover:bg-[#e9e4da]">{item.label}</Link>)}</div>}
             </div>
 
             {/* DEVELOPERS */}
-            <Link href="/developers" className="line-link font-mono text-[10px] uppercase tracking-[.14em] opacity-85 hover:opacity-100" data-testid="link-nav-developers">Developers</Link>
+            <Link href="/developers" className="line-link flex items-center font-mono text-[10px] uppercase leading-none tracking-[.14em] opacity-85 hover:opacity-100" data-testid="link-nav-developers">Developers</Link>
 
             {/* COMMUNITIES */}
-            <Link href="/communities" className="line-link font-mono text-[10px] uppercase tracking-[.14em] opacity-85 hover:opacity-100" data-testid="link-nav-communities">Communities</Link>
+            <Link href="/communities" className="line-link flex items-center font-mono text-[10px] uppercase leading-none tracking-[.14em] opacity-85 hover:opacity-100" data-testid="link-nav-communities">Communities</Link>
 
             {/* ABOUT */}
-            <div className="relative" onMouseEnter={() => setDropdown('about')} onMouseLeave={() => setDropdown(null)}>
-              <button type="button" onClick={() => setDropdown(dropdown === 'about' ? null : 'about')} aria-haspopup="true" className="line-link flex items-center gap-1 font-mono text-[10px] uppercase tracking-[.16em] opacity-85 hover:opacity-100" aria-expanded={dropdown === 'about'}>About <ChevronDown size={12} className={dropdown === 'about' ? 'rotate-180 transition-transform' : 'transition-transform'} /></button>
-              {dropdown === 'about' && <div className="absolute left-0 top-full w-48 border border-[#d8cdbc] bg-[#f5f0e6] p-2 text-[#202635] shadow-xl">{aboutItems.map((item) => <Link key={item.href} href={item.href} onClick={() => setDropdown(null)} className="block px-3 py-2 font-mono text-[10px] uppercase tracking-[.12em] hover:bg-[#e9e4da]">{item.label}</Link>)}</div>}
+            <div className="relative py-3 -my-3" onMouseEnter={() => setDropdown('about')} onMouseLeave={() => setDropdown(null)}>
+              <button type="button" onClick={() => setDropdown(dropdown === 'about' ? null : 'about')} aria-haspopup="true" className="line-link flex items-center gap-1.5 font-mono text-[10px] uppercase leading-none tracking-[.14em] opacity-85 hover:opacity-100" aria-expanded={dropdown === 'about'}>About <ChevronDown size={12} aria-hidden="true" className={dropdown === 'about' ? '-mt-px rotate-180 transition-transform' : '-mt-px transition-transform'} /></button>
+              {dropdown === 'about' && <div className="nav-dropdown absolute left-0 top-full w-52 border border-[#d8cdbc] bg-[#f5f0e6] p-2 text-[#202635] shadow-xl">{aboutItems.map((item) => <Link key={item.href} href={item.href} onClick={() => setDropdown(null)} className="block px-3 py-2 font-mono text-[10px] uppercase tracking-[.12em] hover:bg-[#e9e4da]">{item.label}</Link>)}</div>}
             </div>
 
             {/* INSIGHTS */}
-            <div className="relative" onMouseEnter={() => setDropdown('insights')} onMouseLeave={() => setDropdown(null)}>
-              <button type="button" onClick={() => setDropdown(dropdown === 'insights' ? null : 'insights')} aria-haspopup="true" className="line-link flex items-center gap-1 font-mono text-[10px] uppercase tracking-[.16em] opacity-85 hover:opacity-100" aria-expanded={dropdown === 'insights'}>Insights <ChevronDown size={12} className={dropdown === 'insights' ? 'rotate-180 transition-transform' : 'transition-transform'} /></button>
-              {dropdown === 'insights' && <div className="absolute left-0 top-full w-48 border border-[#d8cdbc] bg-[#f5f0e6] p-2 text-[#202635] shadow-xl">{insightsItems.map((item) => <Link key={item.href} href={item.href} onClick={() => setDropdown(null)} className="block px-3 py-2 font-mono text-[10px] uppercase tracking-[.12em] hover:bg-[#e9e4da]">{item.label}</Link>)}</div>}
+            <div className="relative py-3 -my-3" onMouseEnter={() => setDropdown('insights')} onMouseLeave={() => setDropdown(null)}>
+              <button type="button" onClick={() => setDropdown(dropdown === 'insights' ? null : 'insights')} aria-haspopup="true" className="line-link flex items-center gap-1.5 font-mono text-[10px] uppercase leading-none tracking-[.14em] opacity-85 hover:opacity-100" aria-expanded={dropdown === 'insights'}>Insights <ChevronDown size={12} aria-hidden="true" className={dropdown === 'insights' ? '-mt-px rotate-180 transition-transform' : '-mt-px transition-transform'} /></button>
+              {dropdown === 'insights' && <div className="nav-dropdown absolute left-0 top-full w-52 border border-[#d8cdbc] bg-[#f5f0e6] p-2 text-[#202635] shadow-xl">{insightsItems.map((item) => <Link key={item.href} href={item.href} onClick={() => setDropdown(null)} className="block px-3 py-2 font-mono text-[10px] uppercase tracking-[.12em] hover:bg-[#e9e4da]">{item.label}</Link>)}</div>}
             </div>
 
             {/* CONTACT CTA */}
-            <button onClick={goContact} className={`group flex items-center gap-2 border px-4 py-2 font-mono text-[10px] uppercase tracking-[.14em] transition-colors ${inverse ? 'border-[#ead8b8]/60 hover:bg-[#ead8b8] hover:text-[#202635]' : 'border-[#202635]/35 hover:bg-[#202635] hover:text-[#f5f0e6]'}`} data-testid="button-nav-contact">
+            <button onClick={goContact} className={`btn group ml-1 min-h-9 gap-2 border px-4 py-2.5 ${inverse ? 'border-[#ead8b8]/60 text-[#f5f0e6] hover:bg-[#ead8b8] hover:text-[#202635]' : 'border-[#202635]/35 text-[#202635] hover:bg-[#202635] hover:text-[#f5f0e6]'}`} data-testid="button-nav-contact">
               Contact us <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </button>
           </nav>
-          <button ref={menuButtonRef} className="grid h-10 w-10 place-items-center lg:hidden" onClick={() => open ? closeMenu() : setOpen(true)} aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
+          <button ref={menuButtonRef} className="-mr-2 grid h-11 w-11 place-items-center lg:hidden" onClick={() => open ? closeMenu() : setOpen(true)} aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
             {open ? <X size={21} /> : <Menu size={21} />}
           </button>
         </div>
@@ -195,7 +197,7 @@ export function Navbar() {
           <button type="button" onClick={closeMenu} className="grid h-9 w-9 place-items-center border border-[#202635]/15" aria-label="Close menu"><X size={16} /></button>
         </div>
         <nav className="flex min-h-[calc(100dvh-4.5rem)] flex-col gap-1 p-3" aria-label="Mobile navigation">
-          <Link href="/" onClick={closeMenu} className="rounded-sm px-3 py-2 font-serif text-[1.2rem] leading-none transition-colors hover:bg-[#e9e4da]" data-testid="link-mobile-home">Home</Link>
+          <Link href="/" onClick={closeMenu} className="block px-3 pb-1 pt-2 font-mono text-[.68rem] uppercase tracking-[.12em] text-[#c97352]" data-testid="link-mobile-home">Home</Link>
           
           {/* PROPERTIES ACCORDION */}
           <button type="button" onClick={() => setMobileAccordion(mobileAccordion === 'properties' ? null : 'properties')} className="mt-2 flex w-full items-center justify-between border-t border-[#202635]/10 px-3 pt-3 font-mono text-[.68rem] uppercase tracking-[.12em] text-[#c97352]" aria-expanded={mobileAccordion === 'properties'}>Properties <ChevronDown size={14} className={`transition-transform ${mobileAccordion === 'properties' ? 'rotate-180' : ''}`} /></button>
@@ -220,9 +222,9 @@ export function Navbar() {
           <div className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-200 ${mobileAccordion === 'insights' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}><div className="min-h-0 border-l border-[#c97352]/35 pl-2">{insightsItems.map((item) => <Link key={item.href} href={item.href} onClick={closeMenu} className="block rounded-sm px-3 py-2 font-mono text-[.64rem] uppercase tracking-[.1em] transition-colors hover:bg-[#e9e4da]">{item.label}</Link>)}</div></div>
 
           {/* CONTACT & WHATSAPP */}
-          <button onClick={goContact} className="mt-4 flex min-h-10 w-full items-center justify-between border border-[#202635]/30 px-3 py-2 font-mono text-[.64rem] uppercase tracking-[.12em]" data-testid="button-mobile-contact">Contact us <ArrowUpRight size={13} /></button>
-          <a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noreferrer" className="mt-1 flex min-h-10 items-center justify-between border-t border-[#202635]/10 px-3 pt-3 text-sm" data-testid="link-mobile-whatsapp"><span className="flex items-center gap-2"><FaWhatsapp size={18} className="text-[#55735f]" /> WhatsApp us</span><ArrowUpRight size={13} /></a>
-          <div className="mt-3 flex gap-3 border-t border-[#202635]/10 px-3 pt-3 font-mono text-[10px] uppercase tracking-[.1em] text-[#202635]/55"><Link href="/terms-and-conditions" onClick={closeMenu} data-testid="link-mobile-terms">Terms & Conditions</Link><Link href="/privacy-policy" onClick={closeMenu} data-testid="link-mobile-privacy">Privacy Policy</Link></div>
+          <button onClick={goContact} className="mt-auto flex min-h-11 w-full items-center justify-between border border-[#202635]/30 px-3 py-2 font-mono text-[.64rem] uppercase tracking-[.12em]" data-testid="button-mobile-contact">Contact us <ArrowUpRight size={13} /></button>
+          <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noreferrer" className="mt-2 flex min-h-11 items-center justify-between border-t border-[#202635]/10 px-3 pt-3 text-sm" data-testid="link-mobile-whatsapp"><span className="flex items-center gap-2"><FaWhatsapp size={18} className="text-[#55735f]" /> WhatsApp us</span><ArrowUpRight size={13} /></a>
+          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2 border-t border-[#202635]/10 px-3 pb-2 pt-3 font-mono text-[10px] uppercase tracking-[.1em] text-[#202635]/55"><Link href="/terms-and-conditions" onClick={closeMenu} data-testid="link-mobile-terms">Terms & Conditions</Link><Link href="/privacy-policy" onClick={closeMenu} data-testid="link-mobile-privacy">Privacy Policy</Link></div>
         </nav>
       </div>
     </>
@@ -235,8 +237,9 @@ export function Navbar() {
  * never shows an icon that leads nowhere.
  */
 function SocialLinks() {
+  const contact = useContact();
   const links = [
-    { key: 'whatsapp', label: 'WhatsApp', href: `https://wa.me/${CONTACT.whatsapp}`, icon: <FaWhatsapp size={15} /> },
+    { key: 'whatsapp', label: 'WhatsApp', href: `https://wa.me/${contact.whatsapp}`, icon: <FaWhatsapp size={15} /> },
     { key: 'instagram', label: 'Instagram', href: SOCIAL.instagram, icon: <FaInstagram size={15} /> },
     { key: 'facebook', label: 'Facebook', href: SOCIAL.facebook, icon: <FaFacebookF size={14} /> },
     { key: 'linkedin', label: 'LinkedIn', href: SOCIAL.linkedin, icon: <FaLinkedinIn size={14} /> },
@@ -266,17 +269,18 @@ function SocialLinks() {
 }
 
 export function Footer() {
+  const contact = useContact();
   return (
-    <footer className="bg-[#202635] px-5 py-16 text-[#f5f0e6] md:px-10 md:py-20">
-      <div className="mx-auto max-w-[1280px]">
+    <footer className="site-section bg-[#202635] text-[#f5f0e6]">
+      <div className="site-container">
 
         {/* Main Footer Grid: 2-up links on phones, 4-up on tablets, full 5 columns on desktop */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 border-b border-[#f5f0e6]/15 pb-14 md:grid-cols-4 md:gap-y-12 lg:grid-cols-[1.3fr_0.8fr_0.8fr_0.8fr_1.1fr] lg:gap-8">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-12 border-b border-[#f5f0e6]/15 pb-14 md:grid-cols-4 lg:grid-cols-[1.25fr_0.85fr_0.85fr_0.85fr_1.2fr] lg:gap-x-10 lg:gap-y-0">
 
           {/* Brand & Introduction */}
           <div className="col-span-full lg:col-span-1">
             <BrandMark inverse />
-            <p className="mt-6 max-w-sm font-serif text-2xl leading-snug text-[#d9c6a4] md:text-3xl">
+            <p className="block-title mt-6 max-w-sm text-[#d9c6a4]">
               A more considered way to move through Dubai.
             </p>
             <p className="mt-4 max-w-sm text-xs leading-5 text-[#f5f0e6]/55">
@@ -348,29 +352,29 @@ export function Footer() {
             <p className="mt-3 text-xs leading-5 text-[#f5f0e6]/60">
               Receive curated notes on prime Dubai residential & investment opportunities.
             </p>
-            <div className="mt-2">
+            <div className="mt-5">
               <NewsletterForm />
             </div>
 
-            <div className="mt-7 border-t border-[#f5f0e6]/12 pt-6">
+            <div className="mt-8 border-t border-[#f5f0e6]/15 pt-6">
               <p className="eyebrow text-[#c97352]">Speak to an advisor</p>
               <a
-                href={`tel:${CONTACT.phoneHref}`}
-                className="mt-3 flex items-center gap-2.5 font-serif text-2xl leading-none tracking-tight text-[#f5f0e6] transition-colors hover:text-[#d9c6a4] md:text-[1.75rem]"
+                href={`tel:${contact.phoneHref}`}
+                className="block-title mt-3 flex items-center gap-2.5 text-[#f5f0e6] transition-colors hover:text-[#d9c6a4]"
                 data-testid="link-footer-phone"
               >
                 <Phone size={17} className="shrink-0 text-[#d9c6a4]" />
-                {CONTACT.phoneDisplay}
+                {contact.phoneDisplay}
               </a>
               <a
-                href={`mailto:${CONTACT.email}`}
+                href={`mailto:${contact.email}`}
                 className="mt-2.5 inline-flex items-center gap-2 text-xs text-[#f5f0e6]/65 transition-colors hover:text-[#d9c6a4]"
                 data-testid="link-footer-email"
               >
                 <Mail size={13} className="shrink-0 text-[#d9c6a4]/70" />
-                {CONTACT.email}
+                {contact.email}
               </a>
-              <p className="mt-2 text-[11px] leading-5 text-[#f5f0e6]/45">{CONTACT.studioHours}</p>
+              <p className="mt-2 text-[11px] leading-5 text-[#f5f0e6]/45">{contact.studioHours}</p>
 
               <div className="mt-5">
                 <SocialLinks />
@@ -386,7 +390,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Footer */}
-        <div className="flex flex-col gap-3 pt-7 font-mono text-[10px] uppercase leading-5 tracking-[.14em] text-[#f5f0e6]/40 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+        <div className="flex flex-col gap-2.5 pt-8 font-mono text-[10px] uppercase leading-5 tracking-[.14em] text-[#f5f0e6]/40 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
           <span data-testid="text-footer-copyright">
             © 2026 KNC Horizon Realtor · Dubai, UAE
           </span>
@@ -403,6 +407,7 @@ export function Footer() {
 }
 
 export function SiteShell({ children }: { children: ReactNode }) {
+  const contact = useContact();
   const [location] = useLocation();
   const [showTop, setShowTop] = useState(false);
 
@@ -425,7 +430,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="grain min-h-[100dvh] overflow-x-hidden">
+    <div className="grain min-h-[100dvh] overflow-x-clip">
 
       <Navbar />
 
@@ -433,35 +438,41 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
       <Footer />
 
-      {/* Floating WhatsApp Action Button - Icon Only, Fixed Bottom Right */}
-      <a
-        href={`https://wa.me/${CONTACT.whatsapp}`}
-        target="_blank"
-        rel="noreferrer"
-        className="group fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full md:bottom-6 md:right-6 md:h-14 md:w-14 bg-[#25D366] text-white shadow-[0_8px_24px_rgba(37,211,102,0.35)] transition-all duration-300 hover:scale-110 hover:bg-[#20ba5a] hover:shadow-[0_12px_28px_rgba(37,211,102,0.5)] focus:outline-none focus:ring-4 focus:ring-[#25D366]/30"
-        aria-label="Chat with KNC Horizon property advisor on WhatsApp"
-        title="Chat with our Dubai property advisor on WhatsApp"
-        data-testid="floating-whatsapp-btn"
-      >
-        <FaWhatsapp className="h-6 w-6 transition-transform duration-300 group-hover:scale-105 md:h-7 md:w-7" />
-      </a>
+      {/*
+       * The floating actions, bottom-right on every route: WhatsApp always, back-to-top once
+       * the page has scrolled. One column, so the two share a centre line and cannot overlap
+       * however their sizes differ. It sits clear of the page gutter and of the safe area on
+       * phones, so it never covers a card, a price or a form field.
+       */}
+      <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-40 flex flex-col items-center gap-3 md:bottom-6 md:right-6">
+        {showTop && (
+          <button
+            onClick={() =>
+              window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              })
+            }
+            className="grid h-11 w-11 place-items-center rounded-full bg-[#202635] text-[#f5f0e6] shadow-lg transition-transform hover:scale-105 md:h-12 md:w-12"
+            aria-label="Scroll to top"
+            title="Back to top"
+          >
+            <ArrowUp size={16} />
+          </button>
+        )}
 
-      {/* Back to top button */}
-      {showTop && (
-        <button
-          onClick={() =>
-            window.scrollTo({
-              top: 0,
-              behavior: "smooth",
-            })
-          }
-          className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-30 grid h-11 w-11 place-items-center md:bottom-6 md:left-6 md:h-12 md:w-12 rounded-full bg-[#202635] text-[#f5f0e6] shadow-lg transition-transform hover:scale-105"
-          aria-label="Scroll to top"
-          title="Back to top"
+        <a
+          href={`https://wa.me/${contact.whatsapp}`}
+          target="_blank"
+          rel="noreferrer"
+          className="group flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_8px_24px_rgba(37,211,102,0.35)] transition-all duration-300 hover:scale-110 hover:bg-[#20ba5a] hover:shadow-[0_12px_28px_rgba(37,211,102,0.5)] focus:outline-none focus:ring-4 focus:ring-[#25D366]/30 md:h-14 md:w-14"
+          aria-label="Chat with KNC Horizon property advisor on WhatsApp"
+          title="Chat with our Dubai property advisor on WhatsApp"
+          data-testid="floating-whatsapp-btn"
         >
-          <ArrowUp size={16} />
-        </button>
-      )}
+          <FaWhatsapp className="h-6 w-6 transition-transform duration-300 group-hover:scale-105 md:h-7 md:w-7" />
+        </a>
+      </div>
 
     </div>
   );

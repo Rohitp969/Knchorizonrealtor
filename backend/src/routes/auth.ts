@@ -1,8 +1,8 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
-import { authenticate, requireAdmin, type AuthenticatedRequest } from "../lib/auth";
-import { getDb, serializeDocument } from "../lib/mongodb";
-import type { UserDoc } from "../lib/models";
+import { authenticate, requireAdmin, type AuthenticatedRequest } from "../lib/auth.ts";
+import { queryOne } from "../lib/postgres.ts";
+import { insertRow, toApi } from "../lib/repositories.ts";
 
 const router = Router();
 
@@ -25,17 +25,18 @@ router.post("/auth/register", async (req, res, next) => {
       return res.status(400).json({ message: "Name, email, and a password of at least 8 characters are required." });
     }
     const normalizedEmail = email.trim().toLowerCase();
-    const users = getDb().collection<UserDoc>("users");
-    if (await users.findOne({ email: normalizedEmail })) return res.status(409).json({ message: "An account with this email already exists." });
-    const user: Omit<UserDoc, "_id"> = {
+    const existing = await queryOne("select id from users where lower(email) = $1", [normalizedEmail]);
+    if (existing) return res.status(409).json({ message: "An account with this email already exists." });
+    const row = await insertRow("users", {
       name: name.trim(),
       email: normalizedEmail,
       passwordHash: await bcrypt.hash(password, 12),
       role: "user",
       createdAt: new Date(),
-    };
-    const result = await users.insertOne(user);
-    return res.status(201).json({ user: serializeDocument({ ...user, _id: result.insertedId } as unknown as Record<string, unknown>) });
+    });
+    const user = toApi("users", row) as Record<string, unknown> | undefined;
+    if (user) delete user.passwordHash;
+    return res.status(201).json({ user });
   } catch (error) {
     return next(error);
   }

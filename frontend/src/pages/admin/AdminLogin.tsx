@@ -3,7 +3,7 @@ import { ArrowUpRight, Loader2, Lock } from 'lucide-react';
 
 import { adminLogin } from '@/lib/admin-api';
 
-/** Admin sign-in. Credentials are checked by the backend against the hashed user in MongoDB. */
+/** Admin sign-in. Credentials are checked by the backend against the hashed user in PostgreSQL. */
 export function AdminLogin({ onSignedIn, notice }: { onSignedIn: () => void; notice?: string }) {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');

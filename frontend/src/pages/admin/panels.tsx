@@ -637,18 +637,67 @@ export function MediaPanel() {
 
 /* ---------------------------------------------------------------- settings / content */
 
-type SettingsDoc = Record<string, any> & { id?: string };
+/*
+ * Site settings.
+ *
+ * One validated document in PostgreSQL, served by GET/PUT /admin/settings. The fields are
+ * checked here for immediate feedback and again on the server, which is the authority — the
+ * screen used to accept anything, including a completely empty save, because neither side
+ * validated at all.
+ */
+
+type SiteSettings = Record<string, string>;
+type FieldErrors = Record<string, string>;
+type MailStatus = { configured: boolean; host?: string; reason?: string };
+
+const SETTINGS_FIELDS = ['siteName', 'defaultCurrency', 'leadNotificationEmail'] as const;
+const CONTENT_FIELDS = [
+  'contactPhone', 'contactEmail', 'contactWhatsapp', 'officeDubai', 'officeIndia', 'studioHours',
+  'heroEyebrow', 'heroHeadline', 'heroCopy', 'seoTitle', 'seoKeywords', 'seoDescription',
+] as const;
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Mirrors the server rules in backend/src/lib/settings.ts so errors appear before a request. */
+function validate(area: 'content' | 'settings', doc: SiteSettings): FieldErrors {
+  const errors: FieldErrors = {};
+  const value = (name: string) => (doc[name] ?? '').trim();
+
+  if (area === 'settings') {
+    if (!value('siteName')) errors.siteName = 'Site name is required.';
+    else if (value('siteName').length > 80) errors.siteName = 'Keep this under 80 characters.';
+    if (!value('defaultCurrency')) errors.defaultCurrency = 'Choose a default currency.';
+    const lead = value('leadNotificationEmail');
+    if (lead && !EMAIL_RE.test(lead)) errors.leadNotificationEmail = 'Enter a valid email address.';
+  } else {
+    if (!value('contactPhone')) errors.contactPhone = 'Phone is required.';
+    else if (!/^[+\d][\d\s()-]{6,24}$/.test(value('contactPhone'))) errors.contactPhone = 'Use a format like +971 58 514 1770.';
+    if (!value('contactEmail')) errors.contactEmail = 'Email is required.';
+    else if (!EMAIL_RE.test(value('contactEmail'))) errors.contactEmail = 'Enter a valid email address.';
+    if (!value('contactWhatsapp')) errors.contactWhatsapp = 'WhatsApp number is required.';
+    else if (!/^\d{8,15}$/.test(value('contactWhatsapp'))) errors.contactWhatsapp = 'Digits only with country code, e.g. 971585141770.';
+    for (const name of ['heroCopy', 'seoDescription']) {
+      if (value(name).length > 600) errors[name] = 'Keep this under 600 characters.';
+    }
+  }
+  return errors;
+}
 
 export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'content' | 'settings' }) {
   const toast = useToast();
-  const [doc, setDoc] = useState<SettingsDoc | null>(null);
+  const [doc, setDoc] = useState<SiteSettings | null>(null);
+  const [currencies, setCurrencies] = useState<string[]>(['AED']);
+  const [mail, setMail] = useState<MailStatus | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
     try {
-      const data = await adminRequest<{ items: SettingsDoc[] }>('/admin/settings');
-      setDoc((data.items ?? [])[0] ?? {});
+      const data = await adminRequest<{ settings: SiteSettings; mail: MailStatus; currencies: string[] }>('/admin/settings');
+      setDoc(data.settings ?? {});
+      setMail(data.mail ?? null);
+      if (data.currencies?.length) setCurrencies(data.currencies);
       setError('');
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'Could not load settings.');
@@ -656,17 +705,38 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
   }, []);
 
   useEffect(() => { load(); }, [load]);
+  // Switching panels clears the other panel's messages.
+  useEffect(() => { setErrors({}); }, [area]);
+
+  const set = (name: string, value: string) => {
+    setDoc((current) => ({ ...(current ?? {}), [name]: value }));
+    setErrors((current) => (current[name] ? { ...current, [name]: '' } : current));
+  };
 
   const save = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!doc) return;
+    const found = validate(area, doc);
+    const active = Object.fromEntries(Object.entries(found).filter(([, message]) => message));
+    setErrors(active);
+    if (Object.keys(active).length) {
+      toast('error', 'Please correct the highlighted fields.');
+      return;
+    }
+
+    // Only this panel's own fields are sent; the server merges them into the shared row.
+    const names = area === 'settings' ? SETTINGS_FIELDS : CONTENT_FIELDS;
+    const body: SiteSettings = {};
+    for (const name of names) body[name] = (doc[name] ?? '').trim();
+
     setSaving(true);
     try {
-      const { id, ...body } = doc;
-      const saved = id
-        ? await adminRequest<{ item: SettingsDoc }>(`/admin/settings/${id}`, { method: 'PATCH', body: JSON.stringify(body) })
-        : await adminRequest<{ item: SettingsDoc }>('/admin/settings', { method: 'POST', body: JSON.stringify(body) });
-      setDoc(saved.item);
+      const saved = await adminRequest<{ settings: SiteSettings; mail: MailStatus }>('/admin/settings', {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      });
+      setDoc(saved.settings);
+      setMail(saved.mail ?? null);
       toast('success', 'Settings saved.');
     } catch (reason) {
       toast('error', reason instanceof Error ? reason.message : 'Could not save settings.');
@@ -675,25 +745,45 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
     }
   };
 
-  const field = (name: string, label: string, type: 'text' | 'textarea' = 'text') => (
+  const inputClass = (name: string) =>
+    `mt-1.5 w-full rounded-sm border bg-white px-3 py-2.5 text-sm outline-none ${
+      errors[name] ? 'border-[#b23b2e] focus:border-[#b23b2e]' : 'border-[#202635]/20 focus:border-[#c97352]'
+    }`;
+
+  const field = (name: string, label: string, type: 'text' | 'textarea' | 'select' = 'text', hint?: string) => (
     <label className="block">
       <span className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55">{label}</span>
       {type === 'textarea' ? (
         <textarea
           value={doc?.[name] ?? ''}
-          onChange={(event) => setDoc((current) => ({ ...(current ?? {}), [name]: event.target.value }))}
+          onChange={(event) => set(name, event.target.value)}
           rows={3}
-          className="mt-1.5 w-full resize-y rounded-sm border border-[#202635]/20 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#c97352]"
+          className={`${inputClass(name)} resize-y`}
           data-testid={`settings-${name}`}
         />
+      ) : type === 'select' ? (
+        <select
+          value={doc?.[name] ?? ''}
+          onChange={(event) => set(name, event.target.value)}
+          className={inputClass(name)}
+          data-testid={`settings-${name}`}
+        >
+          <option value="">Select a currency</option>
+          {currencies.map((code) => <option key={code} value={code}>{code}</option>)}
+        </select>
       ) : (
         <input
           value={doc?.[name] ?? ''}
-          onChange={(event) => setDoc((current) => ({ ...(current ?? {}), [name]: event.target.value }))}
-          className="mt-1.5 w-full rounded-sm border border-[#202635]/20 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#c97352]"
+          onChange={(event) => set(name, event.target.value)}
+          className={inputClass(name)}
           data-testid={`settings-${name}`}
         />
       )}
+      {errors[name] ? (
+        <span className="mt-1 block text-xs text-[#b23b2e]" data-testid={`settings-error-${name}`}>{errors[name]}</span>
+      ) : hint ? (
+        <span className="mt-1 block text-xs text-[#202635]/45">{hint}</span>
+      ) : null}
     </label>
   );
 
@@ -703,7 +793,11 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
     <div>
       <AdminPanelHeader
         title={area === 'content' ? 'Website content' : 'Settings'}
-        description={area === 'content' ? 'Contact details and SEO defaults stored in the settings collection.' : 'Account and site configuration.'}
+        description={
+          area === 'content'
+            ? 'Contact details, home hero and SEO defaults. These render on the live site.'
+            : 'Account and site configuration.'
+        }
       />
 
       {error && <div className="mt-5"><StateBlock tone="error" title="Settings unavailable" message={error} action={<button className={adminButtonClass('ghost')} onClick={load}>Try again</button>} /></div>}
@@ -714,9 +808,10 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
             <fieldset>
               <legend className="mb-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">Contact details</legend>
               <div className="grid gap-4 sm:grid-cols-2">
-                {field('contactPhone', 'Phone')}
+                {field('contactPhone', 'Phone', 'text', 'Shown on the site and used for the call link.')}
                 {field('contactEmail', 'Email')}
-                {field('contactWhatsapp', 'WhatsApp number')}
+                {field('contactWhatsapp', 'WhatsApp number', 'text', 'Digits only, e.g. 971585141770.')}
+                {field('studioHours', 'Studio hours')}
                 {field('officeDubai', 'Dubai office')}
                 {field('officeIndia', 'India office')}
               </div>
@@ -738,8 +833,8 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
               </div>
             </fieldset>
             <p className="rounded-sm border border-[#202635]/12 bg-white px-3 py-2.5 text-xs leading-5 text-[#202635]/60">
-              These values are stored in MongoDB (<code>settings</code>). The public pages currently render their copy from the
-              codebase, so changes here are kept for reference until a page is wired to read them.
+              Saved in PostgreSQL and served to the public site, so the phone number, email, WhatsApp button and
+              office addresses update everywhere as soon as you save.
             </p>
           </>
         ) : (
@@ -751,17 +846,33 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
                 <p className="mt-1 font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/50">Role: {user?.role ?? 'admin'}</p>
               </div>
               <p className="mt-2 text-xs text-[#202635]/55">
-                Admin credentials come from the backend environment (ADMIN_EMAIL / ADMIN_PASSWORD) and are hashed in MongoDB.
+                Admin credentials come from the backend environment (ADMIN_EMAIL / ADMIN_PASSWORD) and are hashed in PostgreSQL.
                 Change them there, then restart the API.
               </p>
             </fieldset>
             <fieldset>
               <legend className="mb-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">Site settings</legend>
               <div className="grid gap-4 sm:grid-cols-2">
-                {field('siteName', 'Site name')}
-                {field('defaultCurrency', 'Default currency')}
-                {field('leadNotificationEmail', 'Send lead alerts to')}
+                {field('siteName', 'Site name', 'text', 'Used in the browser tab on every page.')}
+                {field('defaultCurrency', 'Default currency', 'select', 'Used when a listing has no currency of its own.')}
+                <div className="sm:col-span-2">
+                  {field('leadNotificationEmail', 'Send lead alerts to', 'text', 'Every website enquiry is emailed here. Leave blank for no alerts.')}
+                </div>
               </div>
+              {mail && (
+                <p
+                  className={`mt-3 rounded-sm border px-3 py-2.5 text-xs leading-5 ${
+                    mail.configured
+                      ? 'border-[#55735f]/30 bg-[#55735f]/10 text-[#3d5446]'
+                      : 'border-[#c97352]/35 bg-[#c97352]/10 text-[#202635]/70'
+                  }`}
+                  data-testid="settings-mail-status"
+                >
+                  {mail.configured
+                    ? `Email delivery is active via ${mail.host}. Enquiries are emailed to the address above.`
+                    : `Email delivery is not configured, so no alert is sent yet — ${mail.reason} Add the SMTP_* values to the backend environment and restart the API. Enquiries are still saved and listed under Leads / Inquiries.`}
+                </p>
+              )}
             </fieldset>
           </>
         )}

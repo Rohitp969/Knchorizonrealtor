@@ -1,5 +1,5 @@
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ArrowUpRight, Compass, Eye, HandHeart, Headset } from 'lucide-react';
 import { Link } from 'wouter';
 
@@ -13,14 +13,29 @@ import {
   SectionIntro,
   SectionLabel,
   ServiceRow,
+  cardGrid,
   fadeUp,
+  heroItem,
+  heroStagger,
 } from '@/components/blocks';
 import { PropertySearch } from '@/components/property-search';
 
 import { areas, defaultDevelopers, services, specialistServices } from '@/lib/site-data';
-import { CONTACT } from '@/lib/contact-info';
+import { useContact } from '@/lib/site-settings';
 
 export default function Home() {
+  const contact = useContact();
+
+  /*
+   * Hero parallax. The photograph drifts down a little slower than the page, which gives the
+   * hero depth without ever moving on its own. The travel is small (24px over the first 600px
+   * of scroll) and the layer carries a matching 5% scale so the drift stays inside the crop
+   * and never uncovers an edge. Disabled outright for reduced motion.
+   */
+  const reduceMotion = useReducedMotion();
+  const { scrollY } = useScroll();
+  const heroDrift = useTransform(scrollY, [0, 600], [0, 24]);
+
   return (
     <main className="overflow-x-hidden">
 
@@ -31,16 +46,17 @@ export default function Home() {
       ========================================================= */}
       <section
         className="
-          home-hero relative flex flex-col overflow-hidden
+          home-hero site-gutter relative flex flex-col overflow-hidden
           bg-[#202635] text-[#f5f0e6]
-          min-h-[26rem]
-          px-5 pb-6 pt-20
-          sm:min-h-[32rem] sm:pb-10 sm:pt-24
-          md:min-h-[620px] md:px-10 md:pb-12 md:pt-28
-          lg:min-h-[660px] lg:max-h-[720px] lg:pb-12
+          pb-6 pt-28
+          sm:pb-10 sm:pt-28
+          md:pb-12 md:pt-32
         "
       >
-        <div className="home-hero-media">
+        <motion.div
+          className="home-hero-media"
+          style={reduceMotion ? undefined : { y: heroDrift, scale: 1.05 }}
+        >
           {/* CC0 public domain: Rupak Chatterjee, via Wikimedia Commons (File:Dubai UAE Landscape.jpg) */}
           <img
             src="/images/hero-dubai-sunset.jpg"
@@ -49,7 +65,7 @@ export default function Home() {
             fetchPriority="high"
             data-testid="img-hero"
           />
-        </div>
+        </motion.div>
 
         {/* Readability. Phones: full-width column, so the scrim runs top-to-bottom.
             Tablet and up: deeper on the left behind the text, leaving the Burj clear. */}
@@ -57,31 +73,34 @@ export default function Home() {
         <div className="absolute inset-0 hidden bg-[linear-gradient(100deg,rgba(16,21,35,.9)_0%,rgba(16,21,35,.74)_24%,rgba(16,21,35,.4)_48%,rgba(16,21,35,.1)_70%,rgba(16,21,35,0)_88%)] md:block" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#141a2b]/55 via-transparent to-[#141a2b]/45" />
 
-        <div className="relative z-10 mx-auto flex w-full max-w-[1280px] flex-1 flex-col">
+        <div className="relative z-10 site-container flex flex-1 flex-col">
           <motion.div
             initial="hidden"
             animate="visible"
-            variants={fadeUp}
-            className="relative flex flex-1 items-center"
+            variants={heroStagger}
+            /* Anchored to the top, not centred: centring split the leftover height in two and
+               pushed the headline a further 62px down, and that drift grew on taller screens.
+               Top-aligned, the gap under the navbar is the same on every laptop. */
+            className="relative flex flex-1 items-start"
           >
             <div className="w-full max-w-[34rem] md:max-w-[46rem]">
-              <h1 className="hero-title">
+              <motion.h1 variants={heroItem} className="hero-title">
                 Find your <em className="text-[#d9c6a4]">horizon</em> in Dubai.
-              </h1>
+              </motion.h1>
 
-              <p className="mt-3 max-w-md text-[.8125rem] leading-relaxed text-[#f5f0e6]/75 sm:mt-4 sm:text-base">
+              <motion.p variants={heroItem} className="mt-3 max-w-md text-[.8125rem] leading-relaxed text-[#f5f0e6]/75 sm:mt-4 sm:text-base">
                 Discover exceptional properties and trusted real estate
                 opportunities across Dubai and the UAE.
-              </p>
+              </motion.p>
 
-              <div className="mt-4 flex flex-wrap gap-2 sm:mt-5 sm:gap-3">
+              <motion.div variants={heroItem} className="btn-row mt-5">
                 <Link href="/properties" className="btn btn-sand" data-testid="link-hero-properties">
                   Explore properties <ArrowUpRight size={14} />
                 </Link>
                 <Link href="/contact" className="btn btn-outline-light" data-testid="link-hero-contact">
                   Contact us <ArrowUpRight size={14} />
                 </Link>
-              </div>
+              </motion.div>
             </div>
 
             {/* Vertical rail: on the content column's right edge, centred against the headline */}
@@ -101,80 +120,52 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <div className="mt-auto pt-4 sm:pt-6 md:pt-8">
+          <motion.div variants={heroItem} className="mt-auto pt-4 sm:pt-6 md:pt-8">
             <PropertySearch />
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* =========================================================
           THE PROPERTY EDIT
-          Same background as the section above, so it opens with a
-          divider instead of a second full block of padding.
+          The hero above is dark, so the colour change is the divider: this section opens on
+          the same block of padding as every other one. It used to run flush to the hero with
+          a hairline rule, which was written for a cream section sitting on cream — against
+          the dark hero the rule was invisible and the heading sat 53px higher than the
+          heading of every section below it.
       ========================================================= */}
       <section
-        className="home-flush-top bg-[#f5f0e6] px-5 pb-20 md:px-10 md:pb-28"
+        className="site-section bg-[#f5f0e6]"
       >
-        <div className="mx-auto max-w-[1280px] border-t border-[#202635]/12 pt-14 sm:pt-16 md:pt-20">
+        <div className="site-container">
 
-          <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between xl:gap-12">
-            <SectionIntro
-              className="xl:flex-1"
-              label="The Property Edit"
-              title={
-                <>
-                  Properties with
-                  <br />
-                  <em className="text-[#c97352]">
-                    a point of view.
-                  </em>
-                </>
-              }
-              copy="A curated selection of distinctive homes, spaces and investment opportunities in Dubai."
-            />
+          <SectionIntro
+            label="The Property Edit"
+            title={
+              <>
+                Properties with
+                <br />
+                <em className="text-[#c97352]">
+                  a point of view.
+                </em>
+              </>
+            }
+            copy="A curated selection of distinctive homes, spaces and investment opportunities in Dubai."
+            action={
+              <Link
+                href="/properties"
+                className="line-link inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] transition-colors hover:text-[#202635]"
+                data-testid="link-home-properties"
+              >
+                View all properties
+                <ArrowUpRight size={14} />
+              </Link>
+            }
+          />
 
-            <Link
-              href="/properties"
-              className="
-                mb-1
-                hidden
-                shrink-0
-                items-center gap-2
-                whitespace-nowrap
-                font-mono text-[10px]
-                uppercase tracking-[.14em]
-                text-[#c97352]
-                transition-colors
-                hover:text-[#202635]
-                xl:flex
-              "
-              data-testid="link-home-properties"
-            >
-              View all properties
-              <ArrowUpRight size={14} />
-            </Link>
-          </div>
-
-          <div className="mt-10 md:mt-14">
+          <div className="mt-12">
             <FeaturedProperties />
           </div>
-
-          <Link
-            href="/properties"
-            className="
-              mt-8
-              inline-flex items-center gap-2
-              font-mono text-[10px]
-              uppercase tracking-[.14em]
-              text-[#c97352]
-              line-link
-              xl:hidden
-            "
-            data-testid="link-home-properties-mobile"
-          >
-            View all properties
-            <ArrowUpRight size={14} />
-          </Link>
         </div>
       </section>
 
@@ -183,9 +174,9 @@ export default function Home() {
       ========================================================= */}
       <section
         id="introduction"
-        className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28"
+        className="bg-[#e9e4da] site-section"
       >
-        <div className="mx-auto max-w-[1280px]">
+        <div className="site-container">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -204,39 +195,16 @@ export default function Home() {
               <em className="text-[#c97352]">Dubai.</em>
             </h2>
 
-            <p className="mt-8 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:leading-8">
+            <p className="body-copy measure mt-8 text-[#202635]/75">
               KNC Horizon Realtor connects discerning clients with exceptional residential and commercial real estate opportunities across Dubai and the UAE. Our approach combines grounded local market intelligence, high-touch professional advisory, and a dedication to helping every client secure the right property with absolute confidence.
             </p>
 
-            <div className="mt-8 flex w-full flex-col items-start gap-5 sm:w-auto sm:flex-row sm:items-center">
-              <Link
-                href="/about"
-                className="
-                  inline-flex w-full items-center justify-between gap-3
-                  bg-[#202635]
-                  px-6 py-3.5
-                  font-mono text-[10px]
-                  uppercase tracking-[.14em]
-                  text-[#f5f0e6]
-                  transition-colors
-                  hover:bg-[#c97352]
-                  sm:w-auto sm:justify-start
-                "
-                data-testid="link-home-about"
-              >
-                Discover our story
-                <ArrowUpRight size={14} />
+            <div className="btn-row mt-10">
+              <Link href="/about" className="btn btn-primary" data-testid="link-home-about">
+                Discover our story <ArrowUpRight size={14} />
               </Link>
-              <Link
-                href="/properties"
-                className="
-                  font-mono text-[10px]
-                  uppercase tracking-[.14em]
-                  text-[#c97352]
-                  line-link
-                "
-              >
-                Browse property portfolio
+              <Link href="/properties" className="btn btn-secondary">
+                Browse property portfolio <ArrowUpRight size={14} />
               </Link>
             </div>
           </motion.div>
@@ -246,8 +214,8 @@ export default function Home() {
       {/* =========================================================
           FEATURED OFF-PLAN
       ========================================================= */}
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           <SectionIntro
             label="Off-plan in Dubai"
             title={<>New developments<br /><em className="text-[#c97352]">worth an early look.</em></>}
@@ -258,7 +226,7 @@ export default function Home() {
             <FeaturedProjects />
           </div>
 
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="btn-row mt-10">
             <Link href="/off-plan" className="btn btn-primary" data-testid="link-home-offplan">
               Explore off-plan <ArrowUpRight size={14} />
             </Link>
@@ -275,9 +243,9 @@ export default function Home() {
           (six areas divide evenly, so no half-empty last row)
       ========================================================= */}
       <section
-        className="overflow-hidden bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28"
+        className="overflow-hidden bg-[#dfe2dc] site-section"
       >
-        <div className="mx-auto max-w-[1280px]">
+        <div className="site-container">
           <SectionIntro
             label="Dubai Communities"
             title={
@@ -296,12 +264,11 @@ export default function Home() {
           {/* One card per row on phones: the old peek carousel left a card cut off at the edge. */}
           <div
             className="
-              mt-10
+              mt-12
               grid
               grid-cols-1
-              gap-5
+              gap-6
               sm:grid-cols-2
-              md:mt-14
               lg:grid-cols-3
             "
           >
@@ -317,15 +284,7 @@ export default function Home() {
 
           <Link
             href="/areas"
-            className="
-              mt-8
-              inline-flex
-              items-center gap-2
-              font-mono text-[10px]
-              uppercase tracking-[.14em]
-              text-[#c97352]
-              line-link
-            "
+            className="line-link mt-10 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
             data-testid="link-home-areas"
           >
             Read our area notes
@@ -337,15 +296,15 @@ export default function Home() {
       {/* =========================================================
           DEVELOPERS
       ========================================================= */}
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           <SectionIntro
             label="Developers"
             title={<>The names behind<br /><em className="text-[#c97352]">Dubai&rsquo;s landmarks.</em></>}
             copy="Profiles of the developers building across Dubai&rsquo;s principal communities, each with their own project history and official site."
           />
 
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {defaultDevelopers.slice(0, 8).map((developer) => (
               <Link
                 key={developer.slug}
@@ -365,7 +324,7 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="btn-row mt-10">
             <Link href="/developers" className="btn btn-primary" data-testid="link-home-developers">
               All developers <ArrowUpRight size={14} />
             </Link>
@@ -380,9 +339,9 @@ export default function Home() {
           SERVICES
       ========================================================= */}
       <section
-        className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28"
+        className="bg-[#e9e4da] site-section"
       >
-        <div className="mx-auto max-w-[1280px]">
+        <div className="site-container">
           <SectionIntro
             label="Advisory Services"
             title={
@@ -397,7 +356,7 @@ export default function Home() {
             copy="Property decisions have a pace of their own. Our role is to bring perspective, momentum, and discretion to every one."
           />
 
-          <div className="mt-10 md:mt-16">
+          <div className="mt-12">
             {services.map((service) => (
               <ServiceRow
                 key={service.id}
@@ -413,9 +372,9 @@ export default function Home() {
           Two services, so a two-column grid (no empty third column)
       ========================================================= */}
       <section
-        className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28"
+        className="bg-[#f5f0e6] site-section"
       >
-        <div className="mx-auto max-w-[1280px]">
+        <div className="site-container">
           <SectionIntro
             label="Specialist Design & Living Solutions"
             title={
@@ -430,12 +389,12 @@ export default function Home() {
             copy="When the right property is only the beginning, our design and interiors team helps you carry the idea through."
           />
 
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 md:mt-14 lg:grid-cols-3">
+          <div className={`mt-12 ${cardGrid(specialistServices.length)}`}>
             {specialistServices.map((service) => (
               <Link
                 key={service.id}
                 href={service.href}
-                className="card-editorial group flex h-full flex-col justify-between p-6"
+                className="card-editorial group flex h-full flex-col justify-between p-5"
                 data-testid={`link-specialist-${service.id}`}
               >
                 <div>
@@ -492,9 +451,9 @@ export default function Home() {
           WHY KNC
       ========================================================= */}
       <section
-        className="bg-[#202635] px-5 py-20 md:px-10 md:py-28 text-[#f5f0e6]"
+        className="bg-[#202635] site-section text-[#f5f0e6]"
       >
-        <div className="mx-auto max-w-[1280px]">
+        <div className="site-container">
           <SectionIntro
             label="Why KNC Horizon"
             title={
@@ -512,14 +471,13 @@ export default function Home() {
 
           <div
             className="
-              mt-10
+              mt-12
               grid
               gap-px
               border-y
               border-[#f5f0e6]/15
               bg-[#f5f0e6]/15
               sm:grid-cols-2
-              md:mt-14
               lg:grid-cols-4
             "
           >
@@ -577,13 +535,11 @@ export default function Home() {
       {/* =========================================================
           INVESTMENT
       ========================================================= */}
-      <section className="w-full bg-[#c6d0c9] px-5 py-20 md:px-10 md:py-28">
+      <section className="w-full bg-[#c6d0c9] site-section">
         <div
           className="
-            mx-auto
+            site-container
             grid
-            w-full
-            max-w-[1280px]
             items-center
             gap-10
             md:gap-12
@@ -623,13 +579,13 @@ export default function Home() {
           </div>
 
           {/* CONTENT */}
-          <div className="w-full min-w-0 max-w-[570px]">
+          <div className="measure w-full min-w-0">
             <SectionLabel>
               Strategic Investment
             </SectionLabel>
 
             <h2
-              className="section-title mt-4 max-w-[560px] text-[#202635]"
+              className="section-title mt-6 text-[#202635]"
             >
               Invest
               <br />
@@ -639,15 +595,7 @@ export default function Home() {
             </h2>
 
             <p
-              className="
-                mt-6
-                max-w-[520px]
-                text-sm
-                leading-6
-                text-[#202635]/65
-                sm:text-base
-                sm:leading-7
-              "
+              className="body-copy mt-6 text-[#202635]/65"
             >
               Explore opportunities in one of the world’s most dynamic real
               estate markets. We bring local perspective to residential
@@ -660,7 +608,6 @@ export default function Home() {
               className="
                 mt-6
                 grid
-                max-w-[520px]
                 grid-cols-1
                 gap-x-8
                 gap-y-3
@@ -684,18 +631,7 @@ export default function Home() {
             {/* CTA */}
             <Link
               href="/services#investment"
-              className="
-                mt-7
-                inline-flex
-                items-center
-                gap-3
-                font-mono
-                text-[10px]
-                uppercase
-                tracking-[.14em]
-                text-[#c97352]
-                line-link
-              "
+              className="line-link mt-8 inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
               data-testid="link-home-investment"
             >
               Talk to our property advisor
@@ -708,8 +644,8 @@ export default function Home() {
       {/* =========================================================
           MARKET & INSIGHTS
       ========================================================= */}
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           <SectionIntro
             label="Insights"
             title={<>Notes on the<br /><em className="text-[#c97352]">Dubai market.</em></>}
@@ -720,7 +656,7 @@ export default function Home() {
             <LatestInsights />
           </div>
 
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="btn-row mt-10">
             <Link href="/blog" className="btn btn-primary" data-testid="link-home-blog">
               Read the journal <ArrowUpRight size={14} />
             </Link>
@@ -742,7 +678,7 @@ export default function Home() {
           cut off when the copy wraps on small screens
       ========================================================= */}
       <section
-        className="mobile-cta-section relative min-h-[360px] overflow-hidden bg-[#202635] px-5 py-20 md:px-10 md:py-28 text-[#f5f0e6] sm:min-h-[400px] md:min-h-[440px]"
+        className="site-section relative min-h-[22rem] overflow-hidden bg-[#202635] text-[#f5f0e6] sm:min-h-[24rem] md:min-h-[27rem]"
       >
         <img
           src="/images/creek-waterfront.jpg"
@@ -761,11 +697,10 @@ export default function Home() {
 
         <div
           className="
+            site-container
             relative
             z-10
-            mx-auto
             flex
-            max-w-[1280px]
             flex-col
             justify-between
             gap-10
@@ -790,14 +725,7 @@ export default function Home() {
             </h2>
 
             <p
-              className="
-                mt-8
-                max-w-2xl
-                text-sm
-                leading-7
-                text-white/70
-                sm:text-base
-              "
+              className="body-copy measure mt-8 text-white/70"
             >
               A considered approach to Dubai property, helping you discover
               the right opportunity and move forward with clarity and confidence.
@@ -805,23 +733,11 @@ export default function Home() {
           </div>
 
           <div
-            className="
-              flex
-              flex-col
-              items-stretch
-              gap-4
-              sm:flex-row
-              sm:items-center
-              sm:gap-8
-              lg:shrink-0
-              lg:flex-col
-              lg:items-end
-              lg:gap-4
-            "
+            className="btn-row lg:shrink-0 lg:flex-col lg:items-stretch"
           >
             <Link
               href="/contact"
-              className="group flex items-center justify-between gap-4 whitespace-nowrap border border-[#f5f0e6]/45 px-5 py-4 font-mono text-[10px] uppercase tracking-[.14em] transition-colors hover:bg-[#f5f0e6] hover:text-[#202635]"
+              className="btn btn-sand group"
               data-testid="link-home-cta-contact"
             >
               Contact us
@@ -837,11 +753,11 @@ export default function Home() {
             </Link>
 
             <a
-              href={`tel:${CONTACT.phoneHref}`}
-              className="group flex items-center gap-3 whitespace-nowrap py-1 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6]/80 transition-colors hover:text-[#d9c6a4]"
+              href={`tel:${contact.phoneHref}`}
+              className="btn btn-outline-light group"
               data-testid="link-home-cta-call"
             >
-              Call {CONTACT.phoneDisplay}
+              Call {contact.phoneDisplay}
 
               <ArrowUpRight
                 size={14}
@@ -861,13 +777,12 @@ export default function Home() {
       ========================================================= */}
       <section
         id="contact"
-        className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28"
+        className="bg-[#f5f0e6] site-section"
       >
         <div
           className="
-            mx-auto
+            site-container
             grid
-            max-w-[1280px]
             gap-12
             md:gap-14
             lg:grid-cols-[.8fr_1.2fr]
@@ -880,7 +795,7 @@ export default function Home() {
             </SectionLabel>
 
             <h2
-              className="section-title mt-5 text-[#202635]"
+              className="section-title mt-6 text-[#202635]"
             >
               Tell us where
               <br />
@@ -889,22 +804,22 @@ export default function Home() {
               </em>
             </h2>
 
-            <p className="mt-6 max-w-sm text-sm leading-6 text-[#202635]/60">
+            <p className="measure-narrow mt-6 text-sm leading-7 text-[#202635]/60">
               No hard sell. Just a first conversation about what a good move
               looks like for you.
             </p>
 
             <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-8 lg:flex-col lg:items-start lg:gap-4">
               <a
-                href={`tel:${CONTACT.phoneHref}`}
+                href={`tel:${contact.phoneHref}`}
                 className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635] line-link"
                 data-testid="link-contact-phone"
               >
-                {CONTACT.phoneDisplay}
+                {contact.phoneDisplay}
               </a>
 
               <a
-                href={`https://wa.me/${CONTACT.whatsapp}`}
+                href={`https://wa.me/${contact.whatsapp}`}
                 target="_blank"
                 rel="noreferrer"
                 className="font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] line-link"

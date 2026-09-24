@@ -2,10 +2,22 @@ import { Router } from "express";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import multer from "multer";
-import { requireAdmin } from "../lib/auth";
-import { getDb, objectId, serializeDocument } from "../lib/mongodb";
-import type { BlogPostDoc, CommunityDoc, DeveloperDoc, GalleryItemDoc, InquiryDoc, MarketInsightDoc, ProjectDoc, PropertyDoc, TestimonialDoc, UserDoc } from "../lib/models";
-import type { Collection } from "mongodb";
+import { requireAdmin } from "../lib/auth.ts";
+import { count, isId, query, queryOne } from "../lib/postgres.ts";
+import {
+  contains,
+  deleteRow,
+  findById,
+  insertRow,
+  listAll,
+  toApi,
+  toApiList,
+  updateRow,
+  type TableName,
+} from "../lib/repositories.ts";
+import type { BlogPostDoc, DeveloperDoc, ProjectDoc, PropertyDoc, UserDoc } from "../lib/models.ts";
+import { mailStatus } from "../lib/mailer.ts";
+import { readSettings, SUPPORTED_CURRENCIES, validateSettings, writeSettings } from "../lib/settings.ts";
 
 const router = Router();
 router.use(requireAdmin);
@@ -34,22 +46,23 @@ function cleanBody(body: Record<string, unknown>) {
   return { ...rest, updatedAt: new Date() };
 }
 
-function collectionFor(resource: string): Collection<any> | undefined {
-  const collections = {
-    properties: getDb().collection<PropertyDoc>("properties"),
-    projects: getDb().collection<ProjectDoc>("projects"),
-    posts: getDb().collection<BlogPostDoc>("posts"),
-    gallery: getDb().collection<GalleryItemDoc>("gallery"),
-    testimonials: getDb().collection<TestimonialDoc>("testimonials"),
-    users: getDb().collection<UserDoc>("users"),
-    developers: getDb().collection<DeveloperDoc>("developers"),
-    communities: getDb().collection<CommunityDoc>("communities"),
-    insights: getDb().collection<MarketInsightDoc>("insights"),
-    content: getDb().collection<GalleryItemDoc>("gallery"),
-    settings: getDb().collection("settings"),
-    subscribers: getDb().collection("newsletter"),
-  };
-  return collections[resource as keyof typeof collections];
+/** The tables the generic admin resource routes may touch, and how each one is ordered. */
+const RESOURCES: Record<string, { table: TableName; order: string }> = {
+  properties: { table: "properties", order: "updated_at desc, created_at desc" },
+  projects: { table: "projects", order: "updated_at desc, created_at desc" },
+  posts: { table: "posts", order: "updated_at desc, created_at desc" },
+  gallery: { table: "gallery", order: "created_at desc" },
+  testimonials: { table: "testimonials", order: "created_at desc" },
+  users: { table: "users", order: "created_at desc" },
+  developers: { table: "developers", order: "sort_order asc, name asc" },
+  communities: { table: "communities", order: "sort_order asc, name asc" },
+  insights: { table: "insights", order: "updated_at desc, created_at desc" },
+  content: { table: "gallery", order: "created_at desc" },
+  subscribers: { table: "newsletter", order: "created_at desc" },
+};
+
+function resourceFor(name: string) {
+  return RESOURCES[name];
 }
 
 function blogBody(body: Record<string, unknown>, existing?: BlogPostDoc) {
@@ -72,7 +85,7 @@ function blogBody(body: Record<string, unknown>, existing?: BlogPostDoc) {
     seoTitle: typeof body.seoTitle === "string" ? body.seoTitle.trim() : existing?.seoTitle ?? title,
     seoDescription: typeof body.seoDescription === "string" ? body.seoDescription.trim() : existing?.seoDescription ?? (typeof body.excerpt === "string" ? body.excerpt.trim() : existing?.excerpt ?? ""),
     updatedAt: now,
-  } satisfies Omit<BlogPostDoc, "_id" | "createdAt" | "updatedAt"> & { updatedAt: Date };
+  };
 }
 
 function slugify(text: string): string {
@@ -125,8 +138,9 @@ function developerBody(body: Record<string, unknown>, existing?: DeveloperDoc) {
     areas,
     established,
     updatedAt: now,
-  } satisfies Omit<DeveloperDoc, "_id" | "createdAt" | "updatedAt"> & { updatedAt: Date };
+  };
 }
+
 function propertyBody(body: Record<string, unknown>, _unknown?: unknown, existing?: PropertyDoc) {
   const title = typeof body.title === "string" ? body.title.trim() : existing?.title;
   const slug = typeof body.slug === "string" ? body.slug.trim().toLowerCase() : existing?.slug;
@@ -144,6 +158,8 @@ function propertyBody(body: Record<string, unknown>, _unknown?: unknown, existin
   const amenities = Array.isArray(body.amenities) ? body.amenities.map(String) : existing?.amenities ?? [];
   const featured = typeof body.featured === "boolean" ? body.featured : existing?.featured ?? false;
   const published = typeof body.published === "boolean" ? body.published : existing?.published ?? false;
+  // listingType drives the Buy/Rent split in the public search, so an edit must keep it.
+  const listingType = typeof body.listingType === "string" ? body.listingType.trim() : existing?.listingType;
   if (!title || !slug) return undefined;
   const now = new Date();
   return {
@@ -152,6 +168,7 @@ function propertyBody(body: Record<string, unknown>, _unknown?: unknown, existin
     location,
     community,
     type,
+    listingType,
     status,
     price,
     currency,
@@ -164,7 +181,7 @@ function propertyBody(body: Record<string, unknown>, _unknown?: unknown, existin
     featured,
     published,
     updatedAt: now,
-  } satisfies Omit<PropertyDoc, "_id" | "createdAt" | "updatedAt"> & { updatedAt: Date };
+  };
 }
 
 function projectBody(body: Record<string, unknown>, _unknown?: unknown, existing?: ProjectDoc) {
@@ -216,9 +233,44 @@ function projectBody(body: Record<string, unknown>, _unknown?: unknown, existing
     featured,
     published,
     updatedAt: now,
-  } satisfies Omit<ProjectDoc, "_id" | "createdAt" | "updatedAt"> & { updatedAt: Date };
+  };
 }
 
+/**
+ * Keeps projects.developer_slug in step with the developer name an admin typed, so the
+ * foreign key stays true after every write without the admin having to pick from a list.
+ */
+async function linkProjectDeveloper(projectId: string) {
+  await query(
+    `update projects p
+        set developer_slug = d.slug
+       from developers d
+      where p.id = $1
+        and (
+             lower(btrim(p.developer)) = lower(d.name)
+          or lower(btrim(p.developer)) = lower(regexp_replace(d.name, '\\s+(Properties|Realty)$', '', 'i'))
+          or lower(btrim(p.developer)) = lower(d.slug)
+        )`,
+    [projectId],
+  );
+  // A developer that no longer matches any profile loses the link rather than keeping a stale one.
+  await query(
+    `update projects p
+        set developer_slug = null
+      where p.id = $1
+        and p.developer_slug is not null
+        and not exists (
+          select 1 from developers d
+           where d.slug = p.developer_slug
+             and (
+                  lower(btrim(p.developer)) = lower(d.name)
+               or lower(btrim(p.developer)) = lower(regexp_replace(d.name, '\\s+(Properties|Realty)$', '', 'i'))
+               or lower(btrim(p.developer)) = lower(d.slug)
+             )
+        )`,
+    [projectId],
+  );
+}
 
 /*
  * The commercial tile used to look for a type literally called "commercial", so an office or
@@ -228,7 +280,6 @@ const COMMERCIAL_TYPES = ["Office", "Retail", "Shop", "Showroom", "Warehouse", "
 
 router.get("/admin/dashboard", async (_req, res, next) => {
   try {
-    const db = getDb();
     const [
       properties,
       publishedProperties,
@@ -246,23 +297,22 @@ router.get("/admin/dashboard", async (_req, res, next) => {
       subscribers,
       recentInquiries,
     ] = await Promise.all([
-      db.collection("properties").countDocuments(),
-      db.collection("properties").countDocuments({ published: true }),
-      db.collection("insights").countDocuments(),
-      db.collection("properties").countDocuments({ $or: [{ listingType: "sale" }, { status: { $regex: "sale", $options: "i" } }] }),
-      db.collection("properties").countDocuments({ $or: [{ listingType: "rent" }, { status: { $regex: "rent", $options: "i" } }] }),
-      db.collection("properties").countDocuments({
-        $or: [{ type: { $in: COMMERCIAL_TYPES } }, { propertyType: { $in: COMMERCIAL_TYPES } }],
-      }),
-      db.collection("projects").countDocuments(),
-      db.collection("developers").countDocuments(),
-      db.collection("communities").countDocuments(),
-      db.collection("posts").countDocuments(),
-      db.collection("gallery").countDocuments(),
-      db.collection("inquiries").countDocuments({ status: "new" }),
-      db.collection("inquiries").countDocuments(),
-      db.collection("newsletter").countDocuments(),
-      db.collection("inquiries").find().sort({ createdAt: -1 }).limit(6).toArray(),
+      count(`select count(*) from properties`),
+      count(`select count(*) from properties where published`),
+      count(`select count(*) from insights`),
+      // listing_type is absent on older records, so the status text is the fallback.
+      count(`select count(*) from properties where listing_type = 'sale' or status ilike '%sale%'`),
+      count(`select count(*) from properties where listing_type = 'rent' or status ilike '%rent%'`),
+      count(`select count(*) from properties where type = any($1::text[]) or property_type = any($1::text[])`, [COMMERCIAL_TYPES]),
+      count(`select count(*) from projects`),
+      count(`select count(*) from developers`),
+      count(`select count(*) from communities`),
+      count(`select count(*) from posts`),
+      count(`select count(*) from gallery`),
+      count(`select count(*) from inquiries where status = 'new'`),
+      count(`select count(*) from inquiries`),
+      count(`select count(*) from newsletter`),
+      query(`select * from inquiries order by created_at desc limit 6`),
     ]);
 
     return res.json({
@@ -282,7 +332,7 @@ router.get("/admin/dashboard", async (_req, res, next) => {
         totalInquiries,
         subscribers,
       },
-      recentInquiries: recentInquiries.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)),
+      recentInquiries: toApiList("inquiries", recentInquiries),
     });
   } catch (error) {
     return next(error);
@@ -291,8 +341,8 @@ router.get("/admin/dashboard", async (_req, res, next) => {
 
 router.get("/admin/inquiries", async (_req, res, next) => {
   try {
-    const docs = await getDb().collection<InquiryDoc>("inquiries").find().sort({ createdAt: -1 }).toArray();
-    return res.json({ inquiries: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const rows = await query(`select * from inquiries order by created_at desc`);
+    return res.json({ inquiries: toApiList("inquiries", rows) });
   } catch (error) {
     return next(error);
   }
@@ -300,10 +350,8 @@ router.get("/admin/inquiries", async (_req, res, next) => {
 
 router.delete("/admin/inquiries/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid inquiry id." });
-    const result = await getDb().collection<InquiryDoc>("inquiries").deleteOne({ _id: id });
-    if (!result.deletedCount) return res.status(404).json({ message: "Inquiry not found." });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid inquiry id." });
+    if (!(await deleteRow("inquiries", req.params.id))) return res.status(404).json({ message: "Inquiry not found." });
     return res.status(204).send();
   } catch (error) {
     return next(error);
@@ -312,8 +360,8 @@ router.delete("/admin/inquiries/:id", async (req, res, next) => {
 
 router.get("/admin/users", async (_req, res, next) => {
   try {
-    const docs = await getDb().collection<UserDoc>("users").find({}, { projection: { passwordHash: 0 } }).sort({ createdAt: -1 }).toArray();
-    return res.json({ users: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const rows = await query(`select id, name, email, role, created_at from users order by created_at desc`);
+    return res.json({ users: toApiList("users", rows) });
   } catch (error) {
     return next(error);
   }
@@ -321,12 +369,14 @@ router.get("/admin/users", async (_req, res, next) => {
 
 router.patch("/admin/users/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
     const role = (req.body as { role?: UserDoc["role"] }).role;
-    if (!id || !role || !["admin", "agent", "user"].includes(role)) return res.status(400).json({ message: "A valid user id and role are required." });
-    const result = await getDb().collection<UserDoc>("users").findOneAndUpdate({ _id: id }, { $set: { role } }, { returnDocument: "after", projection: { passwordHash: 0 } });
-    if (!result) return res.status(404).json({ message: "User not found." });
-    return res.json({ user: serializeDocument(result as unknown as Record<string, unknown>) });
+    if (!isId(req.params.id) || !role || !["admin", "agent", "user"].includes(role)) return res.status(400).json({ message: "A valid user id and role are required." });
+    const row = await queryOne(
+      `update users set role = $1 where id = $2 returning id, name, email, role, created_at`,
+      [role, req.params.id],
+    );
+    if (!row) return res.status(404).json({ message: "User not found." });
+    return res.json({ user: toApi("users", row) });
   } catch (error) {
     return next(error);
   }
@@ -334,13 +384,12 @@ router.patch("/admin/users/:id", async (req, res, next) => {
 
 router.patch("/admin/inquiries/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid inquiry id." });
-    const status = (req.body as { status?: InquiryDoc["status"] }).status;
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid inquiry id." });
+    const status = (req.body as { status?: "new" | "contacted" | "closed" }).status;
     if (!status || !["new", "contacted", "closed"].includes(status)) return res.status(400).json({ message: "Invalid inquiry status." });
-    const result = await getDb().collection<InquiryDoc>("inquiries").findOneAndUpdate({ _id: id }, { $set: { status } }, { returnDocument: "after" });
-    if (!result) return res.status(404).json({ message: "Inquiry not found." });
-    return res.json({ inquiry: serializeDocument(result as unknown as Record<string, unknown>) });
+    const row = await queryOne(`update inquiries set status = $1 where id = $2 returning *`, [status, req.params.id]);
+    if (!row) return res.status(404).json({ message: "Inquiry not found." });
+    return res.json({ inquiry: toApi("inquiries", row) });
   } catch (error) {
     return next(error);
   }
@@ -348,8 +397,8 @@ router.patch("/admin/inquiries/:id", async (req, res, next) => {
 
 router.get("/admin/blog", async (_req, res, next) => {
   try {
-    const docs = await getDb().collection<BlogPostDoc>("posts").find().sort({ updatedAt: -1, createdAt: -1 }).toArray();
-    return res.json({ posts: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const rows = await listAll("posts", "updated_at desc, created_at desc");
+    return res.json({ posts: toApiList("posts", rows) });
   } catch (error) { return next(error); }
 });
 
@@ -357,32 +406,27 @@ router.post("/admin/blog", async (req, res, next) => {
   try {
     const document = blogBody(req.body as Record<string, unknown>);
     if (!document) return res.status(400).json({ message: "Title, slug, and content are required." });
-    const now = new Date();
-    const result = await getDb().collection<BlogPostDoc>("posts").insertOne({ ...document, createdAt: now } as BlogPostDoc);
-    return res.status(201).json({ post: serializeDocument({ ...document, _id: result.insertedId, createdAt: now } as unknown as Record<string, unknown>) });
+    const row = await insertRow("posts", { ...document, createdAt: new Date() });
+    return res.status(201).json({ post: toApi("posts", row) });
   } catch (error) { return next(error); }
 });
 
 router.patch("/admin/blog/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid blog id." });
-    const posts = getDb().collection<BlogPostDoc>("posts");
-    const existing = await posts.findOne({ _id: id });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid blog id." });
+    const existing = await findById("posts", req.params.id);
     if (!existing) return res.status(404).json({ message: "Blog post not found." });
-    const document = blogBody(req.body as Record<string, unknown>, existing);
+    const document = blogBody(req.body as Record<string, unknown>, toApi("posts", existing) as unknown as BlogPostDoc);
     if (!document) return res.status(400).json({ message: "Title, slug, and content are required." });
-    const result = await posts.findOneAndUpdate({ _id: id }, { $set: document }, { returnDocument: "after" });
-    return res.json({ post: serializeDocument(result as unknown as Record<string, unknown>) });
+    const row = await updateRow("posts", req.params.id, document);
+    return res.json({ post: toApi("posts", row) });
   } catch (error) { return next(error); }
 });
 
 router.delete("/admin/blog/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid blog id." });
-    const result = await getDb().collection<BlogPostDoc>("posts").deleteOne({ _id: id });
-    if (!result.deletedCount) return res.status(404).json({ message: "Blog post not found." });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid blog id." });
+    if (!(await deleteRow("posts", req.params.id))) return res.status(404).json({ message: "Blog post not found." });
     return res.status(204).send();
   } catch (error) { return next(error); }
 });
@@ -391,54 +435,56 @@ router.post("/blogs", async (req, res, next) => {
   try {
     const document = blogBody(req.body as Record<string, unknown>);
     if (!document) return res.status(400).json({ message: "Title, slug, and content are required." });
-    const now = new Date();
-    const result = await getDb().collection<BlogPostDoc>("posts").insertOne({ ...document, createdAt: now } as BlogPostDoc);
-    return res.status(201).json({ blog: serializeDocument({ ...document, _id: result.insertedId, createdAt: now } as unknown as Record<string, unknown>) });
+    const row = await insertRow("posts", { ...document, createdAt: new Date() });
+    return res.status(201).json({ blog: toApi("posts", row) });
   } catch (error) { return next(error); }
 });
 
 router.put("/blogs/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid blog id." });
-    const posts = getDb().collection<BlogPostDoc>("posts");
-    const existing = await posts.findOne({ _id: id });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid blog id." });
+    const existing = await findById("posts", req.params.id);
     if (!existing) return res.status(404).json({ message: "Blog post not found." });
-    const document = blogBody(req.body as Record<string, unknown>, existing);
+    const document = blogBody(req.body as Record<string, unknown>, toApi("posts", existing) as unknown as BlogPostDoc);
     if (!document) return res.status(400).json({ message: "Title, slug, and content are required." });
-    const result = await posts.findOneAndUpdate({ _id: id }, { $set: document }, { returnDocument: "after" });
-    return res.json({ blog: serializeDocument(result as unknown as Record<string, unknown>) });
+    const row = await updateRow("posts", req.params.id, document);
+    return res.json({ blog: toApi("posts", row) });
   } catch (error) { return next(error); }
 });
 
 router.delete("/blogs/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid blog id." });
-    const result = await getDb().collection<BlogPostDoc>("posts").deleteOne({ _id: id });
-    if (!result.deletedCount) return res.status(404).json({ message: "Blog post not found." });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid blog id." });
+    if (!(await deleteRow("posts", req.params.id))) return res.status(404).json({ message: "Blog post not found." });
     return res.status(204).send();
   } catch (error) { return next(error); }
 });
 
 router.get("/admin/developers-detail", async (_req, res, next) => {
   try {
-    const db = getDb();
-    const developers = await db.collection<DeveloperDoc>("developers").find().sort({ sortOrder: 1, name: 1 }).toArray();
-    const projects = await db.collection<ProjectDoc>("projects").find({}, { projection: { title: 1, slug: 1, developer: 1 } }).toArray();
+    /*
+     * Each developer with the projects assigned to it. The join uses the resolved
+     * developer_slug first and still accepts a hand-typed name, so a project that has not
+     * been linked yet is not reported as unassigned.
+     */
+    const developers = await query(`select * from developers order by sort_order asc, name asc`);
+    const projects = await query<{ title: string; slug: string; developer: string; developer_slug: string | null }>(
+      `select title, slug, developer, developer_slug from projects`,
+    );
 
     const items = developers.map((dev) => {
-      const shortName = dev.name.replace(/\s+(Properties|Realty)$/i, "").trim().toLowerCase();
-      const devNameLower = dev.name.toLowerCase();
-      const devSlugLower = dev.slug.toLowerCase();
-      const assignedProjects = projects.filter((p) => {
-        const pDev = (p.developer || "").toLowerCase().trim();
-        return pDev === devNameLower || pDev === shortName || pDev === devSlugLower;
+      const name = String(dev.name ?? "");
+      const slug = String(dev.slug ?? "");
+      const shortName = name.replace(/\s+(Properties|Realty)$/i, "").trim().toLowerCase();
+      const assigned = projects.filter((project) => {
+        if (project.developer_slug && project.developer_slug === slug) return true;
+        const typed = (project.developer || "").toLowerCase().trim();
+        return typed === name.toLowerCase() || typed === shortName || typed === slug.toLowerCase();
       });
       return {
-        ...serializeDocument(dev as unknown as Record<string, unknown>),
-        projectCount: assignedProjects.length,
-        projects: assignedProjects.map((p) => ({ title: p.title, slug: p.slug })),
+        ...(toApi("developers", dev) as Record<string, unknown>),
+        projectCount: assigned.length,
+        projects: assigned.map((project) => ({ title: project.title, slug: project.slug })),
       };
     });
 
@@ -452,70 +498,50 @@ router.post(["/developers", "/admin/developers"], async (req, res, next) => {
   try {
     const document = developerBody(req.body as Record<string, unknown>);
     if (!document) return res.status(400).json({ message: "Developer name is required." });
-    const now = new Date();
-    const result = await getDb().collection<DeveloperDoc>("developers").insertOne({
-      ...document,
-      createdAt: now,
-    } as DeveloperDoc);
-    return res.status(201).json({ item: serializeDocument({ ...document, _id: result.insertedId, createdAt: now } as unknown as Record<string, unknown>) });
+    const row = await insertRow("developers", { ...document, createdAt: new Date() });
+    // A new profile may be the missing half of projects that already name it.
+    await query(
+      `update projects p set developer_slug = d.slug from developers d
+        where d.id = $1 and p.developer_slug is null
+          and (
+               lower(btrim(p.developer)) = lower(d.name)
+            or lower(btrim(p.developer)) = lower(regexp_replace(d.name, '\\s+(Properties|Realty)$', '', 'i'))
+            or lower(btrim(p.developer)) = lower(d.slug)
+          )`,
+      [row?.id],
+    );
+    return res.status(201).json({ item: toApi("developers", row) });
   } catch (error) {
     return next(error);
   }
 });
 
+async function saveDeveloper(req: import("express").Request, res: import("express").Response) {
+  const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  if (!isId(rawId)) return res.status(400).json({ message: "Invalid developer id." });
+  const existing = await findById("developers", rawId);
+  if (!existing) return res.status(404).json({ message: "Developer not found." });
+  const document = developerBody(req.body as Record<string, unknown>, toApi("developers", existing) as unknown as DeveloperDoc);
+  if (!document) return res.status(400).json({ message: "Developer name is required." });
+  const row = await updateRow("developers", rawId, document);
+  return res.json({ item: toApi("developers", row) });
+}
+
 router.put(["/developers/:id", "/admin/developers/:id"], async (req, res, next) => {
-  try {
-    const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-    const id = objectId(rawId);
-    if (!id) return res.status(400).json({ message: "Invalid developer id." });
-    const collection = getDb().collection<DeveloperDoc>("developers");
-    const existing = await collection.findOne({ _id: id });
-    if (!existing) return res.status(404).json({ message: "Developer not found." });
-
-    const document = developerBody(req.body as Record<string, unknown>, existing);
-    if (!document) return res.status(400).json({ message: "Developer name is required." });
-
-    const result = await collection.findOneAndUpdate(
-      { _id: id },
-      { $set: document },
-      { returnDocument: "after" },
-    );
-    return res.json({ item: serializeDocument(result as unknown as Record<string, unknown>) });
-  } catch (error) {
-    return next(error);
-  }
+  try { return await saveDeveloper(req, res); } catch (error) { return next(error); }
 });
 
 router.patch(["/developers/:id", "/admin/developers/:id"], async (req, res, next) => {
-  try {
-    const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-    const id = objectId(rawId);
-    if (!id) return res.status(400).json({ message: "Invalid developer id." });
-    const collection = getDb().collection<DeveloperDoc>("developers");
-    const existing = await collection.findOne({ _id: id });
-    if (!existing) return res.status(404).json({ message: "Developer not found." });
-
-    const document = developerBody(req.body as Record<string, unknown>, existing);
-    if (!document) return res.status(400).json({ message: "Developer name is required." });
-
-    const result = await collection.findOneAndUpdate(
-      { _id: id },
-      { $set: document },
-      { returnDocument: "after" },
-    );
-    return res.json({ item: serializeDocument(result as unknown as Record<string, unknown>) });
-  } catch (error) {
-    return next(error);
-  }
+  try { return await saveDeveloper(req, res); } catch (error) { return next(error); }
 });
 
 router.delete(["/developers/:id", "/admin/developers/:id"], async (req, res, next) => {
   try {
     const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-    const id = objectId(rawId);
-    if (!id) return res.status(400).json({ message: "Invalid developer id." });
-    const result = await getDb().collection<DeveloperDoc>("developers").deleteOne({ _id: id });
-    if (!result.deletedCount) return res.status(404).json({ message: "Developer not found." });
+    if (!isId(rawId)) return res.status(400).json({ message: "Invalid developer id." });
+    // projects.developer_slug is ON DELETE SET NULL, so the projects survive with their
+    // developer name intact and simply lose the resolved link.
+    if (!(await deleteRow("developers", rawId))) return res.status(404).json({ message: "Developer not found." });
     return res.status(204).send();
   } catch (error) {
     return next(error);
@@ -525,29 +551,20 @@ router.delete(["/developers/:id", "/admin/developers/:id"], async (req, res, nex
 router.get("/admin/developers/:id/projects", async (req, res, next) => {
   try {
     const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-    const id = objectId(rawId);
-    if (!id) return res.status(400).json({ message: "Invalid developer id." });
-    const developer = await getDb().collection<DeveloperDoc>("developers").findOne({ _id: id });
+    if (!isId(rawId)) return res.status(400).json({ message: "Invalid developer id." });
+    const developer = await queryOne<{ slug: string; name: string }>(`select * from developers where id = $1`, [rawId]);
     if (!developer) return res.status(404).json({ message: "Developer not found." });
 
-    const shortName = developer.name.replace(/\s+(Properties|Realty)$/i, "").trim();
-    const developerRegexes = [
-      new RegExp(`^${developer.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i"),
-      new RegExp(`^${shortName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i"),
-      new RegExp(`^${developer.slug.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i"),
-    ];
+    const projects = await query(
+      `select * from projects
+        where developer_slug = $1
+           or lower(btrim(developer)) = lower($2)
+           or lower(btrim(developer)) = lower(regexp_replace($2, '\\s+(Properties|Realty)$', '', 'i'))
+           or lower(btrim(developer)) = lower($1)`,
+      [developer.slug, developer.name],
+    );
 
-    const projects = await getDb()
-      .collection<ProjectDoc>("projects")
-      .find({
-        $or: [
-          { developer: { $in: developerRegexes } },
-          { developerSlug: developer.slug },
-        ],
-      })
-      .toArray();
-
-    return res.json({ projects: projects.map((p) => serializeDocument(p as unknown as Record<string, unknown>)) });
+    return res.json({ projects: toApiList("projects", projects) });
   } catch (error) {
     return next(error);
   }
@@ -556,11 +573,11 @@ router.get("/admin/developers/:id/projects", async (req, res, next) => {
 router.post("/admin/uploads", upload.single("image"), async (req, res, next) => {
   if (!req.file) return res.status(400).json({ message: "An image file is required." });
   try {
-    const { uploadToCloudinary } = await import("../lib/cloudinary");
+    const { uploadToCloudinary } = await import("../lib/cloudinary.ts");
     const folder = typeof req.body.folder === "string" ? req.body.folder : "knc-horizon";
     const result = await uploadToCloudinary(req.file.path, folder);
-    // Store in media collection for Media Library
-    const mediaDoc = {
+    // Store in the media table for the Media Library
+    await insertRow("media", {
       url: result.url,
       publicId: result.publicId,
       filename: req.file.originalname,
@@ -568,8 +585,7 @@ router.post("/admin/uploads", upload.single("image"), async (req, res, next) => 
       size: req.file.size,
       folder,
       createdAt: new Date(),
-    };
-    await getDb().collection("media").insertOne(mediaDoc);
+    });
     // Clean up temp file
     const { unlink } = await import("node:fs/promises");
     await unlink(req.file.path).catch(() => {});
@@ -586,118 +602,133 @@ router.post("/admin/uploads", upload.single("image"), async (req, res, next) => 
 // Media library routes
 router.get("/admin/media", async (_req, res, next) => {
   try {
-    const docs = await getDb().collection("media").find().sort({ createdAt: -1 }).toArray();
-    return res.json({ items: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const rows = await listAll("media", "created_at desc");
+    return res.json({ items: toApiList("media", rows) });
   } catch (error) { return next(error); }
 });
 
 router.delete("/admin/media/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid media id." });
-    const doc = await getDb().collection("media").findOne({ _id: id });
-    if (!doc) return res.status(404).json({ message: "Media not found." });
-    if (doc.publicId) {
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid media id." });
+    const row = await queryOne<{ public_id: string | null }>(`select * from media where id = $1`, [req.params.id]);
+    if (!row) return res.status(404).json({ message: "Media not found." });
+    if (row.public_id) {
       try {
-        const { deleteFromCloudinary } = await import("../lib/cloudinary");
-        await deleteFromCloudinary(doc.publicId);
+        const { deleteFromCloudinary } = await import("../lib/cloudinary.ts");
+        await deleteFromCloudinary(row.public_id);
       } catch { /* ignore cloudinary delete errors */ }
     }
-    await getDb().collection("media").deleteOne({ _id: id });
+    await deleteRow("media", req.params.id);
     return res.status(204).send();
   } catch (error) { return next(error); }
 });
 
 // Communities CRUD
+function communityBody(body: Record<string, unknown>) {
+  const name = typeof body.name === "string" ? body.name.trim() : "";
+  if (!name) return undefined;
+  const slug = typeof body.slug === "string" && body.slug.trim() ? slugify(body.slug) : slugify(name);
+  return {
+    name,
+    slug,
+    description: typeof body.description === "string" ? body.description.trim() : "",
+    shortDescription: typeof body.shortDescription === "string" ? body.shortDescription.trim() : "",
+    location: typeof body.location === "string" ? body.location.trim() : "",
+    image: typeof body.image === "string" ? body.image.trim() : "",
+    published: typeof body.published === "boolean" ? body.published : true,
+    featured: typeof body.featured === "boolean" ? body.featured : false,
+    sortOrder: Number(body.sortOrder) || 0,
+    updatedAt: new Date(),
+  };
+}
+
 router.get("/admin/communities-list", async (_req, res, next) => {
   try {
-    const docs = await getDb().collection("communities").find().sort({ sortOrder: 1, name: 1 }).toArray();
-    return res.json({ items: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const rows = await listAll("communities", "sort_order asc, name asc");
+    return res.json({ items: toApiList("communities", rows) });
   } catch (error) { return next(error); }
 });
 
 router.post("/admin/communities", async (req, res, next) => {
   try {
-    const body = req.body as Record<string, unknown>;
-    const name = typeof body.name === "string" ? body.name.trim() : "";
-    if (!name) return res.status(400).json({ message: "Community name is required." });
-    const slug = typeof body.slug === "string" && body.slug.trim() ? body.slug.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") : name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-    const now = new Date();
-    const doc = { name, slug, description: typeof body.description === "string" ? body.description.trim() : "", shortDescription: typeof body.shortDescription === "string" ? body.shortDescription.trim() : "", location: typeof body.location === "string" ? body.location.trim() : "", image: typeof body.image === "string" ? body.image.trim() : "", published: typeof body.published === "boolean" ? body.published : true, featured: typeof body.featured === "boolean" ? body.featured : false, sortOrder: Number(body.sortOrder) || 0, createdAt: now, updatedAt: now };
-    const result = await getDb().collection("communities").insertOne(doc);
-    return res.status(201).json({ item: serializeDocument({ ...doc, _id: result.insertedId } as unknown as Record<string, unknown>) });
+    const document = communityBody(req.body as Record<string, unknown>);
+    if (!document) return res.status(400).json({ message: "Community name is required." });
+    const row = await insertRow("communities", { ...document, createdAt: new Date() });
+    return res.status(201).json({ item: toApi("communities", row) });
   } catch (error) { return next(error); }
 });
 
 router.put("/admin/communities/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid community id." });
-    const body = req.body as Record<string, unknown>;
-    const name = typeof body.name === "string" ? body.name.trim() : "";
-    if (!name) return res.status(400).json({ message: "Community name is required." });
-    const slug = typeof body.slug === "string" && body.slug.trim() ? body.slug.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") : name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-    const now = new Date();
-    const update = { name, slug, description: typeof body.description === "string" ? body.description.trim() : "", shortDescription: typeof body.shortDescription === "string" ? body.shortDescription.trim() : "", location: typeof body.location === "string" ? body.location.trim() : "", image: typeof body.image === "string" ? body.image.trim() : "", published: typeof body.published === "boolean" ? body.published : true, featured: typeof body.featured === "boolean" ? body.featured : false, sortOrder: Number(body.sortOrder) || 0, updatedAt: now };
-    const result = await getDb().collection("communities").findOneAndUpdate({ _id: id }, { $set: update }, { returnDocument: "after" });
-    if (!result) return res.status(404).json({ message: "Community not found." });
-    return res.json({ item: serializeDocument(result as unknown as Record<string, unknown>) });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid community id." });
+    const document = communityBody(req.body as Record<string, unknown>);
+    if (!document) return res.status(400).json({ message: "Community name is required." });
+    if (!(await findById("communities", req.params.id))) return res.status(404).json({ message: "Community not found." });
+    const row = await updateRow("communities", req.params.id, document);
+    return res.json({ item: toApi("communities", row) });
   } catch (error) { return next(error); }
 });
 
 router.delete("/admin/communities/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid community id." });
-    const result = await getDb().collection("communities").deleteOne({ _id: id });
-    if (!result.deletedCount) return res.status(404).json({ message: "Community not found." });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid community id." });
+    if (!(await deleteRow("communities", req.params.id))) return res.status(404).json({ message: "Community not found." });
     return res.status(204).send();
   } catch (error) { return next(error); }
 });
 
 // Market Insights CRUD
+function insightBody(body: Record<string, unknown>) {
+  const title = typeof body.title === "string" ? body.title.trim() : "";
+  if (!title) return undefined;
+  const slug = typeof body.slug === "string" && body.slug.trim() ? slugify(body.slug) : slugify(title);
+  return {
+    title,
+    slug,
+    category: typeof body.category === "string" ? body.category.trim() : "General",
+    summary: typeof body.summary === "string" ? body.summary.trim() : "",
+    content: typeof body.content === "string" ? body.content.trim() : "",
+    source: typeof body.source === "string" ? body.source.trim() : "",
+    sourceUrl: typeof body.sourceUrl === "string" ? body.sourceUrl.trim() : "",
+    image: typeof body.image === "string" ? body.image.trim() : "",
+    published: typeof body.published === "boolean" ? body.published : false,
+    featured: typeof body.featured === "boolean" ? body.featured : false,
+    sortOrder: Number(body.sortOrder) || 0,
+    updatedAt: new Date(),
+  };
+}
+
 router.get("/admin/insights-list", async (_req, res, next) => {
   try {
-    const docs = await getDb().collection("insights").find().sort({ updatedAt: -1, createdAt: -1 }).toArray();
-    return res.json({ items: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const rows = await listAll("insights", "updated_at desc, created_at desc");
+    return res.json({ items: toApiList("insights", rows) });
   } catch (error) { return next(error); }
 });
 
 router.post("/admin/insights", async (req, res, next) => {
   try {
-    const body = req.body as Record<string, unknown>;
-    const title = typeof body.title === "string" ? body.title.trim() : "";
-    if (!title) return res.status(400).json({ message: "Insight title is required." });
-    const slug = typeof body.slug === "string" && body.slug.trim() ? body.slug.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") : title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-    const now = new Date();
-    const doc = { title, slug, category: typeof body.category === "string" ? body.category.trim() : "General", summary: typeof body.summary === "string" ? body.summary.trim() : "", content: typeof body.content === "string" ? body.content.trim() : "", source: typeof body.source === "string" ? body.source.trim() : "", sourceUrl: typeof body.sourceUrl === "string" ? body.sourceUrl.trim() : "", image: typeof body.image === "string" ? body.image.trim() : "", published: typeof body.published === "boolean" ? body.published : false, featured: typeof body.featured === "boolean" ? body.featured : false, sortOrder: Number(body.sortOrder) || 0, createdAt: now, updatedAt: now };
-    const result = await getDb().collection("insights").insertOne(doc);
-    return res.status(201).json({ item: serializeDocument({ ...doc, _id: result.insertedId } as unknown as Record<string, unknown>) });
+    const document = insightBody(req.body as Record<string, unknown>);
+    if (!document) return res.status(400).json({ message: "Insight title is required." });
+    const row = await insertRow("insights", { ...document, createdAt: new Date() });
+    return res.status(201).json({ item: toApi("insights", row) });
   } catch (error) { return next(error); }
 });
 
 router.put("/admin/insights/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid insight id." });
-    const body = req.body as Record<string, unknown>;
-    const title = typeof body.title === "string" ? body.title.trim() : "";
-    if (!title) return res.status(400).json({ message: "Insight title is required." });
-    const slug = typeof body.slug === "string" && body.slug.trim() ? body.slug.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") : title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-    const now = new Date();
-    const update = { title, slug, category: typeof body.category === "string" ? body.category.trim() : "General", summary: typeof body.summary === "string" ? body.summary.trim() : "", content: typeof body.content === "string" ? body.content.trim() : "", source: typeof body.source === "string" ? body.source.trim() : "", sourceUrl: typeof body.sourceUrl === "string" ? body.sourceUrl.trim() : "", image: typeof body.image === "string" ? body.image.trim() : "", published: typeof body.published === "boolean" ? body.published : false, featured: typeof body.featured === "boolean" ? body.featured : false, sortOrder: Number(body.sortOrder) || 0, updatedAt: now };
-    const result = await getDb().collection("insights").findOneAndUpdate({ _id: id }, { $set: update }, { returnDocument: "after" });
-    if (!result) return res.status(404).json({ message: "Insight not found." });
-    return res.json({ item: serializeDocument(result as unknown as Record<string, unknown>) });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid insight id." });
+    const document = insightBody(req.body as Record<string, unknown>);
+    if (!document) return res.status(400).json({ message: "Insight title is required." });
+    if (!(await findById("insights", req.params.id))) return res.status(404).json({ message: "Insight not found." });
+    const row = await updateRow("insights", req.params.id, document);
+    return res.json({ item: toApi("insights", row) });
   } catch (error) { return next(error); }
 });
 
 router.delete("/admin/insights/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid insight id." });
-    const result = await getDb().collection("insights").deleteOne({ _id: id });
-    if (!result.deletedCount) return res.status(404).json({ message: "Insight not found." });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid insight id." });
+    if (!(await deleteRow("insights", req.params.id))) return res.status(404).json({ message: "Insight not found." });
     return res.status(204).send();
   } catch (error) { return next(error); }
 });
@@ -706,13 +737,21 @@ router.delete("/admin/insights/:id", async (req, res, next) => {
 router.get("/admin/properties-list", async (req, res, next) => {
   try {
     const { q, status, type } = req.query as Record<string, string | undefined>;
-    const filter: Record<string, unknown> = {};
-    if (q) filter.$or = [{ title: { $regex: q, $options: "i" } }, { location: { $regex: q, $options: "i" } }, { community: { $regex: q, $options: "i" } }];
-    if (status === "published") filter.published = true;
-    if (status === "draft") filter.published = false;
-    if (type) filter.type = { $regex: type, $options: "i" };
-    const docs = await getDb().collection<PropertyDoc>("properties").find(filter).sort({ updatedAt: -1, createdAt: -1 }).toArray();
-    return res.json({ items: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const clauses: string[] = [];
+    const values: unknown[] = [];
+    if (q) {
+      values.push(contains(q));
+      clauses.push(`(title ilike $${values.length} or location ilike $${values.length} or community ilike $${values.length})`);
+    }
+    if (status === "published") clauses.push("published");
+    if (status === "draft") clauses.push("not published");
+    if (type) {
+      values.push(contains(type));
+      clauses.push(`type ilike $${values.length}`);
+    }
+    const where = clauses.length ? `where ${clauses.join(" and ")}` : "";
+    const rows = await query(`select * from properties ${where} order by updated_at desc, created_at desc`, values);
+    return res.json({ items: toApiList("properties", rows) });
   } catch (error) { return next(error); }
 });
 
@@ -720,32 +759,27 @@ router.post("/admin/properties", async (req, res, next) => {
   try {
     const document = propertyBody(req.body as Record<string, unknown>);
     if (!document) return res.status(400).json({ message: "Title and slug are required." });
-    const now = new Date();
-    const result = await getDb().collection<PropertyDoc>("properties").insertOne({ ...document, createdAt: now } as PropertyDoc);
-    return res.status(201).json({ item: serializeDocument({ ...document, _id: result.insertedId, createdAt: now } as unknown as Record<string, unknown>) });
+    const row = await insertRow("properties", { ...document, createdAt: new Date() });
+    return res.status(201).json({ item: toApi("properties", row) });
   } catch (error) { return next(error); }
 });
 
 router.put("/admin/properties/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid property id." });
-    const collection = getDb().collection<PropertyDoc>("properties");
-    const existing = await collection.findOne({ _id: id });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid property id." });
+    const existing = await findById("properties", req.params.id);
     if (!existing) return res.status(404).json({ message: "Property not found." });
-    const document = propertyBody(req.body as Record<string, unknown>, undefined, existing);
+    const document = propertyBody(req.body as Record<string, unknown>, undefined, toApi("properties", existing) as unknown as PropertyDoc);
     if (!document) return res.status(400).json({ message: "Title and slug are required." });
-    const result = await collection.findOneAndUpdate({ _id: id }, { $set: document }, { returnDocument: "after" });
-    return res.json({ item: serializeDocument(result as unknown as Record<string, unknown>) });
+    const row = await updateRow("properties", req.params.id, document);
+    return res.json({ item: toApi("properties", row) });
   } catch (error) { return next(error); }
 });
 
 router.delete("/admin/properties/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid property id." });
-    const result = await getDb().collection<PropertyDoc>("properties").deleteOne({ _id: id });
-    if (!result.deletedCount) return res.status(404).json({ message: "Property not found." });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid property id." });
+    if (!(await deleteRow("properties", req.params.id))) return res.status(404).json({ message: "Property not found." });
     return res.status(204).send();
   } catch (error) { return next(error); }
 });
@@ -754,11 +788,19 @@ router.delete("/admin/properties/:id", async (req, res, next) => {
 router.get("/admin/projects-list", async (req, res, next) => {
   try {
     const { q, developer: devFilter } = req.query as Record<string, string | undefined>;
-    const filter: Record<string, unknown> = {};
-    if (q) filter.$or = [{ title: { $regex: q, $options: "i" } }, { location: { $regex: q, $options: "i" } }, { developer: { $regex: q, $options: "i" } }];
-    if (devFilter) filter.developer = { $regex: devFilter, $options: "i" };
-    const docs = await getDb().collection<ProjectDoc>("projects").find(filter).sort({ updatedAt: -1, createdAt: -1 }).toArray();
-    return res.json({ items: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const clauses: string[] = [];
+    const values: unknown[] = [];
+    if (q) {
+      values.push(contains(q));
+      clauses.push(`(title ilike $${values.length} or location ilike $${values.length} or developer ilike $${values.length})`);
+    }
+    if (devFilter) {
+      values.push(contains(devFilter));
+      clauses.push(`developer ilike $${values.length}`);
+    }
+    const where = clauses.length ? `where ${clauses.join(" and ")}` : "";
+    const rows = await query(`select * from projects ${where} order by updated_at desc, created_at desc`, values);
+    return res.json({ items: toApiList("projects", rows) });
   } catch (error) { return next(error); }
 });
 
@@ -766,93 +808,127 @@ router.post("/admin/projects", async (req, res, next) => {
   try {
     const document = projectBody(req.body as Record<string, unknown>);
     if (!document) return res.status(400).json({ message: "Title and slug are required." });
-    const now = new Date();
-    const result = await getDb().collection<ProjectDoc>("projects").insertOne({ ...document, createdAt: now } as ProjectDoc);
-    return res.status(201).json({ item: serializeDocument({ ...document, _id: result.insertedId, createdAt: now } as unknown as Record<string, unknown>) });
+    const row = await insertRow("projects", { ...document, createdAt: new Date() });
+    if (row?.id) await linkProjectDeveloper(String(row.id));
+    return res.status(201).json({ item: toApi("projects", await findById("projects", String(row?.id))) });
   } catch (error) { return next(error); }
 });
 
 router.put("/admin/projects/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid project id." });
-    const collection = getDb().collection<ProjectDoc>("projects");
-    const existing = await collection.findOne({ _id: id });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid project id." });
+    const existing = await findById("projects", req.params.id);
     if (!existing) return res.status(404).json({ message: "Project not found." });
-    const document = projectBody(req.body as Record<string, unknown>, undefined, existing);
+    const document = projectBody(req.body as Record<string, unknown>, undefined, toApi("projects", existing) as unknown as ProjectDoc);
     if (!document) return res.status(400).json({ message: "Title and slug are required." });
-    const result = await collection.findOneAndUpdate({ _id: id }, { $set: document }, { returnDocument: "after" });
-    return res.json({ item: serializeDocument(result as unknown as Record<string, unknown>) });
+    await updateRow("projects", req.params.id, document);
+    await linkProjectDeveloper(req.params.id);
+    return res.json({ item: toApi("projects", await findById("projects", req.params.id)) });
   } catch (error) { return next(error); }
 });
 
 router.delete("/admin/projects/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid project id." });
-    const result = await getDb().collection<ProjectDoc>("projects").deleteOne({ _id: id });
-    if (!result.deletedCount) return res.status(404).json({ message: "Project not found." });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid project id." });
+    if (!(await deleteRow("projects", req.params.id))) return res.status(404).json({ message: "Project not found." });
     return res.status(204).send();
   } catch (error) { return next(error); }
 });
 
 // Gallery CRUD
+function galleryBody(body: Record<string, unknown>) {
+  const title = typeof body.title === "string" ? body.title.trim() : "";
+  const image = typeof body.image === "string" ? body.image.trim() : "";
+  if (!title || !image) return undefined;
+  return {
+    title,
+    image,
+    category: typeof body.category === "string" ? body.category.trim() : "General",
+    alt: typeof body.alt === "string" ? body.alt.trim() : title,
+  };
+}
+
 router.get("/admin/gallery-list", async (_req, res, next) => {
   try {
-    const docs = await getDb().collection<GalleryItemDoc>("gallery").find().sort({ createdAt: -1 }).toArray();
-    return res.json({ items: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const rows = await listAll("gallery", "created_at desc");
+    return res.json({ items: toApiList("gallery", rows) });
   } catch (error) { return next(error); }
 });
 
 router.post("/admin/gallery", async (req, res, next) => {
   try {
-    const body = req.body as Record<string, unknown>;
-    const title = typeof body.title === "string" ? body.title.trim() : "";
-    const image = typeof body.image === "string" ? body.image.trim() : "";
-    if (!title || !image) return res.status(400).json({ message: "Title and image URL are required." });
-    const doc = { title, image, category: typeof body.category === "string" ? body.category.trim() : "General", alt: typeof body.alt === "string" ? body.alt.trim() : title, createdAt: new Date() };
-    const result = await getDb().collection<GalleryItemDoc>("gallery").insertOne(doc as GalleryItemDoc);
-    return res.status(201).json({ item: serializeDocument({ ...doc, _id: result.insertedId } as unknown as Record<string, unknown>) });
+    const document = galleryBody(req.body as Record<string, unknown>);
+    if (!document) return res.status(400).json({ message: "Title and image URL are required." });
+    const row = await insertRow("gallery", { ...document, createdAt: new Date() });
+    return res.status(201).json({ item: toApi("gallery", row) });
   } catch (error) { return next(error); }
 });
 
 router.put("/admin/gallery/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid gallery id." });
-    const body = req.body as Record<string, unknown>;
-    const title = typeof body.title === "string" ? body.title.trim() : "";
-    const image = typeof body.image === "string" ? body.image.trim() : "";
-    if (!title || !image) return res.status(400).json({ message: "Title and image URL are required." });
-    const update = { title, image, category: typeof body.category === "string" ? body.category.trim() : "General", alt: typeof body.alt === "string" ? body.alt.trim() : title };
-    const result = await getDb().collection<GalleryItemDoc>("gallery").findOneAndUpdate({ _id: id }, { $set: update }, { returnDocument: "after" });
-    if (!result) return res.status(404).json({ message: "Gallery item not found." });
-    return res.json({ item: serializeDocument(result as unknown as Record<string, unknown>) });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid gallery id." });
+    const document = galleryBody(req.body as Record<string, unknown>);
+    if (!document) return res.status(400).json({ message: "Title and image URL are required." });
+    if (!(await findById("gallery", req.params.id))) return res.status(404).json({ message: "Gallery item not found." });
+    const row = await updateRow("gallery", req.params.id, document);
+    return res.json({ item: toApi("gallery", row) });
   } catch (error) { return next(error); }
 });
 
 router.delete("/admin/gallery/:id", async (req, res, next) => {
   try {
-    const id = objectId(req.params.id);
-    if (!id) return res.status(400).json({ message: "Invalid gallery id." });
-    const result = await getDb().collection<GalleryItemDoc>("gallery").deleteOne({ _id: id });
-    if (!result.deletedCount) return res.status(404).json({ message: "Gallery item not found." });
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid gallery id." });
+    if (!(await deleteRow("gallery", req.params.id))) return res.status(404).json({ message: "Gallery item not found." });
     return res.status(204).send();
   } catch (error) { return next(error); }
 });
 
 export { uploadDir };
+
 /*
- * Generic collection CRUD. Registered last on purpose: Express matches routes in order,
+ * Site settings.
+ * Deliberately not part of the generic resource map: settings are a single validated
+ * document, not a collection, and an unvalidated PATCH is what let "Save settings" store an
+ * empty row. `mail` tells the console whether a lead alert could actually be delivered.
+ */
+router.get("/admin/settings", async (_req, res, next) => {
+  try {
+    return res.json({ settings: await readSettings(), mail: mailStatus(), currencies: SUPPORTED_CURRENCIES });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.put("/admin/settings", async (req, res, next) => {
+  try {
+    const patch = req.body as Record<string, unknown>;
+    if (!patch || typeof patch !== "object" || Array.isArray(patch)) {
+      return res.status(400).json({ message: "Expected a settings object." });
+    }
+    const errors = validateSettings(patch);
+    if (errors.length) {
+      return res.status(400).json({ message: errors[0]!.message, errors });
+    }
+    const settings = await writeSettings(patch);
+    return res.json({ settings, mail: mailStatus(), currencies: SUPPORTED_CURRENCIES });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+/*
+ * Generic table CRUD. Registered last on purpose: Express matches routes in order,
  * so "/admin/:resource" would otherwise swallow the specific routes above
  * (e.g. /admin/properties-list would be read as a resource named "properties-list").
  */
 router.get("/admin/:resource", async (req, res, next) => {
   try {
-    const collection = collectionFor(req.params.resource);
-    if (!collection) return res.status(404).json({ message: "Unknown admin resource." });
-    const docs = await collection.find().sort({ updatedAt: -1, createdAt: -1 }).toArray();
-    return res.json({ items: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const resource = resourceFor(req.params.resource);
+    if (!resource) return res.status(404).json({ message: "Unknown admin resource." });
+    const rows = await listAll(resource.table, resource.order);
+    const items = toApiList(resource.table, rows) as Record<string, unknown>[];
+    if (resource.table === "users") for (const item of items) delete item.passwordHash;
+    return res.json({ items });
   } catch (error) {
     return next(error);
   }
@@ -860,12 +936,13 @@ router.get("/admin/:resource", async (req, res, next) => {
 
 router.post("/admin/:resource", async (req, res, next) => {
   try {
-    const collection = collectionFor(req.params.resource);
-    if (!collection) return res.status(404).json({ message: "Unknown admin resource." });
+    const resource = resourceFor(req.params.resource);
+    if (!resource) return res.status(404).json({ message: "Unknown admin resource." });
     const now = new Date();
-    const document = { ...cleanBody(req.body as Record<string, unknown>), createdAt: now, updatedAt: now };
-    const result = await collection.insertOne(document as never);
-    return res.status(201).json({ item: serializeDocument({ ...document, _id: result.insertedId } as unknown as Record<string, unknown>) });
+    const row = await insertRow(resource.table, { ...cleanBody(req.body as Record<string, unknown>), createdAt: now, updatedAt: now });
+    const item = toApi(resource.table, row) as Record<string, unknown> | undefined;
+    if (item && resource.table === "users") delete item.passwordHash;
+    return res.status(201).json({ item });
   } catch (error) {
     return next(error);
   }
@@ -873,12 +950,13 @@ router.post("/admin/:resource", async (req, res, next) => {
 
 router.patch("/admin/:resource/:id", async (req, res, next) => {
   try {
-    const collection = collectionFor(req.params.resource);
-    const id = objectId(req.params.id);
-    if (!collection || !id) return res.status(400).json({ message: "Invalid admin resource or id." });
-    const result = await collection.findOneAndUpdate({ _id: id }, { $set: cleanBody(req.body as Record<string, unknown>) }, { returnDocument: "after" });
-    if (!result) return res.status(404).json({ message: "Record not found." });
-    return res.json({ item: serializeDocument(result as unknown as Record<string, unknown>) });
+    const resource = resourceFor(req.params.resource);
+    if (!resource || !isId(req.params.id)) return res.status(400).json({ message: "Invalid admin resource or id." });
+    if (!(await findById(resource.table, req.params.id))) return res.status(404).json({ message: "Record not found." });
+    const row = await updateRow(resource.table, req.params.id, cleanBody(req.body as Record<string, unknown>));
+    const item = toApi(resource.table, row) as Record<string, unknown> | undefined;
+    if (item && resource.table === "users") delete item.passwordHash;
+    return res.json({ item });
   } catch (error) {
     return next(error);
   }
@@ -886,11 +964,9 @@ router.patch("/admin/:resource/:id", async (req, res, next) => {
 
 router.delete("/admin/:resource/:id", async (req, res, next) => {
   try {
-    const collection = collectionFor(req.params.resource);
-    const id = objectId(req.params.id);
-    if (!collection || !id) return res.status(400).json({ message: "Invalid admin resource or id." });
-    const result = await collection.deleteOne({ _id: id });
-    if (!result.deletedCount) return res.status(404).json({ message: "Record not found." });
+    const resource = resourceFor(req.params.resource);
+    if (!resource || !isId(req.params.id)) return res.status(400).json({ message: "Invalid admin resource or id." });
+    if (!(await deleteRow(resource.table, req.params.id))) return res.status(404).json({ message: "Record not found." });
     return res.status(204).send();
   } catch (error) {
     return next(error);

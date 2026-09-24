@@ -5,7 +5,7 @@ import { ContactForm, ErrorState, PageHero, SectionLabel } from '@/components/bl
 import { apiFetch, type Developer, type Project } from '@/lib/api';
 import { defaultProjects } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
-import { CONTACT } from '@/lib/contact-info';
+import { useContact } from '@/lib/site-settings';
 
 const fallbackImage = '/images/creek-waterfront.jpg';
 
@@ -128,6 +128,7 @@ function getFallbackProjectsForDeveloper(slug: string, name: string): Project[] 
 }
 
 export function DeveloperDetailPage() {
+  const contact = useContact();
   const [, params] = useRoute('/developers/:slug');
   const slugParam = (params?.slug ?? '').trim().toLowerCase();
   const fallbackDeveloper = defaultDevelopersBySlug[slugParam] || null;
@@ -174,7 +175,7 @@ export function DeveloperDetailPage() {
   if (loading && !developer) {
     return (
       <main className="min-h-screen bg-[#f5f0e6] px-5 py-40">
-        <div className="mx-auto max-w-[1280px] text-center">
+        <div className="site-container text-center">
           <p className="eyebrow text-[#c97352]">Dubai Developers</p>
           <h1 className="page-title mt-5">Loading developer profile…</h1>
         </div>
@@ -184,7 +185,7 @@ export function DeveloperDetailPage() {
 
   if (error && !developer) {
     return (
-      <main className="min-h-screen bg-[#f5f0e6] px-5 py-40 md:px-10">
+      <main className="site-section min-h-screen bg-[#f5f0e6] pt-40">
         <div className="mx-auto max-w-[900px]">
           <ErrorState message={error} />
           <Link
@@ -220,7 +221,7 @@ export function DeveloperDetailPage() {
         <div className="mt-8 flex items-center gap-4">
           <Link
             href="/developers"
-            className="inline-flex items-center gap-2 border border-[#f5f0e6]/30 bg-[#202635]/60 px-4 py-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6] backdrop-blur-xs transition-colors hover:bg-[#c97352]"
+            className="btn btn-outline-light bg-[#202635]/60 backdrop-blur-xs"
           >
             <ArrowLeft size={12} /> All developers
           </Link>
@@ -228,8 +229,8 @@ export function DeveloperDetailPage() {
       </PageHero>
 
       {/* Developer Overview & Detail Grid */}
-      <section className="px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-[1280px] gap-14 lg:grid-cols-[1.15fr_.85fr] lg:gap-20">
+      <section className="site-section">
+        <div className="site-container grid gap-12 lg:grid-cols-[1.2fr_.8fr] lg:gap-16 xl:gap-20">
           {/* Left Column: Profile Details */}
           <div>
             {/* Header with Logo and Official Link */}
@@ -238,14 +239,14 @@ export function DeveloperDetailPage() {
                 <span className="font-mono text-[10px] uppercase tracking-[.18em] text-[#c97352]">
                   Developer Profile
                 </span>
-                <h2 className="section-title mt-2 text-[#202635]">{developer.name}</h2>
+                <h2 className="section-title mt-6 text-[#202635]">{developer.name}</h2>
               </div>
               {websiteUrl && (
                 <a
                   href={websiteUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 border border-[#202635]/25 bg-[#fcfaf6] px-5 py-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#202635] transition-colors hover:border-[#c97352] hover:text-[#c97352]"
+                  className="btn btn-secondary bg-[#fcfaf6]"
                   aria-label={`Open official website of ${developer.name}`}
                 >
                   <Globe size={13} className="text-[#c97352]" />
@@ -258,10 +259,10 @@ export function DeveloperDetailPage() {
             {/* Verified Descriptions */}
             <div className="mt-10">
               <SectionLabel>Overview</SectionLabel>
-              <p className="mt-4 text-base leading-relaxed text-[#202635]/80 font-medium">
+              <p className="body-copy measure mt-4 font-medium text-[#202635]/80">
                 {developer.shortDescription}
               </p>
-              <p className="mt-4 text-sm leading-7 text-[#202635]/65">
+              <p className="measure mt-4 text-sm leading-7 text-[#202635]/65">
                 {developer.description}
               </p>
             </div>
@@ -288,8 +289,8 @@ export function DeveloperDetailPage() {
             )}
 
             {/* Projects Section */}
-            <div className="mt-16 border-t border-[#202635]/15 pt-10">
-              <div className="flex items-end justify-between gap-4 mb-8">
+            <div className="mt-14 border-t border-[#202635]/15 pt-10">
+              <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
                   <SectionLabel>Portfolio</SectionLabel>
                   <h3 className="block-title mt-2 text-[#202635]">Assigned projects</h3>
@@ -300,20 +301,20 @@ export function DeveloperDetailPage() {
               </div>
 
               {projects.length === 0 ? (
-                <div className="border border-[#202635]/15 bg-[#fcfaf6] p-10 text-center">
-                  <p className="font-serif text-2xl text-[#202635]">
+                <div className="rounded-sm border border-[#202635]/15 bg-[#fcfaf6] p-8 text-center sm:p-10">
+                  <p className="block-title mx-auto max-w-lg text-[#202635]">
                     Projects are being updated. Contact our team for current opportunities.
                   </p>
-                  <p className="mt-3 text-xs leading-relaxed text-[#202635]/60 max-w-md mx-auto">
+                  <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#202635]/60">
                     KNC Horizon Realtor advises clients across verified private sales and new releases directly connected with {developer.name}.
                   </p>
                 </div>
               ) : (
-                <div className="grid gap-6 sm:grid-cols-2">
+                <div className={projects.length === 1 ? 'grid gap-6 sm:max-w-[26rem]' : 'grid gap-6 sm:grid-cols-2'}>
                   {projects.map((project) => (
                     <article
                       key={project.id || project.slug}
-                      className="group flex flex-col justify-between border border-[#202635]/12 bg-[#fcfaf6] p-4 transition-all duration-300 hover:border-[#c97352]/50 hover:shadow-md"
+                      className="card-editorial group justify-between p-5"
                       data-testid={`card-project-${project.slug}`}
                     >
                       <div>
@@ -327,17 +328,17 @@ export function DeveloperDetailPage() {
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
                         </div>
-                        <div className="mt-4 flex items-center justify-between font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55">
-                          <span className="text-[#c97352]">{project.category || 'Development'}</span>
-                          <span>{project.location}</span>
+                        <div className="mt-4 flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/55">
+                          <span className="shrink-0 text-[#c97352]">{project.category || 'Development'}</span>
+                          <span className="truncate">{project.location}</span>
                         </div>
-                        <h4 className="mt-2 font-serif text-2xl text-[#202635] transition-colors group-hover:text-[#c97352]">
+                        <h4 className="card-title mt-2 line-clamp-2 text-[#202635] transition-colors group-hover:text-[#c97352]">
                           {project.title}
                         </h4>
-                        <p className="mt-2 text-xs text-[#202635]/65 line-clamp-2">{project.description}</p>
+                        <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#202635]/65">{project.description}</p>
                       </div>
 
-                      <div className="mt-6 border-t border-[#202635]/10 pt-3 flex items-center justify-between">
+                      <div className="mt-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[#202635]/12 pt-4">
                         <span className="font-mono text-xs font-semibold text-[#202635]">
                           {project.startingPrice
                             ? `From AED ${new Intl.NumberFormat('en-AE').format(project.startingPrice)}`
@@ -359,12 +360,12 @@ export function DeveloperDetailPage() {
 
           {/* Right Column: Advisory & Enquiry CTA Form */}
           <aside className="h-fit lg:sticky lg:top-28">
-            <div className="border border-[#202635]/15 bg-[#fcfaf6] p-7 md:p-9 shadow-sm">
+            <div className="rounded-sm border border-[#202635]/15 bg-[#fcfaf6] p-6 shadow-sm sm:p-8">
               <SectionLabel>Advisory Brief</SectionLabel>
               <h3 className="block-title mt-3 text-[#202635]">
                 Enquire regarding <em className="text-[#c97352]">{developer.name}.</em>
               </h3>
-              <p className="mt-4 text-xs leading-6 text-[#202635]/65">
+              <p className="mt-4 text-sm leading-6 text-[#202635]/65">
                 Our property advisors provide unbiased market perspective on upcoming releases, masterplan comparisons, and private allocation across {developer.name} developments.
               </p>
 
@@ -382,7 +383,7 @@ export function DeveloperDetailPage() {
                 </p>
                 <div className="mt-3 flex items-center justify-between">
                   <a
-                    href={`https://wa.me/${CONTACT.whatsapp}`}
+                    href={`https://wa.me/${contact.whatsapp}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] hover:underline"

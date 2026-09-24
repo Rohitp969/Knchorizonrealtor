@@ -1,7 +1,16 @@
-import type { ObjectId } from "mongodb";
+/*
+ * Two shapes, on purpose.
+ *
+ * `*Doc` types are the camelCase documents the API accepts and returns. They are what the
+ * request validators build and what the frontend reads, and they did not change when the
+ * database moved from MongoDB to PostgreSQL.
+ *
+ * `*Row` types are the snake_case rows as PostgreSQL stores them. Only the few places that
+ * read a column directly need one; everything else goes through the maps in repositories.ts.
+ */
 
 export type PropertyDoc = {
-  _id?: ObjectId;
+  id?: string;
   slug: string;
   title: string;
   location: string;
@@ -31,11 +40,13 @@ export type PropertyDoc = {
 };
 
 export type ProjectDoc = {
-  _id?: ObjectId;
+  id?: string;
   slug: string;
   title: string;
   description: string;
   developer: string;
+  /** Resolved link to developers.slug; the `developer` text stays authoritative for display. */
+  developerSlug?: string | null;
   location: string;
   category?: string;
   status?: string;
@@ -58,7 +69,7 @@ export type ProjectDoc = {
 };
 
 export type DeveloperDoc = {
-  _id?: ObjectId;
+  id?: string;
   slug: string;
   name: string;
   shortDescription?: string;
@@ -79,7 +90,7 @@ export type DeveloperDoc = {
 };
 
 export type BlogPostDoc = {
-  _id?: ObjectId;
+  id?: string;
   slug: string;
   title: string;
   excerpt: string;
@@ -101,20 +112,19 @@ export type BlogPostDoc = {
 };
 
 export type GalleryItemDoc = {
-  _id?: ObjectId;
+  id?: string;
   title: string;
   category: string;
   image: string;
   imageUrl?: string;
   imagePath?: string;
   alt: string;
-  /** Older items predate this flag, so anything that is not explicitly false stays visible. */
   published?: boolean;
   createdAt: Date;
 };
 
 export type InquiryDoc = {
-  _id?: ObjectId;
+  id?: string;
   name: string;
   email: string;
   phone?: string;
@@ -126,22 +136,22 @@ export type InquiryDoc = {
   location?: string;
   propertySlug?: string;
   projectSlug?: string;
-  property?: ObjectId;
-  project?: ObjectId;
+  property?: string;
+  project?: string;
   preferredVisitDate?: string;
   status: "new" | "contacted" | "closed";
   createdAt: Date;
 };
 
 export type NewsletterDoc = {
-  _id?: ObjectId;
+  id?: string;
   email: string;
   subscribedAt?: Date;
   createdAt: Date;
 };
 
 export type UserDoc = {
-  _id?: ObjectId;
+  id?: string;
   name?: string;
   email: string;
   passwordHash: string;
@@ -150,7 +160,7 @@ export type UserDoc = {
 };
 
 export type TestimonialDoc = {
-  _id?: ObjectId;
+  id?: string;
   name: string;
   designation?: string;
   image?: string;
@@ -162,7 +172,7 @@ export type TestimonialDoc = {
 };
 
 export type CommunityDoc = {
-  _id?: ObjectId;
+  id?: string;
   slug: string;
   name: string;
   shortDescription?: string;
@@ -181,7 +191,7 @@ export type CommunityDoc = {
 };
 
 export type MarketInsightDoc = {
-  _id?: ObjectId;
+  id?: string;
   slug: string;
   title: string;
   category: string;
@@ -197,4 +207,22 @@ export type MarketInsightDoc = {
   sortOrder?: number;
   createdAt: Date;
   updatedAt: Date;
+};
+
+/* ---- PostgreSQL row shapes ---- */
+
+export type UserRow = {
+  id: string;
+  name: string | null;
+  email: string;
+  password_hash: string;
+  role: "admin" | "agent" | "user";
+  created_at: Date;
+};
+
+export type DeveloperRow = {
+  id: string;
+  slug: string;
+  name: string;
+  published: boolean;
 };

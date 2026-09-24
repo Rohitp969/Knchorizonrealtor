@@ -130,15 +130,15 @@ export function PropertySearch({
   return (
     <form role="search" aria-label="Search properties" onSubmit={submit} className={className} data-testid="form-property-search">
      <div className={`overflow-visible ${styles.shell}`}>
-      <div className={`flex items-stretch justify-between gap-2 border-b ${styles.bar}`}>
-        <div className="flex items-stretch" role="group" aria-label="What are you looking for">
+      <div className={`flex items-stretch border-b ${styles.bar}`}>
+        <div className="flex w-full items-stretch" role="group" aria-label="What are you looking for">
           {LISTING_MODES.map((mode, index) => (
             <button
               key={mode.value}
               type="button"
               onClick={() => chooseListing(mode.value)}
               aria-pressed={listing === mode.value}
-              className={`px-4 py-3.5 font-mono text-[10px] uppercase tracking-[.14em] transition-colors sm:px-7 ${index ? 'border-l border-[#202635]/10' : ''} ${listing === mode.value ? styles.activeTab : styles.tab}`}
+              className={`search-tab flex-1 px-3 py-3.5 font-mono text-[10px] uppercase tracking-[.14em] sm:flex-none sm:px-8 ${index ? 'border-l border-[#202635]/10' : ''} ${listing === mode.value ? styles.activeTab : styles.tab}`}
               data-testid={`button-search-${mode.value}`}
             >
               {mode.label}
@@ -148,7 +148,7 @@ export function PropertySearch({
       </div>
 
       {/* Phones: location on its own row, then 2-up. Desktop: a single bar. */}
-      <div className={`grid grid-cols-2 text-[#202635] lg:grid-cols-[1.2fr_.9fr_1fr_1fr_.9fr_auto] ${styles.panel}`}>
+      <div className={`grid grid-cols-2 text-[#202635] lg:grid-cols-[1.15fr_1fr_1fr_1fr_1fr_auto] ${styles.panel}`}>
         <SelectField
           label="Location"
           placeholder="All locations"
@@ -201,7 +201,7 @@ export function PropertySearch({
 
         <button
           type="submit"
-          className="col-span-2 m-2 flex items-center justify-center gap-3 rounded-lg bg-[#d9c6a4] px-6 py-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#202635] transition-colors hover:bg-[#c97352] hover:text-[#f5f0e6] focus-visible:bg-[#c97352] focus-visible:text-[#f5f0e6] focus-visible:outline-none lg:col-span-1 lg:px-10"
+          className="search-submit col-span-2 m-2.5 flex min-h-[3rem] items-center justify-center gap-3 rounded-sm bg-[#d9c6a4] px-6 font-mono text-[10px] uppercase tracking-[.14em] text-[#202635] hover:bg-[#c97352] hover:text-[#f5f0e6] focus-visible:bg-[#c97352] focus-visible:text-[#f5f0e6] focus-visible:outline-none lg:col-span-1 lg:my-2.5 lg:ml-1 lg:px-9"
           data-testid="button-search-submit"
         >
           <Search size={15} aria-hidden="true" />

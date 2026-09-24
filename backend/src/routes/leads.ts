@@ -1,8 +1,19 @@
 import { Router } from "express";
-import { getDb, serializeDocument } from "../lib/mongodb";
-import type { InquiryDoc, NewsletterDoc } from "../lib/models";
+import { queryOne } from "../lib/postgres.ts";
+import { insertRow, toApi } from "../lib/repositories.ts";
+import type { InquiryDoc, NewsletterDoc } from "../lib/models.ts";
+import { sendLeadAlert } from "../lib/mailer.ts";
+import { readSettings } from "../lib/settings.ts";
+import { logger } from "../lib/logger.ts";
 
 const router = Router();
+
+/** Resolves the slug a form submitted to the listing it refers to, so the lead is linked. */
+async function resolveId(table: "properties" | "projects", slug: unknown) {
+  if (typeof slug !== "string" || !slug.trim()) return undefined;
+  const row = await queryOne<{ id: string }>(`select id from "${table}" where slug = $1`, [slug.trim()]);
+  return row?.id;
+}
 
 router.post("/inquiries", async (req, res, next) => {
   try {
@@ -18,12 +29,58 @@ router.post("/inquiries", async (req, res, next) => {
     if (!normalizedName || !normalizedEmail || !normalizedPhone || !normalizedInterest || !normalizedMessage) return res.status(400).json({ message: "Name, phone, email, interest, and message are required." });
     if (normalizedName.length > 120 || normalizedEmail.length > 254 || normalizedPhone.length > 40 || normalizedInterest.length > 120 || normalizedMessage.length > 5000) return res.status(400).json({ message: "Please keep the enquiry within the allowed length limits." });
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) return res.status(400).json({ message: "Please provide a valid email address." });
-    const inquiry: Omit<InquiryDoc, "_id"> = {
-      name: normalizedName, email: normalizedEmail, phone: normalizedPhone, interest: normalizedInterest, inquiryType: inquiryType ?? "contact",
-      message: normalizedMessage, budget: normalizedBudget, propertyType: normalizedPropertyType, location: normalizedLocation, propertySlug, projectSlug, project, preferredVisitDate, status: "new", createdAt: new Date(),
-    };
-    const result = await getDb().collection<InquiryDoc>("inquiries").insertOne(inquiry);
-    return res.status(201).json({ inquiry: serializeDocument({ ...inquiry, _id: result.insertedId } as unknown as Record<string, unknown>) });
+
+    // The slugs stay exactly as submitted; the ids are the resolved links for reporting.
+    const [propertyId, projectId] = await Promise.all([
+      resolveId("properties", propertySlug),
+      resolveId("projects", projectSlug ?? project),
+    ]);
+
+    const row = await insertRow("inquiries", {
+      name: normalizedName,
+      email: normalizedEmail,
+      phone: normalizedPhone,
+      interest: normalizedInterest,
+      inquiryType: inquiryType ?? "contact",
+      message: normalizedMessage,
+      budget: normalizedBudget,
+      propertyType: normalizedPropertyType,
+      location: normalizedLocation,
+      propertySlug,
+      projectSlug,
+      property: propertyId,
+      project: projectId,
+      preferredVisitDate,
+      status: "new",
+      createdAt: new Date(),
+    });
+    /*
+     * Alert the advisory desk. The enquiry is already committed, so this runs after the
+     * response is decided and every failure is logged rather than raised: a mail outage
+     * must never turn into a failed enquiry for the visitor.
+     */
+    void readSettings()
+      .then((settings) =>
+        sendLeadAlert(
+          {
+            name: normalizedName,
+            email: normalizedEmail,
+            phone: normalizedPhone,
+            interest: normalizedInterest,
+            message: normalizedMessage,
+            budget: normalizedBudget,
+            propertyType: normalizedPropertyType,
+            location: normalizedLocation,
+            propertySlug: typeof propertySlug === "string" ? propertySlug : undefined,
+            projectSlug: typeof projectSlug === "string" ? projectSlug : undefined,
+            inquiryType: inquiryType ?? "contact",
+          },
+          settings,
+        ),
+      )
+      .catch((error) => logger.error({ err: error }, "Lead alert pipeline failed"));
+
+    return res.status(201).json({ inquiry: toApi("inquiries", row) });
   } catch (error) {
     return next(error);
   }
@@ -33,9 +90,10 @@ router.post("/newsletter", async (req, res, next) => {
   try {
     const { email } = req.body as Partial<NewsletterDoc>;
     if (!email || !email.includes("@")) return res.status(400).json({ message: "A valid email is required." });
-    const existing = await getDb().collection<NewsletterDoc>("newsletter").findOne({ email: email.toLowerCase() });
+    const normalized = email.toLowerCase();
+    const existing = await queryOne("select id from newsletter where email = $1", [normalized]);
     if (existing) return res.status(200).json({ message: "You are already on the list." });
-    await getDb().collection<NewsletterDoc>("newsletter").insertOne({ email: email.toLowerCase(), subscribedAt: new Date(), createdAt: new Date() });
+    await insertRow("newsletter", { email: normalized, subscribedAt: new Date(), createdAt: new Date() });
     return res.status(201).json({ message: "You are on the list." });
   } catch (error) {
     return next(error);

@@ -87,6 +87,29 @@
   --spacing: 0.25rem;
   --elevate-1: rgba(32, 38, 53, 0.05);
   --elevate-2: rgba(32, 38, 53, 0.1);
+
+  /*
+   * ---- One spacing system for the whole site ----
+   * Every public section reads its gutter and its vertical rhythm from these two
+   * variables, so nothing can drift out of the shared grid. The gutter grows with the
+   * viewport; the content column stays at --site-max so the left and right edges of
+   * headings, paragraphs, cards and the search bar line up on every page.
+   */
+  --site-max: 1280px;
+  --site-gutter: 1.25rem;
+  --site-block: 4rem;
+}
+
+@media (min-width: 640px) {
+  :root { --site-gutter: 1.5rem; --site-block: 5rem; }
+}
+
+@media (min-width: 768px) {
+  :root { --site-gutter: 2.5rem; --site-block: 6rem; }
+}
+
+@media (min-width: 1280px) {
+  :root { --site-gutter: 3rem; --site-block: 7rem; }
 }
 
 .dark {
@@ -128,37 +151,74 @@
 
 @layer base {
   * { @apply border-border; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body { @apply font-sans antialiased bg-background text-foreground; }
   ::selection { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
+  /* Nothing may push the page sideways, whatever a card or an image tries to do. */
+  html, body { max-width: 100%; overflow-x: clip; }
+  img, svg, video { max-width: 100%; }
+  table { max-width: 100%; }
 }
 
-@layer utilities {
+@layer components {
   .eyebrow { font-family: var(--app-font-mono); font-size: 0.66rem; line-height: 1.2; letter-spacing: .16em; text-transform: uppercase; }
   .display { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.035em; }
   .text-balance { text-wrap: balance; }
 
+  /* ---- Shared page frame: same gutter, same content column, every page ---- */
+  .site-container { margin-inline: auto; width: 100%; max-width: var(--site-max); }
+  .site-gutter { padding-inline: var(--site-gutter); }
+  .site-section { padding-inline: var(--site-gutter); padding-block: var(--site-block); }
+  /* Continues the block above it: the section opens on a divider, not a second full gap. */
+  .site-section-flush-top { padding-top: 0; }
+  /* Half-height section, for strips that only carry a row of links or figures. */
+  .site-section-compact { padding-block: calc(var(--site-block) * 0.62); }
+
+  /*
+   * ---- Shared vertical rhythm (the gaps between the parts of a section) ----
+   * These are Tailwind utilities on the markup rather than classes, because a section
+   * occasionally needs to depart from them. The canonical values, which SectionIntro
+   * applies and every section follows unless it has a reason not to:
+   *   eyebrow  -> section heading   mt-6
+   *   heading  -> lead paragraph    mt-6
+   *   intro    -> content / grid    mt-12
+   *   content  -> CTA row           mt-10
+   */
+
   /* ---- Shared type scale (one size per role, site-wide) ---- */
-  /* Section headings: 2.35rem on phones → 4.5rem on desktop */
-  .section-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.035em; line-height: .95; font-size: clamp(2.35rem, 5.2vw, 4.5rem); }
+  /* Section headings: 2.2rem on phones → 4rem on desktop */
+  .section-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.035em; line-height: 1; font-size: clamp(2.2rem, 4.6vw, 4rem); }
   /* Page hero headings sit one step above section headings */
-  .page-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.04em; line-height: .92; font-size: clamp(2.75rem, 6.4vw, 6rem); }
+  .page-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.04em; line-height: .96; font-size: clamp(2.5rem, 5.4vw, 4.75rem); }
   /* Card headings across property, project, developer, community and blog cards */
   .card-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.02em; line-height: 1.2; font-size: 1.5rem; }
 
   /* Sub-section headings inside a section (feature blocks, form headings, detail pages) */
-  .block-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.02em; line-height: 1.15; font-size: clamp(1.6rem, 2.2vw, 1.875rem); }
+  .block-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.02em; line-height: 1.15; font-size: clamp(1.5rem, 2vw, 1.75rem); }
+
+  /* Body copy: one size and one line-height for every paragraph that carries a section. */
+  .body-copy { font-size: .9375rem; line-height: 1.75; }
+  @media (min-width: 640px) { .body-copy { font-size: 1rem; line-height: 1.8; } }
+  /* Comfortable reading widths, so a paragraph never runs the full 1280px column. */
+  .measure { max-width: 62ch; }
+  .measure-narrow { max-width: 46ch; }
 
   /* ---- Shared buttons: one size, padding and tracking everywhere ---- */
-  .btn { display: inline-flex; align-items: center; gap: .75rem; padding: .875rem 1.5rem; font-family: var(--app-font-mono); font-size: 10px; line-height: 1; text-transform: uppercase; letter-spacing: .14em; white-space: nowrap; transition: background-color .3s ease, color .3s ease, border-color .3s ease; }
-  .btn-primary { background-color: #202635; color: #f5f0e6; }
-  .btn-primary:hover { background-color: #c97352; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: .75rem; min-height: 2.875rem; padding: .875rem 1.5rem; font-family: var(--app-font-mono); font-size: 10px; line-height: 1; text-transform: uppercase; letter-spacing: .14em; white-space: nowrap; border-radius: 2px; transition: background-color .3s ease, color .3s ease, border-color .3s ease, transform .18s ease, box-shadow .3s ease; }
+  /* One press and one focus ring for every button on the site, in the existing accent. */
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: none; box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px rgba(201, 115, 82, .55); }
+  .btn > svg { flex: none; }
+  .btn-primary { background-color: #202635; color: #f5f0e6; border: 1px solid #202635; }
+  .btn-primary:hover { background-color: #c97352; border-color: #c97352; }
   .btn-secondary { border: 1px solid rgba(32, 38, 53, .3); color: #202635; }
-  .btn-secondary:hover { background-color: #202635; color: #f5f0e6; }
-  .btn-sand { background-color: #d9c6a4; color: #202635; }
-  .btn-sand:hover { background-color: #f5f0e6; }
+  .btn-secondary:hover { background-color: #202635; color: #f5f0e6; border-color: #202635; }
+  .btn-sand { background-color: #d9c6a4; color: #202635; border: 1px solid #d9c6a4; }
+  .btn-sand:hover { background-color: #f5f0e6; border-color: #f5f0e6; }
   .btn-outline-light { border: 1px solid rgba(245, 240, 230, .45); color: #f5f0e6; }
-  .btn-outline-light:hover { background-color: #f5f0e6; color: #202635; }
+  .btn-outline-light:hover { background-color: #f5f0e6; color: #202635; border-color: #f5f0e6; }
+  /* A row of CTAs: equal gaps, wraps rather than overflowing on a phone. */
+  .btn-row { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
 
   /* ---- Shared card media: identical ratio for every repeated card ---- */
   .card-media { position: relative; width: 100%; overflow: hidden; border-radius: .125rem; background-color: rgba(32, 38, 53, .08); aspect-ratio: 4 / 3; }
@@ -166,26 +226,16 @@
   .card-media-wide { aspect-ratio: 16 / 10; }
   .card-media-portrait { aspect-ratio: 4 / 5; }
 
-  .grain::after { content: ""; position: fixed; pointer-events: none; inset: 0; z-index: 50; opacity: .035; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.52'/%3E%3C/svg%3E"); }
-  .image-reveal { overflow: hidden; }
-  .image-reveal img { transition: transform 900ms cubic-bezier(.2,.75,.2,1), filter 700ms ease; }
-  .image-reveal:hover img { transform: scale(1.045); filter: saturate(1.08); }
-  .line-link { position: relative; }
-  .line-link::after { content: ""; position: absolute; bottom: -.35rem; left: 0; height: 1px; width: 100%; transform: scaleX(0); transform-origin: right; background: currentColor; transition: transform 280ms ease; }
-  .line-link:hover::after, .line-link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
-  .scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
-  .scrollbar-none::-webkit-scrollbar { display: none; }
-
-  /* Reusable Card & Image System */
+  /* ---- Repeated card shell: same border, background, padding and hover everywhere ---- */
   .card-editorial {
     display: flex;
     flex-direction: column;
     height: 100%;
     border: 1px solid rgba(32, 38, 53, 0.12);
     background-color: #fcfaf6;
-    padding: 0.875rem;
+    padding: 1.25rem;
     border-radius: 0.25rem;
-    transition: all 300ms ease;
+    transition: border-color 300ms ease, box-shadow 300ms ease;
   }
   .card-editorial:hover {
     border-color: rgba(201, 115, 82, 0.5);
@@ -210,6 +260,32 @@
   }
 }
 
+@layer components {
+  /* Navbar dropdown: opens on a short fade and settle rather than appearing instantly. */
+  .nav-dropdown { animation: dropdown-in .18s cubic-bezier(.2,.65,.2,1) both; transform-origin: top center; }
+
+  /* Search bar: the active tab's underline grows in instead of snapping. */
+  .search-tab { transition: color .25s ease, background-color .25s ease, box-shadow .25s ease; }
+  /* Fields lift very slightly under the cursor so the bar feels live without moving. */
+  .search-field { transition: background-color .25s ease, box-shadow .25s ease; }
+  .search-submit { transition: background-color .3s ease, color .3s ease, transform .18s ease, box-shadow .3s ease; }
+  .search-submit:hover { box-shadow: 0 8px 20px -10px rgba(32, 38, 53, .55); }
+  .search-submit:active { transform: translateY(1px); }
+}
+
+@layer utilities {
+  .grain::after { content: ""; position: fixed; pointer-events: none; inset: 0; z-index: 50; opacity: .035; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.52'/%3E%3C/svg%3E"); }
+  .image-reveal { overflow: hidden; }
+  .image-reveal img { transition: transform 900ms cubic-bezier(.2,.75,.2,1), filter 700ms ease; }
+  .image-reveal:hover img { transform: scale(1.045); filter: saturate(1.08); }
+  .line-link { position: relative; }
+  .line-link::after { content: ""; position: absolute; bottom: -.35rem; left: 0; height: 1px; width: 100%; transform: scaleX(0); transform-origin: right; background: currentColor; transition: transform 280ms ease; }
+  .line-link:hover::after, .line-link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+  .scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+}
+
+@keyframes dropdown-in { from { opacity: 0; transform: translateY(-6px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes rise-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes ken-burns { from { transform: scale(1); } to { transform: scale(1.05); } }
 .animate-rise { animation: rise-in .8s cubic-bezier(.2,.65,.2,1) both; }
@@ -227,7 +303,14 @@
 .home-hero {
   --hero-focus-x: 50%;                            /* crop anchor, horizontal */
   --hero-focus-y: 50%;                            /* crop anchor, vertical   */
-  --hero-display: clamp(2.35rem, 5.4vw, 4rem);    /* headline size */
+  --hero-display: clamp(2.3rem, 5vw, 3.75rem);    /* headline size */
+  /*
+   * The hero fills the window exactly, so the section under it starts below the fold instead
+   * of peeking through as a half-cut heading. At 70svh the words "Properties with" were being
+   * sliced through the middle on every common laptop height. svh (not vh) so mobile browser
+   * chrome cannot stretch it past the viewport and push the search bar out of reach.
+   */
+  min-height: 100svh;
 }
 .home-hero-media { position: absolute; inset: 0; }
 .home-hero-media .hero-image {
@@ -249,53 +332,39 @@
 /* Wide screens see nearly the whole panorama, so the crop is biased left to carry the
    Burj clear of the headline; narrower boxes crop hard and centre on the tower instead. */
 @media (min-width: 1024px) {
-  .home-hero { --hero-focus-x: 22%; }
+  /*
+   * The box is now as tall as the window, so a centred vertical anchor filled the lower half
+   * with unlit foreground. Anchoring higher in the frame brings the skyline and the sunset
+   * band down into the middle third and leaves just enough dark ground for the search bar to
+   * sit against.
+   */
+  .home-hero { --hero-focus-x: 22%; --hero-focus-y: 32%; }
+}
+
+/*
+ * Page heroes.
+ * A controlled band rather than a full screen: tall enough to carry the photograph and the
+ * heading, short enough that the first section of real content is visible without scrolling
+ * far. svh (not vh) so mobile browser chrome cannot stretch it past the viewport.
+ */
+.page-hero {
+  /*
+   * A share of the window, like .home-hero, instead of a flat 480px band that filled 63% of
+   * a 768px laptop screen and only 44% of a 1080px one. Shorter than the home hero because
+   * it only carries a label, a heading and one paragraph — no search bar.
+   */
+  min-height: clamp(21rem, 56svh, 36rem);
 }
 
 @media (max-width: 767px) {
   .page-hero {
-    min-height: 48svh;
-    padding-top: 7.5rem;
-    padding-bottom: 2.75rem;
+    min-height: 20rem;
+    padding-top: 7rem;
+    padding-bottom: 2.5rem;
   }
 
   .page-hero-image {
     opacity: .58;
-  }
-
-  .page-hero h1 {
-    font-size: clamp(2.75rem, 12vw, 4.2rem);
-    line-height: .92;
-  }
-
-  main h2.display {
-    font-size: clamp(2.35rem, 9.5vw, 3.5rem);
-  }
-
-  .mobile-cta-section {
-    min-height: 22rem !important;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-  }
-
-  .mobile-card-image img,
-  .mobile-area-image img {
-    object-fit: cover;
-  }
-
-  main > section:not(:first-child) {
-    padding-top: 3.5rem;
-    padding-bottom: 3.5rem;
-  }
-
-  main > section:first-child h1,
-  main > section:first-child .display {
-    font-size: clamp(3.2rem, 14vw, 5rem);
-    line-height: .88;
-  }
-
-  .display {
-    letter-spacing: -.025em;
   }
 
   .image-reveal img {
@@ -306,13 +375,9 @@
     max-width: calc(100vw - 1.5rem);
   }
 
-  main > section:first-child:not(.page-hero) {
-    min-height: 60svh;
-  }
-
-  /* Compact hero on phones: tall enough for the column and search bar, never full screen. */
+  /* Phones get the same full-window hero, for the same reason: nothing half-cut at the fold. */
   main > section.home-hero:first-child {
-    min-height: 26rem;
+    min-height: 100svh;
   }
 
   /* The two hero actions sit side by side rather than stacking, which is what pushed the
@@ -331,17 +396,29 @@
   [data-testid="form-property-search"] [data-testid^="select-search-"] span:last-child span:first-child {
     font-size: .8125rem;
   }
+}
 
-  /* Sections that continue the previous section's background open with a divider, not a second full padding. */
-  main > section.home-flush-top {
-    padding-top: 0;
+/*
+ * Reduced motion.
+ * Someone who has asked their system to limit animation still gets the whole site — every
+ * element sits at its final position and opacity, hover colours still change — but nothing
+ * slides, zooms or drifts. framer-motion is handled separately by MotionConfig in App.tsx,
+ * which reads the same OS setting.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
   }
 
-  main > section.min-h-\[640px\] {
-    min-height: auto;
-  }
-
-  main > section.min-h-\[560px\] {
-    min-height: 22rem;
-  }
+  .hero-image,
+  .home-hero-media { animation: none !important; transform: none !important; }
+  .image-reveal:hover img { transform: none; }
+  .group:hover .card-thumb img { transform: none; }
+  .btn:active { transform: none; }
+  .search-submit:active { transform: none; }
 }

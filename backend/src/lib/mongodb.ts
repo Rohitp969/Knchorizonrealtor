@@ -1,5 +1,5 @@
 import { Db, MongoClient, ObjectId } from "mongodb";
-import { logger } from "./logger";
+import { logger } from "./logger.ts";
 
 let database: Db | undefined;
 let mongoClient: MongoClient | undefined;

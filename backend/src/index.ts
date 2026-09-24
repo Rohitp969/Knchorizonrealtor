@@ -1,8 +1,8 @@
 import "dotenv/config";
-import app from "./app";
-import { logger } from "./lib/logger";
-import { connectToMongo } from "./lib/mongodb";
-import { seedDatabase } from "./lib/seed";
+import app from "./app.ts";
+import { logger } from "./lib/logger.ts";
+import { connectToPostgres } from "./lib/postgres.ts";
+import { bootstrapDatabase } from "./lib/bootstrap.ts";
 
 /*
  * Render assigns the port through PORT and the service must listen on it, so that always
@@ -16,8 +16,8 @@ if (Number.isNaN(port) || port <= 0) {
 }
 
 async function start() {
-  await connectToMongo();
-  await seedDatabase();
+  await connectToPostgres();
+  await bootstrapDatabase();
   app.listen(port, (err) => {
     if (err) {
       logger.error({ err }, "Error listening on port");

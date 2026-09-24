@@ -3,14 +3,14 @@ import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Building2, Check, ChevronDown, Coins, Compass, Globe2, Landmark, MapPin, Phone, ShieldCheck, TrendingUp } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'wouter';
-import { ContactForm, FaqSection, PageHero, PropertyCard, SectionIntro, SectionLabel, ServiceRow } from '@/components/blocks';
+import { ContactForm, FaqSection, PageHero, PropertyCard, SectionIntro, SectionLabel, ServiceRow, cardGrid } from '@/components/blocks';
 import { areas, properties, services, specialistServices } from '@/lib/site-data';
-import { CONTACT } from '@/lib/contact-info';
+import { useContact } from '@/lib/site-settings';
 import { apiFetch, type Project, type RemoteProperty } from '@/lib/api';
 
 export function AboutPage() {
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-x-clip">
 
       {/* HERO */}
       <PageHero
@@ -27,8 +27,8 @@ export function AboutPage() {
       />
 
       {/* OUR POINT OF VIEW */}
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           <SectionLabel>Our Point of View</SectionLabel>
 
           <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
@@ -36,14 +36,14 @@ export function AboutPage() {
             <em className="text-[#c97352]">question.</em>
           </h2>
 
-          <p className="mt-8 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:leading-8">
+          <p className="body-copy measure mt-8 text-[#202635]/75">
             What does home need to make possible? What would make this
             investment resilient? Which parts of the city feel like you?
             These are the questions that shape our work — long before we
             send a listing.
           </p>
 
-          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:leading-8">
+          <p className="body-copy measure mt-5 text-[#202635]/75">
             KNC was founded to make the Dubai property experience feel
             more human. Our clients come from everywhere, but they all want
             the same thing: someone local enough to know the detail, and
@@ -53,8 +53,8 @@ export function AboutPage() {
       </section>
 
       {/* HOW WE WORK */}
-      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#e9e4da] site-section">
+        <div className="site-container">
           <SectionIntro
             label="Our Working Method"
             title={
@@ -67,7 +67,7 @@ export function AboutPage() {
             copy="A high-touch process, built around the detail that makes decisions feel simple."
           />
 
-          <div className="mt-14 grid gap-10 md:mt-16 md:grid-cols-3 md:gap-12">
+          <div className="mt-12 grid gap-8 md:grid-cols-3 md:gap-10">
             {[
               {
                 step: "Discovery & Brief",
@@ -107,8 +107,8 @@ export function AboutPage() {
       </section>
 
       {/* OUR COMMITMENT */}
-      <section className="bg-[#d9d2c5] px-5 py-20 md:px-10 md:py-28 text-[#202635]">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#d9d2c5] site-section text-[#202635]">
+        <div className="site-container">
           <SectionLabel>Our Commitment</SectionLabel>
 
           <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
@@ -117,13 +117,13 @@ export function AboutPage() {
             <em className="text-[#c97352]">beautifully delivered.</em>
           </h2>
 
-          <p className="mt-8 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:leading-8">
+          <p className="body-copy measure mt-8 text-[#202635]/75">
             We will always tell you what we see, what we know, and what we
             would do if it were our decision. That is the foundation of trust
             — and the reason our business is built on referrals.
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="btn-row mt-10">
             <Link href="/contact" className="btn btn-primary" data-testid="link-about-contact">
               Start a conversation <ArrowUpRight size={14} />
             </Link>
@@ -150,8 +150,8 @@ export function PropertiesPage() {
         copy="A considered selection of Dubai homes and opportunities, selected for their quality, position, and possibility."
         image="/images/penthouse-marina.jpg"
       />
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           <div className="flex flex-wrap gap-2 border-b border-[#202635]/15 pb-6">
             {filters.map((item) => (
               <button
@@ -165,14 +165,14 @@ export function PropertiesPage() {
               </button>
             ))}
           </div>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className={`mt-12 ${cardGrid(filtered.length)}`}>
             {filtered.map((property) => (
               <PropertyCard key={property.id} property={property} featured={false} />
             ))}
           </div>
           {filtered.length === 0 && (
-            <div className="py-20 text-center">
-              <p className="display text-4xl">Nothing in this edit yet.</p>
+            <div className="py-16 text-center">
+              <p className="block-title text-[#202635]">Nothing in this edit yet.</p>
               <button
                 onClick={() => setFilter('All')}
                 className="mt-5 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] line-link"
@@ -190,7 +190,7 @@ export function PropertiesPage() {
 
 export function ServicesPage() {
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-x-clip">
       {/* HERO */}
       <PageHero
         label="Our Advisory Services"
@@ -206,8 +206,8 @@ export function ServicesPage() {
       />
 
       {/* CORE ADVISORY SERVICES */}
-      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#e9e4da] site-section">
+        <div className="site-container">
           <SectionIntro
             label="Advisory Practices"
             title={
@@ -220,7 +220,7 @@ export function ServicesPage() {
             copy="Our role is to make the important parts clearer, and the complicated parts feel structured and held."
           />
 
-          <div className="mt-14">
+          <div className="mt-12">
             {services.map((service) => (
               <div id={service.id} key={service.id}>
                 <ServiceRow service={service} />
@@ -234,8 +234,8 @@ export function ServicesPage() {
       </section>
 
       {/* SPECIALIST PRACTICES (DESIGN & BUILD / INTERIORS) */}
-      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#dfe2dc] site-section">
+        <div className="site-container">
           <SectionIntro
             label="Specialist Practices"
             title={
@@ -248,11 +248,11 @@ export function ServicesPage() {
             copy="Beyond advisory, we support clients with dedicated design, procurement, and furnishing coordination for their Dubai residences."
           />
 
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className={`mt-12 ${cardGrid(specialistServices.length)}`}>
             {specialistServices.map((specialist) => (
               <div
                 key={specialist.id}
-                className="card-editorial group flex h-full flex-col justify-between p-6"
+                className="card-editorial group flex h-full flex-col justify-between p-5"
               >
                 <div>
                   <div className="card-media mb-6">
@@ -289,8 +289,8 @@ export function ServicesPage() {
       </section>
 
       {/* WHAT YOU CAN EXPECT */}
-      <section className="bg-[#c6d0c9] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-[1280px] gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
+      <section className="bg-[#c6d0c9] site-section">
+        <div className="site-container grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
           <div>
             <SectionLabel>What you can expect</SectionLabel>
             <h2 className="section-title mt-6">
@@ -328,6 +328,7 @@ export function ServicesPage() {
 }
 
 export function DesignBuildPage() {
+  const contact = useContact();
   const services = [
     {
       badge: "Planning",
@@ -352,7 +353,7 @@ export function DesignBuildPage() {
   ];
 
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-x-clip">
 
       {/* HERO */}
       <PageHero
@@ -369,8 +370,8 @@ export function DesignBuildPage() {
       />
 
       {/* INTRO */}
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           <SectionLabel>
             Design & build coordination
           </SectionLabel>
@@ -384,14 +385,14 @@ export function DesignBuildPage() {
             </em>
           </h2>
 
-          <p className="mt-8 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:leading-8">
+          <p className="body-copy measure mt-8 text-[#202635]/75">
             Whether you are preparing a new home, improving a property
             before letting it, or considering how a space can work harder
             as an investment, the right decisions start with understanding
             the property and the people it needs to serve.
           </p>
 
-          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#202635]/75 sm:leading-8">
+          <p className="body-copy measure mt-5 text-[#202635]/75">
             Property decisions do not always stop at the purchase. KNC brings
             the property perspective first, helping you coordinate the design
             direction and specialist requirements that make sense for your project.
@@ -399,7 +400,7 @@ export function DesignBuildPage() {
         </div>
 
         {/* SERVICE CARDS */}
-        <div className="mx-auto mt-16 max-w-[1280px] grid border-t border-[#202635]/20 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="site-container mt-12 grid border-t border-[#202635]/20 sm:grid-cols-2 lg:grid-cols-4">
           {services.map((service) => (
             <div
               key={service.badge}
@@ -434,8 +435,8 @@ export function DesignBuildPage() {
       </section>
 
       {/* WHAT CLIENTS CAN ASK FOR */}
-      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1280px]">
+      <section className="bg-[#e9e4da] site-section">
+        <div className="site-container">
           <SectionIntro
             label="What we can help with"
             title={
@@ -448,7 +449,7 @@ export function DesignBuildPage() {
             copy="Tailored coordination services designed to enhance the livability and capital value of your Dubai asset."
           />
 
-          <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <div className="border-t border-[#202635]/20 pt-6">
               <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
                 Preparation
@@ -506,11 +507,11 @@ export function DesignBuildPage() {
       </section>
 
       {/* CONSULTATION */}
-      <section className="bg-[#c6d0c9] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1280px]">
+      <section className="bg-[#c6d0c9] site-section">
+        <div className="site-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
 
-          {/* HEADER */}
-          <div className="max-w-3xl">
+          {/* BRIEF */}
+          <div className="flex flex-col">
             <SectionLabel>
               Start with the brief
             </SectionLabel>
@@ -523,44 +524,44 @@ export function DesignBuildPage() {
               </em>
             </h2>
 
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-[#202635]/65 sm:text-base">
+            <p className="body-copy measure mt-6 text-[#202635]/65">
               Tell us what you have purchased, what you are planning, and what
               kind of support you need. Our team can understand the requirement
               and guide you towards the appropriate next step.
             </p>
-          </div>
 
-          {/* FORM AREA */}
-          <div className="mt-12 border-t border-[#202635]/20 pt-10">
+            <p className="measure-narrow mt-4 text-sm leading-7 text-[#202635]/60">
+              Share the basics and our team can follow up with the right
+              questions about your property and requirements.
+            </p>
 
-            <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
-
-              {/* FORM INTRO */}
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
-                  Property enquiry
-                </p>
-
-                <h3 className="block-title mt-5 max-w-sm text-[#202635]">
-                  A considered conversation starts here.
-                </h3>
-
-                <p className="mt-5 max-w-sm text-sm leading-6 text-[#202635]/60">
-                  Share the basics and our team can follow up with the right
-                  questions about your property and requirements.
-                </p>
-              </div>
-
-              {/* FORM */}
-              <div className="w-full rounded-sm bg-[#f5f0e6] p-5 shadow-sm sm:p-8 md:p-10">
-                <ContactForm
-                  compact
-                  inquiryType="design-build"
-                />
-              </div>
-
+            <div className="mt-8 flex flex-col items-start gap-3 border-t border-[#202635]/20 pt-6 lg:mt-auto">
+              <p className="eyebrow text-[#c97352]">Or speak to the studio</p>
+              <a
+                href={`tel:${contact.phoneHref}`}
+                className="block-title text-[#202635] transition-colors hover:text-[#c97352]"
+              >
+                {contact.phoneDisplay}
+              </a>
+              <a
+                href={`https://wa.me/${contact.whatsapp}`}
+                target="_blank"
+                rel="noreferrer"
+                className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
+              >
+                Chat on WhatsApp
+              </a>
             </div>
           </div>
+
+          {/* FORM */}
+          <div className="w-full rounded-sm bg-[#f5f0e6] p-5 shadow-sm sm:p-8">
+            <ContactForm
+              compact
+              inquiryType="design-build"
+            />
+          </div>
+
         </div>
       </section>
 
@@ -569,6 +570,7 @@ export function DesignBuildPage() {
 }
 
 export function InteriorsPage() {
+  const contact = useContact();
   const services = [
     {
       badge: "Curation",
@@ -588,7 +590,7 @@ export function InteriorsPage() {
   ];
 
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-x-clip">
       <PageHero
         label="KNC Studio · Interiors & Furniture"
         title={
@@ -603,20 +605,17 @@ export function InteriorsPage() {
       />
 
       {/* INTRO / IMAGE */}
-      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1280px]">
+      <section className="bg-[#dfe2dc] site-section">
+        <div className="site-container">
           <div className="grid items-center gap-10 md:grid-cols-2 md:gap-14">
 
             {/* CONTROLLED IMAGE */}
-            <div className="w-full">
-              <div className="overflow-hidden rounded-sm bg-[#202635]/10">
-                <img
-                  src="/images/interior-detail.jpg"
-                  alt="Contemporary Dubai interior with warm neutral materials"
-                  loading="lazy"
-                  className="block h-[280px] w-full object-cover object-center sm:h-[340px] md:h-[380px]"
-                />
-              </div>
+            <div className="card-media card-media-wide lg:aspect-[4/3]">
+              <img
+                src="/images/interior-detail.jpg"
+                alt="Contemporary Dubai interior with warm neutral materials"
+                loading="lazy"
+              />
             </div>
 
             {/* TEXT */}
@@ -628,14 +627,14 @@ export function InteriorsPage() {
                 <em className="text-[#c97352]">collected.</em>
               </h2>
 
-              <p className="mt-6 text-base leading-relaxed text-[#202635]/75 sm:leading-8">
+              <p className="body-copy measure mt-6 text-[#202635]/75">
                 From a newly purchased apartment to an investment property
                 being prepared for its next tenant, we help shape a clear
                 interior direction that feels practical, refined, and
                 appropriate to the property.
               </p>
 
-              <p className="mt-4 text-base leading-relaxed text-[#202635]/75 sm:leading-8">
+              <p className="body-copy measure mt-4 text-[#202635]/75">
                 The focus is not on adding more. It is on choosing the right
                 pieces, proportions, materials, and finishing details for the
                 space.
@@ -646,8 +645,8 @@ export function InteriorsPage() {
       </section>
 
       {/* SERVICES */}
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           <SectionIntro
             label="What we can shape"
             title={
@@ -684,8 +683,8 @@ export function InteriorsPage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1280px]">
+      <section className="bg-[#e9e4da] site-section">
+        <div className="site-container">
           <SectionIntro
             label="Our approach"
             title={
@@ -698,7 +697,7 @@ export function InteriorsPage() {
             copy="A phased, property-first method that shapes coherent, finished spaces without unnecessary complexity."
           />
 
-          <div className="mt-14 grid gap-8 md:grid-cols-3">
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
             <div className="border-t border-[#202635]/20 pt-7">
               <span className="font-mono text-[10px] tracking-[0.16em] text-[#c97352]">
                 Phase · Understand
@@ -749,9 +748,10 @@ export function InteriorsPage() {
       </section>
 
       {/* CONTACT */}
-      <section className="bg-[#c6d0c9] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1280px]">
-          <div className="max-w-3xl">
+      <section className="bg-[#c6d0c9] site-section">
+        <div className="site-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+
+          <div className="flex flex-col">
             <SectionLabel>Talk to the studio</SectionLabel>
 
             <h2 className="section-title mt-6 text-[#202635]">
@@ -760,39 +760,42 @@ export function InteriorsPage() {
               <em className="text-[#c97352]">the room.</em>
             </h2>
 
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-[#202635]/65 sm:text-base">
+            <p className="body-copy measure mt-6 text-[#202635]/65">
               Tell us about the property, what you want to achieve, and the
               kind of interior support you are looking for.
             </p>
-          </div>
 
-          <div className="mt-12 border-t border-[#202635]/20 pt-10">
-            <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
+            <p className="measure-narrow mt-4 text-sm leading-7 text-[#202635]/60">
+              Share a few details and our team can understand the requirement
+              before discussing the appropriate next step.
+            </p>
 
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
-                  Interior enquiry
-                </p>
-
-                <h3 className="block-title mt-5 max-w-sm text-[#202635]">
-                  Let's understand the space.
-                </h3>
-
-                <p className="mt-5 max-w-sm text-sm leading-6 text-[#202635]/60">
-                  Share a few details and our team can understand the
-                  requirement before discussing the appropriate next step.
-                </p>
-              </div>
-
-              <div className="w-full rounded-sm bg-[#f5f0e6] p-5 shadow-sm sm:p-8 md:p-10">
-                <ContactForm
-                  compact
-                  inquiryType="interiors"
-                />
-              </div>
-
+            <div className="mt-8 flex flex-col items-start gap-3 border-t border-[#202635]/20 pt-6 lg:mt-auto">
+              <p className="eyebrow text-[#c97352]">Or speak to the studio</p>
+              <a
+                href={`tel:${contact.phoneHref}`}
+                className="block-title text-[#202635] transition-colors hover:text-[#c97352]"
+              >
+                {contact.phoneDisplay}
+              </a>
+              <a
+                href={`https://wa.me/${contact.whatsapp}`}
+                target="_blank"
+                rel="noreferrer"
+                className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
+              >
+                Chat on WhatsApp
+              </a>
             </div>
           </div>
+
+          <div className="w-full rounded-sm bg-[#f5f0e6] p-5 shadow-sm sm:p-8">
+            <ContactForm
+              compact
+              inquiryType="interiors"
+            />
+          </div>
+
         </div>
       </section>
     </main>
@@ -802,6 +805,7 @@ export function InteriorsPage() {
 
 
 export function AreasPage() {
+  const contact = useContact();
   // Live stock per community, so a card says what is actually behind it before it is opened.
   const [counts, setCounts] = useState<Record<string, { properties: number; projects: number }>>({});
   useEffect(() => {
@@ -826,7 +830,7 @@ export function AreasPage() {
 
 
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-x-clip">
       <PageHero
         label="Dubai, by neighbourhood"
         title={
@@ -841,8 +845,8 @@ export function AreasPage() {
       />
 
       {/* AREA NOTES */}
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
 
           <div className="max-w-3xl">
             <SectionLabel>Area notes</SectionLabel>
@@ -853,7 +857,7 @@ export function AreasPage() {
               <em className="text-[#c97352]">by address.</em>
             </h2>
 
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-[#202635]/65 sm:text-base">
+            <p className="body-copy measure mt-6 text-[#202635]/65">
               From waterfront communities and established villa
               neighbourhoods to new districts shaped by Dubai&apos;s continued
               growth, every address offers a different way of living and
@@ -862,12 +866,12 @@ export function AreasPage() {
           </div>
 
           {/* AREA GRID — one card per community, identical media ratio and CTA */}
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className={`mt-12 ${cardGrid(areas.length)}`}>
             {areas.map((area) => (
               <article
                 key={area.id}
                 id={area.id}
-                className="card-editorial group scroll-mt-28 p-4"
+                className="card-editorial group scroll-mt-28 p-5"
                 data-testid={`card-community-${area.id}`}
               >
                 <div className="card-media image-reveal">
@@ -916,12 +920,12 @@ export function AreasPage() {
           </div>
 
           {/* LOCAL PERSPECTIVE */}
-          <div className="mt-14 max-w-3xl border-t border-[#202635]/20 pt-8">
+          <div className="measure mt-14 border-t border-[#202635]/20 pt-8">
             <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#c97352]">
               Local perspective
             </span>
 
-            <p className="mt-3 text-base leading-relaxed text-[#202635]/70 sm:leading-8">
+            <p className="body-copy measure mt-3 text-[#202635]/70">
               Choosing a Dubai property starts with choosing the right
               location. If you are unsure which community fits your
               requirements, speak with our property advisory team before
@@ -932,48 +936,52 @@ export function AreasPage() {
       </section>
 
       {/* AREA ADVISORY CTA */}
-      <section className="bg-[#c6d0c9] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1280px]">
+      <section className="bg-[#c6d0c9] site-section">
+        <div className="site-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
 
-          <div className="max-w-3xl">
+          <div className="flex flex-col">
             <SectionLabel>Need a local view?</SectionLabel>
 
-            <h2 className="section-title mt-5 text-[#202635]">
+            <h2 className="section-title mt-6 text-[#202635]">
               Start with the{" "}
               <em className="text-[#c97352]">right area.</em>
             </h2>
 
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-[#202635]/65 sm:text-base">
+            <p className="body-copy measure mt-6 text-[#202635]/65">
               Tell us what you are looking for and our property advisory team
               can help you compare locations, property types, and suitable
               opportunities.
             </p>
-          </div>
 
-          <div className="mt-10 border-t border-[#202635]/20 pt-8">
-            <div className="grid items-start gap-8 lg:grid-cols-[0.65fr_1.35fr] lg:gap-14">
+            <p className="measure-narrow mt-4 text-sm leading-7 text-[#202635]/60">
+              Share your requirements and we&apos;ll help you understand which
+              Dubai locations may fit your plans, and what is realistic in each
+              of them.
+            </p>
 
-              <div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
-                  Area advisory
-                </span>
-
-                <h3 className="block-title mt-4 max-w-sm text-[#202635]">
-                  Let&apos;s find the right neighbourhood.
-                </h3>
-
-                <p className="mt-4 max-w-sm text-sm leading-6 text-[#202635]/60">
-                  Share your requirements and we&apos;ll help you understand
-                  which Dubai locations may fit your plans.
-                </p>
-              </div>
-
-              <div className="w-full rounded-sm bg-[#f5f0e6] p-5 shadow-sm sm:p-7 md:p-8">
-                <ContactForm compact inquiryType="area-advisory" />
-              </div>
-
+            <div className="mt-8 flex flex-col items-start gap-3 border-t border-[#202635]/20 pt-6 lg:mt-auto">
+              <p className="eyebrow text-[#c97352]">Or speak to an advisor</p>
+              <a
+                href={`tel:${contact.phoneHref}`}
+                className="block-title text-[#202635] transition-colors hover:text-[#c97352]"
+              >
+                {contact.phoneDisplay}
+              </a>
+              <a
+                href={`https://wa.me/${contact.whatsapp}`}
+                target="_blank"
+                rel="noreferrer"
+                className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
+              >
+                Chat on WhatsApp
+              </a>
             </div>
           </div>
+
+          <div className="w-full rounded-sm bg-[#f5f0e6] p-5 shadow-sm sm:p-8">
+            <ContactForm compact inquiryType="area-advisory" />
+          </div>
+
         </div>
       </section>
     </main>
@@ -982,8 +990,9 @@ export function AreasPage() {
 
 
 export function ContactPage() {
+  const contact = useContact();
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-x-clip">
 
       {/* HERO */}
       <PageHero
@@ -1001,10 +1010,10 @@ export function ContactPage() {
       />
 
       {/* CONTACT INFORMATION + FORM */}
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
 
-          <div className="grid gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
+          <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 xl:gap-20">
 
             {/* LEFT - CONTACT DETAILS */}
             <div>
@@ -1012,23 +1021,23 @@ export function ContactPage() {
 
               <div className="mt-8">
                 <a
-                  href={`tel:${CONTACT.phoneHref}`}
-                  className="block font-serif text-3xl leading-tight text-[#202635] transition-colors hover:text-[#c97352] sm:text-4xl"
+                  href={`tel:${contact.phoneHref}`}
+                  className="block-title block text-[#202635] transition-colors hover:text-[#c97352]"
                   data-testid="link-contact-page-phone"
                 >
-                  {CONTACT.phoneDisplay}
+                  {contact.phoneDisplay}
                 </a>
 
                 <a
-                  href={`mailto:${CONTACT.email}`}
+                  href={`mailto:${contact.email}`}
                   className="mt-3 block break-all font-mono text-[10px] uppercase tracking-[0.14em] text-[#202635]/60 transition-colors hover:text-[#c97352]"
                   data-testid="link-contact-page-email"
                 >
-                  {CONTACT.email}
+                  {contact.email}
                 </a>
 
                 <a
-                  href={`https://wa.me/${CONTACT.whatsapp}`}
+                  href={`https://wa.me/${contact.whatsapp}`}
                   target="_blank"
                   rel="noreferrer"
                   className="mt-5 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-[#c97352] line-link"
@@ -1046,7 +1055,7 @@ export function ContactPage() {
                 </p>
 
                 <p className="mt-4 max-w-sm text-sm leading-7 text-[#202635]/60">
-                  {CONTACT.studioHours}
+                  {contact.studioHours}
                 </p>
               </div>
 
@@ -1063,7 +1072,7 @@ export function ContactPage() {
                   />
 
                   <p className="text-sm leading-7 text-[#202635]/60">
-                    {CONTACT.dubaiAddress}
+                    {contact.dubaiAddress}
                   </p>
                 </div>
               </div>
@@ -1075,7 +1084,7 @@ export function ContactPage() {
                 </p>
 
                 <p className="mt-4 text-sm leading-7 text-[#202635]/60">
-                  {CONTACT.indiaAddress}
+                  {contact.indiaAddress}
                 </p>
               </div>
             </div>
@@ -1087,7 +1096,7 @@ export function ContactPage() {
                   Property enquiry
                 </span>
 
-                <h2 className="section-title mt-4 text-[#202635]">
+                <h2 className="block-title mt-4 text-[#202635]">
                   Tell us what you&apos;re looking for.
                 </h2>
 
@@ -1098,7 +1107,7 @@ export function ContactPage() {
                 </p>
               </div>
 
-              <div className="rounded-sm bg-[#e9e4da] p-5 shadow-sm sm:p-8 md:p-10">
+              <div className="rounded-sm bg-[#e9e4da] p-5 shadow-sm sm:p-8">
                 <ContactForm />
               </div>
             </div>
@@ -1108,14 +1117,14 @@ export function ContactPage() {
       </section>
 
       {/* BOTTOM CONTACT STRIP */}
-      <section className="bg-[#c6d0c9] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto grid w-full max-w-[1280px] gap-8 md:grid-cols-3 md:gap-10">
+      <section className="site-section site-section-compact bg-[#c6d0c9]">
+        <div className="site-container grid gap-8 sm:grid-cols-3 sm:gap-10">
 
           <div>
             <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#c97352]">
               Dubai
             </span>
-            <p className="mt-3 font-serif text-2xl text-[#202635]">
+            <p className="card-title mt-3 text-[#202635]">
               Property advisory
             </p>
           </div>
@@ -1124,7 +1133,7 @@ export function ContactPage() {
             <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#c97352]">
               India
             </span>
-            <p className="mt-3 font-serif text-2xl text-[#202635]">
+            <p className="card-title mt-3 text-[#202635]">
               DLF Phase 1, Gurugram
             </p>
           </div>
@@ -1135,10 +1144,10 @@ export function ContactPage() {
             </span>
 
             <a
-              href={`tel:${CONTACT.phoneHref}`}
-              className="mt-3 block font-serif text-2xl text-[#202635] transition-colors hover:text-[#c97352]"
+              href={`tel:${contact.phoneHref}`}
+              className="card-title mt-3 block text-[#202635] transition-colors hover:text-[#c97352]"
             >
-              {CONTACT.phoneDisplay}
+              {contact.phoneDisplay}
             </a>
           </div>
 
@@ -1158,6 +1167,7 @@ export const CommunitiesPage = AreasPage;
    OUR APPROACH PAGE
 ============================================================ */
 export function AboutApproachPage() {
+  const contact = useContact();
   const pillars = [
     {
       icon: Compass,
@@ -1182,7 +1192,7 @@ export function AboutApproachPage() {
   ];
 
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-x-clip">
       <PageHero
         label="Our Advisory Method"
         title={
@@ -1197,8 +1207,8 @@ export function AboutApproachPage() {
       />
 
       {/* CORE PHILOSOPHY */}
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           <SectionLabel>Core Philosophy</SectionLabel>
 
           <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
@@ -1206,7 +1216,7 @@ export function AboutApproachPage() {
             <em className="text-[#c97352]">decision.</em>
           </h2>
 
-          <div className="mt-10 space-y-6 text-base leading-relaxed text-[#202635]/75 sm:text-lg sm:leading-8">
+          <div className="body-copy measure mt-10 space-y-6 text-[#202635]/75">
             <p>
               In a fast-moving market like Dubai, speed is often confused with competence. We take the contrary view: that the best property moves are made with deliberation, contextual analysis, and an honest reading of both upside and downside.
             </p>
@@ -1218,8 +1228,8 @@ export function AboutApproachPage() {
       </section>
 
       {/* ADVISORY PILLARS */}
-      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#e9e4da] site-section">
+        <div className="site-container">
           <SectionIntro
             label="Structured Process"
             title={
@@ -1232,13 +1242,13 @@ export function AboutApproachPage() {
             copy="From initial consultation through to post-handover asset management, our process ensures total clarity and legal security."
           />
 
-          <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {pillars.map((pillar) => {
               const Icon = pillar.icon;
               return (
                 <div
                   key={pillar.title}
-                  className="rounded-sm border border-[#202635]/15 bg-[#f5f0e6] p-8 shadow-xs transition-shadow hover:shadow-md"
+                  className="rounded-sm border border-[#202635]/15 bg-[#f5f0e6] p-6 shadow-xs transition-shadow hover:shadow-md sm:p-7"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-xs bg-[#202635] text-[#d9c6a4]">
                     <Icon size={22} />
@@ -1257,8 +1267,8 @@ export function AboutApproachPage() {
       </section>
 
       {/* CONVERSATION STRIP */}
-      <section className="bg-[#202635] px-5 py-20 md:px-10 md:py-28 text-[#f5f0e6]">
-        <div className="mx-auto max-w-[1280px] text-center">
+      <section className="bg-[#202635] site-section text-[#f5f0e6]">
+        <div className="site-container text-center">
           <SectionLabel>Connect With An Advisor</SectionLabel>
 
           <h2 className="section-title mt-6">
@@ -1266,22 +1276,22 @@ export function AboutApproachPage() {
             <em className="text-[#d9c6a4]">conversation.</em>
           </h2>
 
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[#f5f0e6]/70">
+          <p className="body-copy measure mx-auto mt-6 text-[#f5f0e6]/70">
             No sales pitches. Just a thoughtful discussion on your Dubai property plans, community options, and investment goals.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-xs bg-[#c97352] px-8 py-4 font-mono text-xs uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#b05f40]"
+              className="btn btn-sand"
             >
               Contact Us <ArrowRight size={15} />
             </Link>
             <a
-              href={`https://wa.me/${CONTACT.whatsapp}`}
+              href={`https://wa.me/${contact.whatsapp}`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-xs border border-[#f5f0e6]/30 bg-transparent px-8 py-4 font-mono text-xs uppercase tracking-[0.14em] text-[#f5f0e6] transition-colors hover:border-white hover:bg-white/10"
+              className="btn btn-outline-light"
             >
               <FaWhatsapp size={16} className="text-[#25D366]" /> Chat on WhatsApp
             </a>
@@ -1296,6 +1306,7 @@ export function AboutApproachPage() {
    INDIA OFFICE PAGE
 ============================================================ */
 export function IndiaOfficePage() {
+  const contact = useContact();
   const benefits = [
     {
       title: 'In-Person Consultations in Delhi NCR',
@@ -1324,7 +1335,7 @@ export function IndiaOfficePage() {
   ];
 
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-x-clip">
       <PageHero
         label="India Advisory Desk · Gurugram"
         title={
@@ -1339,8 +1350,8 @@ export function IndiaOfficePage() {
       />
 
       {/* OVERVIEW */}
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           <SectionLabel>Local Presence, International Reach</SectionLabel>
 
           <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
@@ -1348,7 +1359,7 @@ export function IndiaOfficePage() {
             <em className="text-[#c97352]">India and Dubai.</em>
           </h2>
 
-          <div className="mt-10 space-y-6 text-base leading-relaxed text-[#202635]/75 sm:text-lg sm:leading-8">
+          <div className="body-copy measure mt-10 space-y-6 text-[#202635]/75">
             <p>
               For Indian residents and global NRI investors, Dubai represents one of the world’s most accessible, tax-efficient, and currency-stable real estate environments. However, cross-border property transactions require accurate regulatory context, reliable due diligence, and dedicated post-purchase coordination.
             </p>
@@ -1360,8 +1371,8 @@ export function IndiaOfficePage() {
       </section>
 
       {/* SERVICES FOR INDIAN INVESTORS */}
-      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#dfe2dc] site-section">
+        <div className="site-container">
           <SectionIntro
             label="Cross-Border Services"
             title={
@@ -1374,11 +1385,11 @@ export function IndiaOfficePage() {
             copy="Every step of the acquisition process is handled with complete regulatory compliance and transparent communication."
           />
 
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {benefits.map((item) => (
               <div
                 key={item.title}
-                className="rounded-sm border border-[#202635]/15 bg-[#f5f0e6] p-8 shadow-xs transition-shadow hover:shadow-md"
+                className="rounded-sm border border-[#202635]/15 bg-[#f5f0e6] p-6 shadow-xs transition-shadow hover:shadow-md sm:p-7"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-xs bg-[#c97352] text-white">
                   <Check size={20} />
@@ -1396,8 +1407,8 @@ export function IndiaOfficePage() {
       </section>
 
       {/* OFFICE DETAILS & CONSULTATION FORM */}
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-[1280px] gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 xl:gap-20">
           <div>
             <SectionLabel>India Office</SectionLabel>
 
@@ -1406,27 +1417,27 @@ export function IndiaOfficePage() {
               <em className="text-[#c97352]">Gurugram.</em>
             </h2>
 
-            <p className="mt-6 text-sm leading-7 text-[#202635]/70 sm:text-base">
+            <p className="body-copy measure mt-6 text-[#202635]/70">
               Schedule an in-person advisory meeting at our Gurugram desk or request a private video consultation with our senior UAE team.
             </p>
 
             <div className="mt-8 space-y-6 rounded-sm border border-[#202635]/15 bg-[#e9e4da] p-6 sm:p-8">
               <div>
                 <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">Address</span>
-                <p className="mt-2 font-serif text-xl text-[#202635]">DLF Phase 1, Gurugram</p>
+                <p className="card-title mt-2 text-[#202635]">DLF Phase 1, Gurugram</p>
                 <p className="text-xs text-[#202635]/60">Haryana, India</p>
               </div>
 
               <div className="border-t border-[#202635]/15 pt-6">
                 <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">Direct Contact</span>
                 <a
-                  href={`tel:${CONTACT.phoneHref}`}
-                  className="mt-2 block font-serif text-xl text-[#202635] transition-colors hover:text-[#c97352]"
+                  href={`tel:${contact.phoneHref}`}
+                  className="card-title mt-2 block text-[#202635] transition-colors hover:text-[#c97352]"
                 >
-                  {CONTACT.phoneDisplay}
+                  {contact.phoneDisplay}
                 </a>
                 <a
-                  href={`https://wa.me/${CONTACT.whatsapp}`}
+                  href={`https://wa.me/${contact.whatsapp}`}
                   target="_blank"
                   rel="noreferrer"
                   className="mt-3 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-[#25D366] hover:underline"
@@ -1442,7 +1453,7 @@ export function IndiaOfficePage() {
               <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">Enquiry Form</span>
               <h3 className="block-title mt-2 text-[#202635]">Request an India Desk Consultation</h3>
             </div>
-            <div className="rounded-sm bg-[#e9e4da] p-6 sm:p-8 md:p-10">
+            <div className="rounded-sm bg-[#e9e4da] p-5 shadow-sm sm:p-8">
               <ContactForm inquiryType="india-office" />
             </div>
           </div>
@@ -1458,6 +1469,7 @@ export function IndiaOfficePage() {
 type PublishedInsight = { id: string; slug: string; title: string; category?: string; summary?: string; date?: string };
 
 export function MarketInsightsPage() {
+  const contact = useContact();
   // Anything published in the admin's Market Insights section leads the page.
   const [published, setPublished] = useState<PublishedInsight[]>([]);
   useEffect(() => {
@@ -1502,7 +1514,7 @@ export function MarketInsightsPage() {
   ];
 
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-x-clip">
       <PageHero
         label="Market Intelligence & Research"
         title={
@@ -1517,8 +1529,8 @@ export function MarketInsightsPage() {
       />
 
       {/* CORE MARKET PILLARS */}
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           <SectionIntro
             label="Market Fundamentals"
             title={
@@ -1531,13 +1543,13 @@ export function MarketInsightsPage() {
             copy="Dubai’s property market is built on robust legal security, government escrow regulations, and global capital preservation."
           />
 
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {insights.map((item) => {
               const Icon = item.icon;
               return (
                 <div
                   key={item.title}
-                  className="flex flex-col justify-between rounded-sm border border-[#202635]/15 bg-[#e9e4da] p-8 shadow-xs transition-shadow hover:shadow-md"
+                  className="flex h-full flex-col rounded-sm border border-[#202635]/15 bg-[#e9e4da] p-6 shadow-xs transition-shadow hover:shadow-md sm:p-7"
                 >
                   <div>
                     <div className="flex h-12 w-12 items-center justify-center rounded-xs bg-[#202635] text-[#d9c6a4]">
@@ -1558,8 +1570,8 @@ export function MarketInsightsPage() {
       </section>
 
       {/* GLOBAL COMPARISON TABLE */}
-      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#dfe2dc] site-section">
+        <div className="site-container">
           <SectionLabel>Global Comparison</SectionLabel>
 
           <h2 className="section-title mt-6 text-[#202635]">
@@ -1609,8 +1621,8 @@ export function MarketInsightsPage() {
       </section>
 
       {/* ADVISORY BRIEFING CTA */}
-      <section className="bg-[#202635] px-5 py-20 md:px-10 md:py-28 text-[#f5f0e6]">
-        <div className="mx-auto max-w-[1280px] text-center">
+      <section className="bg-[#202635] site-section text-[#f5f0e6]">
+        <div className="site-container text-center">
           <SectionLabel>Private Research Briefing</SectionLabel>
 
           <h2 className="section-title mt-6">
@@ -1618,22 +1630,22 @@ export function MarketInsightsPage() {
             <em className="text-[#d9c6a4]">market analysis.</em>
           </h2>
 
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[#f5f0e6]/70">
+          <p className="body-copy measure mx-auto mt-6 text-[#f5f0e6]/70">
             Connect with our advisory desk for detailed yield modeling, historical transaction data, and off-plan allocation strategies tailored to your investment mandate.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-xs bg-[#c97352] px-8 py-4 font-mono text-xs uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#b05f40]"
+              className="btn btn-sand"
             >
               Consult With An Advisor <ArrowRight size={15} />
             </Link>
             <a
-              href={`https://wa.me/${CONTACT.whatsapp}`}
+              href={`https://wa.me/${contact.whatsapp}`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-xs border border-[#f5f0e6]/30 bg-transparent px-8 py-4 font-mono text-xs uppercase tracking-[0.14em] text-[#f5f0e6] transition-colors hover:border-white hover:bg-white/10"
+              className="btn btn-outline-light"
             >
               <FaWhatsapp size={16} className="text-[#25D366]" /> Chat on WhatsApp
             </a>

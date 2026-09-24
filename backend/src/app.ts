@@ -1,10 +1,10 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
-import router from "./routes";
-import { logger } from "./lib/logger";
+import router from "./routes/index.ts";
+import { logger } from "./lib/logger.ts";
 import path from "node:path";
-import { uploadDir } from "./routes/admin";
+import { uploadDir } from "./routes/admin.ts";
 
 const app: Express = express();
 
@@ -27,15 +27,7 @@ app.use(
     },
   }),
 );
-/*
- * CORS.
- * The two front ends that call this API are the local dev server and the live site, so both
- * are allowed by default and Render needs no extra configuration to keep working. CLIENT_URL
- * adds to that list rather than replacing it, which is how a preview or staging origin gets
- * in. Origins are named explicitly rather than reflected with "*", because credentials are
- * enabled for the Authorization header the admin console sends.
- * A request with no Origin header (curl, health checks, server to server) is allowed through.
- */
+
 const allowedOrigins = new Set(
   [
     "http://localhost:5173",

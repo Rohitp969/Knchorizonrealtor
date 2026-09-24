@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ArrowLeft, ArrowUpRight, Check, ExternalLink, Globe, Search, X } from 'lucide-react';
 import { Link, useLocation, useRoute, useSearch } from 'wouter';
 import { apiFetch, type Post, type Project, type RemoteProperty, type Developer } from '@/lib/api';
-import { ContactForm, PageHero, PostCard, ProjectCard, PropertyCard, SectionLabel } from '@/components/blocks';
+import { ContactForm, PageHero, PostCard, ProjectCard, PropertyCard, SectionLabel, cardGrid } from '@/components/blocks';
 import { PropertySearch } from '@/components/property-search';
 import { categoryOf, clearSearchHref, describeSearch, hasPropertySearch, isNewLaunchProject, matchesProjectSearch, matchesPropertySearch, parsePropertySearch, projectSegment } from '@/lib/property-search';
 import {
@@ -16,16 +16,16 @@ import {
   type Property,
 } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
-import { CONTACT } from '@/lib/contact-info';
+import { useContact, useSiteSettings } from '@/lib/site-settings';
 
-const price = (value: number) => `AED ${new Intl.NumberFormat('en-AE').format(value)}`;
-const propertyCard = (item: RemoteProperty): Property => ({
+const price = (value: number, currency = 'AED') => `${currency} ${new Intl.NumberFormat('en-AE').format(value)}`;
+const propertyCard = (item: RemoteProperty, currency = 'AED'): Property => ({
   id: item.id,
   slug: item.slug,
   title: item.title,
   location: item.location,
   type: item.type,
-  price: price(item.price),
+  price: price(item.price, item.currency || currency),
   details: `${item.bedrooms} beds · ${item.bathrooms} baths · ${new Intl.NumberFormat('en-AE').format(item.size)} sq ft`,
   image: item.images[0] || '/images/creek-waterfront.jpg',
   note: item.status,
@@ -80,22 +80,23 @@ const isOffPlan = (item: RemoteProperty) => /off-plan|launching|construction/i.t
 
 function LoadingState() {
   return (
-    <div className="py-24 text-center">
+    <div className="py-16 text-center">
       <p className="eyebrow text-[#c97352]">KNC Horizon</p>
-      <p className="display mt-5 text-4xl">Curating the latest edit…</p>
+      <p className="block-title mt-4 text-[#202635]">Curating the latest edit…</p>
     </div>
   );
 }
 
 function ErrorState({ message }: { message: string }) {
   return (
-    <div className="border border-[#c97352]/30 bg-[#c97352]/10 p-7 text-sm text-[#202635]/70" role="alert">
+    <div className="rounded-sm border border-[#c97352]/30 bg-[#c97352]/10 p-6 text-sm leading-7 text-[#202635]/70 sm:p-7" role="alert">
       We couldn’t load this section. {message}
     </div>
   );
 }
 
 export function PropertiesLivePage() {
+  const { defaultCurrency } = useSiteSettings();
   const [items, setItems] = useState<RemoteProperty[]>(defaultRemoteProperties as unknown as RemoteProperty[]);
   const [filter, setFilter] = useState('All');
   const [loading, setLoading] = useState(false);
@@ -156,8 +157,8 @@ export function PropertiesLivePage() {
         image="/images/penthouse-marina.jpg"
       />
       {/* The home hero search links to #results; scroll-margin keeps the fixed header off the search bar. */}
-      <section id="results" className="scroll-mt-16 bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28 md:scroll-mt-20">
-        <div className="mx-auto max-w-[1280px]">
+      <section id="results" className="scroll-mt-16 bg-[#f5f0e6] site-section md:scroll-mt-20">
+        <div className="site-container">
           {/* Remount when the URL changes so the fields always mirror the active search */}
           <PropertySearch key={search} initial={query} tone="light" />
 
@@ -189,10 +190,10 @@ export function PropertiesLivePage() {
             ) : error && filtered.length === 0 ? (
               <ErrorState message={error} />
             ) : filtered.length === 0 ? (
-              <div className="py-24 text-center">
-                <p className="display text-4xl">{searching ? 'No properties found.' : 'Nothing in this edit yet.'}</p>
+              <div className="py-16 text-center">
+                <p className="block-title text-[#202635]">{searching ? 'No properties found.' : 'Nothing in this edit yet.'}</p>
                 {searching && (
-                  <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-[#202635]/65">
+                  <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#202635]/65">
                     Our recommendations are not limited to what is listed here.{' '}
                     <Link href="/contact" className="text-[#c97352] underline underline-offset-4">Share your brief</Link>
                     {' '}with an advisor, or try a wider search.
@@ -200,9 +201,9 @@ export function PropertiesLivePage() {
                 )}
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className={cardGrid(filtered.length)}>
                 {filtered.map((item) => (
-                  <PropertyCard key={item.id} property={propertyCard(item)} featured={false} />
+                  <PropertyCard key={item.id} property={propertyCard(item, defaultCurrency)} featured={false} />
                 ))}
               </div>
             )}
@@ -219,6 +220,7 @@ export function PropertiesLivePage() {
  * or from the communities collection once the admin has filled it in.
  */
 export function CommunityDetailPage() {
+  const { defaultCurrency } = useSiteSettings();
   const [, params] = useRoute('/communities/:slug');
   const slug = params?.slug ?? '';
   const area = areas.find((entry) => entry.id === slug);
@@ -230,9 +232,14 @@ export function CommunityDetailPage() {
 
   useEffect(() => {
     if (!slug) return;
-    // An admin-managed community overrides the curated notes when one exists.
-    apiFetch<{ community: CommunityRecord }>(`/public/communities/${slug}`)
-      .then((data) => setCommunity(data.community ?? null))
+    /*
+     * An admin-managed community overrides the curated notes when one exists. The match is
+     * made against the published list rather than by requesting the slug directly: a slug
+     * with no record behind it is the normal case for the curated communities, and asking
+     * for it by name logged a 404 in the browser console on every one of those pages.
+     */
+    apiFetch<{ communities: CommunityRecord[] }>('/public/communities')
+      .then((data) => setCommunity((data.communities ?? []).find((entry) => entry.slug === slug) ?? null))
       .catch(() => setCommunity(null));
 
     Promise.all([
@@ -265,7 +272,7 @@ export function CommunityDetailPage() {
     return (
       <main>
         <PageHero label="Communities" title={<>Community<br /><em className="text-[#c97352]">not found.</em></>} copy="This community is not on our list yet." image="/images/creek-waterfront.jpg" />
-        <section className="bg-[#f5f0e6] px-5 py-20 text-center md:px-10 md:py-28">
+        <section className="bg-[#f5f0e6] site-section text-center">
           <Link href="/communities" className="btn btn-primary">Back to communities <ArrowUpRight size={14} /></Link>
         </section>
       </main>
@@ -281,12 +288,12 @@ export function CommunityDetailPage() {
         image={image}
       />
 
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           <div className="flex flex-wrap items-end justify-between gap-6 border-b border-[#202635]/15 pb-6">
             <div>
               <SectionLabel>Available now</SectionLabel>
-              <h2 className="section-title mt-5 text-[#202635]">Properties in <em className="text-[#c97352]">{name}.</em></h2>
+              <h2 className="section-title mt-6 text-[#202635]">Properties in <em className="text-[#c97352]">{name}.</em></h2>
             </div>
             <p className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55" data-testid="text-community-property-count">
               {loading ? 'Loading' : `${matchingProperties.length} ${matchingProperties.length === 1 ? 'property' : 'properties'}`}
@@ -296,18 +303,18 @@ export function CommunityDetailPage() {
           {loading ? (
             <LoadingState />
           ) : matchingProperties.length === 0 ? (
-            <div className="py-20 text-center">
-              <p className="display text-3xl">No listings in {name} right now.</p>
-              <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-[#202635]/65">
+            <div className="py-16 text-center">
+              <p className="block-title text-[#202635]">No listings in {name} right now.</p>
+              <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#202635]/65">
                 Our recommendations are not limited to what is listed here.{' '}
                 <Link href="/contact" className="text-[#c97352] underline underline-offset-4">Share your brief</Link>
                 {' '}and an advisor will come back with what is quietly available.
               </p>
             </div>
           ) : (
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className={`mt-12 ${cardGrid(matchingProperties.length)}`}>
               {matchingProperties.map((item) => (
-                <PropertyCard key={item.id} property={propertyCard(item)} featured={false} />
+                <PropertyCard key={item.id} property={propertyCard(item, defaultCurrency)} featured={false} />
               ))}
             </div>
           )}
@@ -315,18 +322,18 @@ export function CommunityDetailPage() {
       </section>
 
       {matchingProjects.length > 0 && (
-        <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
-          <div className="mx-auto max-w-[1280px]">
+        <section className="bg-[#e9e4da] site-section">
+          <div className="site-container">
             <div className="flex flex-wrap items-end justify-between gap-6 border-b border-[#202635]/15 pb-6">
               <div>
                 <SectionLabel>Under construction</SectionLabel>
-                <h2 className="section-title mt-5 text-[#202635]">Off-plan in <em className="text-[#c97352]">{name}.</em></h2>
+                <h2 className="section-title mt-6 text-[#202635]">Off-plan in <em className="text-[#c97352]">{name}.</em></h2>
               </div>
               <p className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55" data-testid="text-community-project-count">
                 {matchingProjects.length} {matchingProjects.length === 1 ? 'project' : 'projects'}
               </p>
             </div>
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className={`mt-12 ${cardGrid(matchingProjects.length)}`}>
               {matchingProjects.map((project) => (
                 <ProjectCard key={project.id || project.slug} project={project} />
               ))}
@@ -335,8 +342,8 @@ export function CommunityDetailPage() {
         </section>
       )}
 
-      <section className="bg-[#f5f0e6] px-5 pb-20 md:px-10 md:pb-28">
-        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-6 gap-y-3 border-t border-[#202635]/15 pt-8">
+      <section className="site-section site-section-flush-top bg-[#f5f0e6]">
+        <div className="site-container flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-[#202635]/15 pt-8">
           <Link href="/communities" className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]" data-testid="link-back-communities">
             All communities
           </Link>
@@ -362,6 +369,7 @@ type CommunityRecord = {
 };
 
 export function PropertyDetailPage() {
+  const { defaultCurrency } = useSiteSettings();
   // Both /properties/:slug and the /property/:id alias registered in App.tsx land here
   const [, slugParams] = useRoute('/properties/:slug');
   const [, idParams] = useRoute('/property/:id');
@@ -391,7 +399,7 @@ export function PropertyDetailPage() {
 
   if (error && !property) {
     return (
-      <main className="bg-[#f5f0e6] px-5 py-40 md:px-10">
+      <main className="bg-[#f5f0e6] site-section pt-40">
         <div className="mx-auto max-w-[900px]">
           <ErrorState message={error} />
           <Link href="/properties" className="mt-7 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
@@ -404,7 +412,7 @@ export function PropertyDetailPage() {
 
   if (!property) {
     return (
-      <main className="bg-[#f5f0e6] px-5 py-40">
+      <main className="site-section pt-40">
         <LoadingState />
       </main>
     );
@@ -424,12 +432,13 @@ export function PropertyDetailPage() {
         copy={property.description}
         image={property.images[0] || '/images/creek-waterfront.jpg'}
       />
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-[1280px] gap-14 md:grid-cols-[1fr_.8fr] md:gap-24">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container grid gap-12 lg:grid-cols-[1fr_.75fr] lg:gap-16 xl:gap-20">
           <div>
-            <div className="grid gap-4 sm:grid-cols-2">
+            {/* A lone image takes the full column; a pair or more splits into two. */}
+            <div className={`grid gap-4 ${property.images.length > 1 ? 'sm:grid-cols-2' : ''}`}>
               {property.images.map((image) => (
-                <div key={image} className="card-thumb aspect-[16/10] h-[220px] sm:h-[260px] md:h-[300px] w-full">
+                <div key={image} className="card-media card-media-wide">
                   <img
                     src={image}
                     alt={property.title}
@@ -443,8 +452,8 @@ export function PropertyDetailPage() {
             </div>
             <div className="mt-12">
               <SectionLabel>About this home</SectionLabel>
-              <p className="mt-5 max-w-2xl text-base leading-8 text-[#202635]/65">{property.description}</p>
-              <div className="mt-8 grid grid-cols-2 gap-3 border-t border-[#202635]/15 pt-5 sm:grid-cols-4">
+              <p className="body-copy measure mt-5 text-[#202635]/65">{property.description}</p>
+              <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-[#202635]/15 pt-6 sm:grid-cols-3">
                 {property.amenities.map((item) => (
                   <span key={item} className="flex items-start gap-2 text-sm text-[#202635]/65">
                     <Check size={15} className="mt-0.5 text-[#c97352]" />
@@ -454,23 +463,23 @@ export function PropertyDetailPage() {
               </div>
             </div>
           </div>
-          <div className="h-fit border-t border-[#202635]/20 pt-5">
+          <aside className="h-fit rounded-sm border border-[#202635]/15 bg-[#fcfaf6] p-6 shadow-sm sm:p-8 lg:sticky lg:top-28">
             <SectionLabel>Property details</SectionLabel>
-            <p className="mt-5 font-serif text-4xl">{price(property.price)}</p>
-            <div className="mt-8 grid grid-cols-2 gap-y-5 border-y border-[#202635]/15 py-6 text-sm">
+            <p className="display mt-4 text-[2rem] leading-none text-[#202635] sm:text-[2.35rem]">{price(property.price, property.currency || defaultCurrency)}</p>
+            <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-4 border-y border-[#202635]/15 py-5 text-sm text-[#202635]/75">
               <span>{property.bedrooms} bedrooms</span>
               <span>{property.bathrooms} bathrooms</span>
               <span>{new Intl.NumberFormat('en-AE').format(property.size)} sq ft</span>
               <span>{property.location}</span>
             </div>
-            <h3 className="block-title mt-12">
+            <h3 className="block-title mt-10">
               Interested in<br />
               <em className="text-[#c97352]">this address?</em>
             </h3>
-            <div className="mt-7">
+            <div className="mt-6">
               <ContactForm compact propertySlug={property.slug} inquiryType="property" />
             </div>
-          </div>
+          </aside>
         </div>
       </section>
     </main>
@@ -533,8 +542,8 @@ export function ProjectsPage() {
         image="/images/creek-waterfront.jpg"
       />
       {/* The hero search links here with #results when off-plan is the chosen mode. */}
-      <section id="results" className="scroll-mt-16 bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28 md:scroll-mt-20">
-        <div className="mx-auto max-w-[1280px]">
+      <section id="results" className="scroll-mt-16 bg-[#e9e4da] site-section md:scroll-mt-20">
+        <div className="site-container">
           {/* Remount when the URL changes so the fields always mirror the active search */}
           <PropertySearch key={search} initial={{ ...query, listing: 'offplan' }} tone="light" />
 
@@ -566,10 +575,10 @@ export function ProjectsPage() {
             {error && !projects.length ? (
               <ErrorState message={error} />
             ) : filtered.length === 0 ? (
-              <div className="py-24 text-center">
-                <p className="display text-4xl">{searching ? 'No projects found.' : 'Nothing in this edit yet.'}</p>
+              <div className="py-16 text-center">
+                <p className="block-title text-[#202635]">{searching ? 'No projects found.' : 'Nothing in this edit yet.'}</p>
                 {searching && (
-                  <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-[#202635]/65">
+                  <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#202635]/65">
                     New releases reach us before they reach the portals.{' '}
                     <Link href="/contact" className="text-[#c97352] underline underline-offset-4">Share your brief</Link>
                     {' '}with an advisor, or try a wider search.
@@ -577,7 +586,7 @@ export function ProjectsPage() {
                 )}
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className={cardGrid(filtered.length)}>
                 {filtered.map((project) => (
                   <ProjectCard key={project.id || project.slug} project={project} />
                 ))}
@@ -628,8 +637,8 @@ export function BlogPage() {
         copy="Practical guidance, local perspective, and thoughtful notes for your next move in Dubai real estate."
         image="/images/interior-detail.jpg"
       />
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           <div className="flex flex-col gap-5 border-b border-[#202635]/15 pb-7 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-wrap gap-2">
               {categories.map((item) => (
@@ -660,12 +669,12 @@ export function BlogPage() {
           ) : error && !filtered.length ? (
             <ErrorState message={error} />
           ) : !filtered.length ? (
-            <div className="py-24 text-center">
-              <p className="display text-4xl">No notes match this search.</p>
+            <div className="py-16 text-center">
+              <p className="block-title text-[#202635]">No notes match this search.</p>
               <p className="mt-4 text-sm text-[#202635]/60">Try another phrase or category.</p>
             </div>
           ) : (
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className={`mt-12 ${cardGrid(filtered.length)}`}>
               {filtered.map((post) => (
                 <PostCard key={post.id || post.slug} post={post} />
               ))}
@@ -703,7 +712,7 @@ export function BlogPostPage() {
 
   if (error && !post) {
     return (
-      <main className="bg-[#f5f0e6] px-5 py-40 md:px-10">
+      <main className="bg-[#f5f0e6] site-section pt-40">
         <div className="mx-auto max-w-[900px]">
           <ErrorState message={error} />
           <Link href="/blog" className="mt-7 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
@@ -716,7 +725,7 @@ export function BlogPostPage() {
 
   if (!post) {
     return (
-      <main className="bg-[#f5f0e6] px-5 py-40">
+      <main className="site-section pt-40">
         <LoadingState />
       </main>
     );
@@ -732,24 +741,29 @@ export function BlogPostPage() {
         copy={post.excerpt}
         image={image}
       />
-      <article className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-32">
-        <div className="mx-auto max-w-3xl">
-          <p className="font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
-            {post.author} · {new Date(post.publishedAt).toLocaleDateString('en-GB', { dateStyle: 'long' })}
-          </p>
-          <div className="mt-10 whitespace-pre-line font-serif text-2xl leading-[1.5] text-[#202635] md:text-4xl">
-            {post.content}
+      <article className="site-section bg-[#f5f0e6]">
+        <div className="site-container">
+          {/* The reading column keeps the page's left grid line; the related cards below
+              take the full container so they match the cards on every other page. */}
+          <div className="max-w-[46rem]">
+            <p className="font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
+              {post.author} · {new Date(post.publishedAt).toLocaleDateString('en-GB', { dateStyle: 'long' })}
+            </p>
+            <div className="body-copy mt-8 whitespace-pre-line text-[#202635]/80">
+              {post.content}
+            </div>
+            <Link href="/blog" className="line-link mt-12 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
+              <ArrowLeft size={14} /> Back to blog
+            </Link>
           </div>
-          <Link href="/blog" className="mt-14 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
-            <ArrowLeft size={14} /> Back to blog
-          </Link>
+
           {related.length > 0 && (
-            <section className="mt-20 border-t border-[#202635]/15 pt-8">
+            <section className="mt-16 border-t border-[#202635]/15 pt-8">
               <p className="eyebrow text-[#c97352]">Keep reading</p>
-              <div className="mt-7 grid gap-7 md:grid-cols-3">
+              <div className={`mt-6 ${cardGrid(related.length)}`}>
                 {related.map((item) => (
-                  <Link key={item.id} href={`/blog/${item.slug}`} className="group card-editorial p-4">
-                    <div className="card-thumb aspect-[16/10] h-[160px] sm:h-[180px] w-full">
+                  <Link key={item.id} href={`/blog/${item.slug}`} className="card-editorial group p-5">
+                    <div className="card-media image-reveal">
                       <img
                         src={item.featuredImage || item.image || '/images/creek-waterfront.jpg'}
                         alt={item.title}
@@ -757,10 +771,10 @@ export function BlogPostPage() {
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
-                    <p className="mt-4 font-serif text-xl leading-tight text-[#202635]">{item.title}</p>
-                    <p className="mt-3 font-mono text-[10px] uppercase tracking-[.12em] text-[#c97352]">
-                      Read note <ArrowUpRight size={12} className="inline" />
-                    </p>
+                    <p className="card-title mt-4 line-clamp-2 text-[#202635] transition-colors group-hover:text-[#c97352]">{item.title}</p>
+                    <span className="mt-auto inline-flex items-center gap-2 pt-4 font-mono text-[10px] uppercase tracking-[.12em] text-[#c97352] group-hover:underline">
+                      Read note <ArrowUpRight size={12} />
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -797,13 +811,13 @@ export function GalleryPage() {
         copy="A closer look at the textures, horizons, and details that shape the KNC point of view."
         image="/images/hero-dubai-villa.jpg"
       />
-      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-[1280px] gap-6 sm:grid-cols-2 md:grid-cols-3">
+      <section className="bg-[#dfe2dc] site-section">
+        <div className={`site-container ${cardGrid(items.length)}`}>
           {items.map((item) => (
             <button
               key={item.id}
               onClick={() => setActive(item)}
-              className="group card-editorial p-4 text-left transition-all"
+              className="group card-editorial p-5 text-left transition-all"
             >
               <div className="card-media">
                 <img
@@ -813,9 +827,9 @@ export function GalleryPage() {
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
-              <div className="mt-4 px-1 pb-1">
+              <div className="mt-4">
                 <p className="eyebrow text-[#c97352]">{item.category}</p>
-                <p className="font-serif text-xl mt-1 text-[#202635]">{item.title}</p>
+                <p className="card-title mt-1 line-clamp-2 text-[#202635]">{item.title}</p>
               </div>
             </button>
           ))}
@@ -823,7 +837,7 @@ export function GalleryPage() {
       </section>
       {active && (
         <div
-          className="fixed inset-0 z-50 grid place-items-center bg-[#202635]/90 p-5 backdrop-blur-sm"
+          className="fixed inset-0 z-[70] grid place-items-center bg-[#202635]/90 p-5 backdrop-blur-sm sm:p-8"
           role="dialog"
           aria-modal="true"
         >
@@ -856,6 +870,7 @@ export type PropertiesFilterPageProps = {
 };
 
 export function PropertiesFilterPage(props: PropertiesFilterPageProps = {}) {
+  const { defaultCurrency } = useSiteSettings();
   const [location] = useLocation();
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
   const pathCategory = location.startsWith('/properties/') ? location.replace('/properties/', '').split('/')[0].split('?')[0] : '';
@@ -928,12 +943,12 @@ export function PropertiesFilterPage(props: PropertiesFilterPageProps = {}) {
         copy={copyMap[category] || `A considered selection of ${category} properties in Dubai.`}
         image="/images/penthouse-marina.jpg"
       />
-      <section className="bg-[#f5f0e6] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#f5f0e6] site-section">
+        <div className="site-container">
           {loading ? <LoadingState /> : error ? <ErrorState message={error} /> : items.length === 0 ? (
-            <div className="py-24 text-center">
-              <p className="display text-4xl">No properties found in this category.</p>
-              <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-[#202635]/65">
+            <div className="py-16 text-center">
+              <p className="block-title text-[#202635]">No properties found in this category.</p>
+              <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#202635]/65">
                 {category === 'off-plan' ? (
                   <>Completed stock is listed here. For launches still under construction, see our{' '}
                     <Link href="/off-plan" className="text-[#c97352] underline underline-offset-4">off-plan projects</Link>.</>
@@ -945,9 +960,9 @@ export function PropertiesFilterPage(props: PropertiesFilterPageProps = {}) {
               </p>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className={cardGrid(items.length)}>
               {items.map((item) => (
-                <PropertyCard key={item.id} property={propertyCard(item)} featured={false} />
+                <PropertyCard key={item.id} property={propertyCard(item, defaultCurrency)} featured={false} />
               ))}
             </div>
           )}
@@ -1031,12 +1046,12 @@ export function ProjectsFilterPage(props: ProjectsFilterPageProps = {}) {
         copy={copyMap[filter] || `Explore our curated selection of ${filter.replace('-', ' ')} in Dubai.`}
         image="/images/creek-waterfront.jpg"
       />
-      <section className="bg-[#e9e4da] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-[#e9e4da] site-section">
+        <div className="site-container">
           {loading ? <LoadingState /> : error ? <ErrorState message={error} /> : projects.length === 0 ? (
-             <div className="py-24 text-center">
-               <p className="display text-4xl">No projects found for this selection.</p>
-               <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-[#202635]/65">
+             <div className="py-16 text-center">
+               <p className="block-title text-[#202635]">No projects found for this selection.</p>
+               <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#202635]/65">
                  See{' '}
                  <Link href="/off-plan" className="text-[#c97352] underline underline-offset-4">every off-plan project</Link>
                  {' '}on record, or{' '}
@@ -1045,7 +1060,7 @@ export function ProjectsFilterPage(props: ProjectsFilterPageProps = {}) {
                </p>
              </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className={cardGrid(projects.length)}>
               {projects.map((project) => (
                 <ProjectCard key={project.id || project.slug} project={project} />
               ))}
@@ -1060,6 +1075,7 @@ export function ProjectsFilterPage(props: ProjectsFilterPageProps = {}) {
 
 
 export function DevelopersPage() {
+  const contact = useContact();
   const [developers, setDevelopers] = useState<Developer[]>(defaultDevelopers as unknown as Developer[]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -1107,14 +1123,14 @@ export function DevelopersPage() {
       />
 
       {/* Main Developers Listing Section */}
-      <section className="px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-[1280px]">
-          <div className="mb-10 flex flex-col justify-between gap-4 border-b border-[#202635]/12 pb-6 sm:flex-row sm:items-end">
+      <section className="site-section">
+        <div className="site-container">
+          <div className="mb-12 flex flex-col justify-between gap-4 border-b border-[#202635]/12 pb-6 sm:flex-row sm:items-end">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#c97352]">Selected Profiles</p>
-              <h2 className="section-title mt-2 text-[#202635]">Established master builders</h2>
+              <p className="eyebrow text-[#c97352]">Selected Profiles</p>
+              <h2 className="section-title mt-6 text-[#202635]">Established master builders</h2>
             </div>
-            <p className="max-w-md font-mono text-[11px] uppercase tracking-[.1em] text-[#202635]/50">
+            <p className="font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/50 sm:pb-2">
               {developers.length} verified developer profiles
             </p>
           </div>
@@ -1122,18 +1138,18 @@ export function DevelopersPage() {
           {loading && developers.length === 0 ? (
             <LoadingState />
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className={cardGrid(developers.length)}>
               {developers.map((dev) => {
                 const websiteUrl = dev.officialWebsite || dev.website || '';
                 return (
                   <article
                     key={dev.id || dev.slug}
-                    className="group flex h-full flex-col justify-between border border-[#202635]/12 bg-[#fcfaf6] p-6 transition-all duration-300 hover:border-[#c97352]/50 hover:shadow-md"
+                    className="card-editorial group justify-between p-5"
                     data-testid={`card-developer-${dev.slug}`}
                   >
                     <div>
                       {/* Logo / Header Visual Treatment */}
-                      <div className="mb-5 flex h-16 w-full items-center justify-between border-b border-[#202635]/10 pb-4">
+                      <div className="mb-5 flex min-h-[3.25rem] w-full items-center justify-between gap-3 border-b border-[#202635]/10 pb-4">
                         {dev.logo ? (
                           <div className="h-10 max-w-[140px] opacity-85 mix-blend-multiply">
                             <img
@@ -1159,13 +1175,13 @@ export function DevelopersPage() {
                       <h3 className="card-title line-clamp-2 text-[#202635] transition-colors group-hover:text-[#c97352]">
                         {dev.name}
                       </h3>
-                      <p className="mt-3 text-xs leading-relaxed text-[#202635]/70 line-clamp-3">
+                      <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#202635]/65">
                         {dev.shortDescription || dev.description}
                       </p>
 
                       {/* Verified Areas */}
                       {dev.areas && dev.areas.length > 0 && (
-                        <div className="mt-4 flex flex-wrap gap-1.5 pt-3 border-t border-[#202635]/8">
+                        <div className="mt-4 flex flex-wrap gap-1.5 border-t border-[#202635]/10 pt-3">
                           {dev.areas.slice(0, 3).map((area) => (
                             <span
                               key={area}
@@ -1184,7 +1200,7 @@ export function DevelopersPage() {
                     </div>
 
                     {/* Actions & Official Website */}
-                    <div className="mt-6 pt-4 border-t border-[#202635]/10 flex flex-col gap-3">
+                    <div className="mt-5 flex flex-col items-start gap-3 border-t border-[#202635]/12 pt-4">
                       {websiteUrl && (
                         <a
                           href={websiteUrl}
@@ -1201,7 +1217,7 @@ export function DevelopersPage() {
 
                       <Link
                         href={`/developers/${dev.slug}`}
-                        className="inline-flex items-center justify-center gap-2 border border-[#202635]/30 bg-[#202635] py-2.5 px-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6] transition-colors hover:bg-[#c97352] hover:border-[#c97352]"
+                        className="btn btn-primary w-full"
                         data-testid={`btn-view-developer-${dev.slug}`}
                       >
                         View developer <ArrowUpRight size={13} />
@@ -1216,31 +1232,28 @@ export function DevelopersPage() {
       </section>
 
       {/* Professional Advisory CTA Section */}
-      <section className="bg-[#dfe2dc] px-5 py-20 md:px-10 md:py-28 border-t border-[#202635]/12">
-        <div className="mx-auto max-w-[1280px] grid gap-10 md:grid-cols-[1.2fr_.8fr] md:items-center">
+      <section className="bg-[#dfe2dc] site-section border-t border-[#202635]/12">
+        <div className="site-container grid items-center gap-10 lg:grid-cols-[1.15fr_.85fr] lg:gap-16">
           <div>
             <SectionLabel>Developer Advisory</SectionLabel>
-            <h2 className="section-title mt-4 text-[#202635]">
+            <h2 className="section-title mt-6 text-[#202635]">
               Looking for the <em className="text-[#c97352]">right developer?</em>
             </h2>
-            <p className="mt-5 max-w-xl text-sm leading-relaxed text-[#202635]/70">
+            <p className="body-copy measure mt-6 text-[#202635]/70">
               Every developer in Dubai brings distinct architectural standards, community masterplans, and delivery horizons. Our independent advisory helps you compare opportunities objectively based on your investment goals and lifestyle criteria.
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 bg-[#202635] px-7 py-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6] transition-colors hover:bg-[#c97352]"
-            >
+          <div className="btn-row lg:justify-end">
+            <Link href="/contact" className="btn btn-primary">
               Speak with an advisor <ArrowUpRight size={14} />
             </Link>
             <a
-              href={`https://wa.me/${CONTACT.whatsapp}`}
+              href={`https://wa.me/${contact.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 border border-[#202635]/30 bg-[#fcfaf6] px-6 py-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#202635] transition-colors hover:border-[#c97352] hover:text-[#c97352]"
+              className="btn btn-secondary"
             >
-              Chat on WhatsApp
+              Chat on WhatsApp <ArrowUpRight size={14} />
             </a>
           </div>
         </div>

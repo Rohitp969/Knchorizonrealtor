@@ -1,7 +1,7 @@
 import { SEARCH_TYPES } from '@/lib/property-search';
 /*
  * One entry per admin section. Endpoints and field names come from the existing
- * Express routes (backend/src/routes/admin.ts) and Mongo models (backend/src/lib/models.ts) —
+ * Express routes (backend/src/routes/admin.ts) and the PostgreSQL tables (backend/src/lib/schema.sql) —
  * nothing here is invented.
  */
 

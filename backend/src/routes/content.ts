@@ -1,37 +1,95 @@
 import { Router } from "express";
-import { getDb, objectId, serializeDocument } from "../lib/mongodb";
-import type { BlogPostDoc, CommunityDoc, DeveloperDoc, GalleryItemDoc, MarketInsightDoc, ProjectDoc, PropertyDoc, TestimonialDoc } from "../lib/models";
+import { count, query, queryOne } from "../lib/postgres.ts";
+import { contains, toApi, toApiList } from "../lib/repositories.ts";
+import { publicSettings, readSettings } from "../lib/settings.ts";
 
 const router = Router();
 
-function publicFilter() {
-  return { published: true };
+/*
+ * Site settings for the public pages: the site name, the currency prices fall back to and
+ * the contact details. The lead notification address is filtered out by publicSettings —
+ * it is an internal routing address, not something to publish on the site.
+ */
+router.get("/public/settings", async (_req, res, next) => {
+  try {
+    return res.json({ settings: publicSettings(await readSettings()) });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+/**
+ * Collects `where` fragments and their bound values.
+ * `bind` returns the `$n` placeholder for a value, so a clause is written inline and every
+ * user-supplied value reaches PostgreSQL as a parameter rather than as SQL text.
+ */
+function conditions(initial: string[] = []) {
+  const clauses = [...initial];
+  const values: unknown[] = [];
+  return {
+    bind(value: unknown) {
+      values.push(value);
+      return `$${values.length}`;
+    },
+    push(clause: string) {
+      clauses.push(clause);
+    },
+    get where() {
+      return clauses.length ? `where ${clauses.join(" and ")}` : "";
+    },
+    get values() {
+      return values;
+    },
+  };
 }
 
+/*
+ * Properties, with the filters the public listing pages send.
+ * Every branch here matches what the document query did, including the two places where a
+ * property type may live in either `type` or `property_type`.
+ */
 router.get("/public/properties", async (req, res, next) => {
   try {
     const { type, propertyType, listingType, community, city, q, featured, minPrice, maxPrice, bedrooms, sort, page = "1", limit = "24" } = req.query as Record<string, string | undefined>;
-    const filter: Record<string, unknown> = publicFilter();
-    if (type || propertyType) filter.$or = [{ type: type ?? propertyType }, { propertyType: type ?? propertyType }];
-    if (listingType) filter.listingType = listingType;
-    if (community) filter.community = community;
-    if (city) filter.city = city;
-    if (featured === "true") filter.featured = true;
-    if (q) filter.$and = [{ $or: [{ title: { $regex: q, $options: "i" } }, { location: { $regex: q, $options: "i" } }, { community: { $regex: q, $options: "i" } }] }];
-    const price: Record<string, number> = {};
-    if (minPrice && Number.isFinite(Number(minPrice))) price.$gte = Number(minPrice);
-    if (maxPrice && Number.isFinite(Number(maxPrice))) price.$lte = Number(maxPrice);
-    if (Object.keys(price).length) filter.price = price;
-    if (bedrooms && Number.isFinite(Number(bedrooms))) filter.bedrooms = { $gte: Number(bedrooms) };
+    const filter = conditions(["published"]);
+
+    const wantedType = type ?? propertyType;
+    if (wantedType) {
+      const value = filter.bind(wantedType);
+      filter.push(`(type = ${value} or property_type = ${value})`);
+    }
+    if (listingType) filter.push(`listing_type = ${filter.bind(listingType)}`);
+    if (community) filter.push(`community = ${filter.bind(community)}`);
+    if (city) filter.push(`city = ${filter.bind(city)}`);
+    if (featured === "true") filter.push("featured");
+    if (q) {
+      const value = filter.bind(contains(q));
+      filter.push(`(title ilike ${value} or location ilike ${value} or community ilike ${value})`);
+    }
+    if (minPrice && Number.isFinite(Number(minPrice))) filter.push(`price >= ${filter.bind(Number(minPrice))}`);
+    if (maxPrice && Number.isFinite(Number(maxPrice))) filter.push(`price <= ${filter.bind(Number(maxPrice))}`);
+    if (bedrooms && Number.isFinite(Number(bedrooms))) filter.push(`bedrooms >= ${filter.bind(Number(bedrooms))}`);
+
     const pageNumber = Math.max(1, Number(page) || 1);
     const pageSize = Math.min(50, Math.max(1, Number(limit) || 24));
-    const sortSpec: Record<string, 1 | -1> = sort === "price-asc" ? { price: 1 } : sort === "price-desc" ? { price: -1 } : sort === "oldest" ? { createdAt: 1 } : { featured: -1, createdAt: -1 };
-    const collection = getDb().collection<PropertyDoc>("properties");
-    const [docs, total] = await Promise.all([
-      collection.find(filter).sort(sortSpec).skip((pageNumber - 1) * pageSize).limit(pageSize).toArray(),
-      collection.countDocuments(filter),
+    const order =
+      sort === "price-asc" ? "price asc"
+      : sort === "price-desc" ? "price desc"
+      : sort === "oldest" ? "created_at asc"
+      : "featured desc, created_at desc";
+
+    const [rows, total] = await Promise.all([
+      query(
+        `select * from properties ${filter.where} order by ${order} limit ${pageSize} offset ${(pageNumber - 1) * pageSize}`,
+        filter.values,
+      ),
+      count(`select count(*) from properties ${filter.where}`, filter.values),
     ]);
-    return res.json({ properties: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)), pagination: { page: pageNumber, limit: pageSize, total, pages: Math.ceil(total / pageSize) } });
+
+    return res.json({
+      properties: toApiList("properties", rows),
+      pagination: { page: pageNumber, limit: pageSize, total, pages: Math.ceil(total / pageSize) },
+    });
   } catch (error) {
     return next(error);
   }
@@ -49,54 +107,55 @@ router.get("/public/properties", async (req, res, next) => {
  */
 router.get("/public/property-filters", async (_req, res, next) => {
   try {
-    const docs = await getDb()
-      .collection<PropertyDoc>("properties")
-      .find(publicFilter())
-      .project({ community: 1, location: 1, type: 1, propertyType: 1, listingType: 1, status: 1, price: 1, bedrooms: 1, bathrooms: 1, featured: 1 })
-      .limit(2000)
-      .toArray();
+    const propertyRows = await query<{
+      community: string; location: string; type: string; property_type: string | null;
+      listing_type: string | null; status: string; price: number; bedrooms: number;
+      bathrooms: number; featured: boolean;
+    }>(
+      `select community, location, type, property_type, listing_type, status, price, bedrooms, bathrooms, featured
+         from properties where published limit 2000`,
+    );
 
-    // listingType is optional on older records, so fall back to reading the status text.
-    const isRental = (doc: Partial<PropertyDoc>) =>
-      String(doc.listingType ?? "").toLowerCase() === "rent" || /(rent|lease)/i.test(String(doc.status ?? ""));
+    // listing_type is absent on older records, so fall back to reading the status text.
+    const isRental = (row: { listing_type: string | null; status: string | null }) =>
+      String(row.listing_type ?? "").toLowerCase() === "rent" || /(rent|lease)/i.test(String(row.status ?? ""));
 
-    const listings = docs.map((doc) => ({
-      mode: isRental(doc) ? "rent" : "buy",
-      location: String(doc.community || doc.location || "").trim(),
-      type: String(doc.type || doc.propertyType || "").trim(),
+    const listings = propertyRows.map((row) => ({
+      mode: isRental(row) ? "rent" : "buy",
+      location: String(row.community || row.location || "").trim(),
+      type: String(row.type || row.property_type || "").trim(),
       developer: "",
       project: "",
-      beds: Number(doc.bedrooms) || 0,
-      baths: Number(doc.bathrooms) || 0,
-      featured: doc.featured === true,
+      beds: Number(row.bedrooms) || 0,
+      baths: Number(row.bathrooms) || 0,
+      featured: row.featured === true,
       handover: "",
-      price: Number(doc.price) || 0,
+      price: Number(row.price) || 0,
     }));
 
-    const projects = await getDb()
-      .collection<ProjectDoc>("projects")
-      .find(publicFilter())
-      .project({ location: 1, developer: 1, startingPrice: 1, handover: 1, category: 1, slug: 1, title: 1, featured: 1 })
-      .limit(2000)
-      .toArray();
+    const projectRows = await query<{
+      location: string; developer: string; starting_price: number; handover: string;
+      category: string | null; slug: string; title: string; featured: boolean;
+    }>(
+      `select location, developer, starting_price, handover, category, slug, title, featured
+         from projects where published limit 2000`,
+    );
 
     // What a project is selling, as the admin recorded it. Nothing is inferred: a project
     // with no category simply does not appear under a property type.
-    const unitType = (doc: Partial<ProjectDoc>) => String(doc.category || "").trim();
-
-    const offPlan = projects.map((doc) => ({
+    const offPlan = projectRows.map((row) => ({
       mode: "offplan",
-      location: String(doc.location || "").trim(),
-      type: unitType(doc),
-      developer: String(doc.developer || "").trim(),
+      location: String(row.location || "").trim(),
+      type: String(row.category || "").trim(),
+      developer: String(row.developer || "").trim(),
       // The project itself is a filter on off-plan, so the row carries how to name it.
-      project: String(doc.slug || "").trim(),
-      projectTitle: String(doc.title || "").trim(),
+      project: String(row.slug || "").trim(),
+      projectTitle: String(row.title || "").trim(),
       beds: 0,
       baths: 0,
-      featured: doc.featured === true,
-      handover: String(doc.handover || "").trim(),
-      price: Number(doc.startingPrice) || 0,
+      featured: row.featured === true,
+      handover: String(row.handover || "").trim(),
+      price: Number(row.starting_price) || 0,
     }));
 
     return res.json({ listings: [...listings, ...offPlan] });
@@ -108,12 +167,11 @@ router.get("/public/property-filters", async (_req, res, next) => {
 router.get("/public/properties/:slug", async (req, res, next) => {
   try {
     const slug = req.params.slug;
-    const doc = await getDb().collection<PropertyDoc>("properties").findOne({
-      ...publicFilter(),
-      slug: slug === "azure-house-palm-jumeirah" ? { $in: ["palm-jumeirah-azure", "azure-house-palm-jumeirah"] } : slug,
-    });
-    if (!doc) return res.status(404).json({ message: "Property not found." });
-    return res.json({ property: serializeDocument(doc as unknown as Record<string, unknown>) });
+    // The original Azure House slug still resolves, so old links and saved leads keep working.
+    const slugs = slug === "azure-house-palm-jumeirah" ? ["palm-jumeirah-azure", "azure-house-palm-jumeirah"] : [slug];
+    const row = await queryOne(`select * from properties where published and slug = any($1::text[])`, [slugs]);
+    if (!row) return res.status(404).json({ message: "Property not found." });
+    return res.json({ property: toApi("properties", row) });
   } catch (error) {
     return next(error);
   }
@@ -122,32 +180,26 @@ router.get("/public/properties/:slug", async (req, res, next) => {
 router.get("/public/projects", async (req, res, next) => {
   try {
     const { developer, featured, newLaunch, offPlan } = req.query as Record<string, string | undefined>;
-    const filter: Record<string, unknown> = publicFilter();
-    
-    if (developer) filter.developer = developer;
-    if (featured === "true") filter.featured = true;
-    if (newLaunch === "true") filter.newLaunch = true;
-    if (offPlan === "true") filter.offPlan = true;
-    
-    const docs = await getDb().collection<ProjectDoc>("projects").find(filter).sort({ featured: -1, createdAt: -1 }).toArray();
-    return res.json({ projects: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const filter = conditions(["published"]);
+    if (developer) filter.push(`developer = ${filter.bind(developer)}`);
+    if (featured === "true") filter.push("featured");
+    if (newLaunch === "true") filter.push("new_launch");
+    if (offPlan === "true") filter.push("off_plan");
+
+    const rows = await query(
+      `select * from projects ${filter.where} order by featured desc, created_at desc`,
+      filter.values,
+    );
+    return res.json({ projects: toApiList("projects", rows) });
   } catch (error) {
     return next(error);
   }
 });
 
-function escapeRegex(text: string): string {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
 router.get(["/public/developers", "/developers"], async (_req, res, next) => {
   try {
-    const docs = await getDb()
-      .collection<DeveloperDoc>("developers")
-      .find(publicFilter())
-      .sort({ sortOrder: 1, name: 1 })
-      .toArray();
-    return res.json({ developers: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const rows = await query(`select * from developers where published order by sort_order asc, name asc`);
+    return res.json({ developers: toApiList("developers", rows) });
   } catch (error) {
     return next(error);
   }
@@ -156,38 +208,35 @@ router.get(["/public/developers", "/developers"], async (_req, res, next) => {
 router.get(["/public/developers/:slug", "/developers/:slug"], async (req, res, next) => {
   try {
     const rawSlug = Array.isArray(req.params.slug) ? req.params.slug[0] : req.params.slug;
-    const slug = String(rawSlug ?? "").trim().toLowerCase();
-    const doc = await getDb().collection<DeveloperDoc>("developers").findOne({
-      ...publicFilter(),
-      $or: [{ slug }, { name: { $regex: new RegExp(`^${escapeRegex(String(rawSlug ?? "").trim())}$`, "i") } }],
-    });
-    if (!doc) return res.status(404).json({ message: "Developer not found." });
+    const value = String(rawSlug ?? "").trim();
+    const developer = await queryOne<{ id: string; slug: string; name: string }>(
+      `select * from developers where published and (slug = $1 or lower(name) = lower($2))`,
+      [value.toLowerCase(), value],
+    );
+    if (!developer) return res.status(404).json({ message: "Developer not found." });
 
-    // Find verified projects assigned to this developer
-    const shortName = doc.name.replace(/\s+(Properties|Realty)$/i, "").trim();
-    const developerRegexes = [
-      new RegExp(`^${escapeRegex(doc.name)}$`, "i"),
-      new RegExp(`^${escapeRegex(shortName)}$`, "i"),
-      new RegExp(`^${escapeRegex(doc.slug)}$`, "i"),
-    ];
-
-    const projectFilter: Record<string, unknown> = {
-      ...publicFilter(),
-      $or: [
-        { developer: { $in: developerRegexes } },
-        { developerSlug: doc.slug },
-      ],
-    };
-
-    const projects = await getDb()
-      .collection<ProjectDoc>("projects")
-      .find(projectFilter)
-      .sort({ featured: -1, createdAt: -1 })
-      .toArray();
+    /*
+     * Projects assigned to this developer. `developer_slug` is the resolved link created
+     * during the migration; the name comparisons stay so a project typed in by hand — with
+     * the full name, the name without "Properties"/"Realty", or the slug — still matches
+     * before anyone gets round to linking it.
+     */
+    const projects = await query(
+      `select * from projects
+        where published
+          and (
+            developer_slug = $1
+            or lower(btrim(developer)) = lower($2)
+            or lower(btrim(developer)) = lower(regexp_replace($2, '\\s+(Properties|Realty)$', '', 'i'))
+            or lower(btrim(developer)) = lower($1)
+          )
+        order by featured desc, created_at desc`,
+      [developer.slug, developer.name],
+    );
 
     return res.json({
-      developer: serializeDocument(doc as unknown as Record<string, unknown>),
-      projects: projects.map((p) => serializeDocument(p as unknown as Record<string, unknown>)),
+      developer: toApi("developers", developer as unknown as Record<string, unknown>),
+      projects: toApiList("projects", projects),
     });
   } catch (error) {
     return next(error);
@@ -196,22 +245,31 @@ router.get(["/public/developers/:slug", "/developers/:slug"], async (req, res, n
 
 router.get("/public/projects/:slug", async (req, res, next) => {
   try {
-    const doc = await getDb().collection<ProjectDoc>("projects").findOne({ ...publicFilter(), slug: req.params.slug });
-    if (!doc) return res.status(404).json({ message: "Project not found." });
-    return res.json({ project: serializeDocument(doc as unknown as Record<string, unknown>) });
+    const row = await queryOne(`select * from projects where published and slug = $1`, [req.params.slug]);
+    if (!row) return res.status(404).json({ message: "Project not found." });
+    return res.json({ project: toApi("projects", row) });
   } catch (error) {
     return next(error);
   }
 });
 
+/** A post counts as live when either flag says so, which is how the admin has always saved. */
+const POST_IS_LIVE = `(published or status = 'published')`;
+
+async function livePosts(q?: string, category?: string) {
+  const filter = conditions([POST_IS_LIVE]);
+  if (category) filter.push(`category = ${filter.bind(category)}`);
+  if (q?.trim()) {
+    const value = filter.bind(contains(q.trim()));
+    filter.push(`(title ilike ${value} or excerpt ilike ${value} or category ilike ${value})`);
+  }
+  return query(`select * from posts ${filter.where} order by published_at desc`, filter.values);
+}
+
 router.get("/public/blog", async (req, res, next) => {
   try {
     const { q, category } = req.query as { q?: string; category?: string };
-    const filter: Record<string, unknown> = { $or: [{ published: true }, { status: "published" }] };
-    if (category) filter.category = category;
-    if (q?.trim()) filter.$and = [{ $or: [{ title: { $regex: q.trim(), $options: "i" } }, { excerpt: { $regex: q.trim(), $options: "i" } }, { category: { $regex: q.trim(), $options: "i" } }] }];
-    const docs = await getDb().collection<BlogPostDoc>("posts").find(filter).sort({ publishedAt: -1 }).toArray();
-    return res.json({ posts: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    return res.json({ posts: toApiList("posts", await livePosts(q, category)) });
   } catch (error) {
     return next(error);
   }
@@ -219,9 +277,9 @@ router.get("/public/blog", async (req, res, next) => {
 
 router.get("/public/blog/:slug", async (req, res, next) => {
   try {
-    const doc = await getDb().collection<BlogPostDoc>("posts").findOne({ $or: [{ published: true }, { status: "published" }], slug: req.params.slug });
-    if (!doc) return res.status(404).json({ message: "Journal entry not found." });
-    return res.json({ post: serializeDocument(doc as unknown as Record<string, unknown>) });
+    const row = await queryOne(`select * from posts where ${POST_IS_LIVE} and slug = $1`, [req.params.slug]);
+    if (!row) return res.status(404).json({ message: "Journal entry not found." });
+    return res.json({ post: toApi("posts", row) });
   } catch (error) {
     return next(error);
   }
@@ -230,32 +288,36 @@ router.get("/public/blog/:slug", async (req, res, next) => {
 router.get("/blogs", async (req, res, next) => {
   try {
     const { q, category } = req.query as { q?: string; category?: string };
-    const filter: Record<string, unknown> = { $or: [{ published: true }, { status: "published" }] };
-    if (category) filter.category = category;
-    if (q?.trim()) filter.$and = [{ $or: [{ title: { $regex: q.trim(), $options: "i" } }, { excerpt: { $regex: q.trim(), $options: "i" } }, { category: { $regex: q.trim(), $options: "i" } }] }];
-    const docs = await getDb().collection<BlogPostDoc>("posts").find(filter).sort({ publishedAt: -1 }).toArray();
-    return res.json({ blogs: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    return res.json({ blogs: toApiList("posts", await livePosts(q, category)) });
   } catch (error) { return next(error); }
 });
 
 router.get("/blogs/:slug", async (req, res, next) => {
   try {
-    const posts = getDb().collection<BlogPostDoc>("posts");
-    const blog = await posts.findOne({ $or: [{ published: true }, { status: "published" }], slug: req.params.slug });
+    const blog = await queryOne<{ slug: string; category: string }>(
+      `select * from posts where ${POST_IS_LIVE} and slug = $1`,
+      [req.params.slug],
+    );
     if (!blog) return res.status(404).json({ message: "Blog post not found." });
-    let related = await posts.find({ $or: [{ published: true }, { status: "published" }], category: blog.category, slug: { $ne: blog.slug } }).sort({ publishedAt: -1 }).limit(3).toArray();
-    if (related.length < 3) {
-      const fallback = await posts.find({ $or: [{ published: true }, { status: "published" }], slug: { $ne: blog.slug } }).sort({ publishedAt: -1 }).limit(3).toArray();
-      related = [...related, ...fallback.filter((item) => !related.some((entry) => entry.slug === item.slug))].slice(0, 3);
-    }
-    return res.json({ blog: serializeDocument(blog as unknown as Record<string, unknown>), related: related.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    // Same category first, then anything else recent, to a maximum of three.
+    const related = await query(
+      `select * from posts
+        where ${POST_IS_LIVE} and slug <> $1
+        order by (category = $2) desc, published_at desc
+        limit 3`,
+      [blog.slug, blog.category],
+    );
+    return res.json({
+      blog: toApi("posts", blog as unknown as Record<string, unknown>),
+      related: toApiList("posts", related),
+    });
   } catch (error) { return next(error); }
 });
 
 router.get("/public/testimonials", async (_req, res, next) => {
   try {
-    const docs = await getDb().collection<TestimonialDoc>("testimonials").find({ published: { $ne: false } }).sort({ createdAt: -1 }).toArray();
-    return res.json({ testimonials: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const rows = await query(`select * from testimonials where published order by created_at desc`);
+    return res.json({ testimonials: toApiList("testimonials", rows) });
   } catch (error) {
     return next(error);
   }
@@ -263,12 +325,8 @@ router.get("/public/testimonials", async (_req, res, next) => {
 
 router.get("/public/gallery", async (_req, res, next) => {
   try {
-    const docs = await getDb()
-      .collection<GalleryItemDoc>("gallery")
-      .find({ published: { $ne: false } })
-      .sort({ createdAt: -1 })
-      .toArray();
-    return res.json({ gallery: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const rows = await query(`select * from gallery where published order by created_at desc`);
+    return res.json({ gallery: toApiList("gallery", rows) });
   } catch (error) {
     return next(error);
   }
@@ -276,17 +334,13 @@ router.get("/public/gallery", async (_req, res, next) => {
 
 /*
  * Communities and market insights, so anything the admin publishes in those sections
- * reaches the public site the same way properties and projects do. Both collections start
+ * reaches the public site the same way properties and projects do. Both tables start
  * empty, and the pages fall back to their own editorial content until they are filled.
  */
 router.get("/public/communities", async (_req, res, next) => {
   try {
-    const docs = await getDb()
-      .collection<CommunityDoc>("communities")
-      .find(publicFilter())
-      .sort({ sortOrder: 1, name: 1 })
-      .toArray();
-    return res.json({ communities: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const rows = await query(`select * from communities where published order by sort_order asc, name asc`);
+    return res.json({ communities: toApiList("communities", rows) });
   } catch (error) {
     return next(error);
   }
@@ -294,11 +348,9 @@ router.get("/public/communities", async (_req, res, next) => {
 
 router.get("/public/communities/:slug", async (req, res, next) => {
   try {
-    const doc = await getDb()
-      .collection<CommunityDoc>("communities")
-      .findOne({ ...publicFilter(), slug: req.params.slug });
-    if (!doc) return res.status(404).json({ message: "Community not found." });
-    return res.json({ community: serializeDocument(doc as unknown as Record<string, unknown>) });
+    const row = await queryOne(`select * from communities where published and slug = $1`, [req.params.slug]);
+    if (!row) return res.status(404).json({ message: "Community not found." });
+    return res.json({ community: toApi("communities", row) });
   } catch (error) {
     return next(error);
   }
@@ -306,12 +358,8 @@ router.get("/public/communities/:slug", async (req, res, next) => {
 
 router.get("/public/insights", async (_req, res, next) => {
   try {
-    const docs = await getDb()
-      .collection<MarketInsightDoc>("insights")
-      .find(publicFilter())
-      .sort({ sortOrder: 1, createdAt: -1 })
-      .toArray();
-    return res.json({ insights: docs.map((doc) => serializeDocument(doc as unknown as Record<string, unknown>)) });
+    const rows = await query(`select * from insights where published order by sort_order asc, created_at desc`);
+    return res.json({ insights: toApiList("insights", rows) });
   } catch (error) {
     return next(error);
   }

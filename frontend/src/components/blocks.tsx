@@ -4,24 +4,66 @@ import { ArrowRight, ArrowUpRight, Check, ChevronDown, MapPin, Send } from 'luci
 import { Link } from 'wouter';
 import { areas, defaultPosts, defaultProjects, properties, services, type Area, type Property, type Service, faqs } from '@/lib/site-data';
 import { apiFetch, type Post, type Project, type RemoteProperty } from '@/lib/api';
+import { useSiteSettings } from '@/lib/site-settings';
 
 export const fadeUp = {
   hidden: { opacity: 0, y: 22 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.2, 0.65, 0.2, 1] as const } },
 };
 
+/*
+ * Hero reveal. The eyebrow, heading, standfirst and buttons arrive in sequence instead of as
+ * one block, which reads as composed rather than as a page that popped in. Shorter and
+ * shallower than fadeUp: this is the first thing a visitor sees, so it has to settle quickly.
+ * MotionConfig in App.tsx drops all of it for anyone who asks for reduced motion.
+ */
+export const heroStagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } },
+};
+
+export const heroItem = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.2, 0.65, 0.2, 1] as const } },
+};
+
+/*
+ * Repeated-card grids.
+ * One card width for the whole site, so every card image is the same size wherever it
+ * appears. A single result keeps that width rather than stretching across the page, which
+ * is what made a one-result search look broken.
+ */
+export function cardGrid(_count: number) {
+  // One card width for the whole site: three to a row on desktop, two on tablets, one on a
+  // phone, whatever the result count is. A short row leaves its last column empty rather
+  // than widening the cards to fill it, so a photograph is never a different size in one
+  // section than it is in the next.
+  return 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3';
+}
+
 export function SectionLabel({ children, light = false }: { children: string; light?: boolean }) {
   return <p className={`eyebrow ${light ? 'text-[#d9c6a4]' : 'text-[#c97352]'}`}>{children}</p>;
 }
 
-export function SectionIntro({ label, title, copy, light = false, children, className = '' }: { label: string; title: ReactNode; copy?: string; light?: boolean; children?: ReactNode; className?: string }) {
+/*
+ * Section heading block: the eyebrow and heading on the left, the standfirst on the right.
+ * A section's "view all" link belongs in `action`, so it sits directly under the standfirst
+ * and shares its left edge. Passed as a third element beside the two columns instead, it
+ * took width from the standfirst and the two no longer lined up with anything.
+ */
+export function SectionIntro({ label, title, copy, action, light = false, children, className = '' }: { label: string; title: ReactNode; copy?: string; action?: ReactNode; light?: boolean; children?: ReactNode; className?: string }) {
   return (
-    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={fadeUp} className={`flex w-full flex-col justify-between gap-6 lg:flex-row lg:items-end lg:gap-12 ${className}`}>
-      <div className="max-w-3xl">
+    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={fadeUp} className={`flex w-full flex-col justify-between gap-6 lg:flex-row lg:items-end lg:gap-16 ${className}`}>
+      <div className="max-w-2xl">
         <SectionLabel light={light}>{label}</SectionLabel>
-        <h2 className={`section-title mt-5 ${light ? 'text-[#f5f0e6]' : 'text-[#202635]'}`}>{title}</h2>
+        <h2 className={`section-title mt-6 ${light ? 'text-[#f5f0e6]' : 'text-[#202635]'}`}>{title}</h2>
       </div>
-      {copy && <div className={`max-w-md text-sm leading-7 lg:max-w-sm lg:shrink-0 ${light ? 'text-[#f5f0e6]/65' : 'text-[#202635]/65'}`}>{copy}</div>}
+      {(copy || action) && (
+        <div className="measure-narrow text-sm lg:w-[27.5rem] lg:max-w-none lg:shrink-0 lg:pb-1">
+          {copy && <p className={`leading-7 ${light ? 'text-[#f5f0e6]/65' : 'text-[#202635]/65'}`}>{copy}</p>}
+          {action && <div className="mt-5">{action}</div>}
+        </div>
+      )}
       {children}
     </motion.div>
   );
@@ -39,7 +81,7 @@ export function PropertyCard({ property, featured = false, className = '' }: { p
     >
       <Link
         href={`/properties/${property.slug ?? property.id}`}
-        className="card-editorial group flex h-full flex-col p-6"
+        className="card-editorial group flex h-full flex-col p-5"
         data-testid={`link-property-${property.id}`}
       >
         <div className={`mobile-card-image image-reveal card-media ${featured ? 'card-media-wide' : ''}`}>
@@ -62,7 +104,7 @@ export function PropertyCard({ property, featured = false, className = '' }: { p
           </span>
         </div>
 
-        <div className="flex flex-1 flex-col justify-between pt-3.5">
+        <div className="flex flex-1 flex-col justify-between pt-4">
           <div>
             <div className="flex items-center justify-between gap-3 text-[10px] font-mono uppercase tracking-[.12em] text-[#202635]/55">
               <span className="shrink-0 font-semibold text-[#c97352]">{property.type}</span>
@@ -73,12 +115,12 @@ export function PropertyCard({ property, featured = false, className = '' }: { p
               {property.title}
             </h3>
 
-            <p className="mt-1.5 line-clamp-1 text-xs text-[#202635]/65">
+            <p className="mt-2 line-clamp-1 text-sm leading-6 text-[#202635]/65">
               {property.details}
             </p>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[#202635]/10 pt-3">
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[#202635]/12 pt-4">
             <span className="whitespace-nowrap font-mono text-xs font-semibold text-[#202635]">
               {property.price}
             </span>
@@ -92,14 +134,14 @@ export function PropertyCard({ property, featured = false, className = '' }: { p
   );
 }
 
-function remotePropertyCard(item: RemoteProperty): Property {
+function remotePropertyCard(item: RemoteProperty, currency: string): Property {
   return {
     id: item.id,
     slug: item.slug,
     title: item.title,
     location: item.location,
     type: item.type,
-    price: `${item.currency || 'AED'} ${new Intl.NumberFormat('en-AE').format(item.price)}`,
+    price: `${item.currency || currency} ${new Intl.NumberFormat('en-AE').format(item.price)}`,
     details: `${item.bedrooms} beds · ${item.bathrooms} baths · ${new Intl.NumberFormat('en-AE').format(item.size)} sq ft`,
     image: item.images?.[0] || '/images/creek-waterfront.jpg',
     note: item.status,
@@ -107,6 +149,7 @@ function remotePropertyCard(item: RemoteProperty): Property {
 }
 
 export function FeaturedProperties() {
+  const { defaultCurrency } = useSiteSettings();
   const [items, setItems] = useState<Property[]>(properties);
 
   useEffect(() => {
@@ -114,7 +157,7 @@ export function FeaturedProperties() {
     apiFetch<{ properties: RemoteProperty[] }>('/public/properties?featured=true&limit=6')
       .then((data) => {
         if (!active || !data?.properties || data.properties.length === 0) return;
-        const mapped = data.properties.map(remotePropertyCard);
+        const mapped = data.properties.map((item) => remotePropertyCard(item, defaultCurrency));
         if (mapped.length >= 4) {
           setItems(mapped.slice(0, 4));
         } else {
@@ -135,12 +178,13 @@ export function FeaturedProperties() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [defaultCurrency]);
 
-  // Swipeable row on phones, 2-up grid on tablets, 4-up once cards have room for their price row.
+  // One card per column on desktop, two on tablets, one on phones.
+  const shown = items.slice(0, 3);
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {items.slice(0, 3).map((property) => (
+    <div className={cardGrid(shown.length)}>
+      {shown.map((property) => (
         <PropertyCard key={property.id || property.slug} property={property} featured={false} />
       ))}
     </div>
@@ -148,15 +192,17 @@ export function FeaturedProperties() {
 }
 
 
-export const aed = (value: number) => `AED ${new Intl.NumberFormat('en-AE').format(value)}`;
+export const aed = (value: number, currency = 'AED') => `${currency} ${new Intl.NumberFormat('en-AE').format(value)}`;
 const FALLBACK_IMAGE = '/images/creek-waterfront.jpg';
 
 /* One project card used by the home page, /projects, /off-plan and their filters. */
 export function ProjectCard({ project }: { project: Project }) {
+  const { defaultCurrency } = useSiteSettings();
   return (
+    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={fadeUp} className="h-full">
     <Link
       href={`/projects/${project.slug}`}
-      className="card-editorial group flex flex-col justify-between p-6"
+      className="card-editorial group flex h-full flex-col justify-between p-5"
       data-testid={`card-project-${project.slug}`}
     >
       <div>
@@ -172,30 +218,32 @@ export function ProjectCard({ project }: { project: Project }) {
             {project.status || 'Off-Plan'}
           </span>
         </div>
-        <p className="eyebrow mt-5 text-[#c97352]">{project.developer} · {project.location}</p>
+        <p className="eyebrow mt-4 line-clamp-1 text-[#c97352]">{project.developer} · {project.location}</p>
         <h3 className="card-title mt-2 line-clamp-2">{project.title}</h3>
-        <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#202635]/65">{project.description}</p>
+        <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#202635]/65">{project.description}</p>
       </div>
-      <div className="mt-6 border-t border-[#202635]/12 pt-4">
+      <div className="mt-5 border-t border-[#202635]/12 pt-4">
         <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/65">
-          <span>From {aed(project.startingPrice)}</span>
+          <span>From {aed(project.startingPrice, defaultCurrency)}</span>
           <span>Handover {project.handover}</span>
         </div>
-        <span className="mt-4 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] group-hover:underline">
+        <span className="mt-3 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] group-hover:underline">
           View project <ArrowUpRight size={14} />
         </span>
       </div>
     </Link>
+    </motion.div>
   );
 }
 
 /* One post card used by the home page and /blog. */
 export function PostCard({ post }: { post: Post }) {
   return (
+    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={fadeUp} className="h-full">
     <Link
       key={post.id}
       href={`/blog/${post.slug}`}
-      className="card-editorial group flex flex-col justify-between p-6"
+      className="card-editorial group flex h-full flex-col justify-between p-5"
       data-testid={`card-post-${post.slug}`}
     >
       <div>
@@ -208,11 +256,11 @@ export function PostCard({ post }: { post: Post }) {
             className="transition-transform duration-700 group-hover:scale-105"
           />
         </div>
-        <p className="eyebrow mt-5 text-[#c97352]">{post.category} · {post.author}</p>
+        <p className="eyebrow mt-4 line-clamp-1 text-[#c97352]">{post.category} · {post.author}</p>
         <h3 className="card-title mt-2 line-clamp-2">{post.title}</h3>
-        <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#202635]/60">{post.excerpt}</p>
+        <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#202635]/60">{post.excerpt}</p>
       </div>
-      <div className="mt-6 border-t border-[#202635]/12 pt-4">
+      <div className="mt-5 border-t border-[#202635]/12 pt-4">
         <p className="font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/45">
           {new Date(post.publishedAt).toLocaleDateString('en-GB', { dateStyle: 'long' })}
         </p>
@@ -221,6 +269,7 @@ export function PostCard({ post }: { post: Post }) {
         </span>
       </div>
     </Link>
+    </motion.div>
   );
 }
 
@@ -228,18 +277,34 @@ export function PostCard({ post }: { post: Post }) {
 export function FeaturedProjects() {
   const [items, setItems] = useState<Project[]>(defaultProjects as unknown as Project[]);
 
+  /*
+   * Featured first, then the rest of the published projects until the row of three is full.
+   * Only two projects are flagged featured today, which left the row a card short beside the
+   * property row above it. Everything shown here is a real published project; marking a third
+   * one featured simply changes which three appear.
+   */
   useEffect(() => {
     let active = true;
-    apiFetch<{ projects: Project[] }>('/public/projects?featured=true')
-      .then((data) => { if (active && data?.projects?.length) setItems(data.projects); })
-      .catch(() => { /* keep the existing edit */ });
+    Promise.all([
+      apiFetch<{ projects: Project[] }>('/public/projects?featured=true').catch(() => ({ projects: [] as Project[] })),
+      apiFetch<{ projects: Project[] }>('/public/projects').catch(() => ({ projects: [] as Project[] })),
+    ]).then(([featured, all]) => {
+      if (!active) return;
+      const picked = [...(featured.projects ?? [])];
+      for (const project of all.projects ?? []) {
+        if (picked.length >= 3) break;
+        if (!picked.some((p) => (p.slug ?? p.id) === (project.slug ?? project.id))) picked.push(project);
+      }
+      if (picked.length) setItems(picked);
+    });
     return () => { active = false; };
   }, []);
 
-  if (!items.length) return null;
+  const shown = items.slice(0, 3);
+  if (!shown.length) return null;
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {items.slice(0, 3).map((project) => <ProjectCard key={project.id || project.slug} project={project} />)}
+    <div className={cardGrid(shown.length)}>
+      {shown.map((project) => <ProjectCard key={project.id || project.slug} project={project} />)}
     </div>
   );
 }
@@ -256,10 +321,11 @@ export function LatestInsights() {
     return () => { active = false; };
   }, []);
 
-  if (!items.length) return null;
+  const shown = items.slice(0, 3);
+  if (!shown.length) return null;
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {items.slice(0, 3).map((post) => <PostCard key={post.id || post.slug} post={post} />)}
+    <div className={cardGrid(shown.length)}>
+      {shown.map((post) => <PostCard key={post.id || post.slug} post={post} />)}
     </div>
   );
 }
@@ -274,7 +340,7 @@ export function ServiceRow({ service }: { service: Service }) {
           <h3 className="block-title text-[#202635] transition-colors group-hover:text-[#c97352]">{service.title}</h3>
         </Link>
       </div>
-      <p className="hidden max-w-md text-sm leading-6 text-[#202635]/65 md:block">{service.description}</p>
+      <p className="hidden measure-narrow text-sm leading-6 text-[#202635]/65 md:block">{service.description}</p>
       <Link href={targetHref} className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#202635]/25 transition-all group-hover:border-[#c97352] group-hover:bg-[#c97352] group-hover:text-[#f5f0e6]" aria-label={`Explore ${service.title}`} data-testid={`link-service-${service.id}`}><ArrowRight size={15} /></Link>
     </motion.div>
   );
@@ -283,8 +349,8 @@ export function ServiceRow({ service }: { service: Service }) {
 export function AreaCard({ area, index, className = 'w-full' }: { area: Area; index: number; className?: string }) {
   return (
     <motion.article initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={fadeUp} transition={{ delay: index * .08 }} className={`group ${className}`} data-testid={`card-area-${area.id}`}>
-      <Link href={`/communities/${area.id}`} className="block" data-testid={`link-area-${area.id}`}>
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm bg-[#202635]">
+      <Link href={`/communities/${area.id}`} className="card-editorial group block p-5" data-testid={`link-area-${area.id}`}>
+        <div className="card-media bg-[#202635]">
           <img src={area.image} alt={area.name} loading="lazy" className="h-full w-full object-cover opacity-85 transition-transform duration-700 ease-out group-hover:scale-105" data-testid={`img-area-${area.id}`} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#202635]/85 via-[#202635]/20 to-transparent" />
           <div className="absolute inset-x-5 bottom-5 text-[#f5f0e6]">
@@ -323,7 +389,7 @@ export function ContactForm({ compact = false, propertySlug, projectSlug, inquir
       setSubmitting(false);
     }
   };
-  if (sent) return <div className="border border-[#c97352]/40 bg-[#c97352]/10 p-7 md:p-10" data-testid="status-contact-success"><Check className="text-[#c97352]" size={26} /><h3 className="block-title mt-6 text-[#202635]">We'll be in touch shortly.</h3><p className="mt-3 max-w-md text-sm leading-6 text-[#202635]/60">Thank you, {form.name || 'there'}. A member of our advisory team will reach out to understand what you're looking for.</p><button onClick={() => { setSent(false); setForm({ name: '', email: '', phone: '', interest: '', budget: '', propertyType: '', location: '', message: '' }); }} className="mt-7 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] line-link" data-testid="button-contact-reset">Send another enquiry</button></div>;
+  if (sent) return <div className="rounded-sm border border-[#c97352]/40 bg-[#c97352]/10 p-6 sm:p-8 md:p-10" data-testid="status-contact-success"><Check className="text-[#c97352]" size={26} /><h3 className="block-title mt-6 text-[#202635]">We'll be in touch shortly.</h3><p className="measure-narrow mt-3 text-sm leading-6 text-[#202635]/60">Thank you, {form.name || 'there'}. A member of our advisory team will reach out to understand what you're looking for.</p><button onClick={() => { setSent(false); setForm({ name: '', email: '', phone: '', interest: '', budget: '', propertyType: '', location: '', message: '' }); }} className="mt-7 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] line-link" data-testid="button-contact-reset">Send another enquiry</button></div>;
   return (
     <form onSubmit={submit} className={`grid gap-5 ${compact ? '' : 'md:grid-cols-2 md:gap-x-7'}`} data-testid="form-contact">
       <label className="block"><span className="eyebrow text-[#202635]/45">Your name</span><input required value={form.name} onChange={update('name')} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#202635]/30 focus:border-[#c97352]" placeholder="Full name" data-testid="input-contact-name" /></label>
@@ -339,7 +405,7 @@ export function ContactForm({ compact = false, propertySlug, projectSlug, inquir
       )}
       <label className={`block ${compact ? '' : 'md:col-span-2'}`}><span className="eyebrow text-[#202635]/45">A little about your plans</span><textarea required value={form.message} onChange={update('message')} rows={3} className="mt-3 w-full resize-none border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#202635]/30 focus:border-[#c97352]" placeholder="Tell us what would make this move feel right." data-testid="textarea-contact-message" /></label>
       {error && <p className={`text-sm text-[#c97352] ${compact ? '' : 'md:col-span-2'}`} role="alert">{error}</p>}
-      <button disabled={submitting} type="submit" className={`group mt-3 flex w-full items-center justify-between gap-3 bg-[#202635] sm:w-fit sm:justify-start px-6 py-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#f5f0e6] transition-colors hover:bg-[#c97352] disabled:cursor-wait disabled:opacity-60 ${compact ? '' : 'md:col-span-2'}`} data-testid="button-contact-submit">{submitting ? 'Sending…' : 'Send enquiry'} <Send size={14} className="transition-transform group-hover:translate-x-1" /></button>
+      <button disabled={submitting} type="submit" className={`btn btn-primary group mt-3 w-full sm:w-fit disabled:cursor-wait disabled:opacity-60 ${compact ? '' : 'md:col-span-2'}`} data-testid="button-contact-submit">{submitting ? 'Sending…' : 'Send enquiry'} <Send size={14} className="transition-transform group-hover:translate-x-1" /></button>
     </form>
   );
 }
@@ -352,7 +418,7 @@ export function NewsletterForm() {
     try { await apiFetch('/newsletter', { method: 'POST', body: JSON.stringify({ email }) }); setState('success'); }
     catch { setState('error'); }
   }
-  return <form onSubmit={submit} className="mt-7 flex max-w-md border-b border-[#f5f0e6]/30" data-testid="form-newsletter">
+  return <form onSubmit={submit} className="flex max-w-md border-b border-[#f5f0e6]/30" data-testid="form-newsletter">
     <input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Your email address" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-[#f5f0e6] outline-none placeholder:text-[#f5f0e6]/40" aria-label="Email address" />
     <button disabled={state === 'sending'} className="flex items-center gap-2 py-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#d9c6a4] hover:text-[#f5f0e6]">{state === 'success' ? 'Joined' : state === 'sending' ? 'Joining…' : 'Subscribe'} <Send size={13} /></button>
     {state === 'error' && <span className="sr-only">Please enter a valid email and try again.</span>}
@@ -362,8 +428,8 @@ export function NewsletterForm() {
 // export function FaqSection({ compact = false }: { compact?: boolean }) {
 //   const [open, setOpen] = useState<string | null>(null);
 //   return (
-//     <section className={`${compact ? 'bg-[#e9e4da]' : 'bg-[#dfe2dc]'} px-5 py-20 md:px-10 md:py-28`}>
-//       <div className="mx-auto grid max-w-[1280px] gap-12 md:grid-cols-[.7fr_1.3fr] md:gap-24">
+//     <section className={`${compact ? 'bg-[#e9e4da]' : 'bg-[#dfe2dc]'} site-section`}>
+//       <div className="site-container grid gap-12 md:grid-cols-[.7fr_1.3fr] md:gap-24">
 //         <div><SectionLabel>Questions, answered</SectionLabel><h2 className="section-title mt-6">A clearer<br /><em className="text-[#c97352]">first step.</em></h2><p className="mt-7 max-w-sm text-sm leading-7 text-[#202635]/60">A few useful details before we start a conversation about your next move.</p></div>
 //         <div className="border-t border-[#202635]/20">
 //           {faqs.map((faq) => <div key={faq.question} className="border-b border-[#202635]/20"><button type="button" onClick={() => setOpen(open === faq.question ? null : faq.question)} className="flex w-full items-center justify-between gap-6 py-6 text-left" aria-expanded={open === faq.question}><span className="font-serif text-2xl md:text-3xl">{faq.question}</span><ChevronDown size={18} className={`shrink-0 text-[#c97352] transition-transform ${open === faq.question ? 'rotate-180' : ''}`} /></button>{open === faq.question && <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="max-w-2xl overflow-hidden pb-6 text-sm leading-7 text-[#202635]/65">{faq.answer}</motion.p>}</div>)}
@@ -379,9 +445,9 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
 
   return (
     <section
-      className={`${ compact ? 'bg-[#e9e4da]' : 'bg-[#dfe2dc]' } px-5 py-20 md:px-10 md:py-28`}
+      className={`${ compact ? 'bg-[#e9e4da]' : 'bg-[#dfe2dc]' } site-section`}
     >
-      <div className="mx-auto grid max-w-[1280px] gap-10 md:gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20 xl:gap-28">
+      <div className="site-container grid gap-10 md:gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20 xl:gap-28">
 
         {/* LEFT CONTENT */}
         <div className="lg:pt-2">
@@ -397,7 +463,7 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
             </em>
           </h2>
 
-          <p className="mt-7 max-w-md text-sm leading-7 text-[#202635]/60 md:text-base">
+          <p className="body-copy measure-narrow mt-6 text-[#202635]/60">
             A few useful answers about finding, buying and exploring
             property opportunities with KNC Horizon Realtor.
           </p>
@@ -421,7 +487,7 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
                   className="group flex w-full items-center justify-between gap-6 py-6 text-left md:py-7"
                   aria-expanded={isOpen}
                 >
-                  <span className="max-w-[90%] font-serif text-xl leading-snug text-[#202635] transition-colors group-hover:text-[#c97352] md:text-2xl">
+                  <span className="block-title max-w-[90%] text-[#202635] transition-colors group-hover:text-[#c97352]">
                     {faq.question}
                   </span>
 
@@ -457,7 +523,7 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
                     transition={{ duration: 0.25 }}
                     className="overflow-hidden"
                   >
-                    <p className="max-w-2xl pb-7 pr-10 text-sm leading-7 text-[#202635]/65">
+                    <p className="measure pb-7 pr-6 text-sm leading-7 text-[#202635]/65 sm:pr-10">
                       {faq.answer}
                     </p>
                   </motion.div>
@@ -474,12 +540,12 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
 
 export function PageHero({ label, title, copy, image, children }: { label: string; title: ReactNode; copy: string; image?: string; children?: ReactNode }) {
   return (
-    <section className={`page-hero relative flex min-h-[48vh] md:min-h-[55vh] items-end overflow-hidden px-5 pb-12 pt-28 md:px-10 md:pb-16 md:pt-36 ${image ? 'bg-[#202635]' : 'bg-[#dfe2dc]'}`}>
-      {image && <><img src={image} alt="" loading="eager" fetchPriority="high" className="page-hero-image absolute inset-0 h-full w-full object-cover opacity-65" /><div className="absolute inset-0 bg-gradient-to-t from-[#202635]/90 via-[#202635]/20 to-[#202635]/35" /></>}
-      <div className="relative z-10 mx-auto w-full max-w-[1280px]">
+    <section className={`page-hero site-gutter relative flex items-end overflow-hidden pb-12 pt-28 md:pb-16 md:pt-36 ${image ? 'bg-[#202635]' : 'bg-[#dfe2dc]'}`}>
+      {image && <><img src={image} alt="" loading="eager" fetchPriority="high" className="page-hero-image absolute inset-0 h-full w-full object-cover object-center opacity-65" /><div className="absolute inset-0 bg-gradient-to-t from-[#202635]/90 via-[#202635]/20 to-[#202635]/35" /></>}
+      <div className="site-container relative z-10">
         <SectionLabel light={!!image}>{label}</SectionLabel>
         <h1 className={`page-title mt-5 max-w-4xl ${image ? 'text-[#f5f0e6]' : 'text-[#202635]'}`}>{title}</h1>
-        <p className={`mt-5 max-w-lg text-sm leading-relaxed ${image ? 'text-[#f5f0e6]/70' : 'text-[#202635]/65'}`}>{copy}</p>
+        <p className={`measure mt-5 text-sm leading-relaxed sm:text-base ${image ? 'text-[#f5f0e6]/70' : 'text-[#202635]/65'}`}>{copy}</p>
         {children}
       </div>
     </section>

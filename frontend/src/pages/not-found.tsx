@@ -17,20 +17,20 @@ export default function NotFound() {
 
   return (
     <main className="bg-[#f5f0e6]">
-      <section className="flex min-h-[70svh] items-center px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto w-full max-w-[1280px]">
+      <section className="flex min-h-[70svh] items-center site-section">
+        <div className="site-container">
           <SectionLabel>Error 404</SectionLabel>
 
           <h1 className="page-title mt-5 max-w-3xl text-[#202635]">
             This page has moved on.
           </h1>
 
-          <p className="mt-6 max-w-lg text-base leading-relaxed text-[#202635]/70">
+          <p className="body-copy measure mt-6 text-[#202635]/70">
             The page you were looking for is no longer here. These are the places most
             people are heading instead.
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="btn-row mt-10">
             <Link href="/" className="btn btn-primary" data-testid="link-404-home">
               Back to home <ArrowUpRight size={14} />
             </Link>

@@ -39,6 +39,8 @@ import {
 } from '@/pages/content-pages';
 
 import { SiteShell } from '@/components/site-shell';
+import { SiteSettingsProvider } from '@/lib/site-settings';
+import { MotionConfig } from 'framer-motion';
 
 /*
  * ============================================================
@@ -634,19 +636,25 @@ function RoutedErrorBoundary({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
+      {/* reducedMotion="user" makes every framer-motion reveal on the site honour the
+          viewer's OS "reduce motion" setting, the same one the CSS guard reads. */}
+      <MotionConfig reducedMotion="user">
+      <SiteSettingsProvider>
+        <TooltipProvider>
 
-        <WouterRouter
-          base={import.meta.env.BASE_URL.replace(/\/$/, '')}
-        >
-          <ScrollToTop />
+          <WouterRouter
+            base={import.meta.env.BASE_URL.replace(/\/$/, '')}
+          >
+            <ScrollToTop />
 
-          <Router />
-        </WouterRouter>
+            <Router />
+          </WouterRouter>
 
-        <Toaster />
+          <Toaster />
 
-      </TooltipProvider>
+        </TooltipProvider>
+      </SiteSettingsProvider>
+      </MotionConfig>
     </QueryClientProvider>
   );
 }

@@ -10,8 +10,8 @@
  */
 import bcrypt from "bcryptjs";
 import type { Collection } from "mongodb";
-import { getDb } from "./mongodb";
-import type { BlogPostDoc, CommunityDoc, DeveloperDoc, GalleryItemDoc, MarketInsightDoc, ProjectDoc, PropertyDoc, UserDoc } from "./models";
+import { getDb } from "./mongodb.ts";
+import type { BlogPostDoc, CommunityDoc, DeveloperDoc, GalleryItemDoc, MarketInsightDoc, ProjectDoc, PropertyDoc, UserDoc } from "./models.ts";
 
 const now = new Date();
 

@@ -125,7 +125,7 @@ export function SelectField({
         aria-label={label}
         data-testid={testId}
         data-value={value}
-        className={`flex w-full min-w-0 cursor-pointer flex-col justify-center gap-1 px-4 py-3 text-left transition-colors hover:bg-[#202635]/[.03] focus-visible:bg-[#202635]/[.04] focus-visible:outline-none focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-[#c97352]/45 md:px-5 md:py-3.5 ${open ? 'bg-[#202635]/[.04]' : ''}`}
+        className={`search-field flex w-full min-w-0 cursor-pointer flex-col justify-center gap-1 px-4 py-3 text-left hover:bg-[#202635]/[.03] focus-visible:bg-[#202635]/[.04] focus-visible:outline-none focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-[#c97352]/45 md:px-5 md:py-3.5 ${open ? 'bg-[#202635]/[.04]' : ''}`}
       >
         <span className="font-mono text-[10px] uppercase tracking-[.16em] text-[#202635]/50">{label}</span>
         <span className="flex items-center justify-between gap-2">
