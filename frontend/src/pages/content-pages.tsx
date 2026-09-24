@@ -539,7 +539,7 @@ export function ProjectsPage() {
           </>
         }
         copy="A live edit of Dubai’s most considered new addresses, from established developers and emerging neighbourhoods."
-        image="/images/creek-waterfront.jpg"
+        image="/images/downtown-safa-park.jpg"
       />
       {/* The hero search links here with #results when off-plan is the chosen mode. */}
       <section id="results" className="scroll-mt-16 bg-[#e9e4da] site-section md:scroll-mt-20">
@@ -941,7 +941,7 @@ export function PropertiesFilterPage(props: PropertiesFilterPageProps = {}) {
         label={displayTitles[category] || `${category} properties`}
         title={titles[category] || titles['residential']}
         copy={copyMap[category] || `A considered selection of ${category} properties in Dubai.`}
-        image="/images/penthouse-marina.jpg"
+        image={({ commercial: '/images/difc-green-towers.jpg', investment: '/images/downtown-night-aerial.jpg', 'off-plan': '/images/downtown-safa-park.jpg' } as Record<string, string>)[category] ?? '/images/penthouse-marina.jpg'}
       />
       <section className="bg-[#f5f0e6] site-section">
         <div className="site-container">
@@ -1044,7 +1044,7 @@ export function ProjectsFilterPage(props: ProjectsFilterPageProps = {}) {
         label={displayFilterTitles[filter] || filter.replace('-', ' ')}
         title={titles[filter] || titles['featured']}
         copy={copyMap[filter] || `Explore our curated selection of ${filter.replace('-', ' ')} in Dubai.`}
-        image="/images/creek-waterfront.jpg"
+        image={({ featured: '/images/burj-night-water.jpg', 'new-launches': '/images/downtown-safa-park.jpg', 'off-plan': '/images/downtown-safa-park.jpg', apartments: '/images/dubai-marina-dusk.jpg', 'villas-townhouses': '/images/hills-villa.jpg' } as Record<string, string>)[filter] ?? '/images/downtown-safa-park.jpg'}
       />
       <section className="bg-[#e9e4da] site-section">
         <div className="site-container">
@@ -1119,7 +1119,7 @@ export function DevelopersPage() {
           </>
         }
         copy="Explore established developers shaping residential, investment and mixed-use communities across Dubai."
-        image="/images/hills-villa.jpg"
+        image="/images/burj-khalifa-aerial.jpg"
       />
 
       {/* Main Developers Listing Section */}

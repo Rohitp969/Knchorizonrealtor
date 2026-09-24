@@ -121,7 +121,7 @@ export function PropertyCard({ property, featured = false, className = '' }: { p
           </div>
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[#202635]/12 pt-4">
-            <span className="whitespace-nowrap font-mono text-xs font-semibold text-[#202635]">
+            <span className="whitespace-nowrap font-sans text-sm font-semibold text-[#202635]">
               {property.price}
             </span>
             <span className="flex items-center gap-1 whitespace-nowrap font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] group-hover:underline">

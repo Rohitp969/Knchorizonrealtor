@@ -305,14 +305,14 @@
   --hero-focus-y: 50%;                            /* crop anchor, vertical   */
   --hero-display: clamp(2.3rem, 5vw, 3.75rem);    /* headline size */
   /*
-   * The hero is the window minus exactly one block of section padding. That leaves the next
-   * section's own top padding showing and nothing else: a clean band of its background, never
-   * a half-cut heading, which is what 70svh produced. Subtracting the padding rather than
-   * filling the whole window also takes a block of slack out of the hero, which is what used
-   * to stretch the gap between the buttons and the search bar. svh (not vh) so mobile browser
-   * chrome cannot push the search bar out of reach.
+   * The hero fills the window. Stopping a block short left an empty band of the next
+   * section's padding sitting under the fold with nothing in it, and a half-cut heading
+   * (70svh) was worse still — so the section below starts exactly at the fold. The gap
+   * between the buttons and the search bar is kept in check by splitting the leftover
+   * height evenly above and below the bar, not by shortening the hero. svh (not vh) so
+   * mobile browser chrome cannot push the search bar out of reach.
    */
-  min-height: calc(100svh - var(--site-block));
+  min-height: 100svh;
 }
 .home-hero-media { position: absolute; inset: 0; }
 .home-hero-media .hero-image {
@@ -377,9 +377,9 @@
     max-width: calc(100vw - 1.5rem);
   }
 
-  /* Phones follow the same rule, against the phone-sized block. */
+  /* Phones follow the same rule. */
   main > section.home-hero:first-child {
-    min-height: calc(100svh - var(--site-block));
+    min-height: 100svh;
   }
 
   /* The two hero actions sit side by side rather than stacking, which is what pushed the

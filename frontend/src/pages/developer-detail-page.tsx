@@ -339,7 +339,7 @@ export function DeveloperDetailPage() {
                       </div>
 
                       <div className="mt-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[#202635]/12 pt-4">
-                        <span className="font-mono text-xs font-semibold text-[#202635]">
+                        <span className="font-sans text-sm font-semibold text-[#202635]">
                           {project.startingPrice
                             ? `From AED ${new Intl.NumberFormat('en-AE').format(project.startingPrice)}`
                             : 'Price on request'}

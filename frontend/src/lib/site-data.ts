@@ -45,7 +45,7 @@ export const properties: Property[] = [
     type: 'Private Villa',
     price: 'AED 24,500,000',
     details: '5 beds · 7 baths · 8,420 sq ft',
-    image: '/images/hero-dubai-villa.jpg',
+    image: '/images/palm-jumeirah-aerial.jpg',
     note: 'Waterfront / Private access',
   },
   {
@@ -67,7 +67,7 @@ export const properties: Property[] = [
     type: 'Contemporary Villa',
     price: 'AED 11,750,000',
     details: '4 beds · 5 baths · 4,870 sq ft',
-    image: '/images/marina-resort-greens.jpg',
+    image: '/images/hills-villa.jpg',
     note: 'Quiet street / Garden',
   },
   {
@@ -78,7 +78,7 @@ export const properties: Property[] = [
     type: 'Luxury Apartment',
     price: 'AED 4,250,000',
     details: '2 beds · 3 baths · 1,640 sq ft',
-    image: '/images/creek-waterfront.jpg',
+    image: '/images/hero-dubai-skyline.jpg',
     note: 'Burj view / Turnkey',
   },
 ];
@@ -95,7 +95,7 @@ export const services: Service[] = [
 
 export const specialistServices: SpecialistService[] = [
   { id: 'design-build', index: '07', title: 'Design & Build', description: 'From first concept to final handover, we coordinate the design, procurement, and delivery of spaces made for the way you live.', image: '/images/interior-detail.jpg', href: '/design-build' },
-  { id: 'interiors', index: '08', title: 'Interiors & Furniture', description: 'A complete interior perspective: material palettes, bespoke furniture, styling, and the quiet details that make a place feel finished.', image: '/images/hero-dubai-villa.jpg', href: '/interiors' },
+  { id: 'interiors', index: '08', title: 'Interiors & Furniture', description: 'A complete interior perspective: material palettes, bespoke furniture, styling, and the quiet details that make a place feel finished.', image: '/images/penthouse-marina.jpg', href: '/interiors' },
 ];
 
 export const faqs = [
@@ -106,12 +106,12 @@ export const faqs = [
 ];
 
 export const areas: Area[] = [
-  { id: 'downtown-dubai', name: 'Downtown Dubai', descriptor: 'The city at its centre', image: '/images/hero-dubai-skyline.jpg', detail: 'Iconic views, cultural energy, and a walkable rhythm for people who want to be close to everything.' },
+  { id: 'downtown-dubai', name: 'Downtown Dubai', descriptor: 'The city at its centre', image: '/images/burj-khalifa-aerial.jpg', detail: 'Iconic views, cultural energy, and a walkable rhythm for people who want to be close to everything.' },
   { id: 'dubai-marina', name: 'Dubai Marina', descriptor: 'The city by water', image: '/images/dubai-marina-promenade.jpg', detail: 'A vertical neighbourhood of considered residences, restaurants, and open horizons.' },
   { id: 'palm-jumeirah', name: 'Palm Jumeirah', descriptor: 'Island life, redefined', image: '/images/palm-jumeirah-aerial.jpg', detail: 'Waterfront villas, private beaches, and a slower rhythm at the edge of the city.' },
   { id: 'business-bay', name: 'Business Bay', descriptor: 'A vertical pulse', image: '/images/business-bay-night.jpg', detail: 'A central address where ambitious towers, water, and the city’s working rhythm meet.' },
   { id: 'jumeirah', name: 'Jumeirah', descriptor: 'An established ease', image: '/images/jumeirah-coast-burj-al-arab.jpg', detail: 'Leafy streets, beach access, and a more residential pace in one of Dubai’s enduring communities.' },
-  { id: 'arabian-ranches', name: 'Arabian Ranches', descriptor: 'Space to settle', image: '/images/community-garden-villas.jpg', detail: 'Landscaped streets, generous homes, and a grounded sense of community away from the rush.' },
+  { id: 'arabian-ranches', name: 'Arabian Ranches', descriptor: 'Space to settle', image: '/images/hills-villa.jpg', detail: 'Landscaped streets, generous homes, and a grounded sense of community away from the rush.' },
 ];
 
 export type GalleryItem = {
@@ -137,7 +137,7 @@ export const defaultRemoteProperties = [
     bathrooms: 7,
     size: 8420,
     description: 'A private waterfront villa shaped around quiet mornings, generous entertaining, and direct access to the water.',
-    images: ['/images/hero-dubai-villa.jpg', '/images/interior-detail.jpg'],
+    images: ['/images/palm-jumeirah-aerial.jpg', '/images/hero-dubai-villa.jpg'],
     amenities: ['Private beach', 'Infinity pool', 'Staff suite', 'Sea views'],
     featured: true,
     published: true,
@@ -194,7 +194,7 @@ export const defaultRemoteProperties = [
     bathrooms: 3,
     size: 1640,
     description: 'A polished city apartment with Burj Khalifa views and the service of one of Downtown’s most recognisable addresses.',
-    images: ['/images/creek-waterfront.jpg', '/images/interior-detail.jpg'],
+    images: ['/images/hero-dubai-skyline.jpg', '/images/burj-khalifa-aerial.jpg'],
     amenities: ['Burj view', 'Valet parking', 'Pool', 'Fitness studio'],
     featured: false,
     published: true,
@@ -211,7 +211,7 @@ export const defaultProjects = [
     startingPrice: 5500000,
     handover: 'Q4 2028',
     description: 'A low-density collection of villas and gardens designed around water, landscape, and long-term liveability.',
-    image: '/images/palm-jumeirah-avenue.jpg',
+    image: '/images/hero-dubai-villa.jpg',
     featured: true,
   },
   {
@@ -237,7 +237,7 @@ export const defaultProjects = [
     startingPrice: 2900000,
     handover: 'Q1 2029',
     description: 'A new collection of family villas set around open landscapes, trails, and everyday community life.',
-    image: '/images/jebel-ali-beach-towers.jpg',
+    image: '/images/hills-villa.jpg',
     featured: false,
   },
   {
@@ -265,7 +265,7 @@ export const defaultProjects = [
     startingPrice: 1250000,
     handover: 'Q3 2027',
     description: 'A compact waterfront address for buyers seeking access, amenity, and a considered entry into the Dubai market.',
-    image: '/images/marina-palm-view.jpg',
+    image: '/images/dubai-creek-dusk.jpg',
     featured: false,
   },
 ];
@@ -318,11 +318,11 @@ export const defaultPosts = [
 ];
 
 export const defaultGallery: GalleryItem[] = [
-  { id: 'gal-1', title: 'Palm Jumeirah at blue hour', category: 'Waterfront', image: '/images/hero-dubai-villa.jpg', alt: 'Waterfront villa at blue hour' },
+  { id: 'gal-1', title: 'A waterfront terrace at dusk', category: 'Illustrations', image: '/images/hero-dubai-villa.jpg', alt: 'Illustrative render of a waterfront villa terrace at dusk' },
   { id: 'gal-2', title: 'A quieter kind of luxury', category: 'Interiors', image: '/images/interior-detail.jpg', alt: 'Warm stone and brass interior details' },
-  { id: 'gal-3', title: 'The city by water', category: 'Communities', image: '/images/penthouse-marina.jpg', alt: 'Dubai Marina skyline' },
-  { id: 'gal-4', title: 'Room to settle', category: 'Villas', image: '/images/hills-villa.jpg', alt: 'Contemporary Dubai Hills villa' },
-  { id: 'gal-5', title: 'A city made vertical', category: 'Architecture', image: '/images/creek-waterfront.jpg', alt: 'Dubai skyline over the creek' },
+  { id: 'gal-3', title: 'A room with a marina view', category: 'Interiors', image: '/images/penthouse-marina.jpg', alt: 'Furnished living room with windows overlooking marina towers' },
+  { id: 'gal-4', title: 'A contemporary courtyard', category: 'Illustrations', image: '/images/hills-villa.jpg', alt: 'Illustrative render of a contemporary villa courtyard with an olive tree' },
+  { id: 'gal-5', title: 'Waterfront at dusk', category: 'Illustrations', image: '/images/creek-waterfront.jpg', alt: 'Illustrative render of a waterfront promenade at dusk' },
 ];
 
 // Verified public developer profiles (name, description, official website only)

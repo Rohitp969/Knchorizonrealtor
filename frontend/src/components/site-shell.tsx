@@ -271,7 +271,7 @@ function SocialLinks() {
 export function Footer() {
   const contact = useContact();
   return (
-    <footer className="site-section bg-[#202635] text-[#f5f0e6]">
+    <footer className="site-section border-t border-[#d9c6a4]/20 bg-[#151a26] text-[#f5f0e6]">
       <div className="site-container">
 
         {/* Main Footer Grid: 2-up links on phones, 4-up on tablets, full 5 columns on desktop */}

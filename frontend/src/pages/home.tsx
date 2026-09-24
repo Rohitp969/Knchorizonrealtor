@@ -5,7 +5,6 @@ import { Link } from 'wouter';
 
 import {
   AreaCard,
-  ContactForm,
   FaqSection,
   FeaturedProjects,
   FeaturedProperties,
@@ -81,7 +80,11 @@ export default function Home() {
             /* Anchored to the top, not centred: centring split the leftover height in two and
                pushed the headline a further 62px down, and that drift grew on taller screens.
                Top-aligned, the gap under the navbar is the same on every laptop. */
-            className="relative flex flex-1 items-start"
+            /* max-h caps how far the gap under the buttons can open. Without it the leftover
+               height of a tall window went straight into that gap: 314px at 1080. Past the
+               cap the spare height falls to the bottom of the hero, where it is photograph
+               rather than a hole in the middle of the composition. */
+            className="relative flex max-h-[24rem] flex-1 items-start"
           >
             <div className="w-full max-w-[34rem] md:max-w-[46rem]">
               <motion.h1 variants={heroItem} className="hero-title">
@@ -126,7 +129,8 @@ export default function Home() {
 
           {/* Takes an equal share of the leftover height with the block above, so the search
               bar keeps the same breathing room above and below it at any window height rather
-              than the gap under the buttons absorbing all of it. */}
+              than the gap under the buttons absorbing all of it. Uncapped, so once the gap
+              above hits its limit the remaining height settles here, over the photograph. */}
           <div aria-hidden="true" className="flex-1" />
         </div>
       </section>
@@ -567,8 +571,8 @@ export default function Home() {
             "
           >
             <img
-              src="/images/interior-detail.jpg"
-              alt="Warm stone and brass details in a Dubai interior"
+              src="/images/downtown-night-aerial.jpg"
+              alt="Sheikh Zayed Road and Downtown Dubai with the Burj Khalifa, lit up at night"
               loading="lazy"
               className="
                 block
@@ -687,7 +691,7 @@ export default function Home() {
       >
         <img
           src="/images/creek-waterfront.jpg"
-          alt="Dubai Creek waterfront at blue hour"
+          alt="Waterfront promenade at dusk"
           loading="lazy"
           className="
             absolute inset-0
@@ -740,23 +744,6 @@ export default function Home() {
           <div
             className="btn-row lg:shrink-0 lg:flex-col lg:items-stretch"
           >
-            <Link
-              href="/contact"
-              className="btn btn-sand group"
-              data-testid="link-home-cta-contact"
-            >
-              Contact us
-
-              <ArrowUpRight
-                size={15}
-                className="
-                  transition-transform
-                  group-hover:translate-x-1
-                  group-hover:-translate-y-1
-                "
-              />
-            </Link>
-
             <a
               href={`tel:${contact.phoneHref}`}
               className="btn btn-outline-light group"
@@ -774,68 +761,6 @@ export default function Home() {
               />
             </a>
           </div>
-        </div>
-      </section>
-
-      {/* =========================================================
-          CONTACT
-      ========================================================= */}
-      <section
-        id="contact"
-        className="bg-[#f5f0e6] site-section"
-      >
-        <div
-          className="
-            site-container
-            grid
-            gap-12
-            md:gap-14
-            lg:grid-cols-[.8fr_1.2fr]
-            lg:gap-20
-          "
-        >
-          <div>
-            <SectionLabel>
-              Start a Conversation
-            </SectionLabel>
-
-            <h2
-              className="section-title mt-6 text-[#202635]"
-            >
-              Tell us where
-              <br />
-              <em className="text-[#c97352]">
-                you’re headed.
-              </em>
-            </h2>
-
-            <p className="measure-narrow mt-6 text-sm leading-7 text-[#202635]/60">
-              No hard sell. Just a first conversation about what a good move
-              looks like for you.
-            </p>
-
-            <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-8 lg:flex-col lg:items-start lg:gap-4">
-              <a
-                href={`tel:${contact.phoneHref}`}
-                className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635] line-link"
-                data-testid="link-contact-phone"
-              >
-                {contact.phoneDisplay}
-              </a>
-
-              <a
-                href={`https://wa.me/${contact.whatsapp}`}
-                target="_blank"
-                rel="noreferrer"
-                className="font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] line-link"
-                data-testid="link-contact-whatsapp"
-              >
-                Chat on WhatsApp
-              </a>
-            </div>
-          </div>
-
-          <ContactForm />
         </div>
       </section>
 

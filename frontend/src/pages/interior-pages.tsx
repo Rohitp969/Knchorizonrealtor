@@ -601,7 +601,7 @@ export function InteriorsPage() {
           </>
         }
         copy="Interior direction and furniture solutions shaped around the property, its purpose, and the people who will use it."
-        image="/images/hero-dubai-villa.jpg"
+        image="/images/penthouse-marina.jpg"
       />
 
       {/* INTRO / IMAGE */}
@@ -1525,7 +1525,7 @@ export function MarketInsightsPage() {
           </>
         }
         copy="Independent regulatory context, rental yield mechanics, and macroeconomic foundations for informed property decisions across Dubai."
-        image="/images/penthouse-marina.jpg"
+        image="/images/business-bay-night.jpg"
       />
 
       {/* CORE MARKET PILLARS */}
