@@ -21,17 +21,17 @@ export const CONTACT = {
 
 /*
  * Social profiles.
- * Each of these opens its network when clicked. They currently point at the network itself
- * because KNC's own handles are not set yet — swap in the full profile URL and the same icon
- * goes straight to the account, with nothing else to change:
+ * Each of these opens its network when clicked. Instagram goes to KNC's own account; the
+ * others still point at the network itself until KNC's handles are added — swap in the full
+ * profile URL and the same icon goes straight to the account, with nothing else to change:
  *
- *   instagram: 'https://www.instagram.com/knchorizonrealtor/',
+ *   linkedin: 'https://www.linkedin.com/company/<handle>/',
  *
  * Set a value to an empty string to drop that icon from the footer altogether. WhatsApp and
  * email are built from the number and address above, so they are always there.
  */
 export const SOCIAL = {
-  instagram: 'https://www.instagram.com/',
+  instagram: 'https://www.instagram.com/knchorizonllc/',
   facebook: '',
   x: 'https://x.com/',
   linkedin: 'https://www.linkedin.com/',
