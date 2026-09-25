@@ -13,6 +13,11 @@ export default defineConfig(({ mode }) => {
       port: 5173, host: "0.0.0.0",
       proxy: { "/api": { target: env.API_SERVER_URL || "http://localhost:5000", changeOrigin: true } }
     },
-    preview: { port: 4173, host: "0.0.0.0" }
+    preview: { port: 4173, host: "0.0.0.0" },
+    build: {
+      // Country flags for the phone field stay separate files, fetched only when shown,
+      // instead of being inlined into the JavaScript bundle.
+      assetsInlineLimit: (filePath: string) => (filePath.includes("country-flag-icons") ? false : undefined),
+    },
   };
 });

@@ -35,118 +35,170 @@ export type ImageRecord = {
 };
 
 /**
- * Verified Real Working Images Registry.
- * All URLs are verified and return HTTP 200 OK.
- * All local paths correspond to real assets in frontend/public/images/.
+ * Real, licensed photographs of Dubai that the admin can pick as presets. Every file is stored
+ * locally in frontend/public/images/, so picking a preset never hotlinks another site. Source,
+ * licence and photographer of every site photo are listed in IMAGE_SOURCES.md.
  */
 export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
-  hero_dubai_sunset: {
-    id: 'hero_dubai_sunset',
-    name: 'Dubai Skyline at Sunset',
-    description: 'The Dubai skyline and Burj Khalifa silhouetted against a golden sunset across the water. CC0 public domain (Rupak Chatterjee, via Wikimedia Commons), no attribution required',
-    usedIn: 'Home → Hero Section',
-    option1_url: 'https://commons.wikimedia.org/wiki/File:Dubai_UAE_Landscape.jpg',
+  dubai_skyline_from_sea: {
+    id: 'dubai_skyline_from_sea',
+    name: 'Dubai skyline from the sea',
+    description: 'The Dubai skyline and the Burj Al Arab seen across the sea. CC0, Wikimedia Commons, Ronald Sagarino. Source: https://commons.wikimedia.org/wiki/File:Dubai_skylines_(Pixabay_1536496).jpg',
+    usedIn: 'Home: closing call-to-action; also the fallback when an image is missing',
+    option1_url: '/images/dubai-skyline-from-sea.jpg',
     option2_local: {
-      filename: 'hero-dubai-sunset.jpg',
+      filename: 'dubai-skyline-from-sea.jpg',
       folder: 'frontend/public/images/',
-      fullPath: 'frontend/public/images/hero-dubai-sunset.jpg',
-      websitePath: '/images/hero-dubai-sunset.jpg',
+      fullPath: 'frontend/public/images/dubai-skyline-from-sea.jpg',
+      websitePath: '/images/dubai-skyline-from-sea.jpg',
     },
   },
-  hero_dubai_villa: {
-    id: 'hero_dubai_villa',
-    name: 'Palm Jumeirah Luxury Villa',
-    description: 'Modern luxury beachfront villa with infinity pool and palm trees',
-    usedIn: 'Palm Jumeirah Property Card, Interiors Hero',
-    option1_url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1920&q=80',
+  downtown_dubai_fountain: {
+    id: 'downtown_dubai_fountain',
+    name: 'Downtown Dubai and Burj Lake',
+    description: 'The Burj Khalifa and Downtown Dubai towers beside Burj Lake at sunset. CC0, Wikimedia Commons, Christian Raggini. Source: https://commons.wikimedia.org/wiki/File:The_Dubai_Fountain_%26_Burj_Khalifa_Pixabay.jpg',
+    usedIn: 'Community: Downtown Dubai',
+    option1_url: '/images/dubai-fountain-downtown.jpg',
     option2_local: {
-      filename: 'hero-dubai-villa.jpg',
+      filename: 'dubai-fountain-downtown.jpg',
       folder: 'frontend/public/images/',
-      fullPath: 'frontend/public/images/hero-dubai-villa.jpg',
-      websitePath: '/images/hero-dubai-villa.jpg',
+      fullPath: 'frontend/public/images/dubai-fountain-downtown.jpg',
+      websitePath: '/images/dubai-fountain-downtown.jpg',
     },
   },
-  penthouse_marina: {
-    id: 'penthouse_marina',
-    name: 'Dubai Marina Waterfront Skyline',
-    description: 'Marina skyline and architectural waterfront residence',
-    usedIn: 'Properties → Residential & Commercial Filter Hero, Meridian Residence Card, Gallery',
-    option1_url: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=1920&q=80',
+  dubai_marina_canal: {
+    id: 'dubai_marina_canal',
+    name: 'Dubai Marina canal by day',
+    description: 'Residential towers along the Dubai Marina canal on a clear day. CC0, Wikimedia Commons, EditQ. Source: https://commons.wikimedia.org/wiki/File:Dubai_Marina_3.jpg',
+    usedIn: 'Community: Dubai Marina',
+    option1_url: '/images/dubai-marina-canal-day.jpg',
     option2_local: {
-      filename: 'penthouse-marina.jpg',
+      filename: 'dubai-marina-canal-day.jpg',
       folder: 'frontend/public/images/',
-      fullPath: 'frontend/public/images/penthouse-marina.jpg',
-      websitePath: '/images/penthouse-marina.jpg',
+      fullPath: 'frontend/public/images/dubai-marina-canal-day.jpg',
+      websitePath: '/images/dubai-marina-canal-day.jpg',
     },
   },
-  hills_villa: {
-    id: 'hills_villa',
-    name: 'Dubai Hills Contemporary Estate',
-    description: 'Contemporary villa with garden rooms, stone finish and private pool',
-    usedIn: 'Projects → The Oasis & The Valley Cards, Courtyard 17 Villa, Gallery',
-    option1_url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80',
+  palm_jumeirah_aerial: {
+    id: 'palm_jumeirah_aerial',
+    name: 'Palm Jumeirah from above',
+    description: 'The resort Palm Jumeirah, Dubai, United Arab Emirates, is featured in this image photographed by Expedition 10 Commander Leroy Chiao from the International Spac. Public domain, Wikimedia Commons, Commander Leroy Chiao. Source: https://commons.wikimedia.org/wiki/File:Palm_Island_Resort.jpg',
+    usedIn: 'Community: Palm Jumeirah; gallery',
+    option1_url: '/images/palm-jumeirah-aerial.jpg',
     option2_local: {
-      filename: 'hills-villa.jpg',
+      filename: 'palm-jumeirah-aerial.jpg',
       folder: 'frontend/public/images/',
-      fullPath: 'frontend/public/images/hills-villa.jpg',
-      websitePath: '/images/hills-villa.jpg',
+      fullPath: 'frontend/public/images/palm-jumeirah-aerial.jpg',
+      websitePath: '/images/palm-jumeirah-aerial.jpg',
     },
   },
-  interior_detail: {
-    id: 'interior_detail',
-    name: 'Architectural Stone & Interior Detail',
-    description: 'Warm travertine stone, brass accents, and bespoke interior furnishing',
-    usedIn: 'Home → Design & Build Section, Services Hero, Privacy Policy, Gallery',
-    option1_url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=80',
+  business_bay_night: {
+    id: 'business_bay_night',
+    name: 'Business Bay at night',
+    description: '​迪拜夜晚天际线. CC0, Wikimedia Commons, Robert Bock. Source: https://commons.wikimedia.org/wiki/File:Dubai_skyline_unsplash.jpg',
+    usedIn: 'Community: Business Bay; gallery',
+    option1_url: '/images/hero-dubai-skyline.jpg',
     option2_local: {
-      filename: 'interior-detail.jpg',
+      filename: 'hero-dubai-skyline.jpg',
       folder: 'frontend/public/images/',
-      fullPath: 'frontend/public/images/interior-detail.jpg',
-      websitePath: '/images/interior-detail.jpg',
+      fullPath: 'frontend/public/images/hero-dubai-skyline.jpg',
+      websitePath: '/images/hero-dubai-skyline.jpg',
     },
   },
-  creek_waterfront: {
-    id: 'creek_waterfront',
-    name: 'Dubai Creek Waterfront Skyline',
-    description: 'Panoramic view over Dubai water and Downtown skyline at twilight',
-    usedIn: 'Home → Advisory Banner, About Page Hero, Contact Hero, Terms & Conditions',
-    option1_url: 'https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&w=1920&q=80',
+  jumeirah_coast: {
+    id: 'jumeirah_coast',
+    name: 'Jumeirah coast and Burj Al Arab',
+    description: 'Dubai coastline. CC0, Wikimedia Commons, Ahmad Ardity. Source: https://commons.wikimedia.org/wiki/File:Dubai_skyscrapers,_coastline_and_Burj_Al-Arab.jpg',
+    usedIn: 'Community: Jumeirah; gallery',
+    option1_url: '/images/jumeirah-coast-burj-al-arab.jpg',
     option2_local: {
-      filename: 'creek-waterfront.jpg',
+      filename: 'jumeirah-coast-burj-al-arab.jpg',
       folder: 'frontend/public/images/',
-      fullPath: 'frontend/public/images/creek-waterfront.jpg',
-      websitePath: '/images/creek-waterfront.jpg',
+      fullPath: 'frontend/public/images/jumeirah-coast-burj-al-arab.jpg',
+      websitePath: '/images/jumeirah-coast-burj-al-arab.jpg',
     },
   },
-  downtown_skyline: {
-    id: 'downtown_skyline',
-    name: 'Downtown Dubai Architectural Towers',
-    description: 'Burj Khalifa and central Downtown Dubai architectural horizon',
-    usedIn: 'Areas → Downtown Dubai, The Address Sky View Downtown',
-    option1_url: 'https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1920&q=80',
+  dubai_villa_community: {
+    id: 'dubai_villa_community',
+    name: 'Dubai villa community',
+    description: 'Low-rise villa community in Dubai seen from above, with towers on the horizon. Unsplash License, Unsplash, Kate Trysh. Source: https://unsplash.com/photos/Yeq7xHJ87_U',
+    usedIn: 'Community: Arabian Ranches (representative Dubai villa community; Arabian Ranches itself has no free-licence photo)',
+    option1_url: '/images/dubai-villa-community-aerial.jpg',
     option2_local: {
-      filename: 'creek-waterfront.jpg',
+      filename: 'dubai-villa-community-aerial.jpg',
       folder: 'frontend/public/images/',
-      fullPath: 'frontend/public/images/creek-waterfront.jpg',
-      websitePath: '/images/creek-waterfront.jpg',
+      fullPath: 'frontend/public/images/dubai-villa-community-aerial.jpg',
+      websitePath: '/images/dubai-villa-community-aerial.jpg',
     },
   },
-  living_lounge: {
-    id: 'living_lounge',
-    name: 'Luxury Residence Lounge & Furniture',
-    description: 'Bespoke living area styling, natural light, minimalist Dubai aesthetic',
-    usedIn: 'Specialist Services → Interiors & Furniture, Gallery',
-    option1_url: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1920&q=80',
+  dubai_townhouses: {
+    id: 'dubai_townhouses',
+    name: 'Townhouse street in Dubai',
+    description: 'Row of Mediterranean-style townhouses on a quiet Dubai community street, city skyline in the distance. Unsplash License, Unsplash, Ben Koorengevel. Source: https://unsplash.com/photos/a-beautiful-cityscape-with-buildings-and-streets-R9Dc1pwBTjY',
+    usedIn: 'Listing: Park Row (townhouse)',
+    option1_url: '/images/dubai-townhouse-street.jpg',
     option2_local: {
-      filename: 'interior-detail.jpg',
+      filename: 'dubai-townhouse-street.jpg',
       folder: 'frontend/public/images/',
-      fullPath: 'frontend/public/images/interior-detail.jpg',
-      websitePath: '/images/interior-detail.jpg',
+      fullPath: 'frontend/public/images/dubai-townhouse-street.jpg',
+      websitePath: '/images/dubai-townhouse-street.jpg',
+    },
+  },
+  dubai_creek_harbour: {
+    id: 'dubai_creek_harbour',
+    name: 'Dubai Creek Harbour towers',
+    description: 'Residential towers at Dubai Creek Harbour in late-afternoon sun, with palm trees below. Unsplash License, Unsplash, Aadil Sabeer. Source: https://unsplash.com/photos/cars-parked-near-high-rise-buildings-during-daytime-onP3aM_3tuA',
+    usedIn: 'Listing: Creekside Loft (Dubai Creek Harbour)',
+    option1_url: '/images/dubai-creek-harbour-towers.jpg',
+    option2_local: {
+      filename: 'dubai-creek-harbour-towers.jpg',
+      folder: 'frontend/public/images/',
+      fullPath: 'frontend/public/images/dubai-creek-harbour-towers.jpg',
+      websitePath: '/images/dubai-creek-harbour-towers.jpg',
+    },
+  },
+  dubai_construction: {
+    id: 'dubai_construction',
+    name: 'Tower under construction in Dubai',
+    description: 'Residential tower under construction with two tower cranes beside a finished apartment building in Dubai. Unsplash License, Unsplash, Kate Trysh. Source: https://unsplash.com/photos/a-couple-of-tall-buildings-next-to-each-other-9HP5UpkyptM',
+    usedIn: 'Blog: A clear-eyed guide to buying off-plan in Dubai',
+    option1_url: '/images/dubai-tower-construction-cranes.jpg',
+    option2_local: {
+      filename: 'dubai-tower-construction-cranes.jpg',
+      folder: 'frontend/public/images/',
+      fullPath: 'frontend/public/images/dubai-tower-construction-cranes.jpg',
+      websitePath: '/images/dubai-tower-construction-cranes.jpg',
+    },
+  },
+  dubai_living_room: {
+    id: 'dubai_living_room',
+    name: 'Furnished Dubai living room',
+    description: 'Finished Dubai living room with grey sofa, glass coffee table, white rug and ring pendant light. Unsplash License, Unsplash, Riyas Mohammed. Source: https://unsplash.com/photos/a-living-room-with-a-gray-couch-and-a-white-rug-_BBps6MAJ2w',
+    usedIn: 'Service card: Interiors & Furniture (home and Services)',
+    option1_url: '/images/dubai-living-room-finished.jpg',
+    option2_local: {
+      filename: 'dubai-living-room-finished.jpg',
+      folder: 'frontend/public/images/',
+      fullPath: 'frontend/public/images/dubai-living-room-finished.jpg',
+      websitePath: '/images/dubai-living-room-finished.jpg',
+    },
+  },
+  al_fahidi: {
+    id: 'al_fahidi',
+    name: 'Al Fahidi wind towers',
+    description: 'Traditional sand-coloured houses with wind towers around a quiet courtyard in Al Bastakiya, old Dubai. CC0 1.0, Wikimedia Commons, EditQ. Source: https://commons.wikimedia.org/wiki/File:Al_Bastakiya_5.jpg',
+    usedIn: 'Header: Our Approach',
+    option1_url: '/images/al-fahidi-wind-towers.jpg',
+    option2_local: {
+      filename: 'al-fahidi-wind-towers.jpg',
+      folder: 'frontend/public/images/',
+      fullPath: 'frontend/public/images/al-fahidi-wind-towers.jpg',
+      websitePath: '/images/al-fahidi-wind-towers.jpg',
     },
   },
 };
 
-export const DEFAULT_FALLBACK_IMAGE = '/images/creek-waterfront.jpg';
+export const DEFAULT_FALLBACK_IMAGE = '/images/dubai-skyline-from-sea.jpg';
 
 /**
  * Resolves the display image URL from any item or path.

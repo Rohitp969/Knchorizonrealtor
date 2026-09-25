@@ -29,6 +29,10 @@ router.post("/inquiries", async (req, res, next) => {
     if (!normalizedName || !normalizedEmail || !normalizedPhone || !normalizedInterest || !normalizedMessage) return res.status(400).json({ message: "Name, phone, email, interest, and message are required." });
     if (normalizedName.length > 120 || normalizedEmail.length > 254 || normalizedPhone.length > 40 || normalizedInterest.length > 120 || normalizedMessage.length > 5000) return res.status(400).json({ message: "Please keep the enquiry within the allowed length limits." });
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) return res.status(400).json({ message: "Please provide a valid email address." });
+    // The site's phone field checks the number against its country; this is the server-side
+    // floor: international format with the country code, 7-15 digits (the E.164 limit).
+    const phoneDigits = normalizedPhone.replace(/\D/g, "");
+    if (!/^\+[\d\s().-]+$/.test(normalizedPhone) || phoneDigits.length < 7 || phoneDigits.length > 15) return res.status(400).json({ message: "Please provide a valid phone number with its country code, e.g. +971 50 123 4567." });
 
     // The slugs stay exactly as submitted; the ids are the resolved links for reporting.
     const [propertyId, projectId] = await Promise.all([

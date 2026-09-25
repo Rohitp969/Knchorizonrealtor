@@ -6,7 +6,7 @@ import { adminFetch, apiFetch, type Project } from '@/lib/api';
 import { defaultProjects } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
 
-const fallbackImage = '/images/creek-waterfront.jpg';
+const fallbackImage = '/images/dubai-skyline-from-sea.jpg';
 
 export function ProjectDetailPage() {
   // Both /projects/:slug and the /project/:id alias registered in App.tsx land here
@@ -228,7 +228,7 @@ function InquiryPanel({
 }
 
 function BlogManagement() {
-  const emptyDraft = { title: '', slug: '', excerpt: '', content: '', featuredImage: '/images/creek-waterfront.jpg', category: 'General', author: 'KNC Horizon', seoTitle: '', seoDescription: '', status: 'draft' };
+  const emptyDraft = { title: '', slug: '', excerpt: '', content: '', featuredImage: '/images/dubai-skyline-from-sea.jpg', category: 'General', author: 'KNC Horizon', seoTitle: '', seoDescription: '', status: 'draft' };
   const [posts, setPosts] = useState<AdminItem[]>([]);
   const [draft, setDraft] = useState(emptyDraft);
   const [editingId, setEditingId] = useState('');

@@ -571,8 +571,8 @@ export default function Home() {
             "
           >
             <img
-              src="/images/downtown-night-aerial.jpg"
-              alt="Sheikh Zayed Road and Downtown Dubai with the Burj Khalifa, lit up at night"
+              src="/images/difc-aerial-day.jpg"
+              alt="The DIFC and Sheikh Zayed Road business towers seen from above in daylight"
               loading="lazy"
               className="
                 block
@@ -690,8 +690,8 @@ export default function Home() {
         className="site-section relative min-h-[22rem] overflow-hidden bg-[#202635] text-[#f5f0e6] sm:min-h-[24rem] md:min-h-[27rem]"
       >
         <img
-          src="/images/creek-waterfront.jpg"
-          alt="Waterfront promenade at dusk"
+          src="/images/dubai-skyline-from-sea.jpg"
+          alt="The Dubai skyline and the Burj Al Arab seen across the sea"
           loading="lazy"
           className="
             absolute inset-0

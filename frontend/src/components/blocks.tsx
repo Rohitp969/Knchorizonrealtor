@@ -5,6 +5,7 @@ import { Link } from 'wouter';
 import { areas, defaultPosts, defaultProjects, properties, services, type Area, type Property, type Service, faqs } from '@/lib/site-data';
 import { apiFetch, type Post, type Project, type RemoteProperty } from '@/lib/api';
 import { useSiteSettings } from '@/lib/site-settings';
+import { PhoneInput, type PhoneChange } from '@/components/phone-input';
 
 export const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -89,7 +90,7 @@ export function PropertyCard({ property, featured = false, className = '' }: { p
             src={property.image}
             alt={`${property.title}, ${property.location}`}
             loading="lazy"
-            onError={(event) => { event.currentTarget.src = '/images/creek-waterfront.jpg'; }}
+            onError={(event) => { event.currentTarget.src = '/images/dubai-skyline-from-sea.jpg'; }}
             className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             data-testid={`img-property-${property.id}`}
           />
@@ -143,7 +144,7 @@ function remotePropertyCard(item: RemoteProperty, currency: string): Property {
     type: item.type,
     price: `${item.currency || currency} ${new Intl.NumberFormat('en-AE').format(item.price)}`,
     details: `${item.bedrooms} beds · ${item.bathrooms} baths · ${new Intl.NumberFormat('en-AE').format(item.size)} sq ft`,
-    image: item.images?.[0] || '/images/creek-waterfront.jpg',
+    image: item.images?.[0] || '/images/dubai-skyline-from-sea.jpg',
     note: item.status,
   };
 }
@@ -193,7 +194,7 @@ export function FeaturedProperties() {
 
 
 export const aed = (value: number, currency = 'AED') => `${currency} ${new Intl.NumberFormat('en-AE').format(value)}`;
-const FALLBACK_IMAGE = '/images/creek-waterfront.jpg';
+const FALLBACK_IMAGE = '/images/dubai-skyline-from-sea.jpg';
 
 /* One project card used by the home page, /projects, /off-plan and their filters. */
 export function ProjectCard({ project }: { project: Project }) {
@@ -369,15 +370,29 @@ export function ContactForm({ compact = false, propertySlug, projectSlug, inquir
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [form, setForm] = useState({ name: '', email: '', phone: '', interest: '', budget: '', propertyType: '', location: '', message: '' });
+  const [phoneValid, setPhoneValid] = useState(false);
+  const [attempted, setAttempted] = useState(false);
   const update = (key: keyof typeof form) => (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setForm({ ...form, [key]: event.target.value });
+  const updatePhone = (change: PhoneChange) => {
+    setForm((current) => ({ ...current, phone: change.value }));
+    setPhoneValid(change.valid);
+  };
+  const phoneFieldId = `contact-phone-${inquiryType}${propertySlug ? `-${propertySlug}` : ''}${projectSlug ? `-${projectSlug}` : ''}`;
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setAttempted(true);
     setSubmitting(true);
     setError('');
     const cleanedForm = { ...form, name: form.name.trim(), email: form.email.trim(), phone: form.phone.trim(), interest: form.interest.trim(), message: form.message.trim() };
     if (!cleanedForm.name || !cleanedForm.phone || !cleanedForm.email || !cleanedForm.interest || !cleanedForm.message) {
       setError('Please complete your name, phone, email, requirement, and message.');
       setSubmitting(false);
+      return;
+    }
+    if (!phoneValid) {
+      setError('Please check your phone number: it does not match the selected country.');
+      setSubmitting(false);
+      document.getElementById(phoneFieldId)?.focus();
       return;
     }
     try {
@@ -389,12 +404,12 @@ export function ContactForm({ compact = false, propertySlug, projectSlug, inquir
       setSubmitting(false);
     }
   };
-  if (sent) return <div className="rounded-sm border border-[#c97352]/40 bg-[#c97352]/10 p-6 sm:p-8 md:p-10" data-testid="status-contact-success"><Check className="text-[#c97352]" size={26} /><h3 className="block-title mt-6 text-[#202635]">We'll be in touch shortly.</h3><p className="measure-narrow mt-3 text-sm leading-6 text-[#202635]/60">Thank you, {form.name || 'there'}. A member of our advisory team will reach out to understand what you're looking for.</p><button onClick={() => { setSent(false); setForm({ name: '', email: '', phone: '', interest: '', budget: '', propertyType: '', location: '', message: '' }); }} className="mt-7 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] line-link" data-testid="button-contact-reset">Send another enquiry</button></div>;
+  if (sent) return <div className="rounded-sm border border-[#c97352]/40 bg-[#c97352]/10 p-6 sm:p-8 md:p-10" data-testid="status-contact-success"><Check className="text-[#c97352]" size={26} /><h3 className="block-title mt-6 text-[#202635]">We'll be in touch shortly.</h3><p className="measure-narrow mt-3 text-sm leading-6 text-[#202635]/60">Thank you, {form.name || 'there'}. A member of our advisory team will reach out to understand what you're looking for.</p><button onClick={() => { setSent(false); setAttempted(false); setPhoneValid(false); setForm({ name: '', email: '', phone: '', interest: '', budget: '', propertyType: '', location: '', message: '' }); }} className="mt-7 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] line-link" data-testid="button-contact-reset">Send another enquiry</button></div>;
   return (
     <form onSubmit={submit} className={`grid gap-5 ${compact ? '' : 'md:grid-cols-2 md:gap-x-7'}`} data-testid="form-contact">
       <label className="block"><span className="eyebrow text-[#202635]/45">Your name</span><input required value={form.name} onChange={update('name')} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#202635]/30 focus:border-[#c97352]" placeholder="Full name" data-testid="input-contact-name" /></label>
       <label className="block"><span className="eyebrow text-[#202635]/45">Email address</span><input required type="email" value={form.email} onChange={update('email')} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#202635]/30 focus:border-[#c97352]" placeholder="you@email.com" data-testid="input-contact-email" /></label>
-      <label className="block"><span className="eyebrow text-[#202635]/45">Phone number</span><input required value={form.phone} onChange={update('phone')} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#202635]/30 focus:border-[#c97352]" placeholder="+971" data-testid="input-contact-phone" /></label>
+      <div className="block"><label htmlFor={phoneFieldId} className="eyebrow text-[#202635]/45">Phone number</label><PhoneInput id={phoneFieldId} value={form.phone} onChange={updatePhone} defaultCountry={inquiryType === 'india-office' ? 'IN' : 'AE'} required showError={attempted} testId="input-contact-phone" /></div>
       <label className="block relative"><span className="eyebrow text-[#202635]/45">I'm looking to</span><select required value={form.interest} onChange={update('interest')} className="mt-3 w-full appearance-none border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none focus:border-[#c97352]" data-testid="select-contact-interest"><option value="">Select an option</option><option>Buy a property</option><option>Sell a property</option><option>Rent a home</option><option>Explore an investment</option><option>Off-plan enquiry</option><option>General advisory</option></select><ChevronDown size={15} className="pointer-events-none absolute bottom-3 right-1 text-[#202635]/50" /></label>
       {!compact && (
         <>

@@ -27,7 +27,7 @@ const propertyCard = (item: RemoteProperty, currency = 'AED'): Property => ({
   type: item.type,
   price: price(item.price, item.currency || currency),
   details: `${item.bedrooms} beds · ${item.bathrooms} baths · ${new Intl.NumberFormat('en-AE').format(item.size)} sq ft`,
-  image: item.images[0] || '/images/creek-waterfront.jpg',
+  image: item.images[0] || '/images/dubai-skyline-from-sea.jpg',
   note: item.status,
 });
 
@@ -154,7 +154,7 @@ export function PropertiesLivePage() {
           </>
         }
         copy="A considered selection of Dubai homes and opportunities, updated from our live property collection."
-        image="/images/penthouse-marina.jpg"
+        image="/images/downtown-safa-park.jpg"
       />
       {/* The home hero search links to #results; scroll-margin keeps the fixed header off the search bar. */}
       <section id="results" className="scroll-mt-16 bg-[#f5f0e6] site-section md:scroll-mt-20">
@@ -254,7 +254,7 @@ export function CommunityDetailPage() {
   }, [slug]);
 
   const name = community?.name ?? area?.name ?? '';
-  const image = community?.image || area?.image || '/images/creek-waterfront.jpg';
+  const image = community?.image || area?.image || '/images/dubai-skyline-from-sea.jpg';
   const copy = community?.description || area?.detail || '';
 
   usePageMeta(
@@ -271,7 +271,7 @@ export function CommunityDetailPage() {
   if (!name) {
     return (
       <main>
-        <PageHero label="Communities" title={<>Community<br /><em className="text-[#c97352]">not found.</em></>} copy="This community is not on our list yet." image="/images/creek-waterfront.jpg" />
+        <PageHero label="Communities" title={<>Community<br /><em className="text-[#c97352]">not found.</em></>} copy="This community is not on our list yet." image="/images/maritime-city-towers.jpg" />
         <section className="bg-[#f5f0e6] site-section text-center">
           <Link href="/communities" className="btn btn-primary">Back to communities <ArrowUpRight size={14} /></Link>
         </section>
@@ -430,7 +430,7 @@ export function PropertyDetailPage() {
           </>
         }
         copy={property.description}
-        image={property.images[0] || '/images/creek-waterfront.jpg'}
+        image={property.images[0] || '/images/dubai-skyline-from-sea.jpg'}
       />
       <section className="bg-[#f5f0e6] site-section">
         <div className="site-container grid gap-12 lg:grid-cols-[1fr_.75fr] lg:gap-16 xl:gap-20">
@@ -443,7 +443,7 @@ export function PropertyDetailPage() {
                     src={image}
                     alt={property.title}
                     onError={(event) => {
-                      event.currentTarget.src = '/images/creek-waterfront.jpg';
+                      event.currentTarget.src = '/images/dubai-skyline-from-sea.jpg';
                     }}
                     className="h-full w-full object-cover"
                   />
@@ -539,7 +539,7 @@ export function ProjectsPage() {
           </>
         }
         copy="A live edit of Dubai’s most considered new addresses, from established developers and emerging neighbourhoods."
-        image="/images/downtown-safa-park.jpg"
+        image="/images/dubai-new-towers-aerial.jpg"
       />
       {/* The hero search links here with #results when off-plan is the chosen mode. */}
       <section id="results" className="scroll-mt-16 bg-[#e9e4da] site-section md:scroll-mt-20">
@@ -635,7 +635,7 @@ export function BlogPage() {
           </>
         }
         copy="Practical guidance, local perspective, and thoughtful notes for your next move in Dubai real estate."
-        image="/images/interior-detail.jpg"
+        image="/images/dubai-creek-dusk.jpg"
       />
       <section className="bg-[#f5f0e6] site-section">
         <div className="site-container">
@@ -731,7 +731,7 @@ export function BlogPostPage() {
     );
   }
 
-  const image = post.featuredImage || post.image || '/images/creek-waterfront.jpg';
+  const image = post.featuredImage || post.image || '/images/dubai-skyline-from-sea.jpg';
 
   return (
     <main>
@@ -765,7 +765,7 @@ export function BlogPostPage() {
                   <Link key={item.id} href={`/blog/${item.slug}`} className="card-editorial group p-5">
                     <div className="card-media image-reveal">
                       <img
-                        src={item.featuredImage || item.image || '/images/creek-waterfront.jpg'}
+                        src={item.featuredImage || item.image || '/images/dubai-skyline-from-sea.jpg'}
                         alt={item.title}
                         loading="lazy"
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -809,7 +809,7 @@ export function GalleryPage() {
           </>
         }
         copy="A closer look at the textures, horizons, and details that shape the KNC point of view."
-        image="/images/hero-dubai-villa.jpg"
+        image="/images/madinat-jumeirah-canal.jpg"
       />
       <section className="bg-[#dfe2dc] site-section">
         <div className={`site-container ${cardGrid(items.length)}`}>
@@ -941,7 +941,7 @@ export function PropertiesFilterPage(props: PropertiesFilterPageProps = {}) {
         label={displayTitles[category] || `${category} properties`}
         title={titles[category] || titles['residential']}
         copy={copyMap[category] || `A considered selection of ${category} properties in Dubai.`}
-        image={({ commercial: '/images/difc-green-towers.jpg', investment: '/images/downtown-night-aerial.jpg', 'off-plan': '/images/downtown-safa-park.jpg' } as Record<string, string>)[category] ?? '/images/penthouse-marina.jpg'}
+        image={({ sale: '/images/burj-khalifa-aerial.jpg', rent: '/images/jbr-residences-street.jpg', residential: '/images/the-greens-residential.jpg', commercial: '/images/difc-green-towers.jpg', investment: '/images/business-bay-skyline-day.jpg', 'off-plan': '/images/jvc-tower-construction-dusk.jpg' } as Record<string, string>)[category] ?? '/images/downtown-safa-park.jpg'}
       />
       <section className="bg-[#f5f0e6] site-section">
         <div className="site-container">
@@ -1044,7 +1044,7 @@ export function ProjectsFilterPage(props: ProjectsFilterPageProps = {}) {
         label={displayFilterTitles[filter] || filter.replace('-', ' ')}
         title={titles[filter] || titles['featured']}
         copy={copyMap[filter] || `Explore our curated selection of ${filter.replace('-', ' ')} in Dubai.`}
-        image={({ featured: '/images/burj-night-water.jpg', 'new-launches': '/images/downtown-safa-park.jpg', 'off-plan': '/images/downtown-safa-park.jpg', apartments: '/images/dubai-marina-dusk.jpg', 'villas-townhouses': '/images/hills-villa.jpg' } as Record<string, string>)[filter] ?? '/images/downtown-safa-park.jpg'}
+        image={({ featured: '/images/burj-night-water.jpg', 'new-launches': '/images/dubai-waterfront-tower-construction.jpg', 'off-plan': '/images/dubai-tower-cranes-twilight.jpg', apartments: '/images/dubai-apartment-towers-sunset.jpg', 'villas-townhouses': '/images/daria-island-seafront-villa.jpg' } as Record<string, string>)[filter] ?? '/images/dubai-new-towers-aerial.jpg'}
       />
       <section className="bg-[#e9e4da] site-section">
         <div className="site-container">
@@ -1119,7 +1119,7 @@ export function DevelopersPage() {
           </>
         }
         copy="Explore established developers shaping residential, investment and mixed-use communities across Dubai."
-        image="/images/burj-khalifa-aerial.jpg"
+        image="/images/downtown-skyline-cranes.jpg"
       />
 
       {/* Main Developers Listing Section */}

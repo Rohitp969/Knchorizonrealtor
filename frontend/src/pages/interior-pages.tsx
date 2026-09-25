@@ -23,7 +23,7 @@ export function AboutPage() {
           </>
         }
         copy="We are an independent Dubai property advisory for people who value context, candour, and an exceptionally well-handled move."
-        image="/images/creek-waterfront.jpg"
+        image="/images/dubai-skyline-creek-sunset.jpg"
       />
 
       {/* OUR POINT OF VIEW */}
@@ -148,7 +148,7 @@ export function PropertiesPage() {
         label="The property edit"
         title={<>Places worth<br /><em className="text-[#c97352]">your attention.</em></>}
         copy="A considered selection of Dubai homes and opportunities, selected for their quality, position, and possibility."
-        image="/images/penthouse-marina.jpg"
+        image="/images/downtown-safa-park.jpg"
       />
       <section className="bg-[#f5f0e6] site-section">
         <div className="site-container">
@@ -202,7 +202,7 @@ export function ServicesPage() {
           </>
         }
         copy="Buying, selling, renting, or investing — the route is different for everyone. The standard of care should not be."
-        image="/images/interior-detail.jpg"
+        image="/images/dubai-skyline-golf-course.jpg"
       />
 
       {/* CORE ADVISORY SERVICES */}
@@ -366,7 +366,7 @@ export function DesignBuildPage() {
           </>
         }
         copy="A property-focused design and coordination service for clients who want their Dubai home or investment property to feel considered, practical, and ready for its next chapter."
-        image="/images/interior-detail.jpg"
+        image="/images/dubai-hills-construction.jpg"
       />
 
       {/* INTRO */}
@@ -601,7 +601,7 @@ export function InteriorsPage() {
           </>
         }
         copy="Interior direction and furniture solutions shaped around the property, its purpose, and the people who will use it."
-        image="/images/penthouse-marina.jpg"
+        image="/images/dubai-apartment-living-room.jpg"
       />
 
       {/* INTRO / IMAGE */}
@@ -612,8 +612,8 @@ export function InteriorsPage() {
             {/* CONTROLLED IMAGE */}
             <div className="card-media card-media-wide lg:aspect-[4/3]">
               <img
-                src="/images/interior-detail.jpg"
-                alt="Contemporary Dubai interior with warm neutral materials"
+                src="/images/dubai-interior-styling.jpg"
+                alt="Black side table with a white ceramic vase of dried stems beside a boucle headboard"
                 loading="lazy"
               />
             </div>
@@ -841,7 +841,7 @@ export function AreasPage() {
           </>
         }
         copy="Dubai is a city of very different neighbourhoods. We help you understand each location, its character, and the property opportunities it offers."
-        image="/images/creek-waterfront.jpg"
+        image="/images/marina-resort-greens.jpg"
       />
 
       {/* AREA NOTES */}
@@ -1006,7 +1006,7 @@ export function ContactPage() {
           </>
         }
         copy="Tell us a little about what you are looking for. We&apos;ll come back with a thoughtful next step."
-        image="/images/hero-dubai-villa.jpg"
+        image="/images/jlt-towers-sheikh-zayed-road.jpg"
       />
 
       {/* CONTACT INFORMATION + FORM */}
@@ -1203,7 +1203,7 @@ export function AboutApproachPage() {
           </>
         }
         copy="A disciplined, transparent advisory practice shaped around the reality of Dubai real estate. No pressure, no developer bias — just considered guidance at every turn."
-        image="/images/creek-waterfront.jpg"
+        image="/images/al-fahidi-wind-towers.jpg"
       />
 
       {/* CORE PHILOSOPHY */}
@@ -1346,7 +1346,7 @@ export function IndiaOfficePage() {
           </>
         }
         copy="Dedicated, local advisory for Indian business families, NRIs, and global investors seeking high-calibre residential and investment property in Dubai."
-        image="/images/hero-dubai-villa.jpg"
+        image="/images/gurugram-skyline.jpg"
       />
 
       {/* OVERVIEW */}
@@ -1525,7 +1525,7 @@ export function MarketInsightsPage() {
           </>
         }
         copy="Independent regulatory context, rental yield mechanics, and macroeconomic foundations for informed property decisions across Dubai."
-        image="/images/business-bay-night.jpg"
+        image="/images/sheikh-zayed-road-aerial.jpg"
       />
 
       {/* CORE MARKET PILLARS */}

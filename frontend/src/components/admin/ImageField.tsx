@@ -158,7 +158,7 @@ export function ImageField({ label, value, onChange, helperText }: ImageFieldPro
               alt="Preview"
               className="h-full w-full object-cover"
               onError={(e) => {
-                e.currentTarget.src = '/images/creek-waterfront.jpg';
+                e.currentTarget.src = '/images/dubai-skyline-from-sea.jpg';
               }}
             />
           </div>

@@ -7,7 +7,7 @@ import { defaultProjects } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
 import { useContact } from '@/lib/site-settings';
 
-const fallbackImage = '/images/creek-waterfront.jpg';
+const fallbackImage = '/images/dubai-skyline-from-sea.jpg';
 
 const defaultDevelopersBySlug: Record<string, Developer> = {
   emaar: {

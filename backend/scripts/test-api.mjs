@@ -303,12 +303,12 @@ const propCreate = await api("/admin/properties", {
     community: "Test Community", type: "Apartment", listingType: "rent", status: "For rent",
     price: 123456, currency: "AED", bedrooms: 2, bathrooms: 2, size: 900,
     description: "Temporary record created by the migration test.",
-    images: ["/images/creek-waterfront.jpg"], amenities: ["Pool"], published: false, featured: false,
+    images: ["/images/dubai-skyline-from-sea.jpg"], amenities: ["Pool"], published: false, featured: false,
   }),
 });
 check("POST /admin/properties 201", propCreate.status === 201, JSON.stringify(propCreate.body).slice(0, 160));
 created.property = propCreate.body?.item?.id;
-check("created property round-trips its arrays", Array.isArray(propCreate.body?.item?.images) && propCreate.body.item.images[0] === "/images/creek-waterfront.jpg");
+check("created property round-trips its arrays", Array.isArray(propCreate.body?.item?.images) && propCreate.body.item.images[0] === "/images/dubai-skyline-from-sea.jpg");
 check("created property keeps listingType", propCreate.body?.item?.listingType === "rent");
 
 const propUpdate = await api(`/admin/properties/${created.property}`, {
@@ -330,7 +330,7 @@ const projCreate = await api("/admin/projects", {
     description: "Temporary record created by the migration test.",
     developer: "Emaar Properties", location: "Test Location", category: "Apartments",
     status: "Launching", startingPrice: 1000000, handover: "Q4 2030",
-    image: "/images/creek-waterfront.jpg", published: false,
+    image: "/images/dubai-skyline-from-sea.jpg", published: false,
   }),
 });
 check("POST /admin/projects 201", projCreate.status === 201, JSON.stringify(projCreate.body).slice(0, 160));
@@ -386,11 +386,11 @@ const insUpdate = await api(`/admin/insights/${created.insight}`, { token, metho
 check("PUT /admin/insights/:id 200", insUpdate.status === 200 && insUpdate.body?.item?.summary === "Updated");
 
 // Gallery
-const galCreate = await api("/admin/gallery", { token, method: "POST", body: JSON.stringify({ title: "ZZ Migration Image", image: "/images/creek-waterfront.jpg", category: "Test" }) });
+const galCreate = await api("/admin/gallery", { token, method: "POST", body: JSON.stringify({ title: "ZZ Migration Image", image: "/images/dubai-skyline-from-sea.jpg", category: "Test" }) });
 check("POST /admin/gallery 201", galCreate.status === 201, JSON.stringify(galCreate.body).slice(0, 160));
 created.gallery = galCreate.body?.item?.id;
 
-const galUpdate = await api(`/admin/gallery/${created.gallery}`, { token, method: "PUT", body: JSON.stringify({ title: "ZZ Migration Image 2", image: "/images/creek-waterfront.jpg", category: "Test" }) });
+const galUpdate = await api(`/admin/gallery/${created.gallery}`, { token, method: "PUT", body: JSON.stringify({ title: "ZZ Migration Image 2", image: "/images/dubai-skyline-from-sea.jpg", category: "Test" }) });
 check("PUT /admin/gallery/:id 200", galUpdate.status === 200 && galUpdate.body?.item?.title === "ZZ Migration Image 2");
 
 /* ---------------- cleanup ---------------- */

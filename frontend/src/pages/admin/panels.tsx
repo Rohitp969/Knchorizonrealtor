@@ -13,6 +13,7 @@ import {
   useToast,
 } from '@/pages/admin/admin-ui';
 import type { AdminResource } from '@/pages/admin/AdminSidebar';
+import { PhoneInput } from '@/components/phone-input';
 
 type Row = Record<string, any> & { id: string };
 
@@ -713,10 +714,18 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
     setErrors((current) => (current[name] ? { ...current, [name]: '' } : current));
   };
 
+  // Validity of phone numbers edited in this session, per the selected country's rules.
+  const [phoneValid, setPhoneValid] = useState<Record<string, boolean>>({});
+
   const save = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!doc) return;
     const found = validate(area, doc);
+    if (area === 'content') {
+      for (const name of ['contactPhone', 'contactWhatsapp']) {
+        if (!found[name] && phoneValid[name] === false) found[name] = 'This number is not valid for the selected country.';
+      }
+    }
     const active = Object.fromEntries(Object.entries(found).filter(([, message]) => message));
     setErrors(active);
     if (Object.keys(active).length) {
@@ -787,6 +796,25 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
     </label>
   );
 
+  const phoneField = (name: string, label: string, valueFormat: 'international' | 'digits', hint: string) => (
+    <div className="block">
+      <label htmlFor={`settings-${name}`} className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55">{label}</label>
+      <PhoneInput
+        id={`settings-${name}`}
+        variant="boxed"
+        valueFormat={valueFormat}
+        value={doc?.[name] ?? ''}
+        onChange={(change) => {
+          set(name, change.value);
+          setPhoneValid((current) => ({ ...current, [name]: change.valid }));
+        }}
+        error={errors[name]}
+        testId={`settings-${name}`}
+      />
+      {!errors[name] && <span className="mt-1 block text-xs text-[#202635]/45">{hint}</span>}
+    </div>
+  );
+
   if (doc === null && !error) return <Spinner label="Loading settings…" />;
 
   return (
@@ -808,9 +836,9 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
             <fieldset>
               <legend className="mb-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">Contact details</legend>
               <div className="grid gap-4 sm:grid-cols-2">
-                {field('contactPhone', 'Phone', 'text', 'Shown on the site and used for the call link.')}
+                {phoneField('contactPhone', 'Phone', 'international', 'Shown on the site and used for the call link.')}
                 {field('contactEmail', 'Email')}
-                {field('contactWhatsapp', 'WhatsApp number', 'text', 'Digits only, e.g. 971585141770.')}
+                {phoneField('contactWhatsapp', 'WhatsApp number', 'digits', 'Used for the WhatsApp buttons. Pick the country, then type the number.')}
                 {field('studioHours', 'Studio hours')}
                 {field('officeDubai', 'Dubai office')}
                 {field('officeIndia', 'India office')}
