@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect, useRef } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -485,6 +485,41 @@ function ScrollToTop() {
 
 /*
  * ============================================================
+ * GOOGLE TAG PAGE VIEWS
+ * ============================================================
+ */
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
+/*
+ * The Google tag in index.html records the page the visitor lands on. Moving between pages
+ * afterwards never reloads the document, so each later route change is reported here instead.
+ * Rendered after <Router /> so the new page has already written its title. Comparing against
+ * the last path sent keeps the landing page from being counted twice.
+ */
+function GoogleTagPageViews() {
+  const [location] = useLocation();
+  const lastPath = useRef(window.location.pathname);
+
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path === lastPath.current) return;
+    lastPath.current = path;
+    window.gtag?.('event', 'page_view', {
+      page_location: window.location.href,
+      page_path: path + window.location.search,
+      page_title: document.title,
+    });
+  }, [location]);
+
+  return null;
+}
+
+/*
+ * ============================================================
  * ROUTED ERROR BOUNDARY
  * ============================================================
  */
@@ -523,6 +558,7 @@ function App() {
             <ScrollToTop />
 
             <Router />
+            <GoogleTagPageViews />
           </WouterRouter>
 
           <Toaster />
