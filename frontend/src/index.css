@@ -45,39 +45,39 @@
 }
 
 :root {
-  --background: 39 33% 94%;
-  --foreground: 224 25% 18%;
-  --border: 37 18% 80%;
-  --input: 37 18% 80%;
-  --ring: 16 52% 53%;
-  --card: 39 37% 97%;
-  --card-foreground: 224 25% 18%;
-  --card-border: 37 18% 83%;
-  --popover: 39 37% 97%;
-  --popover-foreground: 224 25% 18%;
-  --popover-border: 37 18% 83%;
-  --primary: 224 25% 18%;
-  --primary-foreground: 39 33% 94%;
-  --secondary: 38 23% 88%;
-  --secondary-foreground: 224 25% 18%;
-  --muted: 38 20% 88%;
-  --muted-foreground: 221 12% 44%;
-  --accent: 16 52% 53%;
-  --accent-foreground: 39 37% 97%;
+  --background: 40 47% 96%;
+  --foreground: 222 21% 21%;
+  --border: 38 33% 84%;
+  --input: 38 33% 84%;
+  --ring: 35 36% 48%;
+  --card: 43 100% 99%;
+  --card-foreground: 222 21% 21%;
+  --card-border: 38 34% 86%;
+  --popover: 43 100% 99%;
+  --popover-foreground: 222 21% 21%;
+  --popover-border: 38 34% 86%;
+  --primary: 222 21% 21%;
+  --primary-foreground: 40 47% 96%;
+  --secondary: 39 35% 92%;
+  --secondary-foreground: 222 21% 21%;
+  --muted: 37 29% 91%;
+  --muted-foreground: 226 9% 46%;
+  --accent: 35 39% 40%;
+  --accent-foreground: 43 100% 99%;
   --destructive: 3 58% 47%;
-  --destructive-foreground: 39 37% 97%;
-  --sidebar: 224 25% 18%;
-  --sidebar-foreground: 39 33% 94%;
-  --sidebar-border: 224 18% 28%;
-  --sidebar-primary: 16 52% 53%;
-  --sidebar-primary-foreground: 39 37% 97%;
-  --sidebar-accent: 224 20% 25%;
-  --sidebar-accent-foreground: 39 33% 94%;
-  --sidebar-ring: 16 52% 53%;
-  --chart-1: 16 52% 53%;
+  --destructive-foreground: 43 100% 99%;
+  --sidebar: 222 21% 21%;
+  --sidebar-foreground: 40 47% 96%;
+  --sidebar-border: 222 18% 28%;
+  --sidebar-primary: 35 36% 48%;
+  --sidebar-primary-foreground: 43 100% 99%;
+  --sidebar-accent: 222 20% 25%;
+  --sidebar-accent-foreground: 40 47% 96%;
+  --sidebar-ring: 35 36% 48%;
+  --chart-1: 35 36% 48%;
   --chart-2: 190 23% 38%;
-  --chart-3: 38 53% 60%;
-  --chart-4: 224 25% 18%;
+  --chart-3: 36 45% 61%;
+  --chart-4: 222 21% 21%;
   --chart-5: 155 18% 42%;
   --app-font-sans: 'DM Sans', sans-serif;
   --app-font-serif: 'Instrument Serif', Georgia, serif;
@@ -85,8 +85,26 @@
   --radius: 0.35rem;
   --tracking-normal: 0em;
   --spacing: 0.25rem;
-  --elevate-1: rgba(32, 38, 53, 0.05);
-  --elevate-2: rgba(32, 38, 53, 0.1);
+  --elevate-1: rgba(43, 50, 66, 0.05);
+  --elevate-2: rgba(43, 50, 66, 0.1);
+
+  /*
+   * ---- KNC palette: ivory, soft navy and champagne gold ----
+   * The markup spells these as hex values; they are named here so the shared components
+   * below read from one place.
+   */
+  --knc-ivory: #faf7f1;        /* page background */
+  --knc-surface: #fffdf8;      /* cards, fields and panels — used instead of pure white */
+  --knc-navy: #2b3242;         /* text, dark bands and primary buttons */
+  --knc-gold: #9f7a47;         /* accent: display italics, lines, icons */
+  --knc-gold-fill: #8f6d3f;    /* accent as a fill behind light text (4.4:1) */
+  /* Gold at label size on light sections: 5.3:1 on ivory, where the accent itself is 3.3:1. */
+  --knc-gold-ink: #80623a;
+  /* Gold on the dark bands: 5.6:1 on navy. */
+  --knc-gold-light: #c9a570;
+  /* Two soft shadows for the whole site: a card at rest, and a card or menu lifted. */
+  --knc-shadow-rest: 0 1px 2px rgba(43, 50, 66, 0.04), 0 6px 16px -10px rgba(43, 50, 66, 0.1);
+  --knc-shadow-lift: 0 2px 8px -2px rgba(43, 50, 66, 0.06), 0 26px 50px -30px rgba(43, 50, 66, 0.38);
 
   /*
    * ---- One spacing system for the whole site ----
@@ -158,11 +176,13 @@
   html, body { max-width: 100%; overflow-x: clip; }
   img, svg, video { max-width: 100%; }
   table { max-width: 100%; }
+  /* One visible keyboard focus ring in the accent, for anything that does not draw its own. */
+  :where(a, button, [role="button"], summary):focus-visible { outline: 2px solid rgba(159, 122, 71, .6); outline-offset: 3px; }
 }
 
 @layer components {
-  .eyebrow { font-family: var(--app-font-mono); font-size: 0.66rem; line-height: 1.2; letter-spacing: .16em; text-transform: uppercase; }
-  .display { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.035em; }
+  .eyebrow { font-family: var(--app-font-mono); font-size: 0.72rem; line-height: 1.25; letter-spacing: .15em; text-transform: uppercase; }
+  .display { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.02em; }
   .text-balance { text-wrap: balance; }
 
   /* ---- Shared page frame: same gutter, same content column, every page ---- */
@@ -187,14 +207,14 @@
 
   /* ---- Shared type scale (one size per role, site-wide) ---- */
   /* Section headings: 2.2rem on phones → 4rem on desktop */
-  .section-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.035em; line-height: 1; font-size: clamp(2.2rem, 4.6vw, 4rem); }
+  .section-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.02em; line-height: 1.02; font-size: clamp(2.2rem, 4.6vw, 4rem); }
   /* Page hero headings sit one step above section headings */
-  .page-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.04em; line-height: .96; font-size: clamp(2.5rem, 5.4vw, 4.75rem); }
+  .page-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.025em; line-height: .98; font-size: clamp(2.5rem, 5.4vw, 4.75rem); }
   /* Card headings across property, project, developer, community and blog cards */
-  .card-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.02em; line-height: 1.2; font-size: 1.5rem; }
+  .card-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.01em; line-height: 1.2; font-size: 1.5rem; }
 
   /* Sub-section headings inside a section (feature blocks, form headings, detail pages) */
-  .block-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.02em; line-height: 1.15; font-size: clamp(1.5rem, 2vw, 1.75rem); }
+  .block-title { font-family: var(--app-font-serif); font-weight: 400; letter-spacing: -.01em; line-height: 1.15; font-size: clamp(1.5rem, 2vw, 1.75rem); }
 
   /* Body copy: one size and one line-height for every paragraph that carries a section. */
   .body-copy { font-size: .9375rem; line-height: 1.75; }
@@ -203,51 +223,62 @@
   .measure { max-width: 62ch; }
   .measure-narrow { max-width: 46ch; }
 
-  /* ---- Shared buttons: one size, padding and tracking everywhere ---- */
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: .75rem; min-height: 2.875rem; padding: .875rem 1.5rem; font-family: var(--app-font-mono); font-size: 10px; line-height: 1; text-transform: uppercase; letter-spacing: .14em; white-space: nowrap; border-radius: 2px; transition: background-color .3s ease, color .3s ease, border-color .3s ease, transform .18s ease, box-shadow .3s ease; }
-  /* One press and one focus ring for every button on the site, in the existing accent. */
-  .btn:active { transform: translateY(1px); }
-  .btn:focus-visible { outline: none; box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px rgba(201, 115, 82, .55); }
+  /*
+   * ---- Shared buttons: one size, padding and tracking everywhere ----
+   * Soft pill shape and the sans face at 12px: easier to read at a glance than the old
+   * 10px mono caps. They rise a pixel under the cursor and settle back when pressed.
+   */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: .65rem; min-height: 2.875rem; padding: .85rem 1.6rem; font-family: var(--app-font-sans); font-size: 12px; font-weight: 600; line-height: 1; text-transform: uppercase; letter-spacing: .08em; white-space: nowrap; border-radius: 999px; transition: background-color .3s ease, color .3s ease, border-color .3s ease, transform .2s ease, box-shadow .3s ease; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn:focus-visible { outline: none; box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px rgba(159, 122, 71, .55); }
   .btn > svg { flex: none; }
-  .btn-primary { background-color: #202635; color: #f5f0e6; border: 1px solid #202635; }
-  .btn-primary:hover { background-color: #c97352; border-color: #c97352; }
-  .btn-secondary { border: 1px solid rgba(32, 38, 53, .3); color: #202635; }
-  .btn-secondary:hover { background-color: #202635; color: #f5f0e6; border-color: #202635; }
-  .btn-sand { background-color: #d9c6a4; color: #202635; border: 1px solid #d9c6a4; }
-  .btn-sand:hover { background-color: #f5f0e6; border-color: #f5f0e6; }
-  .btn-outline-light { border: 1px solid rgba(245, 240, 230, .45); color: #f5f0e6; }
-  .btn-outline-light:hover { background-color: #f5f0e6; color: #202635; border-color: #f5f0e6; }
+  .btn-primary { background-color: #2b3242; color: #faf7f1; border: 1px solid #2b3242; }
+  /* The fill warms to gold on hover, with a soft shadow so the change also reads as lift. */
+  .btn-primary:hover { background-color: #8f6d3f; border-color: #8f6d3f; box-shadow: 0 12px 24px -14px rgba(43, 50, 66, .55); }
+  .btn-secondary { border: 1px solid rgba(43, 50, 66, .28); color: #2b3242; }
+  .btn-secondary:hover { background-color: #2b3242; color: #faf7f1; border-color: #2b3242; box-shadow: 0 12px 24px -14px rgba(43, 50, 66, .45); }
+  .btn-sand { background-color: #d9c6a4; color: #2b3242; border: 1px solid #d9c6a4; }
+  .btn-sand:hover { background-color: #faf7f1; border-color: #faf7f1; }
+  .btn-outline-light { border: 1px solid rgba(250, 247, 241, .45); color: #faf7f1; }
+  .btn-outline-light:hover { background-color: #faf7f1; color: #2b3242; border-color: #faf7f1; }
   /* A row of CTAs: equal gaps, wraps rather than overflowing on a phone. */
   .btn-row { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
 
   /* ---- Shared card media: identical ratio for every repeated card ---- */
-  .card-media { position: relative; width: 100%; overflow: hidden; border-radius: .125rem; background-color: rgba(32, 38, 53, .08); aspect-ratio: 4 / 3; }
+  .card-media { position: relative; width: 100%; overflow: hidden; border-radius: 10px; background-color: rgba(43, 50, 66, .08); aspect-ratio: 4 / 3; }
   .card-media > img { height: 100%; width: 100%; object-fit: cover; object-position: center; }
   .card-media-wide { aspect-ratio: 16 / 10; }
   .card-media-portrait { aspect-ratio: 4 / 5; }
 
   /* ---- Repeated card shell: same border, background, padding and hover everywhere ---- */
+  /*
+   * Rounded, softly shadowed cards that rise a few pixels under the cursor, with the border
+   * warming to gold, so every listing feels like it answers the pointer.
+   */
   .card-editorial {
     display: flex;
     flex-direction: column;
     height: 100%;
-    border: 1px solid rgba(32, 38, 53, 0.12);
-    background-color: #fcfaf6;
+    border: 1px solid rgba(43, 50, 66, 0.08);
+    background-color: var(--knc-surface);
     padding: 1.25rem;
-    border-radius: 0.25rem;
-    transition: border-color 300ms ease, box-shadow 300ms ease;
+    border-radius: 16px;
+    box-shadow: var(--knc-shadow-rest);
+    transition: transform 350ms cubic-bezier(.2, .65, .2, 1), border-color 300ms ease, box-shadow 350ms ease;
   }
   .card-editorial:hover {
-    border-color: rgba(201, 115, 82, 0.5);
-    box-shadow: 0 10px 25px -5px rgba(32, 38, 53, 0.08);
+    transform: translateY(-4px);
+    border-color: rgba(159, 122, 71, 0.35);
+    box-shadow: var(--knc-shadow-lift);
   }
   .card-thumb {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 10;
     overflow: hidden;
-    border-radius: 0.125rem;
-    background-color: rgba(32, 38, 53, 0.08);
+    border-radius: 10px;
+    background-color: rgba(43, 50, 66, 0.08);
   }
   .card-thumb img {
     height: 100%;
@@ -262,22 +293,37 @@
 
 @layer components {
   /* Navbar dropdown: opens on a short fade and settle rather than appearing instantly. */
-  .nav-dropdown { animation: dropdown-in .18s cubic-bezier(.2,.65,.2,1) both; transform-origin: top center; }
+  .nav-dropdown { animation: dropdown-in .18s cubic-bezier(.2,.65,.2,1) both; transform-origin: top center; border-radius: 14px; box-shadow: var(--knc-shadow-lift); }
 
   /* Search bar: the active tab's underline grows in instead of snapping. */
   .search-tab { transition: color .25s ease, background-color .25s ease, box-shadow .25s ease; }
   /* Fields lift very slightly under the cursor so the bar feels live without moving. */
   .search-field { transition: background-color .25s ease, box-shadow .25s ease; }
   .search-submit { transition: background-color .3s ease, color .3s ease, transform .18s ease, box-shadow .3s ease; }
-  .search-submit:hover { box-shadow: 0 8px 20px -10px rgba(32, 38, 53, .55); }
+  .search-submit:hover { box-shadow: 0 8px 20px -10px rgba(43, 50, 66, .55); }
   .search-submit:active { transform: translateY(1px); }
+
+  /* Admin console: the same soft accent halo on every focused field, on top of its border change. */
+  .admin-shell :where(input, select, textarea):focus { box-shadow: 0 0 0 3px rgba(159, 122, 71, .16); }
 }
 
 @layer utilities {
-  .grain::after { content: ""; position: fixed; pointer-events: none; inset: 0; z-index: 50; opacity: .035; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.52'/%3E%3C/svg%3E"); }
+  /*
+   * Card photographs. The hover zoom comes from the card's own group-hover:scale utility; this
+   * only makes it glide. (It used to add a second zoom of its own on top, which doubled it.)
+   */
   .image-reveal { overflow: hidden; }
-  .image-reveal img { transition: transform 900ms cubic-bezier(.2,.75,.2,1), filter 700ms ease; }
-  .image-reveal:hover img { transform: scale(1.045); filter: saturate(1.08); }
+  .image-reveal img { transition: scale 700ms cubic-bezier(.2,.75,.2,1), transform 700ms cubic-bezier(.2,.75,.2,1); }
+
+  /*
+   * Gold text by context. Small mono labels and eyebrows in the accent take the deeper gold
+   * ink on light sections; display italics keep the accent; on the dark bands every
+   * accent-coloured text takes the lighter gold so it stays readable against navy.
+   */
+  .eyebrow.text-\[\#9f7a47\],
+  .font-mono.text-\[\#9f7a47\],
+  .font-mono .text-\[\#9f7a47\] { color: var(--knc-gold-ink); }
+  :is(.bg-\[\#2b3242\], .bg-\[\#262d3b\], footer, .page-hero, .home-hero) .text-\[\#9f7a47\] { color: var(--knc-gold-light); }
   .line-link { position: relative; }
   .line-link::after { content: ""; position: absolute; bottom: -.35rem; left: 0; height: 1px; width: 100%; transform: scaleX(0); transform-origin: right; background: currentColor; transition: transform 280ms ease; }
   .line-link:hover::after, .line-link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
@@ -305,15 +351,17 @@
   --hero-focus-y: 50%;                            /* crop anchor, vertical   */
   --hero-display: clamp(2.3rem, 5vw, 3.75rem);    /* headline size */
   /*
-   * The hero fills the window. Stopping a block short left an empty band of the next
-   * section's padding sitting under the fold with nothing in it, and a half-cut heading
-   * (70svh) was worse still — so the section below starts exactly at the fold. The gap
-   * between the buttons and the search bar is kept in check by splitting the leftover
-   * height evenly above and below the bar, not by shortening the hero. svh (not vh) so
-   * mobile browser chrome cannot push the search bar out of reach.
+   * The hero is as tall as what it holds. It used to be forced to the full window and the
+   * spare height was split above and below the search bar, so the gaps swung from 24px on
+   * an iPhone SE to 239px above and 422px below on a 1080p screen: every device showed a
+   * different hero. Now one gap, a small share of the screen height held between 32px and
+   * 56px, sits above the search bar and the same again below it, on every phone, tablet
+   * and laptop. svh so a phone's collapsing browser bar does not change it.
    */
-  min-height: 100svh;
+  --hero-gap: clamp(2rem, 5svh, 3.5rem);
+  padding-bottom: var(--hero-gap);
 }
+.home-hero-search { padding-top: var(--hero-gap); }
 .home-hero-media { position: absolute; inset: 0; }
 .home-hero-media .hero-image {
   object-position: var(--hero-focus-x) var(--hero-focus-y);
@@ -351,20 +399,18 @@
  */
 .page-hero {
   /*
-   * A share of the window, like .home-hero, instead of a flat 480px band that filled 63% of
-   * a 768px laptop screen and only 44% of a 1080px one. Shorter than the home hero because
-   * it only carries a label, a heading and one paragraph — no search bar.
+   * As tall as its label, heading and paragraph. It used to take 56% of the window with the
+   * text pinned to the bottom, so the empty band of photo above the text ran from 35px on a
+   * phone to 237px on a portrait iPad and 176px on a 1080p screen. The band now follows the
+   * screen width alone: about 36px on a phone, 50px on a tablet, 85px on a laptop, never
+   * more than 112px. 5rem clears the fixed navbar.
    */
-  min-height: clamp(21rem, 56svh, 36rem);
+  --page-hero-gap: clamp(2.25rem, 6vw, 7rem);
+  padding-top: calc(5rem + var(--page-hero-gap));
+  padding-bottom: clamp(2.5rem, 4.5vw, 4rem);
 }
 
 @media (max-width: 767px) {
-  .page-hero {
-    min-height: 20rem;
-    padding-top: 7rem;
-    padding-bottom: 2.5rem;
-  }
-
   .page-hero-image {
     opacity: .58;
   }
@@ -377,16 +423,11 @@
     max-width: calc(100vw - 1.5rem);
   }
 
-  /* Phones follow the same rule. */
-  main > section.home-hero:first-child {
-    min-height: 100svh;
-  }
-
   /* The two hero actions sit side by side rather than stacking, which is what pushed the
      whole section down on a narrow phone. */
   .home-hero .btn {
-    padding-inline: .9rem;
-    font-size: .625rem;
+    padding-inline: 1rem;
+    font-size: .6875rem;
   }
 
   /* Two fields to a row on a phone, so the value needs the smaller size to read in full
@@ -419,8 +460,9 @@
 
   .hero-image,
   .home-hero-media { animation: none !important; transform: none !important; }
-  .image-reveal:hover img { transform: none; }
+  .group:hover img { scale: none !important; }
   .group:hover .card-thumb img { transform: none; }
-  .btn:active { transform: none; }
+  .btn:hover, .btn:active { transform: none; }
+  .card-editorial:hover { transform: none; }
   .search-submit:active { transform: none; }
 }

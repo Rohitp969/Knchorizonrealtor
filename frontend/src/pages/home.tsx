@@ -46,10 +46,8 @@ export default function Home() {
       <section
         className="
           home-hero site-gutter relative flex flex-col overflow-hidden
-          bg-[#202635] text-[#f5f0e6]
-          pb-6 pt-28
-          sm:pb-10 sm:pt-28
-          md:pb-12 md:pt-32
+          bg-[#2b3242] text-[#faf7f1]
+          pt-28 md:pt-32
         "
       >
         <motion.div
@@ -72,26 +70,19 @@ export default function Home() {
         <div className="absolute inset-0 hidden bg-[linear-gradient(100deg,rgba(16,21,35,.9)_0%,rgba(16,21,35,.74)_24%,rgba(16,21,35,.4)_48%,rgba(16,21,35,.1)_70%,rgba(16,21,35,0)_88%)] md:block" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#141a2b]/55 via-transparent to-[#141a2b]/45" />
 
-        <div className="relative z-10 site-container flex flex-1 flex-col">
+        <div className="relative z-10 site-container flex flex-col">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={heroStagger}
-            /* Anchored to the top, not centred: centring split the leftover height in two and
-               pushed the headline a further 62px down, and that drift grew on taller screens.
-               Top-aligned, the gap under the navbar is the same on every laptop. */
-            /* max-h caps how far the gap under the buttons can open. Without it the leftover
-               height of a tall window went straight into that gap: 314px at 1080. Past the
-               cap the spare height falls to the bottom of the hero, where it is photograph
-               rather than a hole in the middle of the composition. */
-            className="relative flex max-h-[24rem] flex-1 items-start"
+            className="relative flex items-start"
           >
             <div className="w-full max-w-[34rem] md:max-w-[46rem]">
               <motion.h1 variants={heroItem} className="hero-title">
                 Find your <em className="text-[#d9c6a4]">horizon</em> in Dubai.
               </motion.h1>
 
-              <motion.p variants={heroItem} className="mt-3 max-w-md text-[.8125rem] leading-relaxed text-[#f5f0e6]/75 sm:mt-4 sm:text-base">
+              <motion.p variants={heroItem} className="mt-3 max-w-md text-[.8125rem] leading-relaxed text-[#faf7f1]/75 sm:mt-4 sm:text-base">
                 Discover exceptional properties and trusted real estate
                 opportunities across Dubai and the UAE.
               </motion.p>
@@ -105,33 +96,12 @@ export default function Home() {
                 </Link>
               </motion.div>
             </div>
-
-            {/* Vertical rail: on the content column's right edge, centred against the headline */}
-            <div className="pointer-events-none absolute inset-y-0 right-0 hidden items-center lg:flex">
-              {/* The rail lands on the brightest part of the photo, so it carries its own falloff */}
-              <span
-                aria-hidden="true"
-                className="absolute inset-y-0 -right-10 w-40 bg-[radial-gradient(ellipse_at_center,rgba(20,26,43,.34)_0%,rgba(20,26,43,.18)_46%,rgba(20,26,43,0)_76%)]"
-              />
-              <div className="relative flex flex-col items-center gap-4">
-                <span aria-hidden="true" className="h-10 w-px bg-[#f5f0e6]/35" />
-                <p className="eyebrow whitespace-nowrap text-[#f5f0e6]/80 [writing-mode:vertical-rl]">
-                  Property advisory · Dubai, UAE
-                </p>
-                <span aria-hidden="true" className="h-10 w-px bg-[#f5f0e6]/35" />
-              </div>
-            </div>
           </motion.div>
 
-          <motion.div variants={heroItem} className="pt-4 sm:pt-6 md:pt-8">
+          {/* The same gap above the search bar as below it (--hero-gap in index.css). */}
+          <motion.div variants={heroItem} className="home-hero-search">
             <PropertySearch />
           </motion.div>
-
-          {/* Takes an equal share of the leftover height with the block above, so the search
-              bar keeps the same breathing room above and below it at any window height rather
-              than the gap under the buttons absorbing all of it. Uncapped, so once the gap
-              above hits its limit the remaining height settles here, over the photograph. */}
-          <div aria-hidden="true" className="flex-1" />
         </div>
       </section>
 
@@ -144,7 +114,7 @@ export default function Home() {
           heading of every section below it.
       ========================================================= */}
       <section
-        className="site-section bg-[#f5f0e6]"
+        className="site-section bg-[#faf7f1]"
       >
         <div className="site-container">
 
@@ -154,7 +124,7 @@ export default function Home() {
               <>
                 Properties with
                 <br />
-                <em className="text-[#c97352]">
+                <em className="text-[#9f7a47]">
                   a point of view.
                 </em>
               </>
@@ -163,7 +133,7 @@ export default function Home() {
             action={
               <Link
                 href="/properties"
-                className="line-link inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] transition-colors hover:text-[#202635]"
+                className="line-link inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47] transition-colors hover:text-[#2b3242]"
                 data-testid="link-home-properties"
               >
                 View all properties
@@ -183,7 +153,7 @@ export default function Home() {
       ========================================================= */}
       <section
         id="introduction"
-        className="bg-[#e9e4da] site-section"
+        className="bg-[#f2ede4] site-section"
       >
         <div className="site-container">
           <motion.div
@@ -198,13 +168,13 @@ export default function Home() {
             </SectionLabel>
 
             <h2
-              className="section-title mt-6 max-w-4xl text-[#202635]"
+              className="section-title mt-6 max-w-4xl text-[#2b3242]"
             >
               Your trusted real estate partner in{' '}
-              <em className="text-[#c97352]">Dubai.</em>
+              <em className="text-[#9f7a47]">Dubai.</em>
             </h2>
 
-            <p className="body-copy measure mt-8 text-[#202635]/75">
+            <p className="body-copy measure mt-8 text-[#2b3242]/75">
               KNC Horizon Realtor connects discerning clients with exceptional residential and commercial real estate opportunities across Dubai and the UAE. Our approach combines grounded local market intelligence, high-touch professional advisory, and a dedication to helping every client secure the right property with absolute confidence.
             </p>
 
@@ -223,11 +193,11 @@ export default function Home() {
       {/* =========================================================
           FEATURED OFF-PLAN
       ========================================================= */}
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
           <SectionIntro
             label="Off-plan in Dubai"
-            title={<>New developments<br /><em className="text-[#c97352]">worth an early look.</em></>}
+            title={<>New developments<br /><em className="text-[#9f7a47]">worth an early look.</em></>}
             copy="Launches and off-plan releases from established Dubai developers, with payment plans and handover timelines set out clearly."
           />
 
@@ -252,7 +222,7 @@ export default function Home() {
           (six areas divide evenly, so no half-empty last row)
       ========================================================= */}
       <section
-        className="overflow-hidden bg-[#dfe2dc] site-section"
+        className="overflow-hidden bg-[#efeae2] site-section"
       >
         <div className="site-container">
           <SectionIntro
@@ -262,7 +232,7 @@ export default function Home() {
                 Know the feeling
                 <br />
                 of each{' '}
-                <em className="text-[#c97352]">
+                <em className="text-[#9f7a47]">
                   address.
                 </em>
               </>
@@ -293,7 +263,7 @@ export default function Home() {
 
           <Link
             href="/areas"
-            className="line-link mt-10 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
+            className="line-link mt-10 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]"
             data-testid="link-home-areas"
           >
             Read our area notes
@@ -305,11 +275,11 @@ export default function Home() {
       {/* =========================================================
           DEVELOPERS
       ========================================================= */}
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
           <SectionIntro
             label="Developers"
-            title={<>The names behind<br /><em className="text-[#c97352]">Dubai&rsquo;s landmarks.</em></>}
+            title={<>The names behind<br /><em className="text-[#9f7a47]">Dubai&rsquo;s landmarks.</em></>}
             copy="Profiles of the developers building across Dubai&rsquo;s principal communities, each with their own project history and official site."
           />
 
@@ -321,12 +291,12 @@ export default function Home() {
                 className="card-editorial group p-5"
                 data-testid={`link-home-developer-${developer.slug}`}
               >
-                <span className="grid h-10 w-10 place-items-center border border-[#202635]/15 font-serif text-lg text-[#202635]">
+                <span className="grid h-10 w-10 place-items-center border border-[#2b3242]/15 font-serif text-lg text-[#2b3242]">
                   {developer.name.charAt(0)}
                 </span>
-                <h3 className="card-title mt-4 line-clamp-1 transition-colors group-hover:text-[#c97352]">{developer.name}</h3>
-                <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#202635]/60">{developer.shortDescription}</p>
-                <span className="mt-auto pt-4 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] group-hover:underline">
+                <h3 className="card-title mt-4 line-clamp-1 transition-colors group-hover:text-[#9f7a47]">{developer.name}</h3>
+                <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#2b3242]/60">{developer.shortDescription}</p>
+                <span className="mt-auto pt-4 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47] group-hover:underline">
                   View profile
                 </span>
               </Link>
@@ -348,7 +318,7 @@ export default function Home() {
           SERVICES
       ========================================================= */}
       <section
-        className="bg-[#e9e4da] site-section"
+        className="bg-[#f2ede4] site-section"
       >
         <div className="site-container">
           <SectionIntro
@@ -357,7 +327,7 @@ export default function Home() {
               <>
                 The right advice,
                 <br />
-                <em className="text-[#c97352]">
+                <em className="text-[#9f7a47]">
                   at the right moment.
                 </em>
               </>
@@ -381,7 +351,7 @@ export default function Home() {
           Two services, so a two-column grid (no empty third column)
       ========================================================= */}
       <section
-        className="bg-[#f5f0e6] site-section"
+        className="bg-[#faf7f1] site-section"
       >
         <div className="site-container">
           <SectionIntro
@@ -390,7 +360,7 @@ export default function Home() {
               <>
                 Spaces with
                 <br />
-                <em className="text-[#c97352]">
+                <em className="text-[#9f7a47]">
                   a point of view.
                 </em>
               </>
@@ -419,7 +389,7 @@ export default function Home() {
                         transition-transform
                         duration-700
                         ease-out
-                        group-hover:scale-105
+                        group-hover:scale-[1.03]
                       "
                     />
                   </div>
@@ -427,25 +397,25 @@ export default function Home() {
                   <p
                     className="
                       mt-4
-                      font-mono text-[10px]
+                      font-mono text-[11px]
                       uppercase tracking-[.14em]
-                      text-[#c97352]
+                      text-[#9f7a47]
                     "
                   >
                     KNC Studio
                   </p>
 
-                  <h3 className="block-title mt-2 text-[#202635] transition-colors group-hover:text-[#c97352]">
+                  <h3 className="block-title mt-2 text-[#2b3242] transition-colors group-hover:text-[#9f7a47]">
                     {service.title}
                   </h3>
 
-                  <p className="mt-2.5 max-w-xl text-sm leading-relaxed text-[#202635]/65">
+                  <p className="mt-2.5 max-w-xl text-sm leading-relaxed text-[#2b3242]/65">
                     {service.description}
                   </p>
                 </div>
 
                 <span
-                  className="mt-5 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] group-hover:underline"
+                  className="mt-5 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47] group-hover:underline"
                 >
                   Explore service
                   <ArrowUpRight size={14} />
@@ -460,7 +430,7 @@ export default function Home() {
           WHY KNC
       ========================================================= */}
       <section
-        className="bg-[#202635] site-section text-[#f5f0e6]"
+        className="bg-[#2b3242] site-section text-[#faf7f1]"
       >
         <div className="site-container">
           <SectionIntro
@@ -484,8 +454,8 @@ export default function Home() {
               grid
               gap-px
               border-y
-              border-[#f5f0e6]/15
-              bg-[#f5f0e6]/15
+              border-[#faf7f1]/15
+              bg-[#faf7f1]/15
               sm:grid-cols-2
               lg:grid-cols-4
             "
@@ -516,7 +486,7 @@ export default function Home() {
                 <div
                   key={title}
                   className="
-                    bg-[#202635]
+                    bg-[#2b3242]
                     py-7
                     sm:p-6
                     md:p-8
@@ -524,14 +494,14 @@ export default function Home() {
                 >
                   <Icon
                     size={22}
-                    className="text-[#c97352]"
+                    className="text-[#9f7a47]"
                   />
 
                   <h3 className="block-title mt-5 md:mt-10">
                     {title}
                   </h3>
 
-                  <p className="mt-3 max-w-xs text-sm leading-6 text-[#f5f0e6]/60 md:mt-4">
+                  <p className="mt-3 max-w-xs text-sm leading-6 text-[#faf7f1]/60 md:mt-4">
                     {copy}
                   </p>
                 </div>
@@ -544,7 +514,7 @@ export default function Home() {
       {/* =========================================================
           INVESTMENT
       ========================================================= */}
-      <section className="w-full bg-[#c6d0c9] site-section">
+      <section className="w-full bg-[#ebe4d7] site-section">
         <div
           className="
             site-container
@@ -584,7 +554,7 @@ export default function Home() {
               data-testid="img-investment"
             />
 
-            <div className="absolute inset-0 bg-[#202635]/8" />
+            <div className="absolute inset-0 bg-[#2b3242]/8" />
           </div>
 
           {/* CONTENT */}
@@ -594,17 +564,17 @@ export default function Home() {
             </SectionLabel>
 
             <h2
-              className="section-title mt-6 text-[#202635]"
+              className="section-title mt-6 text-[#2b3242]"
             >
               Invest
               <br />
-              <em className="text-[#c97352]">
+              <em className="text-[#9f7a47]">
                 in Dubai.
               </em>
             </h2>
 
             <p
-              className="body-copy mt-6 text-[#202635]/65"
+              className="body-copy mt-6 text-[#2b3242]/65"
             >
               Explore opportunities in one of the world’s most dynamic real
               estate markets. We bring local perspective to residential
@@ -621,13 +591,13 @@ export default function Home() {
                 gap-x-8
                 gap-y-3
                 border-t
-                border-[#202635]/20
+                border-[#2b3242]/20
                 pt-4
                 font-mono
-                text-[10px]
+                text-[11px]
                 uppercase
                 tracking-[.1em]
-                text-[#202635]/70
+                text-[#2b3242]/70
                 min-[420px]:grid-cols-2
               "
             >
@@ -640,7 +610,7 @@ export default function Home() {
             {/* CTA */}
             <Link
               href="/services#investment"
-              className="line-link mt-8 inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
+              className="line-link mt-8 inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]"
               data-testid="link-home-investment"
             >
               Talk to our property advisor
@@ -653,11 +623,11 @@ export default function Home() {
       {/* =========================================================
           MARKET & INSIGHTS
       ========================================================= */}
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
           <SectionIntro
             label="Insights"
-            title={<>Notes on the<br /><em className="text-[#c97352]">Dubai market.</em></>}
+            title={<>Notes on the<br /><em className="text-[#9f7a47]">Dubai market.</em></>}
             copy="Perspective on buying, renting and investing in Dubai from our advisory desk."
           />
 
@@ -687,7 +657,7 @@ export default function Home() {
           cut off when the copy wraps on small screens
       ========================================================= */}
       <section
-        className="site-section relative min-h-[22rem] overflow-hidden bg-[#202635] text-[#f5f0e6] sm:min-h-[24rem] md:min-h-[27rem]"
+        className="site-section relative min-h-[22rem] overflow-hidden bg-[#2b3242] text-[#faf7f1] sm:min-h-[24rem] md:min-h-[27rem]"
       >
         <img
           src="/images/dubai-skyline-from-sea.jpg"
@@ -702,7 +672,7 @@ export default function Home() {
           data-testid="img-cta"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-[#202635]/95 via-[#202635]/55 to-[#202635]/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#2b3242]/95 via-[#2b3242]/55 to-[#2b3242]/40" />
 
         <div
           className="
@@ -734,7 +704,7 @@ export default function Home() {
             </h2>
 
             <p
-              className="body-copy measure mt-8 text-white/70"
+              className="body-copy measure mt-8 text-[#faf7f1]/70"
             >
               A considered approach to Dubai property, helping you discover
               the right opportunity and move forward with clarity and confidence.

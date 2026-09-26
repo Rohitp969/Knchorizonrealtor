@@ -2,6 +2,7 @@ import { Router } from "express";
 import { count, query, queryOne } from "../lib/postgres.ts";
 import { contains, toApi, toApiList } from "../lib/repositories.ts";
 import { publicSettings, readSettings } from "../lib/settings.ts";
+import { seoToPublic, type SeoRow } from "../lib/seo.ts";
 
 const router = Router();
 
@@ -17,6 +18,23 @@ router.get("/public/settings", async (_req, res, next) => {
     return next(error);
   }
 });
+
+/** The SEO a detail page renders into <head>, or null when none has been set. */
+async function publicSeo(column: "property_id" | "project_id" | "post_id", id: unknown) {
+  return seoToPublic(await queryOne<SeoRow>(`select * from seo_meta where ${column} = $1`, [id]));
+}
+
+/**
+ * A live record by one of the slugs it used to have. When the SEO console renames a listing,
+ * its old URL keeps answering; the page then moves the address bar to the new slug.
+ */
+async function byPreviousSlug(table: "properties" | "projects" | "posts", column: "property_id" | "project_id" | "post_id", live: string, slug: string) {
+  return queryOne(
+    `select t.* from ${table} t join seo_meta s on s.${column} = t.id
+      where ${live} and $1 = any(s.previous_slugs) order by s.updated_at desc limit 1`,
+    [slug],
+  );
+}
 
 /**
  * Collects `where` fragments and their bound values.
@@ -169,9 +187,10 @@ router.get("/public/properties/:slug", async (req, res, next) => {
     const slug = req.params.slug;
     // The original Azure House slug still resolves, so old links and saved leads keep working.
     const slugs = slug === "azure-house-palm-jumeirah" ? ["palm-jumeirah-azure", "azure-house-palm-jumeirah"] : [slug];
-    const row = await queryOne(`select * from properties where published and slug = any($1::text[])`, [slugs]);
+    const row = (await queryOne(`select * from properties where published and slug = any($1::text[])`, [slugs]))
+      ?? (await byPreviousSlug("properties", "property_id", "t.published", slug));
     if (!row) return res.status(404).json({ message: "Property not found." });
-    return res.json({ property: toApi("properties", row) });
+    return res.json({ property: toApi("properties", row), seo: await publicSeo("property_id", row.id) });
   } catch (error) {
     return next(error);
   }
@@ -245,9 +264,10 @@ router.get(["/public/developers/:slug", "/developers/:slug"], async (req, res, n
 
 router.get("/public/projects/:slug", async (req, res, next) => {
   try {
-    const row = await queryOne(`select * from projects where published and slug = $1`, [req.params.slug]);
+    const row = (await queryOne(`select * from projects where published and slug = $1`, [req.params.slug]))
+      ?? (await byPreviousSlug("projects", "project_id", "t.published", String(req.params.slug)));
     if (!row) return res.status(404).json({ message: "Project not found." });
-    return res.json({ project: toApi("projects", row) });
+    return res.json({ project: toApi("projects", row), seo: await publicSeo("project_id", row.id) });
   } catch (error) {
     return next(error);
   }
@@ -255,6 +275,7 @@ router.get("/public/projects/:slug", async (req, res, next) => {
 
 /** A post counts as live when either flag says so, which is how the admin has always saved. */
 const POST_IS_LIVE = `(published or status = 'published')`;
+const LIVE_POST_ALIAS = `(t.published or t.status = 'published')`;
 
 async function livePosts(q?: string, category?: string) {
   const filter = conditions([POST_IS_LIVE]);
@@ -277,9 +298,10 @@ router.get("/public/blog", async (req, res, next) => {
 
 router.get("/public/blog/:slug", async (req, res, next) => {
   try {
-    const row = await queryOne(`select * from posts where ${POST_IS_LIVE} and slug = $1`, [req.params.slug]);
+    const row = (await queryOne(`select * from posts where ${POST_IS_LIVE} and slug = $1`, [req.params.slug]))
+      ?? (await byPreviousSlug("posts", "post_id", LIVE_POST_ALIAS, String(req.params.slug)));
     if (!row) return res.status(404).json({ message: "Journal entry not found." });
-    return res.json({ post: toApi("posts", row) });
+    return res.json({ post: toApi("posts", row), seo: await publicSeo("post_id", row.id) });
   } catch (error) {
     return next(error);
   }
@@ -294,10 +316,8 @@ router.get("/blogs", async (req, res, next) => {
 
 router.get("/blogs/:slug", async (req, res, next) => {
   try {
-    const blog = await queryOne<{ slug: string; category: string }>(
-      `select * from posts where ${POST_IS_LIVE} and slug = $1`,
-      [req.params.slug],
-    );
+    const blog = ((await queryOne(`select * from posts where ${POST_IS_LIVE} and slug = $1`, [req.params.slug]))
+      ?? (await byPreviousSlug("posts", "post_id", LIVE_POST_ALIAS, String(req.params.slug)))) as { id: string; slug: string; category: string } | undefined;
     if (!blog) return res.status(404).json({ message: "Blog post not found." });
     // Same category first, then anything else recent, to a maximum of three.
     const related = await query(
@@ -310,6 +330,7 @@ router.get("/blogs/:slug", async (req, res, next) => {
     return res.json({
       blog: toApi("posts", blog as unknown as Record<string, unknown>),
       related: toApiList("posts", related),
+      seo: await publicSeo("post_id", blog.id),
     });
   } catch (error) { return next(error); }
 });

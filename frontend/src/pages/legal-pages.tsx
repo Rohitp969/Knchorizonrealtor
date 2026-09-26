@@ -6,7 +6,7 @@ import { PageHero } from '@/components/blocks';
 
 export function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-[#f5f0e6] text-[#202635]">
+    <main className="min-h-screen bg-[#faf7f1] text-[#2b3242]">
 
       {/* =====================================================
           HERO
@@ -17,7 +17,7 @@ export function PrivacyPage() {
         copy="How KNC Horizon Realtor handles information shared through our website, property enquiries and communication channels."
         image="/images/signing-documents.jpg"
       >
-        <p className="mt-6 font-mono text-[10px] uppercase tracking-[.18em] text-[#f5f0e6]/55">
+        <p className="mt-6 font-mono text-[11px] uppercase tracking-[.18em] text-[#faf7f1]/55">
           Last updated · September 2026
         </p>
       </PageHero>
@@ -26,18 +26,18 @@ export function PrivacyPage() {
       {/* =====================================================
           PRIVACY CONTENT
       ====================================================== */}
-      <section className="site-section border-t border-[#202635]/10">
+      <section className="site-section border-t border-[#2b3242]/10">
 
         <div className="site-container">
           <div className="max-w-[52rem] space-y-12">
 
           {/* 1 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               About this Privacy Policy
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               This Privacy Policy describes how information may be handled
               when you visit the KNC Horizon Realtor website, contact us,
               submit a property enquiry, request information about a
@@ -45,7 +45,7 @@ export function PrivacyPage() {
               website.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               We aim to handle personal information responsibly and in
               accordance with applicable laws and regulations.
             </p>
@@ -54,16 +54,16 @@ export function PrivacyPage() {
 
           {/* 2 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Information we may collect
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Depending on how you interact with the website, we may receive
               information such as:
             </p>
 
-            <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-7 text-[#202635]/70">
+            <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-7 text-[#2b3242]/70">
               <li>Your name and contact details.</li>
               <li>Email address and telephone number.</li>
               <li>Property preferences and requirements.</li>
@@ -85,15 +85,15 @@ export function PrivacyPage() {
 
           {/* 3 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               How we may use information
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Information may be used for purposes including:
             </p>
 
-            <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-7 text-[#202635]/70">
+            <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-7 text-[#2b3242]/70">
               <li>Responding to property and service enquiries.</li>
               <li>Providing requested property or project information.</li>
               <li>Understanding your property requirements.</li>
@@ -114,17 +114,17 @@ export function PrivacyPage() {
 
           {/* 4 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Property enquiries
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               If you submit a property enquiry, the information you provide
               may be used to understand your requirements and respond to your
               request.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Depending on your enquiry, relevant information may also need to
               be shared with an appropriate developer, property owner,
               authorised representative or service provider where this is
@@ -136,11 +136,11 @@ export function PrivacyPage() {
 
           {/* 5 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Legal basis and consent
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Personal information will be processed on an appropriate legal
               basis depending on the circumstances, including where processing
               is necessary to respond to a request, perform a requested
@@ -148,7 +148,7 @@ export function PrivacyPage() {
               interests, or where consent is required and has been provided.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Where processing is based on consent, applicable rights regarding
               withdrawal of consent may apply.
             </p>
@@ -157,16 +157,16 @@ export function PrivacyPage() {
 
           {/* 6 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Sharing of information
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               We do not intend to sell personal information submitted through
               this website.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Information may be disclosed to service providers, technology
               providers, developers, property owners, professional advisers,
               regulators or other parties where reasonably necessary for the
@@ -177,17 +177,17 @@ export function PrivacyPage() {
 
           {/* 7 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Third-party services
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               The website may use third-party services for hosting, analytics,
               maps, communications, image delivery, forms, security or other
               website functionality.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Those third parties may process information according to their
               own terms and privacy policies.
             </p>
@@ -196,16 +196,16 @@ export function PrivacyPage() {
 
           {/* 8 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Cookies and analytics
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               The website may use cookies or similar technologies to support
               functionality, security, analytics and user experience.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Where required, information about cookies and applicable choices
               may be provided through the website or relevant third-party
               service.
@@ -215,17 +215,17 @@ export function PrivacyPage() {
 
           {/* 9 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Data security
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Reasonable technical and organisational measures should be used
               to protect personal information against unauthorised access,
               alteration, disclosure or destruction.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               However, no internet transmission or electronic storage system
               can be guaranteed to be completely secure.
             </p>
@@ -234,11 +234,11 @@ export function PrivacyPage() {
 
           {/* 10 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Data retention
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Personal information may be retained for as long as reasonably
               necessary for the purpose for which it was collected, to handle
               enquiries, maintain business records, comply with legal
@@ -249,18 +249,18 @@ export function PrivacyPage() {
 
           {/* 11 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Your privacy rights
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Depending on applicable law and the circumstances, individuals
               may have rights relating to their personal information,
               including rights to request access, correction or restriction of
               certain processing.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Requests concerning personal information should be directed to
               the appropriate KNC Horizon Realtor contact once the company's
               official privacy contact details have been confirmed.
@@ -270,11 +270,11 @@ export function PrivacyPage() {
 
           {/* 12 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               International transfers
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Some technology or service providers used by the website may
               process information outside the United Arab Emirates. Where
               applicable, such processing should be carried out in accordance
@@ -285,11 +285,11 @@ export function PrivacyPage() {
 
           {/* 13 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Children's information
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               This website is intended for general property and business
               enquiries and is not directed toward children. We do not
               knowingly request unnecessary personal information from
@@ -300,11 +300,11 @@ export function PrivacyPage() {
 
           {/* 14 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Changes to this Privacy Policy
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               This Privacy Policy may be updated from time to time to reflect
               changes in the website, services, technology or applicable legal
               requirements. The latest version will be published on this page.
@@ -313,8 +313,8 @@ export function PrivacyPage() {
 
 
           {/* Footer */}
-            <div className="border-t border-[#202635]/10 pt-8">
-              <p className="text-xs leading-6 text-[#202635]/50">
+            <div className="border-t border-[#2b3242]/10 pt-8">
+              <p className="text-xs leading-6 text-[#2b3242]/60">
                 KNC Horizon Realtor · Dubai, UAE
               </p>
             </div>
@@ -333,7 +333,7 @@ export function PrivacyPage() {
 
 export function TermsPage() {
   return (
-    <main className="min-h-screen bg-[#f5f0e6] text-[#202635]">
+    <main className="min-h-screen bg-[#faf7f1] text-[#2b3242]">
 
       {/* =====================================================
           HERO
@@ -344,7 +344,7 @@ export function TermsPage() {
         copy="Important information about using the KNC Horizon Realtor website and the property information published through it."
         image="/images/fountain-pen-writing.jpg"
       >
-        <p className="mt-6 font-mono text-[10px] uppercase tracking-[.18em] text-[#f5f0e6]/55">
+        <p className="mt-6 font-mono text-[11px] uppercase tracking-[.18em] text-[#faf7f1]/55">
           Last updated · September 2026
         </p>
       </PageHero>
@@ -353,23 +353,23 @@ export function TermsPage() {
       {/* =====================================================
           TERMS CONTENT
       ====================================================== */}
-      <section className="site-section border-t border-[#202635]/10">
+      <section className="site-section border-t border-[#2b3242]/10">
 
         <div className="site-container">
           <div className="max-w-[52rem] space-y-12">
 
           {/* 1 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               About these terms
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               These Terms & Conditions govern your use of the KNC Horizon
               Realtor website and its publicly available content.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               By accessing or using this website, you agree to use it
               lawfully and responsibly and to comply with these terms.
             </p>
@@ -378,18 +378,18 @@ export function TermsPage() {
 
           {/* 2 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Website information
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               The information published on this website is provided for
               general informational purposes and may include information about
               properties, developments, communities, services and investment
               opportunities.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Information may change without notice. You should independently
               confirm current availability, pricing, specifications, payment
               plans, completion dates, developer information and other material
@@ -400,16 +400,16 @@ export function TermsPage() {
 
           {/* 3 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Property and project information
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Property and project information may be obtained from developers,
               owners, authorised representatives and other relevant sources.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               While reasonable care may be taken when preparing website
               content, KNC Horizon Realtor does not represent that every
               property detail, image, price, availability statement or project
@@ -420,17 +420,17 @@ export function TermsPage() {
 
           {/* 4 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               No investment guarantee
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Nothing on this website should be interpreted as a guarantee of
               investment returns, capital appreciation, rental income,
               occupancy, resale value or future property performance.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Property investment involves financial and market risks. You
               should obtain appropriate independent financial, legal and
               property advice before making an investment decision.
@@ -440,17 +440,17 @@ export function TermsPage() {
 
           {/* 5 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Images, renders and visual material
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Property photographs, architectural renders, illustrations,
               videos, floor plans and other visual materials may be used to
               provide an indication of a property or development.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Visual material may not always represent the final completed
               property, exact view, furniture, finishes, landscaping or
               surroundings.
@@ -460,17 +460,17 @@ export function TermsPage() {
 
           {/* 6 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Enquiries and communications
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Submitting an enquiry through the website does not by itself
               create a contract, agency relationship, reservation,
               transaction or obligation to purchase a property.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               A KNC Horizon Realtor representative may contact you using the
               information supplied in your enquiry to respond to your request
               or provide relevant information.
@@ -480,17 +480,17 @@ export function TermsPage() {
 
           {/* 7 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Third-party developers and service providers
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               The website may contain information relating to third-party
               developers, property owners, service providers or external
               websites.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Third-party products, services, information and websites may be
               governed by their own terms, policies and contractual
               arrangements.
@@ -500,16 +500,16 @@ export function TermsPage() {
 
           {/* 8 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               External links
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               The website may provide links to third-party websites or
               resources for convenience or additional information.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               KNC Horizon Realtor is not responsible for the content,
               availability, security or privacy practices of external
               websites.
@@ -519,16 +519,16 @@ export function TermsPage() {
 
           {/* 9 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Acceptable use
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               You agree not to misuse the website or attempt to interfere with
               its operation, security or availability.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               You must not knowingly introduce malicious software, attempt
               unauthorised access, scrape or misuse restricted information, or
               use the website for unlawful purposes.
@@ -538,17 +538,17 @@ export function TermsPage() {
 
           {/* 10 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Intellectual property
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Unless otherwise stated, website content including text,
               branding, graphics, layouts, photographs and other materials may
               be protected by intellectual property rights.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               You may view the website for personal and legitimate business
               purposes, but you should not reproduce, redistribute, modify or
               commercially exploit website content without appropriate
@@ -559,16 +559,16 @@ export function TermsPage() {
 
           {/* 11 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Availability of the website
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               We aim to keep the website available and functioning properly,
               but continuous availability cannot be guaranteed.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Website features, content, services or access may be changed,
               suspended or discontinued where necessary.
             </p>
@@ -577,11 +577,11 @@ export function TermsPage() {
 
           {/* 12 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Accuracy and availability disclaimer
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               To the extent permitted by applicable law, information on the
               website is provided on an “as available” basis and should be
               independently verified before being relied upon for a material
@@ -592,11 +592,11 @@ export function TermsPage() {
 
           {/* 13 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Privacy
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Information submitted through the website may be handled in
               accordance with the KNC Horizon Realtor Privacy Policy.
             </p>
@@ -605,17 +605,17 @@ export function TermsPage() {
 
           {/* 14 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Changes to these terms
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               These Terms & Conditions may be updated from time to time to
               reflect changes to the website, services, business operations or
               applicable legal requirements.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               The latest version published on this page will apply to
               subsequent use of the website.
             </p>
@@ -624,17 +624,17 @@ export function TermsPage() {
 
           {/* 15 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Applicable law and jurisdiction
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               These terms are intended to operate subject to the laws and
               regulations applicable to the business and the services being
               provided.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               The final governing-law and jurisdiction wording should be
               confirmed against KNC Horizon Realtor’s actual legal entity,
               licence and place of registration before publication.
@@ -644,31 +644,31 @@ export function TermsPage() {
 
           {/* 16 */}
           <div>
-            <h2 className="block-title text-[#202635]">
+            <h2 className="block-title text-[#2b3242]">
               Contact and legal information
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
               Official company details, registered address, licence
               information and legal contact information should be inserted
               here once confirmed by KNC Horizon Realtor.
             </p>
 
-            <div className="mt-6 space-y-1 rounded-sm border border-[#202635]/12 bg-white/50 p-5 sm:p-6">
+            <div className="mt-6 space-y-1 rounded-2xl border border-[#2b3242]/12 bg-[#fffdf8]/70 p-5 sm:p-6">
 
-              <p className="text-sm leading-7 text-[#202635]/70">
+              <p className="text-sm leading-7 text-[#2b3242]/70">
                 <strong>Business:</strong> KNC Horizon Realtor
               </p>
 
-              <p className="text-sm leading-7 text-[#202635]/70">
+              <p className="text-sm leading-7 text-[#2b3242]/70">
                 <strong>Location:</strong> Dubai, UAE
               </p>
 
-              <p className="text-sm leading-7 text-[#202635]/70">
+              <p className="text-sm leading-7 text-[#2b3242]/70">
                 <strong>Telephone:</strong> +971 58 514 1770
               </p>
 
-              <p className="mt-2 text-xs leading-6 text-[#202635]/45">
+              <p className="mt-2 text-xs leading-6 text-[#2b3242]/65">
                 Official legal entity name, licence number, registered address
                 and legal email should be added after confirmation from the
                 company.
@@ -679,8 +679,8 @@ export function TermsPage() {
 
 
           {/* Footer */}
-            <div className="border-t border-[#202635]/10 pt-8">
-              <p className="text-xs leading-6 text-[#202635]/50">
+            <div className="border-t border-[#2b3242]/10 pt-8">
+              <p className="text-xs leading-6 text-[#2b3242]/60">
                 KNC Horizon Realtor · Dubai, UAE
               </p>
             </div>

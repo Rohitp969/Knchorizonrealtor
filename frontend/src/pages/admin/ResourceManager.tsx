@@ -184,23 +184,23 @@ export function ResourceManager({
 
       <div className="mt-5 flex flex-col gap-3 lg:flex-row lg:items-center">
         <label className="relative flex min-w-0 flex-1 items-center">
-          <Search size={15} className="pointer-events-none absolute left-3 text-[#202635]/40" />
+          <Search size={15} className="pointer-events-none absolute left-3 text-[#2b3242]/60" />
           <span className="sr-only">Search {config.label}</span>
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={`Search ${config.label.toLowerCase()}…`}
-            className="w-full rounded-sm border border-[#202635]/20 bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#c97352]"
+            className="w-full rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#9f7a47]"
             data-testid={`input-search-${config.key}`}
           />
         </label>
         {(config.filters ?? []).map((filter) => (
           <label key={filter.name} className="flex items-center gap-2 text-sm">
-            <span className="font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/50">{filter.label}</span>
+            <span className="font-mono text-[11px] uppercase tracking-[.12em] text-[#2b3242]/60">{filter.label}</span>
             <select
               value={filters[filter.name] ?? ''}
               onChange={(event) => setFilters((current) => ({ ...current, [filter.name]: event.target.value }))}
-              className="rounded-sm border border-[#202635]/20 bg-white px-2.5 py-2 text-sm outline-none focus:border-[#c97352]"
+              className="rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] px-2.5 py-2 text-sm outline-none focus:border-[#9f7a47]"
             >
               {filter.options.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
@@ -229,10 +229,10 @@ export function ResourceManager({
           />
         ) : (
           <>
-            <div className="overflow-x-auto rounded-sm border border-[#202635]/12 bg-white">
+            <div className="overflow-x-auto rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)]">
               <table className="w-full min-w-[720px] border-collapse text-sm">
                 <thead>
-                  <tr className="border-b border-[#202635]/12 bg-[#f3efe6] text-left font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/55">
+                  <tr className="border-b border-[#2b3242]/12 bg-[#f7f3ec] text-left font-mono text-[11px] uppercase tracking-[.12em] text-[#2b3242]/65">
                     {config.columns.map((column) => (
                       <th key={column.name} className="px-3 py-2.5 font-normal">{column.label}</th>
                     ))}
@@ -245,26 +245,26 @@ export function ResourceManager({
                     const published = config.publishField ? Boolean(item[config.publishField]) : undefined;
                     const featured = config.featureField ? Boolean(item[config.featureField]) : undefined;
                     return (
-                      <tr key={item.id} className="border-b border-[#202635]/8 last:border-0 hover:bg-[#f9f6ef]" data-testid={`row-${config.key}-${item.id}`}>
+                      <tr key={item.id} className="border-b border-[#2b3242]/8 last:border-0 hover:bg-[#fcf9f3]" data-testid={`row-${config.key}-${item.id}`}>
                         {config.columns.map((column) => (
                           <td
                             key={column.name}
-                            className={`px-3 py-2.5 align-middle text-[#202635]/80 ${column.type === 'price' || column.type === 'date' ? 'whitespace-nowrap' : ''}`}
+                            className={`px-3 py-2.5 align-middle text-[#2b3242]/80 ${column.type === 'price' || column.type === 'date' ? 'whitespace-nowrap' : ''}`}
                           >
                             {column.type === 'image' ? (
-                              <span className="block h-11 w-16 overflow-hidden rounded-sm bg-[#202635]/8">
+                              <span className="block h-11 w-16 overflow-hidden rounded-lg bg-[#2b3242]/8">
                                 {firstImage(item, column.name) ? (
                                   <img src={firstImage(item, column.name)} alt="" loading="lazy" className="h-full w-full object-cover" />
                                 ) : null}
                               </span>
                             ) : column.type === 'badge' ? (
-                              <span className="inline-block whitespace-nowrap rounded-sm border border-[#202635]/15 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[.1em]">
+                              <span className="inline-block whitespace-nowrap rounded-lg border border-[#2b3242]/15 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[.1em]">
                                 {formatCell(item, column)}
                               </span>
                             ) : column.name === config.titleKey ? (
                               <span className="flex items-center gap-2">
-                                <span className="line-clamp-1 font-medium text-[#202635]">{formatCell(item, column)}</span>
-                                {featured && <Star size={12} className="shrink-0 fill-[#d9c6a4] text-[#c97352]" aria-label="Featured" />}
+                                <span className="line-clamp-1 font-medium text-[#2b3242]">{formatCell(item, column)}</span>
+                                {featured && <Star size={12} className="shrink-0 fill-[#d9c6a4] text-[#9f7a47]" aria-label="Featured" />}
                               </span>
                             ) : (
                               <span className="line-clamp-1">{formatCell(item, column)}</span>
@@ -277,8 +277,8 @@ export function ResourceManager({
                               type="button"
                               onClick={() => patchItem(item, { [config.publishField!]: !published }, published ? `${config.singular} unpublished.` : `${config.singular} published.`)}
                               disabled={busyId === item.id}
-                              className={`inline-flex items-center gap-1.5 rounded-sm border px-2 py-1 font-mono text-[9px] uppercase tracking-[.1em] ${
-                                published ? 'border-[#55735f]/40 bg-[#55735f]/10 text-[#3c5a49]' : 'border-[#202635]/20 text-[#202635]/55'
+                              className={`inline-flex items-center gap-1.5 rounded-lg border px-2 py-1 font-mono text-[9px] uppercase tracking-[.1em] ${
+                                published ? 'border-[#55735f]/40 bg-[#55735f]/10 text-[#3c5a49]' : 'border-[#2b3242]/20 text-[#2b3242]/65'
                               }`}
                               data-testid={`toggle-publish-${item.id}`}
                             >
@@ -295,9 +295,9 @@ export function ResourceManager({
                                 title={featured ? 'Remove from featured' : 'Mark as featured'}
                                 onClick={() => patchItem(item, { [config.featureField!]: !featured }, featured ? 'Removed from featured.' : 'Marked as featured.')}
                                 disabled={busyId === item.id}
-                                className="grid h-8 w-8 place-items-center rounded-sm border border-[#202635]/15 hover:border-[#c97352] hover:text-[#c97352]"
+                                className="grid h-8 w-8 place-items-center rounded-lg border border-[#2b3242]/15 hover:border-[#9f7a47] hover:text-[#9f7a47]"
                               >
-                                <Star size={13} className={featured ? 'fill-[#d9c6a4] text-[#c97352]' : ''} />
+                                <Star size={13} className={featured ? 'fill-[#d9c6a4] text-[#9f7a47]' : ''} />
                               </button>
                             )}
                             {publicPath && (
@@ -306,7 +306,7 @@ export function ResourceManager({
                                 target="_blank"
                                 rel="noreferrer"
                                 title="View on the website"
-                                className="grid h-8 w-8 place-items-center rounded-sm border border-[#202635]/15 hover:border-[#c97352] hover:text-[#c97352]"
+                                className="grid h-8 w-8 place-items-center rounded-lg border border-[#2b3242]/15 hover:border-[#9f7a47] hover:text-[#9f7a47]"
                               >
                                 <ExternalLink size={13} />
                               </a>
@@ -315,7 +315,7 @@ export function ResourceManager({
                               type="button"
                               title="Edit"
                               onClick={() => setEditing(item)}
-                              className="grid h-8 w-8 place-items-center rounded-sm border border-[#202635]/15 hover:border-[#c97352] hover:text-[#c97352]"
+                              className="grid h-8 w-8 place-items-center rounded-lg border border-[#2b3242]/15 hover:border-[#9f7a47] hover:text-[#9f7a47]"
                               data-testid={`button-edit-${item.id}`}
                             >
                               <Pencil size={13} />
@@ -324,7 +324,7 @@ export function ResourceManager({
                               type="button"
                               title="Delete"
                               onClick={() => setDeleting(item)}
-                              className="grid h-8 w-8 place-items-center rounded-sm border border-[#202635]/15 text-[#b23b2e] hover:border-[#b23b2e]"
+                              className="grid h-8 w-8 place-items-center rounded-lg border border-[#2b3242]/15 text-[#b23b2e] hover:border-[#b23b2e]"
                               data-testid={`button-delete-${item.id}`}
                             >
                               <Trash2 size={13} />
@@ -341,7 +341,7 @@ export function ResourceManager({
             {pageCount > 1 && (
               <div className="mt-4 flex items-center justify-between gap-3 text-sm">
                 <button className={adminButtonClass('ghost')} onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>Previous</button>
-                <span className="font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/55">Page {page} of {pageCount}</span>
+                <span className="font-mono text-[11px] uppercase tracking-[.12em] text-[#2b3242]/65">Page {page} of {pageCount}</span>
                 <button className={adminButtonClass('ghost')} onClick={() => setPage((p) => Math.min(pageCount, p + 1))} disabled={page === pageCount}>Next</button>
               </div>
             )}
@@ -472,27 +472,27 @@ function ResourceForm({
       }
     >
       <form id="resource-form" onSubmit={submit} noValidate>
-        {error && <p className="mb-4 rounded-sm border border-[#c97352]/35 bg-[#c97352]/8 px-3 py-2 text-sm text-[#7c2d12]" role="alert">{error}</p>}
+        {error && <p className="mb-4 rounded-lg border border-[#9f7a47]/35 bg-[#8f6d3f]/8 px-3 py-2 text-sm text-[#7c2d12]" role="alert">{error}</p>}
 
         {groups.map(([group, fields]) => (
           <fieldset key={group} className="mb-6">
-            <legend className="mb-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">{group}</legend>
+            <legend className="mb-3 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]">{group}</legend>
             <div className="grid gap-4 sm:grid-cols-2">
               {fields.map((field) => {
                 const value = values[field.name];
                 const options = field.optionsFrom ? lookups[field.optionsFrom] : field.options;
                 const invalid = Boolean(fieldErrors[field.name]);
-                const inputClass = `mt-1.5 w-full rounded-sm border bg-white px-3 py-2.5 text-sm outline-none focus:border-[#c97352] ${invalid ? 'border-[#b23b2e]' : 'border-[#202635]/20'}`;
+                const inputClass = `mt-1.5 w-full rounded-lg border bg-[#fffdf8] px-3 py-2.5 text-sm outline-none focus:border-[#9f7a47] ${invalid ? 'border-[#b23b2e]' : 'border-[#2b3242]/20'}`;
 
                 return (
                   <div key={field.name} className={field.full || field.type === 'image' || field.type === 'textarea' || field.type === 'richtext' ? 'sm:col-span-2' : ''}>
                     {field.type === 'boolean' ? (
-                      <label className="flex items-center gap-3 rounded-sm border border-[#202635]/15 bg-white px-3 py-2.5 text-sm">
+                      <label className="flex items-center gap-3 rounded-lg border border-[#2b3242]/15 bg-[#fffdf8] px-3 py-2.5 text-sm">
                         <input
                           type="checkbox"
                           checked={Boolean(value)}
                           onChange={(event) => setValue(field.name, event.target.checked)}
-                          className="h-4 w-4 accent-[#c97352]"
+                          className="h-4 w-4 accent-[#9f7a47]"
                           data-testid={`field-${field.name}`}
                         />
                         <span>{field.label}</span>
@@ -507,7 +507,7 @@ function ResourceForm({
                       />
                     ) : (
                       <label className="block">
-                        <span className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55">
+                        <span className="font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/65">
                           {field.label}{field.required && <span className="text-[#b23b2e]"> *</span>}
                         </span>
 
@@ -574,7 +574,7 @@ function ResourceForm({
                         {fieldErrors[field.name] ? (
                           <span className="mt-1 block text-xs text-[#b23b2e]">{fieldErrors[field.name]}</span>
                         ) : field.help ? (
-                          <span className="mt-1 block text-xs text-[#202635]/50">{field.help}</span>
+                          <span className="mt-1 block text-xs text-[#2b3242]/60">{field.help}</span>
                         ) : null}
                       </label>
                     )}

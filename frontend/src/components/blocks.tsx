@@ -2,7 +2,7 @@ import { useEffect, useState, type ChangeEvent, type FormEvent, type ReactNode }
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, MapPin, Send } from 'lucide-react';
 import { Link } from 'wouter';
-import { areas, defaultPosts, defaultProjects, properties, services, type Area, type Property, type Service, faqs } from '@/lib/site-data';
+import { defaultPosts, defaultProjects, properties, type Area, type Property, type Service, faqs } from '@/lib/site-data';
 import { apiFetch, type Post, type Project, type RemoteProperty } from '@/lib/api';
 import { useSiteSettings } from '@/lib/site-settings';
 import { PhoneInput, type PhoneChange } from '@/components/phone-input';
@@ -39,11 +39,13 @@ export function cardGrid(_count: number) {
   // phone, whatever the result count is. A short row leaves its last column empty rather
   // than widening the cards to fill it, so a photograph is never a different size in one
   // section than it is in the next.
-  return 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3';
+  // grid-cols-1 caps the phone column at the screen width; without it the column grew to the
+  // card's content and pushed cards 17px off a 344px screen.
+  return 'grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3';
 }
 
 export function SectionLabel({ children, light = false }: { children: string; light?: boolean }) {
-  return <p className={`eyebrow ${light ? 'text-[#d9c6a4]' : 'text-[#c97352]'}`}>{children}</p>;
+  return <p className={`eyebrow ${light ? 'text-[#d9c6a4]' : 'text-[#9f7a47]'}`}>{children}</p>;
 }
 
 /*
@@ -57,11 +59,11 @@ export function SectionIntro({ label, title, copy, action, light = false, childr
     <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={fadeUp} className={`flex w-full flex-col justify-between gap-6 lg:flex-row lg:items-end lg:gap-16 ${className}`}>
       <div className="max-w-2xl">
         <SectionLabel light={light}>{label}</SectionLabel>
-        <h2 className={`section-title mt-6 ${light ? 'text-[#f5f0e6]' : 'text-[#202635]'}`}>{title}</h2>
+        <h2 className={`section-title mt-6 ${light ? 'text-[#faf7f1]' : 'text-[#2b3242]'}`}>{title}</h2>
       </div>
       {(copy || action) && (
         <div className="measure-narrow text-sm lg:w-[27.5rem] lg:max-w-none lg:shrink-0 lg:pb-1">
-          {copy && <p className={`leading-7 ${light ? 'text-[#f5f0e6]/65' : 'text-[#202635]/65'}`}>{copy}</p>}
+          {copy && <p className={`leading-7 ${light ? 'text-[#faf7f1]/65' : 'text-[#2b3242]/65'}`}>{copy}</p>}
           {action && <div className="mt-5">{action}</div>}
         </div>
       )}
@@ -91,41 +93,41 @@ export function PropertyCard({ property, featured = false, className = '' }: { p
             alt={`${property.title}, ${property.location}`}
             loading="lazy"
             onError={(event) => { event.currentTarget.src = '/images/dubai-skyline-from-sea.jpg'; }}
-            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             data-testid={`img-property-${property.id}`}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#202635]/50 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-35" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#2b3242]/50 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-35" />
           {property.note && (
-            <span className="absolute left-3 top-3 border border-[#f5f0e6]/30 bg-[#202635]/80 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[.12em] text-[#f5f0e6] backdrop-blur-xs">
+            <span className="absolute left-3 top-3 rounded-full border border-[#faf7f1]/30 bg-[#2b3242]/80 px-3 py-1 font-mono text-[11px] uppercase tracking-[.12em] text-[#faf7f1] backdrop-blur-xs">
               {property.note}
             </span>
           )}
-          <span className="absolute bottom-3 right-3 grid h-8 w-8 place-items-center rounded-full bg-[#f5f0e6] text-[#202635] opacity-0 shadow-md transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 translate-x-1">
+          <span className="absolute bottom-3 right-3 grid h-8 w-8 place-items-center rounded-full bg-[#faf7f1] text-[#2b3242] opacity-0 shadow-md transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 translate-x-1">
             <ArrowRight size={14} />
           </span>
         </div>
 
         <div className="flex flex-1 flex-col justify-between pt-4">
           <div>
-            <div className="flex items-center justify-between gap-3 text-[10px] font-mono uppercase tracking-[.12em] text-[#202635]/55">
-              <span className="shrink-0 font-semibold text-[#c97352]">{property.type}</span>
-              <span className="flex min-w-0 items-center gap-1"><MapPin size={10} className="shrink-0 text-[#c97352]" /> <span className="truncate">{property.location}</span></span>
+            <div className="flex items-center justify-between gap-3 text-[11px] font-mono uppercase tracking-[.12em] text-[#2b3242]/65">
+              <span className="shrink-0 font-semibold text-[#9f7a47]">{property.type}</span>
+              <span className="flex min-w-0 items-center gap-1"><MapPin size={10} className="shrink-0 text-[#9f7a47]" /> <span className="truncate">{property.location}</span></span>
             </div>
 
-            <h3 className="card-title mt-2 line-clamp-2 text-[#202635] transition-colors group-hover:text-[#c97352]">
+            <h3 className="card-title mt-2 line-clamp-2 text-[#2b3242] transition-colors group-hover:text-[#9f7a47]">
               {property.title}
             </h3>
 
-            <p className="mt-2 line-clamp-1 text-sm leading-6 text-[#202635]/65">
+            <p className="mt-2 line-clamp-1 text-sm leading-6 text-[#2b3242]/65">
               {property.details}
             </p>
           </div>
 
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[#202635]/12 pt-4">
-            <span className="whitespace-nowrap font-sans text-sm font-semibold text-[#202635]">
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[#2b3242]/12 pt-4">
+            <span className="whitespace-nowrap font-sans text-sm font-semibold text-[#2b3242]">
               {property.price}
             </span>
-            <span className="flex items-center gap-1 whitespace-nowrap font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] group-hover:underline">
+            <span className="flex items-center gap-1 whitespace-nowrap font-mono text-[11px] uppercase tracking-[.13em] text-[#9f7a47] group-hover:underline">
               View property <ArrowUpRight size={12} />
             </span>
           </div>
@@ -213,22 +215,22 @@ export function ProjectCard({ project }: { project: Project }) {
             alt={`${project.title} by ${project.developer}, ${project.location}`}
             loading="lazy"
             onError={(event) => { event.currentTarget.src = FALLBACK_IMAGE; }}
-            className="transition-transform duration-700 group-hover:scale-105"
+            className="transition-transform duration-700 group-hover:scale-[1.03]"
           />
-          <span className="absolute left-3 top-3 border border-[#f5f0e6]/30 bg-[#202635]/80 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[.12em] text-[#f5f0e6] backdrop-blur-xs">
+          <span className="absolute left-3 top-3 rounded-full border border-[#faf7f1]/30 bg-[#2b3242]/80 px-3 py-1 font-mono text-[11px] uppercase tracking-[.12em] text-[#faf7f1] backdrop-blur-xs">
             {project.status || 'Off-Plan'}
           </span>
         </div>
-        <p className="eyebrow mt-4 line-clamp-1 text-[#c97352]">{project.developer} · {project.location}</p>
+        <p className="eyebrow mt-4 line-clamp-1 text-[#9f7a47]">{project.developer} · {project.location}</p>
         <h3 className="card-title mt-2 line-clamp-2">{project.title}</h3>
-        <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#202635]/65">{project.description}</p>
+        <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#2b3242]/65">{project.description}</p>
       </div>
-      <div className="mt-5 border-t border-[#202635]/12 pt-4">
-        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/65">
+      <div className="mt-5 border-t border-[#2b3242]/12 pt-4">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[.13em] text-[#2b3242]/65">
           <span>From {aed(project.startingPrice, defaultCurrency)}</span>
           <span>Handover {project.handover}</span>
         </div>
-        <span className="mt-3 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] group-hover:underline">
+        <span className="mt-3 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47] group-hover:underline">
           View project <ArrowUpRight size={14} />
         </span>
       </div>
@@ -254,18 +256,18 @@ export function PostCard({ post }: { post: Post }) {
             alt={post.title}
             loading="lazy"
             onError={(event) => { event.currentTarget.src = FALLBACK_IMAGE; }}
-            className="transition-transform duration-700 group-hover:scale-105"
+            className="transition-transform duration-700 group-hover:scale-[1.03]"
           />
         </div>
-        <p className="eyebrow mt-4 line-clamp-1 text-[#c97352]">{post.category} · {post.author}</p>
+        <p className="eyebrow mt-4 line-clamp-1 text-[#9f7a47]">{post.category} · {post.author}</p>
         <h3 className="card-title mt-2 line-clamp-2">{post.title}</h3>
-        <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#202635]/60">{post.excerpt}</p>
+        <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#2b3242]/60">{post.excerpt}</p>
       </div>
-      <div className="mt-5 border-t border-[#202635]/12 pt-4">
-        <p className="font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/45">
+      <div className="mt-5 border-t border-[#2b3242]/12 pt-4">
+        <p className="font-mono text-[11px] uppercase tracking-[.13em] text-[#2b3242]/65">
           {new Date(post.publishedAt).toLocaleDateString('en-GB', { dateStyle: 'long' })}
         </p>
-        <span className="mt-3 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] group-hover:underline">
+        <span className="mt-3 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47] group-hover:underline">
           Read note <ArrowUpRight size={14} />
         </span>
       </div>
@@ -334,15 +336,15 @@ export function LatestInsights() {
 export function ServiceRow({ service }: { service: Service }) {
   const targetHref = service.href || `/services#${service.id}`;
   return (
-    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={fadeUp} className="group grid grid-cols-[1fr_auto] items-center gap-4 border-t border-[#202635]/15 py-6 md:grid-cols-[1.1fr_1.4fr_auto] md:gap-8 md:py-8" data-testid={`row-service-${service.id}`}>
+    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={fadeUp} className="group grid grid-cols-[1fr_auto] items-center gap-4 border-t border-[#2b3242]/15 py-6 md:grid-cols-[1.1fr_1.4fr_auto] md:gap-8 md:py-8" data-testid={`row-service-${service.id}`}>
       <div>
-        <span className="font-mono text-[10px] uppercase tracking-[.16em] text-[#c97352]">Advisory Practice</span>
+        <span className="font-mono text-[11px] uppercase tracking-[.16em] text-[#9f7a47]">Advisory Practice</span>
         <Link href={targetHref} className="block mt-1">
-          <h3 className="block-title text-[#202635] transition-colors group-hover:text-[#c97352]">{service.title}</h3>
+          <h3 className="block-title text-[#2b3242] transition-colors group-hover:text-[#9f7a47]">{service.title}</h3>
         </Link>
       </div>
-      <p className="hidden measure-narrow text-sm leading-6 text-[#202635]/65 md:block">{service.description}</p>
-      <Link href={targetHref} className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#202635]/25 transition-all group-hover:border-[#c97352] group-hover:bg-[#c97352] group-hover:text-[#f5f0e6]" aria-label={`Explore ${service.title}`} data-testid={`link-service-${service.id}`}><ArrowRight size={15} /></Link>
+      <p className="hidden measure-narrow text-sm leading-6 text-[#2b3242]/65 md:block">{service.description}</p>
+      <Link href={targetHref} className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#2b3242]/25 transition-all group-hover:border-[#9f7a47] group-hover:bg-[#8f6d3f] group-hover:text-[#faf7f1]" aria-label={`Explore ${service.title}`} data-testid={`link-service-${service.id}`}><ArrowRight size={15} /></Link>
     </motion.div>
   );
 }
@@ -351,13 +353,13 @@ export function AreaCard({ area, index, className = 'w-full' }: { area: Area; in
   return (
     <motion.article initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={fadeUp} transition={{ delay: index * .08 }} className={`group ${className}`} data-testid={`card-area-${area.id}`}>
       <Link href={`/communities/${area.id}`} className="card-editorial group block p-5" data-testid={`link-area-${area.id}`}>
-        <div className="card-media bg-[#202635]">
-          <img src={area.image} alt={area.name} loading="lazy" className="h-full w-full object-cover opacity-85 transition-transform duration-700 ease-out group-hover:scale-105" data-testid={`img-area-${area.id}`} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#202635]/85 via-[#202635]/20 to-transparent" />
-          <div className="absolute inset-x-5 bottom-5 text-[#f5f0e6]">
-            <p className="font-mono text-[10px] uppercase tracking-[.15em] text-[#d9c6a4]">Dubai · Community</p>
+        <div className="card-media bg-[#2b3242]">
+          <img src={area.image} alt={area.name} loading="lazy" className="h-full w-full object-cover opacity-85 transition-transform duration-700 ease-out group-hover:scale-[1.03]" data-testid={`img-area-${area.id}`} />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#2b3242]/85 via-[#2b3242]/20 to-transparent" />
+          <div className="absolute inset-x-5 bottom-5 text-[#faf7f1]">
+            <p className="font-mono text-[11px] uppercase tracking-[.15em] text-[#d9c6a4]">Dubai · Community</p>
             <h3 className="card-title mt-2">{area.name}</h3>
-            <p className="mt-1.5 text-xs text-[#f5f0e6]/75">{area.descriptor}</p>
+            <p className="mt-1.5 text-xs text-[#faf7f1]/75">{area.descriptor}</p>
           </div>
         </div>
       </Link>
@@ -404,22 +406,22 @@ export function ContactForm({ compact = false, propertySlug, projectSlug, inquir
       setSubmitting(false);
     }
   };
-  if (sent) return <div className="rounded-sm border border-[#c97352]/40 bg-[#c97352]/10 p-6 sm:p-8 md:p-10" data-testid="status-contact-success"><Check className="text-[#c97352]" size={26} /><h3 className="block-title mt-6 text-[#202635]">We'll be in touch shortly.</h3><p className="measure-narrow mt-3 text-sm leading-6 text-[#202635]/60">Thank you, {form.name || 'there'}. A member of our advisory team will reach out to understand what you're looking for.</p><button onClick={() => { setSent(false); setAttempted(false); setPhoneValid(false); setForm({ name: '', email: '', phone: '', interest: '', budget: '', propertyType: '', location: '', message: '' }); }} className="mt-7 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] line-link" data-testid="button-contact-reset">Send another enquiry</button></div>;
+  if (sent) return <div className="rounded-2xl border border-[#9f7a47]/40 bg-[#8f6d3f]/10 p-6 sm:p-8 md:p-10" data-testid="status-contact-success"><Check className="text-[#9f7a47]" size={26} /><h3 className="block-title mt-6 text-[#2b3242]">We'll be in touch shortly.</h3><p className="measure-narrow mt-3 text-sm leading-6 text-[#2b3242]/60">Thank you, {form.name || 'there'}. A member of our advisory team will reach out to understand what you're looking for.</p><button onClick={() => { setSent(false); setAttempted(false); setPhoneValid(false); setForm({ name: '', email: '', phone: '', interest: '', budget: '', propertyType: '', location: '', message: '' }); }} className="mt-7 font-mono text-[11px] uppercase tracking-[.13em] text-[#9f7a47] line-link" data-testid="button-contact-reset">Send another enquiry</button></div>;
   return (
     <form onSubmit={submit} className={`grid gap-5 ${compact ? '' : 'md:grid-cols-2 md:gap-x-7'}`} data-testid="form-contact">
-      <label className="block"><span className="eyebrow text-[#202635]/45">Your name</span><input required value={form.name} onChange={update('name')} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#202635]/30 focus:border-[#c97352]" placeholder="Full name" data-testid="input-contact-name" /></label>
-      <label className="block"><span className="eyebrow text-[#202635]/45">Email address</span><input required type="email" value={form.email} onChange={update('email')} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#202635]/30 focus:border-[#c97352]" placeholder="you@email.com" data-testid="input-contact-email" /></label>
-      <div className="block"><label htmlFor={phoneFieldId} className="eyebrow text-[#202635]/45">Phone number</label><PhoneInput id={phoneFieldId} value={form.phone} onChange={updatePhone} defaultCountry={inquiryType === 'india-office' ? 'IN' : 'AE'} required showError={attempted} testId="input-contact-phone" /></div>
-      <label className="block relative"><span className="eyebrow text-[#202635]/45">I'm looking to</span><select required value={form.interest} onChange={update('interest')} className="mt-3 w-full appearance-none border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none focus:border-[#c97352]" data-testid="select-contact-interest"><option value="">Select an option</option><option>Buy a property</option><option>Sell a property</option><option>Rent a home</option><option>Explore an investment</option><option>Off-plan enquiry</option><option>General advisory</option></select><ChevronDown size={15} className="pointer-events-none absolute bottom-3 right-1 text-[#202635]/50" /></label>
+      <label className="block"><span className="eyebrow text-[#2b3242]/65">Your name</span><input required value={form.name} onChange={update('name')} className="mt-3 w-full border-b border-[#2b3242]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#2b3242]/30 focus:border-[#9f7a47]" placeholder="Full name" data-testid="input-contact-name" /></label>
+      <label className="block"><span className="eyebrow text-[#2b3242]/65">Email address</span><input required type="email" value={form.email} onChange={update('email')} className="mt-3 w-full border-b border-[#2b3242]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#2b3242]/30 focus:border-[#9f7a47]" placeholder="you@email.com" data-testid="input-contact-email" /></label>
+      <div className="block"><label htmlFor={phoneFieldId} className="eyebrow text-[#2b3242]/65">Phone number</label><PhoneInput id={phoneFieldId} value={form.phone} onChange={updatePhone} defaultCountry={inquiryType === 'india-office' ? 'IN' : 'AE'} required showError={attempted} testId="input-contact-phone" /></div>
+      <label className="block relative"><span className="eyebrow text-[#2b3242]/65">I'm looking to</span><select required value={form.interest} onChange={update('interest')} className="mt-3 w-full appearance-none border-b border-[#2b3242]/25 bg-transparent py-3 text-base outline-none focus:border-[#9f7a47]" data-testid="select-contact-interest"><option value="">Select an option</option><option>Buy a property</option><option>Sell a property</option><option>Rent a home</option><option>Explore an investment</option><option>Off-plan enquiry</option><option>General advisory</option></select><ChevronDown size={15} className="pointer-events-none absolute bottom-3 right-1 text-[#2b3242]/60" /></label>
       {!compact && (
         <>
-          <label className="block relative"><span className="eyebrow text-[#202635]/45">Budget (optional)</span><select value={form.budget} onChange={update('budget')} className="mt-3 w-full appearance-none border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none focus:border-[#c97352]"><option value="">Select budget range</option><option>Under AED 1M</option><option>AED 1M – 3M</option><option>AED 3M – 7M</option><option>AED 7M – 15M</option><option>AED 15M+</option></select><ChevronDown size={15} className="pointer-events-none absolute bottom-3 right-1 text-[#202635]/50" /></label>
-          <label className="block relative"><span className="eyebrow text-[#202635]/45">Property type (optional)</span><select value={form.propertyType} onChange={update('propertyType')} className="mt-3 w-full appearance-none border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none focus:border-[#c97352]"><option value="">Select type</option><option>Apartment</option><option>Villa</option><option>Penthouse</option><option>Townhouse</option><option>Commercial</option><option>Off-Plan</option></select><ChevronDown size={15} className="pointer-events-none absolute bottom-3 right-1 text-[#202635]/50" /></label>
-          <label className="block"><span className="eyebrow text-[#202635]/45">Preferred location (optional)</span><input value={form.location} onChange={update('location')} className="mt-3 w-full border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#202635]/30 focus:border-[#c97352]" placeholder="e.g. Dubai Marina, Downtown…" /></label>
+          <label className="block relative"><span className="eyebrow text-[#2b3242]/65">Budget (optional)</span><select value={form.budget} onChange={update('budget')} className="mt-3 w-full appearance-none border-b border-[#2b3242]/25 bg-transparent py-3 text-base outline-none focus:border-[#9f7a47]"><option value="">Select budget range</option><option>Under AED 1M</option><option>AED 1M – 3M</option><option>AED 3M – 7M</option><option>AED 7M – 15M</option><option>AED 15M+</option></select><ChevronDown size={15} className="pointer-events-none absolute bottom-3 right-1 text-[#2b3242]/60" /></label>
+          <label className="block relative"><span className="eyebrow text-[#2b3242]/65">Property type (optional)</span><select value={form.propertyType} onChange={update('propertyType')} className="mt-3 w-full appearance-none border-b border-[#2b3242]/25 bg-transparent py-3 text-base outline-none focus:border-[#9f7a47]"><option value="">Select type</option><option>Apartment</option><option>Villa</option><option>Penthouse</option><option>Townhouse</option><option>Commercial</option><option>Off-Plan</option></select><ChevronDown size={15} className="pointer-events-none absolute bottom-3 right-1 text-[#2b3242]/60" /></label>
+          <label className="block"><span className="eyebrow text-[#2b3242]/65">Preferred location (optional)</span><input value={form.location} onChange={update('location')} className="mt-3 w-full border-b border-[#2b3242]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#2b3242]/30 focus:border-[#9f7a47]" placeholder="e.g. Dubai Marina, Downtown…" /></label>
         </>
       )}
-      <label className={`block ${compact ? '' : 'md:col-span-2'}`}><span className="eyebrow text-[#202635]/45">A little about your plans</span><textarea required value={form.message} onChange={update('message')} rows={3} className="mt-3 w-full resize-none border-b border-[#202635]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#202635]/30 focus:border-[#c97352]" placeholder="Tell us what would make this move feel right." data-testid="textarea-contact-message" /></label>
-      {error && <p className={`text-sm text-[#c97352] ${compact ? '' : 'md:col-span-2'}`} role="alert">{error}</p>}
+      <label className={`block ${compact ? '' : 'md:col-span-2'}`}><span className="eyebrow text-[#2b3242]/65">A little about your plans</span><textarea required value={form.message} onChange={update('message')} rows={3} className="mt-3 w-full resize-none border-b border-[#2b3242]/25 bg-transparent py-3 text-base outline-none transition-colors placeholder:text-[#2b3242]/30 focus:border-[#9f7a47]" placeholder="Tell us what would make this move feel right." data-testid="textarea-contact-message" /></label>
+      {error && <p className={`text-sm text-[#b23b2e] ${compact ? '' : 'md:col-span-2'}`} role="alert">{error}</p>}
       <button disabled={submitting} type="submit" className={`btn btn-primary group mt-3 w-full sm:w-fit disabled:cursor-wait disabled:opacity-60 ${compact ? '' : 'md:col-span-2'}`} data-testid="button-contact-submit">{submitting ? 'Sending…' : 'Send enquiry'} <Send size={14} className="transition-transform group-hover:translate-x-1" /></button>
     </form>
   );
@@ -433,9 +435,9 @@ export function NewsletterForm() {
     try { await apiFetch('/newsletter', { method: 'POST', body: JSON.stringify({ email }) }); setState('success'); }
     catch { setState('error'); }
   }
-  return <form onSubmit={submit} className="flex max-w-md border-b border-[#f5f0e6]/30" data-testid="form-newsletter">
-    <input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Your email address" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-[#f5f0e6] outline-none placeholder:text-[#f5f0e6]/40" aria-label="Email address" />
-    <button disabled={state === 'sending'} className="flex items-center gap-2 py-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#d9c6a4] hover:text-[#f5f0e6]">{state === 'success' ? 'Joined' : state === 'sending' ? 'Joining…' : 'Subscribe'} <Send size={13} /></button>
+  return <form onSubmit={submit} className="flex max-w-md border-b border-[#faf7f1]/30" data-testid="form-newsletter">
+    <input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Your email address" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-[#faf7f1] outline-none placeholder:text-[#faf7f1]/40" aria-label="Email address" />
+    <button disabled={state === 'sending'} className="flex items-center gap-2 py-3 font-mono text-[11px] uppercase tracking-[.14em] text-[#d9c6a4] hover:text-[#faf7f1]">{state === 'success' ? 'Joined' : state === 'sending' ? 'Joining…' : 'Subscribe'} <Send size={13} /></button>
     {state === 'error' && <span className="sr-only">Please enter a valid email and try again.</span>}
   </form>;
 }
@@ -443,11 +445,11 @@ export function NewsletterForm() {
 // export function FaqSection({ compact = false }: { compact?: boolean }) {
 //   const [open, setOpen] = useState<string | null>(null);
 //   return (
-//     <section className={`${compact ? 'bg-[#e9e4da]' : 'bg-[#dfe2dc]'} site-section`}>
+//     <section className={`${compact ? 'bg-[#f2ede4]' : 'bg-[#efeae2]'} site-section`}>
 //       <div className="site-container grid gap-12 md:grid-cols-[.7fr_1.3fr] md:gap-24">
-//         <div><SectionLabel>Questions, answered</SectionLabel><h2 className="section-title mt-6">A clearer<br /><em className="text-[#c97352]">first step.</em></h2><p className="mt-7 max-w-sm text-sm leading-7 text-[#202635]/60">A few useful details before we start a conversation about your next move.</p></div>
-//         <div className="border-t border-[#202635]/20">
-//           {faqs.map((faq) => <div key={faq.question} className="border-b border-[#202635]/20"><button type="button" onClick={() => setOpen(open === faq.question ? null : faq.question)} className="flex w-full items-center justify-between gap-6 py-6 text-left" aria-expanded={open === faq.question}><span className="font-serif text-2xl md:text-3xl">{faq.question}</span><ChevronDown size={18} className={`shrink-0 text-[#c97352] transition-transform ${open === faq.question ? 'rotate-180' : ''}`} /></button>{open === faq.question && <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="max-w-2xl overflow-hidden pb-6 text-sm leading-7 text-[#202635]/65">{faq.answer}</motion.p>}</div>)}
+//         <div><SectionLabel>Questions, answered</SectionLabel><h2 className="section-title mt-6">A clearer<br /><em className="text-[#9f7a47]">first step.</em></h2><p className="mt-7 max-w-sm text-sm leading-7 text-[#2b3242]/60">A few useful details before we start a conversation about your next move.</p></div>
+//         <div className="border-t border-[#2b3242]/20">
+//           {faqs.map((faq) => <div key={faq.question} className="border-b border-[#2b3242]/20"><button type="button" onClick={() => setOpen(open === faq.question ? null : faq.question)} className="flex w-full items-center justify-between gap-6 py-6 text-left" aria-expanded={open === faq.question}><span className="font-serif text-2xl md:text-3xl">{faq.question}</span><ChevronDown size={18} className={`shrink-0 text-[#9f7a47] transition-transform ${open === faq.question ? 'rotate-180' : ''}`} /></button>{open === faq.question && <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="max-w-2xl overflow-hidden pb-6 text-sm leading-7 text-[#2b3242]/65">{faq.answer}</motion.p>}</div>)}
 //         </div>
 //       </div>
 //     </section>
@@ -460,7 +462,7 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
 
   return (
     <section
-      className={`${ compact ? 'bg-[#e9e4da]' : 'bg-[#dfe2dc]' } site-section`}
+      className={`${ compact ? 'bg-[#f2ede4]' : 'bg-[#efeae2]' } site-section`}
     >
       <div className="site-container grid gap-10 md:gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20 xl:gap-28">
 
@@ -473,26 +475,26 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
           <h2 className="section-title mt-6 max-w-xl">
             Your Dubai
             <br />
-            <em className="text-[#c97352]">
+            <em className="text-[#9f7a47]">
               property questions.
             </em>
           </h2>
 
-          <p className="body-copy measure-narrow mt-6 text-[#202635]/60">
+          <p className="body-copy measure-narrow mt-6 text-[#2b3242]/60">
             A few useful answers about finding, buying and exploring
             property opportunities with KNC Horizon Realtor.
           </p>
         </div>
 
         {/* FAQ LIST */}
-        <div className="border-t border-[#202635]/15">
+        <div className="border-t border-[#2b3242]/15">
           {faqs.map((faq) => {
             const isOpen = open === faq.question;
 
             return (
               <div
                 key={faq.question}
-                className="border-b border-[#202635]/15"
+                className="border-b border-[#2b3242]/15"
               >
                 <button
                   type="button"
@@ -502,7 +504,7 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
                   className="group flex w-full items-center justify-between gap-6 py-6 text-left md:py-7"
                   aria-expanded={isOpen}
                 >
-                  <span className="block-title max-w-[90%] text-[#202635] transition-colors group-hover:text-[#c97352]">
+                  <span className="block-title max-w-[90%] text-[#2b3242] transition-colors group-hover:text-[#9f7a47]">
                     {faq.question}
                   </span>
 
@@ -516,15 +518,15 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
                       justify-center
                       rounded-full
                       border
-                      border-[#202635]/15
+                      border-[#2b3242]/15
                       transition-all
                       duration-300
-                      group-hover:border-[#c97352]/50
+                      group-hover:border-[#9f7a47]/50
                     "
                   >
                     <ChevronDown
                       size={17}
-                      className={`text-[#c97352] transition-transform duration-300 ${
+                      className={`text-[#9f7a47] transition-transform duration-300 ${
                         isOpen ? 'rotate-180' : ''
                       }`}
                     />
@@ -538,7 +540,7 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
                     transition={{ duration: 0.25 }}
                     className="overflow-hidden"
                   >
-                    <p className="measure pb-7 pr-6 text-sm leading-7 text-[#202635]/65 sm:pr-10">
+                    <p className="measure pb-7 pr-6 text-sm leading-7 text-[#2b3242]/65 sm:pr-10">
                       {faq.answer}
                     </p>
                   </motion.div>
@@ -553,14 +555,14 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
   );
 }
 
-export function PageHero({ label, title, copy, image, children }: { label: string; title: ReactNode; copy: string; image?: string; children?: ReactNode }) {
+export function PageHero({ label, title, copy, image, imageAlt = '', children }: { label: string; title: ReactNode; copy: string; image?: string; imageAlt?: string; children?: ReactNode }) {
   return (
-    <section className={`page-hero site-gutter relative flex items-end overflow-hidden pb-12 pt-28 md:pb-16 md:pt-36 ${image ? 'bg-[#202635]' : 'bg-[#dfe2dc]'}`}>
-      {image && <><img src={image} alt="" loading="eager" fetchPriority="high" className="page-hero-image absolute inset-0 h-full w-full object-cover object-center opacity-65" /><div className="absolute inset-0 bg-gradient-to-t from-[#202635]/90 via-[#202635]/20 to-[#202635]/35" /></>}
+    <section className={`page-hero site-gutter relative flex items-end overflow-hidden ${image ? 'bg-[#2b3242]' : 'bg-[#efeae2]'}`}>
+      {image && <><img src={image} alt={imageAlt} loading="eager" fetchPriority="high" className="page-hero-image absolute inset-0 h-full w-full object-cover object-center opacity-65" /><div className="absolute inset-0 bg-gradient-to-t from-[#2b3242]/90 via-[#2b3242]/20 to-[#2b3242]/35" /></>}
       <div className="site-container relative z-10">
         <SectionLabel light={!!image}>{label}</SectionLabel>
-        <h1 className={`page-title mt-5 max-w-4xl ${image ? 'text-[#f5f0e6]' : 'text-[#202635]'}`}>{title}</h1>
-        <p className={`measure mt-5 text-sm leading-relaxed sm:text-base ${image ? 'text-[#f5f0e6]/70' : 'text-[#202635]/65'}`}>{copy}</p>
+        <h1 className={`page-title mt-5 max-w-4xl ${image ? 'text-[#faf7f1]' : 'text-[#2b3242]'}`}>{title}</h1>
+        <p className={`measure mt-5 text-sm leading-relaxed sm:text-base ${image ? 'text-[#faf7f1]/70' : 'text-[#2b3242]/65'}`}>{copy}</p>
         {children}
       </div>
     </section>
@@ -568,5 +570,5 @@ export function PageHero({ label, title, copy, image, children }: { label: strin
 }
 
 export function ErrorState({ message }: { message: string }) {
-  return <div className="border border-[#c97352]/30 bg-[#c97352]/10 p-7 text-sm text-[#202635]/70" role="alert">We couldn’t load this section. {message}</div>;
+  return <div className="border border-[#9f7a47]/30 bg-[#8f6d3f]/10 p-7 text-sm text-[#2b3242]/70" role="alert">We couldn’t load this section. {message}</div>;
 }

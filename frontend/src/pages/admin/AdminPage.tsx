@@ -50,10 +50,10 @@ export function AdminPage() {
 
   if (checking) {
     return (
-      <div className="flex min-h-[100dvh] w-full items-center justify-center bg-[#ebe5dc]">
+      <div className="flex min-h-[100dvh] w-full items-center justify-center bg-[#f1ebe1]">
         <div className="text-center">
-          <p className="font-mono text-[10px] uppercase tracking-[.2em] text-[#c97352]">KNC Horizon Realtor</p>
-          <p className="mt-2 font-serif text-2xl text-[#202635]">Verifying administrative access…</p>
+          <p className="font-mono text-[11px] uppercase tracking-[.2em] text-[#9f7a47]">KNC Horizon Realtor</p>
+          <p className="mt-2 font-serif text-2xl text-[#2b3242]">Verifying administrative access…</p>
         </div>
       </div>
     );

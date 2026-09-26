@@ -55,23 +55,23 @@ const tones = {
   // On the dark hero photograph. One cream panel end to end: a separate dark tab strip
   // read as part of the photo rather than part of the search.
   dark: {
-    shell: 'rounded-xl bg-[#f8f5ee] shadow-[0_30px_70px_-26px_rgba(8,10,18,.8)]',
-    bar: 'border-[#202635]/10 bg-transparent text-[#202635]',
-    tab: 'text-[#202635]/55 hover:text-[#202635]',
-    activeTab: 'text-[#202635] shadow-[inset_0_-2px_0_#202635]',
+    shell: 'overflow-visible rounded-2xl bg-[#fcfaf5] shadow-[0_30px_70px_-26px_rgba(8,10,18,.8)]',
+    bar: 'border-[#2b3242]/10 bg-transparent text-[#2b3242]',
+    tab: 'text-[#2b3242]/65 hover:text-[#2b3242]',
+    activeTab: 'text-[#2b3242] shadow-[inset_0_-2px_0_#2b3242]',
     panel: 'bg-transparent',
   },
   // On cream page sections
   light: {
-    shell: 'rounded-sm border border-[#202635]/12 shadow-[0_18px_46px_-30px_rgba(32,38,53,.5)]',
-    bar: 'border-[#f5f0e6]/12 bg-[#202635] text-[#f5f0e6]',
-    tab: 'text-[#f5f0e6]/60 hover:text-[#f5f0e6]',
-    activeTab: 'bg-white text-[#202635]',
-    panel: 'bg-white',
+    shell: 'overflow-hidden rounded-2xl border border-[#2b3242]/12 shadow-[0_18px_46px_-30px_rgba(43,50,66,.5)]',
+    bar: 'border-[#faf7f1]/12 bg-[#2b3242] text-[#faf7f1]',
+    tab: 'text-[#faf7f1]/60 hover:text-[#faf7f1]',
+    activeTab: 'bg-[#fffdf8] text-[#2b3242]',
+    panel: 'bg-[#fffdf8]',
   },
 };
 
-const cell = 'border-b border-[#202635]/10 lg:border-b-0 lg:border-r';
+const cell = 'border-b border-[#2b3242]/10 lg:border-b-0 lg:border-r';
 
 export function PropertySearch({
   initial,
@@ -129,7 +129,7 @@ export function PropertySearch({
 
   return (
     <form role="search" aria-label="Search properties" onSubmit={submit} className={className} data-testid="form-property-search">
-     <div className={`overflow-visible ${styles.shell}`}>
+     <div className={styles.shell}>
       <div className={`flex items-stretch border-b ${styles.bar}`}>
         <div className="flex w-full items-stretch" role="group" aria-label="What are you looking for">
           {LISTING_MODES.map((mode, index) => (
@@ -138,7 +138,7 @@ export function PropertySearch({
               type="button"
               onClick={() => chooseListing(mode.value)}
               aria-pressed={listing === mode.value}
-              className={`search-tab flex-1 px-3 py-3.5 font-mono text-[10px] uppercase tracking-[.14em] sm:flex-none sm:px-8 ${index ? 'border-l border-[#202635]/10' : ''} ${listing === mode.value ? styles.activeTab : styles.tab}`}
+              className={`search-tab flex-1 px-3 py-3.5 font-mono text-[11px] uppercase tracking-[.14em] sm:flex-none sm:px-8 ${index ? 'border-l border-[#2b3242]/10' : ''} ${listing === mode.value ? styles.activeTab : styles.tab}`}
               data-testid={`button-search-${mode.value}`}
             >
               {mode.label}
@@ -148,7 +148,7 @@ export function PropertySearch({
       </div>
 
       {/* Phones: location on its own row, then 2-up. Desktop: a single bar. */}
-      <div className={`grid grid-cols-2 text-[#202635] lg:grid-cols-[1.15fr_1fr_1fr_1fr_1fr_auto] ${styles.panel}`}>
+      <div className={`grid grid-cols-2 text-[#2b3242] lg:grid-cols-[1.15fr_1fr_1fr_1fr_1fr_auto] ${styles.panel}`}>
         <SelectField
           label="Location"
           placeholder="All locations"
@@ -201,7 +201,7 @@ export function PropertySearch({
 
         <button
           type="submit"
-          className="search-submit col-span-2 m-2.5 flex min-h-[3rem] items-center justify-center gap-3 rounded-sm bg-[#d9c6a4] px-6 font-mono text-[10px] uppercase tracking-[.14em] text-[#202635] hover:bg-[#c97352] hover:text-[#f5f0e6] focus-visible:bg-[#c97352] focus-visible:text-[#f5f0e6] focus-visible:outline-none lg:col-span-1 lg:my-2.5 lg:ml-1 lg:px-9"
+          className="search-submit col-span-2 m-2.5 flex min-h-[3rem] items-center justify-center gap-3 rounded-xl bg-[#d9c6a4] px-6 text-[12px] font-semibold uppercase tracking-[.08em] text-[#2b3242] hover:bg-[#8f6d3f] hover:text-[#faf7f1] focus-visible:bg-[#8f6d3f] focus-visible:text-[#faf7f1] focus-visible:outline-none lg:col-span-1 lg:my-2.5 lg:ml-1 lg:px-9"
           data-testid="button-search-submit"
         >
           <Search size={15} aria-hidden="true" />

@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from "cloudinary";
-import type { UploadApiResponse } from "cloudinary";
 import { createReadStream } from "node:fs";
 
 function ensureConfig() {

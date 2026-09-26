@@ -125,12 +125,12 @@ export function SelectField({
         aria-label={label}
         data-testid={testId}
         data-value={value}
-        className={`search-field flex w-full min-w-0 cursor-pointer flex-col justify-center gap-1 px-4 py-3 text-left hover:bg-[#202635]/[.03] focus-visible:bg-[#202635]/[.04] focus-visible:outline-none focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-[#c97352]/45 md:px-5 md:py-3.5 ${open ? 'bg-[#202635]/[.04]' : ''}`}
+        className={`search-field flex w-full min-w-0 cursor-pointer flex-col justify-center gap-1 px-4 py-3 text-left hover:bg-[#2b3242]/[.03] focus-visible:bg-[#2b3242]/[.04] focus-visible:outline-none focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-[#9f7a47]/45 md:px-5 md:py-3.5 ${open ? 'bg-[#2b3242]/[.04]' : ''}`}
       >
-        <span className="font-mono text-[10px] uppercase tracking-[.16em] text-[#202635]/50">{label}</span>
+        <span className="font-mono text-[11px] uppercase tracking-[.16em] text-[#2b3242]/60">{label}</span>
         <span className="flex items-center justify-between gap-2">
-          <span className={`truncate text-sm ${value ? 'text-[#202635]' : 'text-[#202635]/70'}`}>{current.label}</span>
-          <ChevronDown size={14} aria-hidden="true" className={`shrink-0 text-[#202635]/45 transition-transform ${open ? 'rotate-180' : ''}`} />
+          <span className={`truncate text-sm ${value ? 'text-[#2b3242]' : 'text-[#2b3242]/70'}`}>{current.label}</span>
+          <ChevronDown size={14} aria-hidden="true" className={`shrink-0 text-[#2b3242]/65 transition-transform ${open ? 'rotate-180' : ''}`} />
         </span>
       </button>
 
@@ -149,7 +149,7 @@ export function SelectField({
             maxHeight: box.maxHeight,
             ...(box.above ? { bottom: window.innerHeight - box.top } : { top: box.top }),
           }}
-          className="z-[70] overflow-y-auto border border-[#202635]/15 bg-[#f8f5ee] py-1 shadow-[0_20px_44px_-18px_rgba(32,38,53,.45)]"
+          className="z-[70] overflow-y-auto rounded-xl border border-[#2b3242]/12 bg-[#fcfaf5] py-1 shadow-[0_20px_44px_-18px_rgba(43,50,66,.45)]"
         >
           {all.map((option, index) => {
             const isSelected = option.value === value;
@@ -163,11 +163,11 @@ export function SelectField({
                   onMouseEnter={() => setActive(index)}
                   data-testid={`${testId}-option-${option.value || 'all'}`}
                   className={`flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-sm transition-colors ${
-                    index === active ? 'bg-[#202635]/[.06]' : ''
-                  } ${isSelected ? 'text-[#202635]' : 'text-[#202635]/75'}`}
+                    index === active ? 'bg-[#2b3242]/[.06]' : ''
+                  } ${isSelected ? 'text-[#2b3242]' : 'text-[#2b3242]/75'}`}
                 >
                   <span className="truncate">{option.label}</span>
-                  {isSelected && <Check size={13} aria-hidden="true" className="shrink-0 text-[#c97352]" />}
+                  {isSelected && <Check size={13} aria-hidden="true" className="shrink-0 text-[#9f7a47]" />}
                 </button>
               </li>
             );
@@ -178,45 +178,5 @@ export function SelectField({
 
       <input type="hidden" name={testId.replace('select-search-', '')} value={value} readOnly />
     </div>
-  );
-}
-
-/** The same shell as a SelectField, for a plain on/off choice. */
-export function ToggleField({
-  label,
-  caption,
-  checked,
-  onChange,
-  testId,
-  className = '',
-}: {
-  label: string;
-  caption: string;
-  checked: boolean;
-  onChange: (next: boolean) => void;
-  testId: string;
-  className?: string;
-}) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onChange(!checked)}
-      data-testid={testId}
-      data-value={checked ? 'true' : ''}
-      className={`flex min-w-0 cursor-pointer flex-col justify-center gap-1 px-4 py-3 text-left transition-colors hover:bg-[#202635]/[.03] focus-visible:outline-none focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-[#c97352]/45 md:px-5 md:py-3.5 ${className}`}
-    >
-      <span className="font-mono text-[10px] uppercase tracking-[.16em] text-[#202635]/50">{label}</span>
-      <span className="flex items-center gap-2">
-        <span
-          aria-hidden="true"
-          className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${checked ? 'bg-[#c97352]' : 'bg-[#202635]/20'}`}
-        >
-          <span className={`absolute top-0.5 h-3 w-3 rounded-full bg-white transition-all ${checked ? 'left-3.5' : 'left-0.5'}`} />
-        </span>
-        <span className={`truncate text-sm ${checked ? 'text-[#202635]' : 'text-[#202635]/70'}`}>{caption}</span>
-      </span>
-    </button>
   );
 }

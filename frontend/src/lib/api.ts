@@ -19,14 +19,6 @@ export async function apiFetch<T>(path: string, options: RequestInit = {}): Prom
   return payload as T;
 }
 
-export function adminFetch<T>(path: string, options: RequestInit = {}) {
-  const token = window.localStorage.getItem('knc_admin_token');
-  return apiFetch<T>(path, {
-    ...options,
-    headers: { ...(options.headers || {}), ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-  });
-}
-
 export type RemoteProperty = {
   id: string;
   slug: string;

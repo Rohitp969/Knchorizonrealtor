@@ -150,13 +150,18 @@ export type NewsletterDoc = {
   createdAt: Date;
 };
 
+export type UserRole = "admin" | "agent" | "user" | "seo_manager";
+
 export type UserDoc = {
   id?: string;
   name?: string;
   email: string;
   passwordHash: string;
-  role: "admin" | "agent" | "user";
+  role: UserRole;
+  isActive?: boolean;
+  canPublishArticles?: boolean;
   createdAt: Date;
+  updatedAt?: Date;
 };
 
 export type TestimonialDoc = {
@@ -216,8 +221,11 @@ export type UserRow = {
   name: string | null;
   email: string;
   password_hash: string;
-  role: "admin" | "agent" | "user";
+  role: UserRole;
+  is_active: boolean;
+  can_publish_articles: boolean;
   created_at: Date;
+  updated_at: Date | null;
 };
 
 export type DeveloperRow = {

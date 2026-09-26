@@ -3,7 +3,6 @@ import cors from "cors";
 import pinoHttp from "pino-http";
 import router from "./routes/index.ts";
 import { logger } from "./lib/logger.ts";
-import path from "node:path";
 import { uploadDir } from "./routes/admin.ts";
 
 const app: Express = express();

@@ -103,24 +103,3 @@ export function useContact() {
     [settings],
   );
 }
-
-/**
- * Formats a price in the currency the admin chose, unless the listing carries its own.
- * Falls back to plain grouping if the code is one Intl does not know.
- */
-export function formatPrice(value: number, currency: string) {
-  try {
-    return `${currency} ${new Intl.NumberFormat('en-AE').format(value)}`;
-  } catch {
-    return `${currency} ${value}`;
-  }
-}
-
-/** `formatPrice` bound to the configured default currency. */
-export function usePrice() {
-  const { defaultCurrency } = useSiteSettings();
-  return useMemo(
-    () => (value: number, currency?: string) => formatPrice(value, currency?.trim() || defaultCurrency),
-    [defaultCurrency],
-  );
-}

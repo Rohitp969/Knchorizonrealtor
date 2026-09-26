@@ -28,10 +28,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={toast.id}
             role="status"
-            className={`pointer-events-auto flex items-start gap-3 rounded-sm border px-4 py-3 text-sm shadow-lg ${
+            className={`pointer-events-auto flex items-start gap-3 rounded-lg border px-4 py-3 text-sm shadow-lg ${
               toast.tone === 'success'
                 ? 'border-[#55735f]/30 bg-[#f2f6f2] text-[#25402f]'
-                : 'border-[#c97352]/40 bg-[#fbeeea] text-[#7c2d12]'
+                : 'border-[#9f7a47]/40 bg-[#fbeeea] text-[#7c2d12]'
             }`}
           >
             {toast.tone === 'success' ? <Check size={16} className="mt-0.5 shrink-0" /> : <AlertTriangle size={16} className="mt-0.5 shrink-0" />}
@@ -55,10 +55,10 @@ export function AdminPanelHeader({
   children?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-4 border-b border-[#202635]/12 pb-5 sm:flex-row sm:items-end sm:justify-between">
+    <div className="flex flex-col gap-4 border-b border-[#2b3242]/12 pb-5 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
-        <h1 className="font-serif text-2xl leading-tight text-[#202635] md:text-3xl">{title}</h1>
-        {description && <p className="mt-1.5 text-sm text-[#202635]/60">{description}</p>}
+        <h1 className="font-serif text-2xl leading-tight text-[#2b3242] md:text-3xl">{title}</h1>
+        {description && <p className="mt-1.5 text-sm text-[#2b3242]/60">{description}</p>}
       </div>
       {children && <div className="flex shrink-0 flex-wrap items-center gap-2">{children}</div>}
     </div>
@@ -78,12 +78,12 @@ export function StateBlock({
 }) {
   return (
     <div
-      className={`flex flex-col items-start gap-3 rounded-sm border px-5 py-8 text-sm ${
-        tone === 'error' ? 'border-[#c97352]/35 bg-[#c97352]/8 text-[#7c2d12]' : 'border-[#202635]/12 bg-white text-[#202635]/70'
+      className={`flex flex-col items-start gap-3 rounded-lg border px-5 py-8 text-sm ${
+        tone === 'error' ? 'border-[#9f7a47]/35 bg-[#8f6d3f]/8 text-[#7c2d12]' : 'border-[#2b3242]/10 bg-[#fffdf8] text-[#2b3242]/70 shadow-[0_1px_2px_rgba(43,50,66,0.04)]'
       }`}
       role={tone === 'error' ? 'alert' : undefined}
     >
-      <p className="font-serif text-lg text-[#202635]">{title}</p>
+      <p className="font-serif text-lg text-[#2b3242]">{title}</p>
       {message && <p className="max-w-xl">{message}</p>}
       {action}
     </div>
@@ -92,7 +92,7 @@ export function StateBlock({
 
 export function Spinner({ label = 'Loading…' }: { label?: string }) {
   return (
-    <div className="flex items-center gap-3 px-5 py-10 text-sm text-[#202635]/60">
+    <div className="flex items-center gap-3 px-5 py-10 text-sm text-[#2b3242]/60">
       <Loader2 size={16} className="animate-spin" />
       {label}
     </div>
@@ -101,10 +101,10 @@ export function Spinner({ label = 'Loading…' }: { label?: string }) {
 
 export function adminButtonClass(variant: 'primary' | 'ghost' | 'danger' = 'primary') {
   const base =
-    'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm px-4 py-2.5 font-mono text-[10px] uppercase tracking-[.14em] transition-colors disabled:cursor-not-allowed disabled:opacity-50';
-  if (variant === 'primary') return `${base} bg-[#202635] text-[#f5f0e6] hover:bg-[#c97352]`;
-  if (variant === 'danger') return `${base} bg-[#b23b2e] text-white hover:bg-[#8f2f24]`;
-  return `${base} border border-[#202635]/25 text-[#202635] hover:border-[#c97352] hover:text-[#c97352]`;
+    'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 py-2.5 font-mono text-[11px] uppercase tracking-[.14em] transition-colors disabled:cursor-not-allowed disabled:opacity-50';
+  if (variant === 'primary') return `${base} bg-[#2b3242] text-[#faf7f1] hover:bg-[#8f6d3f]`;
+  if (variant === 'danger') return `${base} bg-[#a9473a] text-[#fffdf8] hover:bg-[#8f2f24]`;
+  return `${base} border border-[#2b3242]/25 text-[#2b3242] hover:border-[#9f7a47] hover:text-[#9f7a47]`;
 }
 
 /* ---------------------------------------------------------------- modal */
@@ -135,21 +135,21 @@ export function Modal({
 
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-[70] flex items-start justify-center overflow-y-auto bg-[#202635]/55 p-3 backdrop-blur-sm sm:p-6">
+    <div className="fixed inset-0 z-[70] flex items-start justify-center overflow-y-auto bg-[#2b3242]/55 p-3 backdrop-blur-sm sm:p-6">
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`my-4 w-full rounded-sm bg-[#f8f5ee] shadow-2xl ${wide ? 'max-w-4xl' : 'max-w-2xl'}`}
+        className={`my-4 w-full rounded-2xl border border-[#2b3242]/10 bg-[#fcfaf5] shadow-[0_30px_70px_-30px_rgba(43,50,66,0.5)] ${wide ? 'max-w-4xl' : 'max-w-2xl'}`}
       >
-        <div className="flex items-center justify-between gap-4 border-b border-[#202635]/12 px-5 py-4">
-          <h2 className="font-serif text-xl text-[#202635]">{title}</h2>
-          <button type="button" onClick={onClose} aria-label="Close" className="grid h-9 w-9 place-items-center rounded-sm border border-[#202635]/15 text-[#202635] hover:border-[#c97352] hover:text-[#c97352]">
+        <div className="flex items-center justify-between gap-4 border-b border-[#2b3242]/12 px-5 py-4">
+          <h2 className="font-serif text-xl text-[#2b3242]">{title}</h2>
+          <button type="button" onClick={onClose} aria-label="Close" className="grid h-9 w-9 place-items-center rounded-lg border border-[#2b3242]/15 text-[#2b3242] hover:border-[#9f7a47] hover:text-[#9f7a47]">
             <X size={16} />
           </button>
         </div>
         <div className="max-h-[70vh] overflow-y-auto px-5 py-5">{children}</div>
-        {footer && <div className="flex flex-wrap items-center justify-end gap-2 border-t border-[#202635]/12 px-5 py-4">{footer}</div>}
+        {footer && <div className="flex flex-wrap items-center justify-end gap-2 border-t border-[#2b3242]/12 px-5 py-4">{footer}</div>}
       </div>
     </div>
   );
@@ -188,9 +188,9 @@ export function ConfirmDialog({
         </>
       }
     >
-      <p className="text-sm leading-6 text-[#202635]/75">{message}</p>
+      <p className="text-sm leading-6 text-[#2b3242]/75">{message}</p>
       {warning && (
-        <p className="mt-4 flex items-start gap-2 rounded-sm border border-[#c97352]/30 bg-[#c97352]/8 px-3 py-2 text-sm text-[#7c2d12]">
+        <p className="mt-4 flex items-start gap-2 rounded-lg border border-[#9f7a47]/30 bg-[#8f6d3f]/8 px-3 py-2 text-sm text-[#7c2d12]">
           <AlertTriangle size={15} className="mt-0.5 shrink-0" /> {warning}
         </p>
       )}
@@ -210,12 +210,17 @@ export function ImagePicker({
   onChange,
   multiple = false,
   help,
+  loadLibrary = listMedia,
+  uploadImage = uploadAdminImage,
 }: {
   label: string;
   value: string | string[];
   onChange: (value: string | string[]) => void;
   multiple?: boolean;
   help?: string;
+  /** Where the library and uploads go; the SEO console passes its own routes. */
+  loadLibrary?: () => Promise<MediaItem[]>;
+  uploadImage?: (file: File) => Promise<{ url: string; warning?: string }>;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -247,7 +252,7 @@ export function ImagePicker({
     try {
       const uploaded: string[] = [];
       for (const file of Array.from(files).slice(0, multiple ? 10 : 1)) {
-        const result = await uploadAdminImage(file);
+        const result = await uploadImage(file);
         uploaded.push(result.url);
         if (result.warning) toast('error', result.warning);
       }
@@ -267,7 +272,7 @@ export function ImagePicker({
     setLibraryOpen(true);
     if (library) return;
     try {
-      setLibrary(await listMedia());
+      setLibrary(await loadLibrary());
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'Could not load the media library.');
       setLibrary([]);
@@ -277,7 +282,7 @@ export function ImagePicker({
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55">{label}</span>
+        <span className="font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/65">{label}</span>
         <div className="flex flex-wrap items-center gap-2">
           <button type="button" className={adminButtonClass('ghost')} onClick={() => inputRef.current?.click()} disabled={uploading} data-testid="button-upload-image">
             {uploading ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />} {uploading ? 'Uploading…' : 'Upload'}
@@ -293,18 +298,18 @@ export function ImagePicker({
       {urls.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-3">
           {urls.map((url, index) => (
-            <div key={`${url}-${index}`} className="group relative h-24 w-32 overflow-hidden rounded-sm border border-[#202635]/12 bg-[#202635]/5">
+            <div key={`${url}-${index}`} className="group relative h-24 w-32 overflow-hidden rounded-lg border border-[#2b3242]/12 bg-[#2b3242]/5">
               <img src={url} alt="" className="h-full w-full object-cover" />
               <button
                 type="button"
                 onClick={() => commit(urls.filter((_, i) => i !== index))}
-                className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-[#202635]/80 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-[#2b3242]/80 text-[#fffdf8] opacity-0 transition-opacity group-hover:opacity-100"
                 aria-label="Remove image"
               >
                 <X size={12} />
               </button>
               {multiple && index === 0 && (
-                <span className="absolute bottom-1 left-1 rounded-sm bg-[#202635]/80 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-[.12em] text-white">Main</span>
+                <span className="absolute bottom-1 left-1 rounded-lg bg-[#2b3242]/80 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-[.12em] text-[#fffdf8]">Main</span>
               )}
             </div>
           ))}
@@ -316,7 +321,7 @@ export function ImagePicker({
           value={urlDraft}
           onChange={(event) => setUrlDraft(event.target.value)}
           placeholder="or paste an image URL (https://…)"
-          className="min-w-0 flex-1 rounded-sm border border-[#202635]/20 bg-white px-3 py-2 text-sm outline-none focus:border-[#c97352]"
+          className="min-w-0 flex-1 rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] px-3 py-2 text-sm outline-none focus:border-[#9f7a47]"
         />
         <button
           type="button"
@@ -327,7 +332,7 @@ export function ImagePicker({
         </button>
       </div>
 
-      {help && !error && <p className="mt-2 text-xs text-[#202635]/50">{help}</p>}
+      {help && !error && <p className="mt-2 text-xs text-[#2b3242]/60">{help}</p>}
       {error && <p className="mt-2 text-xs text-[#b23b2e]">{error}</p>}
 
       <Modal open={libraryOpen} title="Media library" onClose={() => setLibraryOpen(false)} wide>
@@ -342,12 +347,12 @@ export function ImagePicker({
                 key={item.id}
                 type="button"
                 onClick={() => { addUrl(item.url); setLibraryOpen(false); }}
-                className="group overflow-hidden rounded-sm border border-[#202635]/12 bg-white text-left transition-colors hover:border-[#c97352]"
+                className="group overflow-hidden rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)] text-left transition-colors hover:border-[#9f7a47]"
               >
-                <span className="block h-24 w-full overflow-hidden bg-[#202635]/5">
+                <span className="block h-24 w-full overflow-hidden bg-[#2b3242]/5">
                   <img src={item.url} alt="" loading="lazy" className="h-full w-full object-cover" />
                 </span>
-                <span className="block truncate px-2 py-1.5 font-mono text-[9px] uppercase tracking-[.1em] text-[#202635]/60">
+                <span className="block truncate px-2 py-1.5 font-mono text-[9px] uppercase tracking-[.1em] text-[#2b3242]/60">
                   {item.filename ?? 'image'}
                 </span>
               </button>

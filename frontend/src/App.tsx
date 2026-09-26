@@ -39,7 +39,7 @@ import {
 } from '@/pages/content-pages';
 
 import { SiteShell } from '@/components/site-shell';
-import { SiteSettingsProvider } from '@/lib/site-settings';
+import { SiteSettingsProvider, useContact, useSiteSettings } from '@/lib/site-settings';
 import { MotionConfig } from 'framer-motion';
 
 /*
@@ -60,7 +60,8 @@ import {
 } from '@/pages/legal-pages';
 
 import { DeveloperDetailPage } from '@/pages/developer-detail-page';
-import { usePageMeta } from '@/lib/seo';
+import { canonicalPath, organizationJsonLd, PRIORITY_FALLBACK, PRIORITY_STATIC, SeoProvider, useHead, useSeoData } from '@/lib/seo';
+import { PAGE_META } from '@/lib/page-meta';
 
 import {
   Route,
@@ -83,157 +84,30 @@ function Router() {
    * ==========================================================
    * PAGE SEO META
    * ==========================================================
+   * Static pages take their built-in text from PAGE_META and any SEO console override for
+   * their path; detail pages describe themselves and outrank the fallback used for any other
+   * route. The admin console is never indexed.
    */
-  const pageMeta: Record<string, [string, string]> = {
-    '/': [
-      'Dubai Property Advisory',
-      'KNC Horizon Realtor connects clients with exceptional Dubai property, investment, design, and interiors services.',
-    ],
+  const contact = useContact();
+  const { siteName } = useSiteSettings();
+  const { settings: seoSettings } = useSeoData();
+  const isAdmin = location === '/admin' || location.startsWith('/admin/');
+  const staticMeta = PAGE_META[location] ?? PAGE_META[canonicalPath(location)];
+  const [metaTitle, metaDescription] = staticMeta ?? ['', 'A more considered way to move through Dubai property.'];
 
-    '/properties': [
-      'Properties',
-      'Explore selected homes and investment opportunities across Dubai with KNC Horizon Realtor.',
-    ],
-
-    '/projects': [
-      'Projects',
-      'Explore considered off-plan and new development opportunities across Dubai.',
-    ],
-
-    '/blog': [
-      'Blog',
-      'Real-estate guidance, neighbourhood notes, and property perspective from KNC Horizon Realtor.',
-    ],
-
-    '/gallery': [
-      'Portfolio',
-      'Explore the KNC Horizon visual archive of Dubai homes, interiors, and communities.',
-    ],
-
-    '/areas': [
-      'Dubai Areas',
-      'Find the Dubai neighbourhood that fits the way you want to live.',
-    ],
-
-    '/communities': [
-      'Dubai Communities',
-      'Explore premier Dubai neighbourhoods, waterfront communities, and master developments.',
-    ],
-
-    '/about': [
-      'About',
-      'Meet KNC Horizon Realtor, an independent Dubai property advisory built around context, candour, and care.',
-    ],
-
-    '/about/approach': [
-      'Our Approach',
-      'Learn about KNC Horizon Realtor’s disciplined advisory framework, due diligence, and client care.',
-    ],
-
-    '/about/india-office': [
-      'India Office · DLF Phase 1 Gurugram',
-      'Connecting Indian HNIs and NRI investors to prime Dubai real estate through our Gurugram advisory desk.',
-    ],
-
-    '/market-insights': [
-      'Dubai Market Insights',
-      'Essential market fundamentals, freehold regulations, rental yields, and investment intelligence.',
-    ],
-
-    '/properties/sale': [
-      'Properties for Sale',
-      'Curated freehold homes, luxury villas, and prime penthouses for sale across Dubai.',
-    ],
-
-    '/properties/rent': [
-      'Properties for Rent',
-      'Exceptional luxury residences and prime commercial properties available for lease in Dubai.',
-    ],
-
-    '/off-plan': [
-      'Off-Plan Developments',
-      'Explore premier off-plan developments and payment plans from Dubai’s top master developers.',
-    ],
-
-    '/off-plan/new-launches': [
-      'New Launches',
-      'The newest property launches from leading Dubai developers including Emaar, Sobha, and Meraas.',
-    ],
-
-    '/off-plan/apartments': [
-      'Off-Plan Apartments',
-      'Prime waterfront and skyline off-plan apartments across Dubai’s highest-performing corridors.',
-    ],
-
-    '/off-plan/villas-townhouses': [
-      'Off-Plan Villas & Townhouses',
-      'Master-planned off-plan villas and family townhouses in Dubai’s premier gated communities.',
-    ],
-
-    '/off-plan/developers': [
-      'Top Dubai Developers',
-      'Explore verified developments by Emaar, Sobha, Omniyat, Nakheel, Meraas, and Ellington.',
-    ],
-
-    '/services': [
-      'Services',
-      'Property advisory, design, interiors, and relocation support from KNC Horizon Realtor in Dubai.',
-    ],
-
-    '/design-build': [
-      'Design & Build',
-      'KNC Horizon Design & Build brings together concept, build coordination, and considered delivery for Dubai homes.',
-    ],
-
-    '/interiors': [
-      'Interiors & Furniture',
-      'Interior design, bespoke furniture, and styling for Dubai homes from KNC Horizon Realtor.',
-    ],
-
-    '/contact': [
-      'Contact',
-      'Start a conversation with KNC Horizon Realtor about your next Dubai property move.',
-    ],
-
-    /*
-     * ========================================================
-     * TERMS & CONDITIONS
-     * ========================================================
-     */
-
-    '/terms': [
-      'Terms & Conditions',
-      'General terms and conditions for using the KNC Horizon Realtor website.',
-    ],
-
-    '/terms-and-conditions': [
-      'Terms & Conditions',
-      'General terms and conditions for using the KNC Horizon Realtor website.',
-    ],
-
-    /*
-     * ========================================================
-     * PRIVACY POLICY
-     * ========================================================
-     */
-
-    '/privacy': [
-      'Privacy Policy',
-      'Privacy information explaining how KNC Horizon Realtor may collect, use and protect website enquiry information.',
-    ],
-
-    '/privacy-policy': [
-      'Privacy Policy',
-      'Privacy information explaining how KNC Horizon Realtor may collect, use and protect website enquiry information.',
-    ],
-  };
-
-  const currentMeta = pageMeta[location] ?? [
-    'KNC Horizon Realtor',
-    'A more considered way to move through Dubai property.',
-  ];
-
-  usePageMeta(currentMeta[0], currentMeta[1]);
+  useHead(
+    isAdmin
+      ? { title: 'Admin console', description: '', path: location, seo: null, noindex: true }
+      : {
+          title: metaTitle,
+          description: metaDescription,
+          path: location,
+          jsonLd: location === '/'
+            ? [organizationJsonLd({ siteName, siteUrl: seoSettings.siteUrl, phone: contact.phoneDisplay, email: contact.email })]
+            : undefined,
+        },
+    isAdmin || staticMeta ? PRIORITY_STATIC : PRIORITY_FALLBACK,
+  );
 
   /*
    * ============================================================
@@ -640,6 +514,7 @@ function App() {
           viewer's OS "reduce motion" setting, the same one the CSS guard reads. */}
       <MotionConfig reducedMotion="user">
       <SiteSettingsProvider>
+      <SeoProvider>
         <TooltipProvider>
 
           <WouterRouter
@@ -653,6 +528,7 @@ function App() {
           <Toaster />
 
         </TooltipProvider>
+      </SeoProvider>
       </SiteSettingsProvider>
       </MotionConfig>
     </QueryClientProvider>

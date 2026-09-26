@@ -90,9 +90,9 @@ export function OverviewPanel({ onNavigate }: { onNavigate: (resource: AdminReso
 
       <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {Object.entries(counts).map(([key, value]) => (
-          <div key={key} className="rounded-sm border border-[#202635]/12 bg-white p-4" data-testid={`stat-${key}`}>
-            <p className="font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/50">{COUNT_LABELS[key] ?? key}</p>
-            <p className="mt-2 font-serif text-3xl text-[#202635]">{numberFormat.format(Number(value) || 0)}</p>
+          <div key={key} className="rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)] p-4" data-testid={`stat-${key}`}>
+            <p className="font-mono text-[11px] uppercase tracking-[.12em] text-[#2b3242]/60">{COUNT_LABELS[key] ?? key}</p>
+            <p className="mt-2 font-serif text-3xl text-[#2b3242]">{numberFormat.format(Number(value) || 0)}</p>
           </div>
         ))}
       </div>
@@ -163,28 +163,28 @@ function RecentList({
   onOpen: () => void;
 }) {
   return (
-    <section className="rounded-sm border border-[#202635]/12 bg-white">
-      <div className="flex items-center justify-between border-b border-[#202635]/10 px-4 py-3">
-        <h2 className="font-serif text-lg text-[#202635]">{title}</h2>
-        <button type="button" onClick={onOpen} className="font-mono text-[10px] uppercase tracking-[.12em] text-[#c97352] hover:underline">
+    <section className="rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)]">
+      <div className="flex items-center justify-between border-b border-[#2b3242]/10 px-4 py-3">
+        <h2 className="font-serif text-lg text-[#2b3242]">{title}</h2>
+        <button type="button" onClick={onOpen} className="font-mono text-[11px] uppercase tracking-[.12em] text-[#9f7a47] hover:underline">
           Open
         </button>
       </div>
       {rows.length === 0 ? (
-        <p className="px-4 py-6 text-sm text-[#202635]/55">{empty}</p>
+        <p className="px-4 py-6 text-sm text-[#2b3242]/65">{empty}</p>
       ) : (
         <ul>
           {rows.map((row) => (
-            <li key={row.id} className="flex items-start justify-between gap-4 border-b border-[#202635]/8 px-4 py-3 last:border-0">
+            <li key={row.id} className="flex items-start justify-between gap-4 border-b border-[#2b3242]/8 px-4 py-3 last:border-0">
               <div className="min-w-0">
-                <p className="line-clamp-1 text-sm font-medium text-[#202635]">{row.primary}</p>
-                {row.secondary && <p className="line-clamp-1 text-xs text-[#202635]/55">{row.secondary}</p>}
+                <p className="line-clamp-1 text-sm font-medium text-[#2b3242]">{row.primary}</p>
+                {row.secondary && <p className="line-clamp-1 text-xs text-[#2b3242]/65">{row.secondary}</p>}
               </div>
               <div className="shrink-0 text-right">
-                {row.meta && <p className="font-mono text-[10px] uppercase tracking-[.1em] text-[#202635]/45">{row.meta}</p>}
+                {row.meta && <p className="font-mono text-[11px] uppercase tracking-[.1em] text-[#2b3242]/65">{row.meta}</p>}
                 {row.badge && (
-                  <span className={`mt-1 inline-block rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[.1em] ${
-                    row.badge === 'live' || row.badge === 'closed' ? 'bg-[#55735f]/12 text-[#3c5a49]' : 'bg-[#c97352]/12 text-[#7c2d12]'
+                  <span className={`mt-1 inline-block rounded-lg px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[.1em] ${
+                    row.badge === 'live' || row.badge === 'closed' ? 'bg-[#55735f]/12 text-[#3c5a49]' : 'bg-[#8f6d3f]/12 text-[#7c2d12]'
                   }`}>{row.badge}</span>
                 )}
               </div>
@@ -272,11 +272,11 @@ export function InquiriesPanel() {
 
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
         <label className="relative flex min-w-0 flex-1 items-center">
-          <Search size={15} className="pointer-events-none absolute left-3 text-[#202635]/40" />
+          <Search size={15} className="pointer-events-none absolute left-3 text-[#2b3242]/60" />
           <span className="sr-only">Search enquiries</span>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, email, message…" className="w-full rounded-sm border border-[#202635]/20 bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#c97352]" data-testid="input-search-inquiries" />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, email, message…" className="w-full rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#9f7a47]" data-testid="input-search-inquiries" />
         </label>
-        <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-sm border border-[#202635]/20 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#c97352]">
+        <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] px-3 py-2.5 text-sm outline-none focus:border-[#9f7a47]">
           <option value="">All statuses</option>
           {INQUIRY_STATUSES.map((value) => <option key={value} value={value}>{value}</option>)}
         </select>
@@ -290,10 +290,10 @@ export function InquiriesPanel() {
         ) : filtered.length === 0 ? (
           <StateBlock title="No enquiries" message="Submissions from the public contact form appear here in real time." />
         ) : (
-          <div className="overflow-x-auto rounded-sm border border-[#202635]/12 bg-white">
+          <div className="overflow-x-auto rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)]">
             <table className="w-full min-w-[720px] border-collapse text-sm">
               <thead>
-                <tr className="border-b border-[#202635]/12 bg-[#f3efe6] text-left font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/55">
+                <tr className="border-b border-[#2b3242]/12 bg-[#f7f3ec] text-left font-mono text-[11px] uppercase tracking-[.12em] text-[#2b3242]/65">
                   <th className="px-3 py-2.5 font-normal">Name</th>
                   <th className="px-3 py-2.5 font-normal">Contact</th>
                   <th className="px-3 py-2.5 font-normal">Interest</th>
@@ -304,20 +304,20 @@ export function InquiriesPanel() {
               </thead>
               <tbody>
                 {filtered.map((row) => (
-                  <tr key={row.id} className={`border-b border-[#202635]/8 last:border-0 hover:bg-[#f9f6ef] ${(row.status ?? 'new') === 'new' ? 'font-medium' : ''}`} data-testid={`row-inquiry-${row.id}`}>
-                    <td className="px-3 py-2.5 text-[#202635]">{row.name}</td>
-                    <td className="px-3 py-2.5 text-[#202635]/75">
+                  <tr key={row.id} className={`border-b border-[#2b3242]/8 last:border-0 hover:bg-[#fcf9f3] ${(row.status ?? 'new') === 'new' ? 'font-medium' : ''}`} data-testid={`row-inquiry-${row.id}`}>
+                    <td className="px-3 py-2.5 text-[#2b3242]">{row.name}</td>
+                    <td className="px-3 py-2.5 text-[#2b3242]/75">
                       <span className="block truncate">{row.email}</span>
-                      {row.phone && <span className="block truncate text-xs text-[#202635]/50">{row.phone}</span>}
+                      {row.phone && <span className="block truncate text-xs text-[#2b3242]/60">{row.phone}</span>}
                     </td>
-                    <td className="px-3 py-2.5 text-[#202635]/75"><span className="line-clamp-1">{row.interest ?? '—'}</span></td>
-                    <td className="px-3 py-2.5 text-[#202635]/60">{row.createdAt ? new Date(row.createdAt).toLocaleDateString('en-GB', { dateStyle: 'medium' }) : '—'}</td>
+                    <td className="px-3 py-2.5 text-[#2b3242]/75"><span className="line-clamp-1">{row.interest ?? '—'}</span></td>
+                    <td className="px-3 py-2.5 text-[#2b3242]/60">{row.createdAt ? new Date(row.createdAt).toLocaleDateString('en-GB', { dateStyle: 'medium' }) : '—'}</td>
                     <td className="px-3 py-2.5">
                       <select
                         value={row.status ?? 'new'}
                         onChange={(event) => setInquiryStatus(row, event.target.value)}
                         disabled={busy === row.id}
-                        className="rounded-sm border border-[#202635]/20 bg-white px-2 py-1 font-mono text-[9px] uppercase tracking-[.1em] outline-none focus:border-[#c97352]"
+                        className="rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] px-2 py-1 font-mono text-[9px] uppercase tracking-[.1em] outline-none focus:border-[#9f7a47]"
                         data-testid={`select-status-${row.id}`}
                       >
                         {INQUIRY_STATUSES.map((value) => <option key={value} value={value}>{value}</option>)}
@@ -326,7 +326,7 @@ export function InquiriesPanel() {
                     <td className="px-3 py-2.5">
                       <div className="flex items-center justify-end gap-1">
                         <button type="button" onClick={() => { setActive(row); if ((row.status ?? 'new') === 'new') setInquiryStatus(row, 'contacted'); }} className={adminButtonClass('ghost')} data-testid={`button-view-inquiry-${row.id}`}>View</button>
-                        <button type="button" onClick={() => setDeleting(row)} className="grid h-8 w-8 place-items-center rounded-sm border border-[#202635]/15 text-[#b23b2e] hover:border-[#b23b2e]" title="Delete">
+                        <button type="button" onClick={() => setDeleting(row)} className="grid h-8 w-8 place-items-center rounded-lg border border-[#2b3242]/15 text-[#b23b2e] hover:border-[#b23b2e]" title="Delete">
                           <Trash2 size={13} />
                         </button>
                       </div>
@@ -341,12 +341,12 @@ export function InquiriesPanel() {
 
       <Modal open={Boolean(active)} title="Enquiry" onClose={() => setActive(null)}>
         {active && (
-          <div className="space-y-4 text-sm text-[#202635]/80">
+          <div className="space-y-4 text-sm text-[#2b3242]/80">
             <div className="grid gap-3 sm:grid-cols-2">
               <Detail label="Name" value={active.name} />
               <Detail label="Received" value={active.createdAt ? new Date(active.createdAt).toLocaleString('en-GB') : '—'} />
-              <Detail label="Email" value={<a className="text-[#c97352] hover:underline" href={`mailto:${active.email}`}>{active.email}</a>} />
-              <Detail label="Phone" value={active.phone ? <a className="text-[#c97352] hover:underline" href={`tel:${active.phone}`}>{active.phone}</a> : '—'} />
+              <Detail label="Email" value={<a className="text-[#9f7a47] hover:underline" href={`mailto:${active.email}`}>{active.email}</a>} />
+              <Detail label="Phone" value={active.phone ? <a className="text-[#9f7a47] hover:underline" href={`tel:${active.phone}`}>{active.phone}</a> : '—'} />
               <Detail label="Interest" value={active.interest ?? '—'} />
               <Detail label="Type" value={active.inquiryType ?? 'contact'} />
               {active.budget && <Detail label="Budget" value={active.budget} />}
@@ -356,8 +356,8 @@ export function InquiriesPanel() {
               {active.projectSlug && <Detail label="Project" value={active.projectSlug} />}
             </div>
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/50">Message</p>
-              <p className="mt-1.5 whitespace-pre-wrap rounded-sm border border-[#202635]/12 bg-white p-3 leading-6">{active.message || '—'}</p>
+              <p className="font-mono text-[11px] uppercase tracking-[.12em] text-[#2b3242]/60">Message</p>
+              <p className="mt-1.5 whitespace-pre-wrap rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)] p-3 leading-6">{active.message || '—'}</p>
             </div>
             <div className="flex flex-wrap gap-2">
               <a href={`mailto:${active.email}`} className={adminButtonClass()}><Mail size={13} /> Reply by email</a>
@@ -385,8 +385,8 @@ export function InquiriesPanel() {
 function Detail({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
-      <p className="font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/50">{label}</p>
-      <p className="mt-1 break-words text-[#202635]">{value}</p>
+      <p className="font-mono text-[11px] uppercase tracking-[.12em] text-[#2b3242]/60">{label}</p>
+      <p className="mt-1 break-words text-[#2b3242]">{value}</p>
     </div>
   );
 }
@@ -450,9 +450,9 @@ export function SubscribersPanel() {
       </AdminPanelHeader>
 
       <label className="relative mt-5 flex items-center">
-        <Search size={15} className="pointer-events-none absolute left-3 text-[#202635]/40" />
+        <Search size={15} className="pointer-events-none absolute left-3 text-[#2b3242]/60" />
         <span className="sr-only">Search subscribers</span>
-        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search email…" className="w-full rounded-sm border border-[#202635]/20 bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#c97352]" />
+        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search email…" className="w-full rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#9f7a47]" />
       </label>
 
       <div className="mt-5">
@@ -463,10 +463,10 @@ export function SubscribersPanel() {
         ) : filtered.length === 0 ? (
           <StateBlock title="No subscribers yet" message="Sign-ups from the footer newsletter form appear here." />
         ) : (
-          <div className="overflow-x-auto rounded-sm border border-[#202635]/12 bg-white">
+          <div className="overflow-x-auto rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)]">
             <table className="w-full min-w-[520px] border-collapse text-sm">
               <thead>
-                <tr className="border-b border-[#202635]/12 bg-[#f3efe6] text-left font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/55">
+                <tr className="border-b border-[#2b3242]/12 bg-[#f7f3ec] text-left font-mono text-[11px] uppercase tracking-[.12em] text-[#2b3242]/65">
                   <th className="px-3 py-2.5 font-normal">Email</th>
                   <th className="px-3 py-2.5 font-normal">Subscribed</th>
                   <th className="px-3 py-2.5 text-right font-normal">Actions</th>
@@ -474,13 +474,13 @@ export function SubscribersPanel() {
               </thead>
               <tbody>
                 {filtered.map((row) => (
-                  <tr key={row.id} className="border-b border-[#202635]/8 last:border-0 hover:bg-[#f9f6ef]">
-                    <td className="px-3 py-2.5 text-[#202635]">{row.email}</td>
-                    <td className="px-3 py-2.5 text-[#202635]/60">
+                  <tr key={row.id} className="border-b border-[#2b3242]/8 last:border-0 hover:bg-[#fcf9f3]">
+                    <td className="px-3 py-2.5 text-[#2b3242]">{row.email}</td>
+                    <td className="px-3 py-2.5 text-[#2b3242]/60">
                       {row.subscribedAt || row.createdAt ? new Date(row.subscribedAt ?? row.createdAt).toLocaleDateString('en-GB', { dateStyle: 'medium' }) : '—'}
                     </td>
                     <td className="px-3 py-2.5 text-right">
-                      <button type="button" onClick={() => setDeleting(row)} className="grid h-8 w-8 place-items-center rounded-sm border border-[#202635]/15 text-[#b23b2e] hover:border-[#b23b2e] ml-auto" title="Remove">
+                      <button type="button" onClick={() => setDeleting(row)} className="grid h-8 w-8 place-items-center rounded-lg border border-[#2b3242]/15 text-[#b23b2e] hover:border-[#b23b2e] ml-auto" title="Remove">
                         <Trash2 size={13} />
                       </button>
                     </td>
@@ -576,9 +576,9 @@ export function MediaPanel() {
       </AdminPanelHeader>
 
       <label className="relative mt-5 flex items-center">
-        <Search size={15} className="pointer-events-none absolute left-3 text-[#202635]/40" />
+        <Search size={15} className="pointer-events-none absolute left-3 text-[#2b3242]/60" />
         <span className="sr-only">Search media</span>
-        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search file name…" className="w-full rounded-sm border border-[#202635]/20 bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#c97352]" />
+        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search file name…" className="w-full rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#9f7a47]" />
       </label>
 
       <div className="mt-5">
@@ -591,18 +591,18 @@ export function MediaPanel() {
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
             {filtered.map((item) => (
-              <figure key={item.id} className="overflow-hidden rounded-sm border border-[#202635]/12 bg-white">
-                <button type="button" onClick={() => setPreview(item)} className="block h-32 w-full bg-[#202635]/5">
+              <figure key={item.id} className="overflow-hidden rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)]">
+                <button type="button" onClick={() => setPreview(item)} className="block h-32 w-full bg-[#2b3242]/5">
                   <img src={item.url} alt={item.filename ?? ''} loading="lazy" className="h-full w-full object-cover" />
                 </button>
                 <figcaption className="px-3 py-2">
-                  <p className="truncate text-xs text-[#202635]">{item.filename ?? 'image'}</p>
-                  <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[.1em] text-[#202635]/45">
+                  <p className="truncate text-xs text-[#2b3242]">{item.filename ?? 'image'}</p>
+                  <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[.1em] text-[#2b3242]/65">
                     {item.folder ?? 'knc-horizon'} · {item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-GB') : ''}
                   </p>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     <CopyButton value={item.url} label="Copy" />
-                    <button type="button" onClick={() => setDeleting(item)} className="grid h-8 w-8 place-items-center rounded-sm border border-[#202635]/15 text-[#b23b2e] hover:border-[#b23b2e]" title="Delete">
+                    <button type="button" onClick={() => setDeleting(item)} className="grid h-8 w-8 place-items-center rounded-lg border border-[#2b3242]/15 text-[#b23b2e] hover:border-[#b23b2e]" title="Delete">
                       <Trash2 size={12} />
                     </button>
                   </div>
@@ -616,8 +616,8 @@ export function MediaPanel() {
       <Modal open={Boolean(preview)} title={preview?.filename ?? 'Preview'} onClose={() => setPreview(null)} wide>
         {preview && (
           <div>
-            <img src={preview.url} alt={preview.filename ?? ''} className="mx-auto max-h-[55vh] w-auto rounded-sm" />
-            <p className="mt-4 break-all rounded-sm border border-[#202635]/12 bg-white px-3 py-2 font-mono text-xs text-[#202635]/70">{preview.url}</p>
+            <img src={preview.url} alt={preview.filename ?? ''} className="mx-auto max-h-[55vh] w-auto rounded-lg" />
+            <p className="mt-4 break-all rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)] px-3 py-2 font-mono text-xs text-[#2b3242]/70">{preview.url}</p>
             <div className="mt-3 flex gap-2"><CopyButton value={preview.url} /></div>
           </div>
         )}
@@ -755,13 +755,13 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
   };
 
   const inputClass = (name: string) =>
-    `mt-1.5 w-full rounded-sm border bg-white px-3 py-2.5 text-sm outline-none ${
-      errors[name] ? 'border-[#b23b2e] focus:border-[#b23b2e]' : 'border-[#202635]/20 focus:border-[#c97352]'
+    `mt-1.5 w-full rounded-lg border bg-[#fffdf8] px-3 py-2.5 text-sm outline-none ${
+      errors[name] ? 'border-[#b23b2e] focus:border-[#b23b2e]' : 'border-[#2b3242]/20 focus:border-[#9f7a47]'
     }`;
 
   const field = (name: string, label: string, type: 'text' | 'textarea' | 'select' = 'text', hint?: string) => (
     <label className="block">
-      <span className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55">{label}</span>
+      <span className="font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/65">{label}</span>
       {type === 'textarea' ? (
         <textarea
           value={doc?.[name] ?? ''}
@@ -791,14 +791,14 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
       {errors[name] ? (
         <span className="mt-1 block text-xs text-[#b23b2e]" data-testid={`settings-error-${name}`}>{errors[name]}</span>
       ) : hint ? (
-        <span className="mt-1 block text-xs text-[#202635]/45">{hint}</span>
+        <span className="mt-1 block text-xs text-[#2b3242]/65">{hint}</span>
       ) : null}
     </label>
   );
 
   const phoneField = (name: string, label: string, valueFormat: 'international' | 'digits', hint: string) => (
     <div className="block">
-      <label htmlFor={`settings-${name}`} className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55">{label}</label>
+      <label htmlFor={`settings-${name}`} className="font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/65">{label}</label>
       <PhoneInput
         id={`settings-${name}`}
         variant="boxed"
@@ -811,7 +811,7 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
         error={errors[name]}
         testId={`settings-${name}`}
       />
-      {!errors[name] && <span className="mt-1 block text-xs text-[#202635]/45">{hint}</span>}
+      {!errors[name] && <span className="mt-1 block text-xs text-[#2b3242]/65">{hint}</span>}
     </div>
   );
 
@@ -834,7 +834,7 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
         {area === 'content' ? (
           <>
             <fieldset>
-              <legend className="mb-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">Contact details</legend>
+              <legend className="mb-3 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]">Contact details</legend>
               <div className="grid gap-4 sm:grid-cols-2">
                 {phoneField('contactPhone', 'Phone', 'international', 'Shown on the site and used for the call link.')}
                 {field('contactEmail', 'Email')}
@@ -845,7 +845,7 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
               </div>
             </fieldset>
             <fieldset>
-              <legend className="mb-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">Home hero</legend>
+              <legend className="mb-3 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]">Home hero</legend>
               <div className="grid gap-4 sm:grid-cols-2">
                 {field('heroEyebrow', 'Eyebrow')}
                 {field('heroHeadline', 'Headline')}
@@ -853,14 +853,14 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
               </div>
             </fieldset>
             <fieldset>
-              <legend className="mb-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">SEO defaults</legend>
+              <legend className="mb-3 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]">SEO defaults</legend>
               <div className="grid gap-4 sm:grid-cols-2">
                 {field('seoTitle', 'Default title')}
                 {field('seoKeywords', 'Keywords')}
                 <div className="sm:col-span-2">{field('seoDescription', 'Default description', 'textarea')}</div>
               </div>
             </fieldset>
-            <p className="rounded-sm border border-[#202635]/12 bg-white px-3 py-2.5 text-xs leading-5 text-[#202635]/60">
+            <p className="rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)] px-3 py-2.5 text-xs leading-5 text-[#2b3242]/60">
               Saved in PostgreSQL and served to the public site, so the phone number, email, WhatsApp button and
               office addresses update everywhere as soon as you save.
             </p>
@@ -868,18 +868,18 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
         ) : (
           <>
             <fieldset>
-              <legend className="mb-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">Signed in as</legend>
-              <div className="rounded-sm border border-[#202635]/12 bg-white px-4 py-3 text-sm">
-                <p className="text-[#202635]">{user?.email ?? '—'}</p>
-                <p className="mt-1 font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/50">Role: {user?.role ?? 'admin'}</p>
+              <legend className="mb-3 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]">Signed in as</legend>
+              <div className="rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)] px-4 py-3 text-sm">
+                <p className="text-[#2b3242]">{user?.email ?? '—'}</p>
+                <p className="mt-1 font-mono text-[11px] uppercase tracking-[.12em] text-[#2b3242]/60">Role: {user?.role ?? 'admin'}</p>
               </div>
-              <p className="mt-2 text-xs text-[#202635]/55">
+              <p className="mt-2 text-xs text-[#2b3242]/65">
                 Admin credentials come from the backend environment (ADMIN_EMAIL / ADMIN_PASSWORD) and are hashed in PostgreSQL.
                 Change them there, then restart the API.
               </p>
             </fieldset>
             <fieldset>
-              <legend className="mb-3 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">Site settings</legend>
+              <legend className="mb-3 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]">Site settings</legend>
               <div className="grid gap-4 sm:grid-cols-2">
                 {field('siteName', 'Site name', 'text', 'Used in the browser tab on every page.')}
                 {field('defaultCurrency', 'Default currency', 'select', 'Used when a listing has no currency of its own.')}
@@ -889,10 +889,10 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
               </div>
               {mail && (
                 <p
-                  className={`mt-3 rounded-sm border px-3 py-2.5 text-xs leading-5 ${
+                  className={`mt-3 rounded-lg border px-3 py-2.5 text-xs leading-5 ${
                     mail.configured
                       ? 'border-[#55735f]/30 bg-[#55735f]/10 text-[#3d5446]'
-                      : 'border-[#c97352]/35 bg-[#c97352]/10 text-[#202635]/70'
+                      : 'border-[#9f7a47]/35 bg-[#8f6d3f]/10 text-[#2b3242]/70'
                   }`}
                   data-testid="settings-mail-status"
                 >

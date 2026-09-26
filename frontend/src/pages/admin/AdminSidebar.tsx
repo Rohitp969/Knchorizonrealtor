@@ -17,7 +17,15 @@ import {
   FolderOpen,
   ExternalLink,
   X,
+  Gauge,
+  Files,
+  Building,
+  PenLine,
+  Wrench,
+  UserCog,
 } from 'lucide-react';
+
+import type { AdminUser } from '@/lib/admin-api';
 
 export type AdminResource =
   | 'overview'
@@ -32,9 +40,19 @@ export type AdminResource =
   | 'inquiries'
   | 'subscribers'
   | 'content'
-  | 'settings';
+  | 'settings'
+  | 'seo-dashboard'
+  | 'seo-pages'
+  | 'seo-listings'
+  | 'seo-articles'
+  | 'seo-technical'
+  | 'seo-managers';
+
+/** The sections an SEO manager may open; everything else is administrators only. */
+export const SEO_RESOURCES: AdminResource[] = ['seo-dashboard', 'seo-pages', 'seo-listings', 'seo-articles', 'seo-technical'];
 
 export type AdminSidebarProps = {
+  role: AdminUser['role'];
   resource: AdminResource;
   setResource: (resource: AdminResource) => void;
   logout: () => void;
@@ -50,13 +68,14 @@ type SidebarItem = {
 };
 
 export function AdminSidebar({
+  role,
   resource,
   setResource,
   logout,
   isOpen = false,
   onClose,
 }: AdminSidebarProps) {
-  const items: SidebarItem[] = [
+  const management: SidebarItem[] = [
     { key: 'overview', label: 'Overview', icon: <Home size={16} /> },
     { key: 'properties', label: 'Properties', icon: <Building2 size={16} /> },
     { key: 'projects', label: 'Off-Plan Projects', icon: <FolderGit2 size={16} /> },
@@ -70,8 +89,20 @@ export function AdminSidebar({
     { key: 'subscribers', label: 'Subscribers', icon: <UserCheck size={16} /> },
     { key: 'content', label: 'Website Content', icon: <Palette size={16} /> },
     { key: 'settings', label: 'Settings', icon: <Settings size={16} /> },
-    { key: 'logout', label: 'Logout', icon: <LogOut size={16} /> },
   ];
+  const seo: SidebarItem[] = [
+    { key: 'seo-dashboard', label: 'SEO Dashboard', icon: <Gauge size={16} /> },
+    { key: 'seo-pages', label: 'Page SEO', icon: <Files size={16} /> },
+    { key: 'seo-listings', label: 'Property & Project SEO', icon: <Building size={16} /> },
+    { key: 'seo-articles', label: 'Articles', icon: <PenLine size={16} /> },
+    { key: 'seo-technical', label: 'Technical SEO', icon: <Wrench size={16} /> },
+    ...(role === 'admin' ? [{ key: 'seo-managers' as const, label: 'SEO Managers', icon: <UserCog size={16} /> }] : []),
+  ];
+  // An SEO manager sees the SEO section only; the server refuses the rest to them anyway.
+  const sections: { title: string; items: SidebarItem[] }[] = role === 'seo_manager'
+    ? [{ title: 'SEO', items: seo }]
+    : [{ title: 'Management', items: management }, { title: 'SEO', items: seo }];
+  const logoutItem: SidebarItem = { key: 'logout', label: 'Logout', icon: <LogOut size={16} /> };
 
   const handleSelect = (key: AdminResource | 'logout') => {
     if (key === 'logout') {
@@ -89,7 +120,7 @@ export function AdminSidebar({
       {/* Mobile Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-[#202635]/60 backdrop-blur-xs md:hidden"
+          className="fixed inset-0 z-40 bg-[#2b3242]/60 backdrop-blur-xs md:hidden"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -97,31 +128,24 @@ export function AdminSidebar({
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col justify-between border-r border-[#202635]/12 bg-[#ebe5dc] transition-transform duration-300 ease-in-out md:sticky md:top-0 md:h-[100dvh] md:w-64 md:translate-x-0 md:shrink-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col justify-between border-r border-[#2b3242]/12 bg-[#f1ebe1] transition-transform duration-300 ease-in-out md:sticky md:top-0 md:h-[100dvh] md:w-64 md:translate-x-0 md:shrink-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Header / Brand */}
-        <div className="flex h-16 items-center justify-between border-b border-[#202635]/10 px-5">
-          <Link href="/admin" className="flex items-center gap-2.5">
-            <span className="grid h-8 w-8 place-items-center border border-[#c97352]/70 bg-[#202635] text-[#f5f0e6]">
-              <span className="font-serif text-base font-bold leading-none text-[#c97352]">K</span>
+        <div className="flex h-16 items-center justify-between border-b border-[#2b3242]/10 px-5">
+          <Link href="/admin" className="flex flex-col gap-1" aria-label="KNC Horizon Realtor admin console">
+            <img src="/brand/knc-logo-horizontal.svg" alt="" className="h-7 w-auto" />
+            <span className="font-mono text-[9px] uppercase tracking-[.2em] text-[#9f7a47]">
+              {role === 'seo_manager' ? 'SEO Console' : 'Admin Console'}
             </span>
-            <div className="leading-tight">
-              <span className="block font-sans text-[11px] font-bold tracking-[.2em] text-[#202635]">
-                KNC HORIZON
-              </span>
-              <span className="block font-mono text-[8px] uppercase tracking-[.18em] text-[#c97352]">
-                Admin Console
-              </span>
-            </div>
           </Link>
 
           {/* Close button for mobile */}
           <button
             type="button"
             onClick={onClose}
-            className="grid h-8 w-8 place-items-center rounded-sm text-[#202635]/70 hover:bg-[#202635]/10 hover:text-[#202635] md:hidden"
+            className="grid h-8 w-8 place-items-center rounded-lg text-[#2b3242]/70 hover:bg-[#2b3242]/10 hover:text-[#2b3242] md:hidden"
             aria-label="Close menu"
           >
             <X size={18} />
@@ -130,12 +154,14 @@ export function AdminSidebar({
 
         {/* Navigation Items */}
         <nav className="flex-1 overflow-y-auto px-3 py-4">
-          <p className="px-3 pb-2 font-mono text-[9px] uppercase tracking-[.2em] text-[#202635]/45">
-            Management
+          {sections.map((section, sectionIndex) => (
+          <div key={section.title} className={sectionIndex ? 'mt-5' : ''}>
+          <p className="px-3 pb-2 font-mono text-[9px] uppercase tracking-[.2em] text-[#2b3242]/65">
+            {section.title}
           </p>
 
           <div className="space-y-1">
-            {items.map((item) => {
+            {[...section.items, ...(sectionIndex === sections.length - 1 ? [logoutItem] : [])].map((item) => {
               const isLogout = item.key === 'logout';
               const isActive = !isLogout && resource === item.key;
 
@@ -145,22 +171,22 @@ export function AdminSidebar({
                   type="button"
                   data-testid={`sidebar-${item.key}`}
                   onClick={() => handleSelect(item.key)}
-                  className={`group flex w-full items-center justify-between rounded-sm px-3 py-2.5 text-left text-xs font-medium transition-all ${
+                  className={`group flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-xs font-medium transition-all ${
                     isLogout
-                      ? 'mt-3 border-t border-[#202635]/10 pt-3 text-[#c97352] hover:bg-[#c97352]/10'
+                      ? 'mt-3 border-t border-[#2b3242]/10 pt-3 text-[#9f7a47] hover:bg-[#8f6d3f]/10'
                       : isActive
-                      ? 'bg-[#202635] text-[#f5f0e6] shadow-xs'
-                      : 'text-[#202635]/75 hover:bg-[#202635]/8 hover:text-[#202635]'
+                      ? 'bg-[#2b3242] text-[#faf7f1] shadow-xs'
+                      : 'text-[#2b3242]/75 hover:bg-[#2b3242]/8 hover:text-[#2b3242]'
                   }`}
                 >
                   <span className="flex items-center gap-3">
                     <span
                       className={`transition-colors ${
                         isActive
-                          ? 'text-[#c97352]'
+                          ? 'text-[#9f7a47]'
                           : isLogout
-                          ? 'text-[#c97352]'
-                          : 'text-[#202635]/60 group-hover:text-[#202635]'
+                          ? 'text-[#9f7a47]'
+                          : 'text-[#2b3242]/60 group-hover:text-[#2b3242]'
                       }`}
                     >
                       {item.icon}
@@ -169,20 +195,22 @@ export function AdminSidebar({
                   </span>
 
                   {isActive && (
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#c97352]" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#8f6d3f]" />
                   )}
                 </button>
               );
             })}
           </div>
+          </div>
+          ))}
         </nav>
 
         {/* Footer / Quick Links */}
-        <div className="border-t border-[#202635]/10 p-3">
+        <div className="border-t border-[#2b3242]/10 p-3">
           <Link
             href="/"
             target="_blank"
-            className="flex items-center justify-between rounded-sm border border-[#202635]/15 bg-[#f5f0e6]/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/70 transition-colors hover:border-[#c97352] hover:text-[#c97352]"
+            className="flex items-center justify-between rounded-lg border border-[#2b3242]/15 bg-[#faf7f1]/60 px-3 py-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/70 transition-colors hover:border-[#9f7a47] hover:text-[#9f7a47]"
           >
             <span>View Public Site</span>
             <ExternalLink size={12} />

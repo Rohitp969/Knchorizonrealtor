@@ -2,6 +2,10 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/sitemap.xml",
+      "destination": "https://knchorizonrealtor.onrender.com/api/sitemap.xml"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

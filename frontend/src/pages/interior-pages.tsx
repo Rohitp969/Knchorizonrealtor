@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, ArrowUpRight, Building2, Check, ChevronDown, Coins, Compass, Globe2, Landmark, MapPin, Phone, ShieldCheck, TrendingUp } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Building2, Check, Coins, Compass, Globe2, Landmark, ShieldCheck, TrendingUp } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'wouter';
-import { ContactForm, FaqSection, PageHero, PropertyCard, SectionIntro, SectionLabel, ServiceRow, cardGrid } from '@/components/blocks';
-import { areas, properties, services, specialistServices } from '@/lib/site-data';
+import { ContactForm, FaqSection, PageHero, SectionIntro, SectionLabel, ServiceRow, cardGrid } from '@/components/blocks';
+import { areas, services, specialistServices } from '@/lib/site-data';
 import { useContact } from '@/lib/site-settings';
 import { apiFetch, type Project, type RemoteProperty } from '@/lib/api';
 
@@ -27,23 +26,23 @@ export function AboutPage() {
       />
 
       {/* OUR POINT OF VIEW */}
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
           <SectionLabel>Our Point of View</SectionLabel>
 
-          <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
+          <h2 className="section-title mt-6 max-w-4xl text-[#2b3242]">
             The best property advice starts with a better{" "}
-            <em className="text-[#c97352]">question.</em>
+            <em className="text-[#9f7a47]">question.</em>
           </h2>
 
-          <p className="body-copy measure mt-8 text-[#202635]/75">
+          <p className="body-copy measure mt-8 text-[#2b3242]/75">
             What does home need to make possible? What would make this
             investment resilient? Which parts of the city feel like you?
             These are the questions that shape our work — long before we
             send a listing.
           </p>
 
-          <p className="body-copy measure mt-5 text-[#202635]/75">
+          <p className="body-copy measure mt-5 text-[#2b3242]/75">
             KNC was founded to make the Dubai property experience feel
             more human. Our clients come from everywhere, but they all want
             the same thing: someone local enough to know the detail, and
@@ -53,7 +52,7 @@ export function AboutPage() {
       </section>
 
       {/* HOW WE WORK */}
-      <section className="bg-[#e9e4da] site-section">
+      <section className="bg-[#f2ede4] site-section">
         <div className="site-container">
           <SectionIntro
             label="Our Working Method"
@@ -61,7 +60,7 @@ export function AboutPage() {
               <>
                 Calm is not passive.
                 <br />
-                <em className="text-[#c97352]">It is prepared.</em>
+                <em className="text-[#9f7a47]">It is prepared.</em>
               </>
             }
             copy="A high-touch process, built around the detail that makes decisions feel simple."
@@ -87,17 +86,17 @@ export function AboutPage() {
             ].map((item) => (
               <div
                 key={item.step}
-                className="border-t border-[#202635]/20 pt-6"
+                className="border-t border-[#2b3242]/20 pt-6"
               >
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
+                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9f7a47]">
                   {item.step}
                 </span>
 
-                <h3 className="block-title mt-4 max-w-sm text-[#202635]">
+                <h3 className="block-title mt-4 max-w-sm text-[#2b3242]">
                   {item.title}
                 </h3>
 
-                <p className="mt-3 max-w-sm text-sm leading-6 text-[#202635]/65">
+                <p className="mt-3 max-w-sm text-sm leading-6 text-[#2b3242]/65">
                   {item.desc}
                 </p>
               </div>
@@ -107,17 +106,17 @@ export function AboutPage() {
       </section>
 
       {/* OUR COMMITMENT */}
-      <section className="bg-[#d9d2c5] site-section text-[#202635]">
+      <section className="bg-[#eee6d8] site-section text-[#2b3242]">
         <div className="site-container">
           <SectionLabel>Our Commitment</SectionLabel>
 
-          <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
+          <h2 className="section-title mt-6 max-w-4xl text-[#2b3242]">
             Useful honesty,
             <br />
-            <em className="text-[#c97352]">beautifully delivered.</em>
+            <em className="text-[#9f7a47]">beautifully delivered.</em>
           </h2>
 
-          <p className="body-copy measure mt-8 text-[#202635]/75">
+          <p className="body-copy measure mt-8 text-[#2b3242]/75">
             We will always tell you what we see, what we know, and what we
             would do if it were our decision. That is the foundation of trust
             — and the reason our business is built on referrals.
@@ -138,56 +137,6 @@ export function AboutPage() {
   );
 }
 
-export function PropertiesPage() {
-  const [filter, setFilter] = useState('All');
-  const filters = ['All', 'Villas', 'Apartments', 'Investment'];
-  const filtered = filter === 'All' ? properties : properties.filter((p) => filter === 'Villas' ? p.type.toLowerCase().includes('villa') : filter === 'Apartments' ? p.type.toLowerCase().includes('penthouse') : p.price.includes('8,900'));
-  return (
-    <main>
-      <PageHero
-        label="The property edit"
-        title={<>Places worth<br /><em className="text-[#c97352]">your attention.</em></>}
-        copy="A considered selection of Dubai homes and opportunities, selected for their quality, position, and possibility."
-        image="/images/downtown-safa-park.jpg"
-      />
-      <section className="bg-[#f5f0e6] site-section">
-        <div className="site-container">
-          <div className="flex flex-wrap gap-2 border-b border-[#202635]/15 pb-6">
-            {filters.map((item) => (
-              <button
-                key={item}
-                onClick={() => setFilter(item)}
-                className={`px-4 py-2 font-mono text-[10px] uppercase tracking-[.13em] transition-colors ${filter === item ? 'bg-[#202635] text-[#f5f0e6]' : 'border border-[#202635]/20 text-[#202635]/60 hover:border-[#c97352] hover:text-[#c97352]'
-                  }`}
-                data-testid={`button-property-filter-${item.toLowerCase()}`}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-          <div className={`mt-12 ${cardGrid(filtered.length)}`}>
-            {filtered.map((property) => (
-              <PropertyCard key={property.id} property={property} featured={false} />
-            ))}
-          </div>
-          {filtered.length === 0 && (
-            <div className="py-16 text-center">
-              <p className="block-title text-[#202635]">Nothing in this edit yet.</p>
-              <button
-                onClick={() => setFilter('All')}
-                className="mt-5 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] line-link"
-                data-testid="button-property-reset"
-              >
-                View the full edit
-              </button>
-            </div>
-          )}
-        </div>
-      </section>
-    </main>
-  );
-}
-
 export function ServicesPage() {
   return (
     <main className="overflow-x-clip">
@@ -198,7 +147,7 @@ export function ServicesPage() {
           <>
             Advice for
             <br />
-            <em className="text-[#c97352]">every direction.</em>
+            <em className="text-[#9f7a47]">every direction.</em>
           </>
         }
         copy="Buying, selling, renting, or investing — the route is different for everyone. The standard of care should not be."
@@ -206,7 +155,7 @@ export function ServicesPage() {
       />
 
       {/* CORE ADVISORY SERVICES */}
-      <section className="bg-[#e9e4da] site-section">
+      <section className="bg-[#f2ede4] site-section">
         <div className="site-container">
           <SectionIntro
             label="Advisory Practices"
@@ -214,7 +163,7 @@ export function ServicesPage() {
               <>
                 More than a
                 <br />
-                property <em className="text-[#c97352]">transaction.</em>
+                property <em className="text-[#9f7a47]">transaction.</em>
               </>
             }
             copy="Our role is to make the important parts clearer, and the complicated parts feel structured and held."
@@ -224,7 +173,7 @@ export function ServicesPage() {
             {services.map((service) => (
               <div id={service.id} key={service.id}>
                 <ServiceRow service={service} />
-                <p className="max-w-2xl pb-6 pl-4 text-sm leading-6 text-[#202635]/60 md:hidden">
+                <p className="max-w-2xl pb-6 pl-4 text-sm leading-6 text-[#2b3242]/60 md:hidden">
                   {service.description}
                 </p>
               </div>
@@ -234,7 +183,7 @@ export function ServicesPage() {
       </section>
 
       {/* SPECIALIST PRACTICES (DESIGN & BUILD / INTERIORS) */}
-      <section className="bg-[#dfe2dc] site-section">
+      <section className="bg-[#efeae2] site-section">
         <div className="site-container">
           <SectionIntro
             label="Specialist Practices"
@@ -242,7 +191,7 @@ export function ServicesPage() {
               <>
                 Design & interior
                 <br />
-                <em className="text-[#c97352]">coordination.</em>
+                <em className="text-[#9f7a47]">coordination.</em>
               </>
             }
             copy="Beyond advisory, we support clients with dedicated design, procurement, and furnishing coordination for their Dubai residences."
@@ -260,23 +209,23 @@ export function ServicesPage() {
                       src={specialist.image}
                       alt={specialist.title}
                       loading="lazy"
-                      className="h-full w-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
+                      className="h-full w-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                     />
                   </div>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9f7a47]">
                     Specialist Practice
                   </span>
-                  <h3 className="block-title mt-2 text-[#202635]">
+                  <h3 className="block-title mt-2 text-[#2b3242]">
                     {specialist.title}
                   </h3>
-                  <p className="mt-4 text-sm leading-7 text-[#202635]/70">
+                  <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
                     {specialist.description}
                   </p>
                 </div>
-                <div className="mt-8 pt-6 border-t border-[#202635]/10">
+                <div className="mt-8 pt-6 border-t border-[#2b3242]/10">
                   <Link
                     href={specialist.href}
-                    className="inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[#c97352] line-link"
+                    className="inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.14em] text-[#9f7a47] line-link"
                   >
                     Learn more
                     <ArrowUpRight size={14} />
@@ -289,16 +238,16 @@ export function ServicesPage() {
       </section>
 
       {/* WHAT YOU CAN EXPECT */}
-      <section className="bg-[#c6d0c9] site-section">
+      <section className="bg-[#ebe4d7] site-section">
         <div className="site-container grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
           <div>
             <SectionLabel>What you can expect</SectionLabel>
             <h2 className="section-title mt-6">
               No noise.
               <br />
-              <em className="text-[#c97352]">Just movement.</em>
+              <em className="text-[#9f7a47]">Just movement.</em>
             </h2>
-            <p className="mt-6 max-w-md text-sm leading-7 text-[#202635]/70">
+            <p className="mt-6 max-w-md text-sm leading-7 text-[#2b3242]/70">
               Clear commitments that guide every conversation, recommendation, and transaction we oversee.
             </p>
           </div>
@@ -311,9 +260,9 @@ export function ServicesPage() {
             ].map((item) => (
               <div
                 key={item}
-                className="flex items-center gap-4 border-b border-[#202635]/20 pb-4 text-sm font-medium text-[#202635]"
+                className="flex items-center gap-4 border-b border-[#2b3242]/20 pb-4 text-sm font-medium text-[#2b3242]"
               >
-                <Check size={16} className="shrink-0 text-[#c97352]" />
+                <Check size={16} className="shrink-0 text-[#9f7a47]" />
                 <span>{item}</span>
               </div>
             ))}
@@ -362,7 +311,7 @@ export function DesignBuildPage() {
           <>
             Design that
             <br />
-            <em className="text-[#c97352]">adds value.</em>
+            <em className="text-[#9f7a47]">adds value.</em>
           </>
         }
         copy="A property-focused design and coordination service for clients who want their Dubai home or investment property to feel considered, practical, and ready for its next chapter."
@@ -370,29 +319,29 @@ export function DesignBuildPage() {
       />
 
       {/* INTRO */}
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
           <SectionLabel>
             Design & build coordination
           </SectionLabel>
 
-          <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
+          <h2 className="section-title mt-6 max-w-4xl text-[#2b3242]">
             A better property deserves
             <br />
             a better{" "}
-            <em className="text-[#c97352]">
+            <em className="text-[#9f7a47]">
               plan.
             </em>
           </h2>
 
-          <p className="body-copy measure mt-8 text-[#202635]/75">
+          <p className="body-copy measure mt-8 text-[#2b3242]/75">
             Whether you are preparing a new home, improving a property
             before letting it, or considering how a space can work harder
             as an investment, the right decisions start with understanding
             the property and the people it needs to serve.
           </p>
 
-          <p className="body-copy measure mt-5 text-[#202635]/75">
+          <p className="body-copy measure mt-5 text-[#2b3242]/75">
             Property decisions do not always stop at the purchase. KNC brings
             the property perspective first, helping you coordinate the design
             direction and specialist requirements that make sense for your project.
@@ -400,13 +349,13 @@ export function DesignBuildPage() {
         </div>
 
         {/* SERVICE CARDS */}
-        <div className="site-container mt-12 grid border-t border-[#202635]/20 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="site-container mt-12 grid border-t border-[#2b3242]/20 sm:grid-cols-2 lg:grid-cols-4">
           {services.map((service) => (
             <div
               key={service.badge}
               className="
                 border-b
-                border-[#202635]/15
+                border-[#2b3242]/15
                 px-0
                 py-7
                 sm:px-6
@@ -418,15 +367,15 @@ export function DesignBuildPage() {
                 lg:last:pr-0
               "
             >
-              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
+              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9f7a47]">
                 {service.badge}
               </span>
 
-              <h3 className="block-title mt-4 max-w-xs text-[#202635]">
+              <h3 className="block-title mt-4 max-w-xs text-[#2b3242]">
                 {service.title}
               </h3>
 
-              <p className="mt-3 max-w-xs text-sm leading-6 text-[#202635]/60">
+              <p className="mt-3 max-w-xs text-sm leading-6 text-[#2b3242]/60">
                 {service.text}
               </p>
             </div>
@@ -435,7 +384,7 @@ export function DesignBuildPage() {
       </section>
 
       {/* WHAT CLIENTS CAN ASK FOR */}
-      <section className="bg-[#e9e4da] site-section">
+      <section className="bg-[#f2ede4] site-section">
         <div className="site-container">
           <SectionIntro
             label="What we can help with"
@@ -443,60 +392,60 @@ export function DesignBuildPage() {
               <>
                 Start with the
                 <br />
-                <em className="text-[#c97352]">property.</em>
+                <em className="text-[#9f7a47]">property.</em>
               </>
             }
             copy="Tailored coordination services designed to enhance the livability and capital value of your Dubai asset."
           />
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="border-t border-[#202635]/20 pt-6">
-              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
+            <div className="border-t border-[#2b3242]/20 pt-6">
+              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9f7a47]">
                 Preparation
               </span>
-              <h3 className="block-title mt-3 text-[#202635]">
+              <h3 className="block-title mt-3 text-[#2b3242]">
                 New home setup
               </h3>
-              <p className="mt-3 text-sm leading-6 text-[#202635]/65">
+              <p className="mt-3 text-sm leading-6 text-[#2b3242]/65">
                 Planning the design direction and practical requirements for
                 a newly purchased home.
               </p>
             </div>
 
-            <div className="border-t border-[#202635]/20 pt-6">
-              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
+            <div className="border-t border-[#2b3242]/20 pt-6">
+              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9f7a47]">
                 Optimization
               </span>
-              <h3 className="block-title mt-3 text-[#202635]">
+              <h3 className="block-title mt-3 text-[#2b3242]">
                 Investment property
               </h3>
-              <p className="mt-3 text-sm leading-6 text-[#202635]/65">
+              <p className="mt-3 text-sm leading-6 text-[#2b3242]/65">
                 Thinking through presentation, usability and improvements
                 before leasing or marketing a property.
               </p>
             </div>
 
-            <div className="border-t border-[#202635]/20 pt-6">
-              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
+            <div className="border-t border-[#2b3242]/20 pt-6">
+              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9f7a47]">
                 Aesthetic
               </span>
-              <h3 className="block-title mt-3 text-[#202635]">
+              <h3 className="block-title mt-3 text-[#2b3242]">
                 Interior direction
               </h3>
-              <p className="mt-3 text-sm leading-6 text-[#202635]/65">
+              <p className="mt-3 text-sm leading-6 text-[#2b3242]/65">
                 Establishing a clear visual direction before engaging the
                 appropriate interior or specialist team.
               </p>
             </div>
 
-            <div className="border-t border-[#202635]/20 pt-6">
-              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
+            <div className="border-t border-[#2b3242]/20 pt-6">
+              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9f7a47]">
                 Delivery
               </span>
-              <h3 className="block-title mt-3 text-[#202635]">
+              <h3 className="block-title mt-3 text-[#2b3242]">
                 Specialist coordination
               </h3>
-              <p className="mt-3 text-sm leading-6 text-[#202635]/65">
+              <p className="mt-3 text-sm leading-6 text-[#2b3242]/65">
                 Helping connect the property requirement with the right
                 specialist where additional design or build expertise is
                 needed.
@@ -507,7 +456,7 @@ export function DesignBuildPage() {
       </section>
 
       {/* CONSULTATION */}
-      <section className="bg-[#c6d0c9] site-section">
+      <section className="bg-[#ebe4d7] site-section">
         <div className="site-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
 
           {/* BRIEF */}
@@ -516,30 +465,30 @@ export function DesignBuildPage() {
               Start with the brief
             </SectionLabel>
 
-            <h2 className="section-title mt-6 text-[#202635]">
+            <h2 className="section-title mt-6 text-[#2b3242]">
               Tell us about the
               <br />
-              <em className="text-[#c97352]">
+              <em className="text-[#9f7a47]">
                 property.
               </em>
             </h2>
 
-            <p className="body-copy measure mt-6 text-[#202635]/65">
+            <p className="body-copy measure mt-6 text-[#2b3242]/65">
               Tell us what you have purchased, what you are planning, and what
               kind of support you need. Our team can understand the requirement
               and guide you towards the appropriate next step.
             </p>
 
-            <p className="measure-narrow mt-4 text-sm leading-7 text-[#202635]/60">
+            <p className="measure-narrow mt-4 text-sm leading-7 text-[#2b3242]/60">
               Share the basics and our team can follow up with the right
               questions about your property and requirements.
             </p>
 
-            <div className="mt-8 flex flex-col items-start gap-3 border-t border-[#202635]/20 pt-6 lg:mt-auto">
-              <p className="eyebrow text-[#c97352]">Or speak to the studio</p>
+            <div className="mt-8 flex flex-col items-start gap-3 border-t border-[#2b3242]/20 pt-6 lg:mt-auto">
+              <p className="eyebrow text-[#9f7a47]">Or speak to the studio</p>
               <a
                 href={`tel:${contact.phoneHref}`}
-                className="block-title text-[#202635] transition-colors hover:text-[#c97352]"
+                className="block-title text-[#2b3242] transition-colors hover:text-[#9f7a47]"
               >
                 {contact.phoneDisplay}
               </a>
@@ -547,7 +496,7 @@ export function DesignBuildPage() {
                 href={`https://wa.me/${contact.whatsapp}`}
                 target="_blank"
                 rel="noreferrer"
-                className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
+                className="line-link font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]"
               >
                 Chat on WhatsApp
               </a>
@@ -555,7 +504,7 @@ export function DesignBuildPage() {
           </div>
 
           {/* FORM */}
-          <div className="w-full rounded-sm bg-[#f5f0e6] p-5 shadow-sm sm:p-8">
+          <div className="w-full rounded-2xl bg-[#faf7f1] p-5 shadow-sm sm:p-8">
             <ContactForm
               compact
               inquiryType="design-build"
@@ -597,7 +546,7 @@ export function InteriorsPage() {
           <>
             The finishing
             <br />
-            <em className="text-[#c97352]">touch.</em>
+            <em className="text-[#9f7a47]">touch.</em>
           </>
         }
         copy="Interior direction and furniture solutions shaped around the property, its purpose, and the people who will use it."
@@ -605,7 +554,7 @@ export function InteriorsPage() {
       />
 
       {/* INTRO / IMAGE */}
-      <section className="bg-[#dfe2dc] site-section">
+      <section className="bg-[#efeae2] site-section">
         <div className="site-container">
           <div className="grid items-center gap-10 md:grid-cols-2 md:gap-14">
 
@@ -622,19 +571,19 @@ export function InteriorsPage() {
             <div className="min-w-0">
               <SectionLabel>Interior direction</SectionLabel>
 
-              <h2 className="section-title mt-6 max-w-xl text-[#202635]">
+              <h2 className="section-title mt-6 max-w-xl text-[#2b3242]">
                 A home should feel{" "}
-                <em className="text-[#c97352]">collected.</em>
+                <em className="text-[#9f7a47]">collected.</em>
               </h2>
 
-              <p className="body-copy measure mt-6 text-[#202635]/75">
+              <p className="body-copy measure mt-6 text-[#2b3242]/75">
                 From a newly purchased apartment to an investment property
                 being prepared for its next tenant, we help shape a clear
                 interior direction that feels practical, refined, and
                 appropriate to the property.
               </p>
 
-              <p className="body-copy measure mt-4 text-[#202635]/75">
+              <p className="body-copy measure mt-4 text-[#2b3242]/75">
                 The focus is not on adding more. It is on choosing the right
                 pieces, proportions, materials, and finishing details for the
                 space.
@@ -645,7 +594,7 @@ export function InteriorsPage() {
       </section>
 
       {/* SERVICES */}
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
           <SectionIntro
             label="What we can shape"
@@ -653,27 +602,27 @@ export function InteriorsPage() {
               <>
                 A complete point
                 <br />
-                <em className="text-[#c97352]">of view.</em>
+                <em className="text-[#9f7a47]">of view.</em>
               </>
             }
             copy="Interior support for new homes, refreshes, and investment properties that need to feel considered and ready."
           />
 
-          <div className="mt-12 grid border-t border-[#202635]/20 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid border-t border-[#2b3242]/20 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service) => (
               <div
                 key={service.badge}
-                className="border-b border-[#202635]/15 py-7 sm:px-6 sm:py-8 lg:border-b-0 lg:border-r lg:first:pl-0 lg:last:border-r-0 lg:last:pr-0"
+                className="border-b border-[#2b3242]/15 py-7 sm:px-6 sm:py-8 lg:border-b-0 lg:border-r lg:first:pl-0 lg:last:border-r-0 lg:last:pr-0"
               >
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#c97352]">
+                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#9f7a47]">
                   {service.badge}
                 </span>
 
-                <h3 className="block-title mt-8 max-w-sm text-[#202635]">
+                <h3 className="block-title mt-8 max-w-sm text-[#2b3242]">
                   {service.title}
                 </h3>
 
-                <p className="mt-4 max-w-sm text-sm leading-6 text-[#202635]/60">
+                <p className="mt-4 max-w-sm text-sm leading-6 text-[#2b3242]/60">
                   {service.text}
                 </p>
               </div>
@@ -683,7 +632,7 @@ export function InteriorsPage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="bg-[#e9e4da] site-section">
+      <section className="bg-[#f2ede4] site-section">
         <div className="site-container">
           <SectionIntro
             label="Our approach"
@@ -691,54 +640,54 @@ export function InteriorsPage() {
               <>
                 Less noise.
                 <br />
-                <em className="text-[#c97352]">More intention.</em>
+                <em className="text-[#9f7a47]">More intention.</em>
               </>
             }
             copy="A phased, property-first method that shapes coherent, finished spaces without unnecessary complexity."
           />
 
           <div className="mt-12 grid gap-8 md:grid-cols-3">
-            <div className="border-t border-[#202635]/20 pt-7">
-              <span className="font-mono text-[10px] tracking-[0.16em] text-[#c97352]">
+            <div className="border-t border-[#2b3242]/20 pt-7">
+              <span className="font-mono text-[11px] tracking-[0.16em] text-[#9f7a47]">
                 Phase · Understand
               </span>
 
-              <h3 className="block-title mt-4 text-[#202635]">
+              <h3 className="block-title mt-4 text-[#2b3242]">
                 Start with the property
               </h3>
 
-              <p className="mt-3 text-sm leading-6 text-[#202635]/65">
+              <p className="mt-3 text-sm leading-6 text-[#2b3242]/65">
                 We consider the location, layout, intended use, existing
                 condition, and the overall requirement before recommending
                 an interior direction.
               </p>
             </div>
 
-            <div className="border-t border-[#202635]/20 pt-7">
-              <span className="font-mono text-[10px] tracking-[0.16em] text-[#c97352]">
+            <div className="border-t border-[#2b3242]/20 pt-7">
+              <span className="font-mono text-[11px] tracking-[0.16em] text-[#9f7a47]">
                 Phase · Curate
               </span>
 
-              <h3 className="block-title mt-4 text-[#202635]">
+              <h3 className="block-title mt-4 text-[#2b3242]">
                 Choose what belongs
               </h3>
 
-              <p className="mt-3 text-sm leading-6 text-[#202635]/65">
+              <p className="mt-3 text-sm leading-6 text-[#2b3242]/65">
                 Furniture, finishes, lighting, art, and objects are
                 considered as part of one coherent visual language.
               </p>
             </div>
 
-            <div className="border-t border-[#202635]/20 pt-7">
-              <span className="font-mono text-[10px] tracking-[0.16em] text-[#c97352]">
+            <div className="border-t border-[#2b3242]/20 pt-7">
+              <span className="font-mono text-[11px] tracking-[0.16em] text-[#9f7a47]">
                 Phase · Complete
               </span>
 
-              <h3 className="block-title mt-4 text-[#202635]">
+              <h3 className="block-title mt-4 text-[#2b3242]">
                 Prepare the space
               </h3>
 
-              <p className="mt-3 text-sm leading-6 text-[#202635]/65">
+              <p className="mt-3 text-sm leading-6 text-[#2b3242]/65">
                 The final result is a space that feels ready for living,
                 presentation, leasing, or the property's next chapter.
               </p>
@@ -748,33 +697,33 @@ export function InteriorsPage() {
       </section>
 
       {/* CONTACT */}
-      <section className="bg-[#c6d0c9] site-section">
+      <section className="bg-[#ebe4d7] site-section">
         <div className="site-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
 
           <div className="flex flex-col">
             <SectionLabel>Talk to the studio</SectionLabel>
 
-            <h2 className="section-title mt-6 text-[#202635]">
+            <h2 className="section-title mt-6 text-[#2b3242]">
               Bring us
               <br />
-              <em className="text-[#c97352]">the room.</em>
+              <em className="text-[#9f7a47]">the room.</em>
             </h2>
 
-            <p className="body-copy measure mt-6 text-[#202635]/65">
+            <p className="body-copy measure mt-6 text-[#2b3242]/65">
               Tell us about the property, what you want to achieve, and the
               kind of interior support you are looking for.
             </p>
 
-            <p className="measure-narrow mt-4 text-sm leading-7 text-[#202635]/60">
+            <p className="measure-narrow mt-4 text-sm leading-7 text-[#2b3242]/60">
               Share a few details and our team can understand the requirement
               before discussing the appropriate next step.
             </p>
 
-            <div className="mt-8 flex flex-col items-start gap-3 border-t border-[#202635]/20 pt-6 lg:mt-auto">
-              <p className="eyebrow text-[#c97352]">Or speak to the studio</p>
+            <div className="mt-8 flex flex-col items-start gap-3 border-t border-[#2b3242]/20 pt-6 lg:mt-auto">
+              <p className="eyebrow text-[#9f7a47]">Or speak to the studio</p>
               <a
                 href={`tel:${contact.phoneHref}`}
-                className="block-title text-[#202635] transition-colors hover:text-[#c97352]"
+                className="block-title text-[#2b3242] transition-colors hover:text-[#9f7a47]"
               >
                 {contact.phoneDisplay}
               </a>
@@ -782,14 +731,14 @@ export function InteriorsPage() {
                 href={`https://wa.me/${contact.whatsapp}`}
                 target="_blank"
                 rel="noreferrer"
-                className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
+                className="line-link font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]"
               >
                 Chat on WhatsApp
               </a>
             </div>
           </div>
 
-          <div className="w-full rounded-sm bg-[#f5f0e6] p-5 shadow-sm sm:p-8">
+          <div className="w-full rounded-2xl bg-[#faf7f1] p-5 shadow-sm sm:p-8">
             <ContactForm
               compact
               inquiryType="interiors"
@@ -837,7 +786,7 @@ export function AreasPage() {
           <>
             Find the place
             <br />
-            that feels like <em className="text-[#c97352]">you.</em>
+            that feels like <em className="text-[#9f7a47]">you.</em>
           </>
         }
         copy="Dubai is a city of very different neighbourhoods. We help you understand each location, its character, and the property opportunities it offers."
@@ -845,19 +794,19 @@ export function AreasPage() {
       />
 
       {/* AREA NOTES */}
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
 
           <div className="max-w-3xl">
             <SectionLabel>Area notes</SectionLabel>
 
-            <h2 className="section-title mt-6 text-[#202635]">
+            <h2 className="section-title mt-6 text-[#2b3242]">
               Understand Dubai
               <br />
-              <em className="text-[#c97352]">by address.</em>
+              <em className="text-[#9f7a47]">by address.</em>
             </h2>
 
-            <p className="body-copy measure mt-6 text-[#202635]/65">
+            <p className="body-copy measure mt-6 text-[#2b3242]/65">
               From waterfront communities and established villa
               neighbourhoods to new districts shaped by Dubai&apos;s continued
               growth, every address offers a different way of living and
@@ -879,15 +828,15 @@ export function AreasPage() {
                     src={area.image}
                     alt={`${area.name}, Dubai`}
                     loading="lazy"
-                    className="transition-transform duration-700 group-hover:scale-105"
+                    className="transition-transform duration-700 group-hover:scale-[1.03]"
                     data-testid={`img-area-detail-${area.id}`}
                   />
                 </div>
 
                 <div className="mt-5 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                  <p className="eyebrow text-[#c97352]">{area.descriptor}</p>
+                  <p className="eyebrow text-[#9f7a47]">{area.descriptor}</p>
                   {counts[area.id] && (
-                    <p className="font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/45" data-testid={`text-area-count-${area.id}`}>
+                    <p className="font-mono text-[11px] uppercase tracking-[.13em] text-[#2b3242]/65" data-testid={`text-area-count-${area.id}`}>
                       {counts[area.id].properties + counts[area.id].projects === 0
                         ? 'By request'
                         : [
@@ -898,19 +847,19 @@ export function AreasPage() {
                   )}
                 </div>
                 <h3 className="card-title mt-2">{area.name}</h3>
-                <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#202635]/65">{area.detail}</p>
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#2b3242]/65">{area.detail}</p>
 
-                <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[#202635]/12 pt-4">
+                <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[#2b3242]/12 pt-4">
                   <Link
                     href={`/communities/${area.id}`}
-                    className="line-link inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
+                    className="line-link inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]"
                     data-testid={`link-area-properties-${area.id}`}
                   >
                     View community <ArrowUpRight size={13} />
                   </Link>
                   <Link
                     href="/contact"
-                    className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55"
+                    className="line-link font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/65"
                   >
                     Ask an advisor
                   </Link>
@@ -920,12 +869,12 @@ export function AreasPage() {
           </div>
 
           {/* LOCAL PERSPECTIVE */}
-          <div className="measure mt-14 border-t border-[#202635]/20 pt-8">
-            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#c97352]">
+          <div className="measure mt-14 border-t border-[#2b3242]/20 pt-8">
+            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#9f7a47]">
               Local perspective
             </span>
 
-            <p className="body-copy measure mt-3 text-[#202635]/70">
+            <p className="body-copy measure mt-3 text-[#2b3242]/70">
               Choosing a Dubai property starts with choosing the right
               location. If you are unsure which community fits your
               requirements, speak with our property advisory team before
@@ -936,34 +885,34 @@ export function AreasPage() {
       </section>
 
       {/* AREA ADVISORY CTA */}
-      <section className="bg-[#c6d0c9] site-section">
+      <section className="bg-[#ebe4d7] site-section">
         <div className="site-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
 
           <div className="flex flex-col">
             <SectionLabel>Need a local view?</SectionLabel>
 
-            <h2 className="section-title mt-6 text-[#202635]">
+            <h2 className="section-title mt-6 text-[#2b3242]">
               Start with the{" "}
-              <em className="text-[#c97352]">right area.</em>
+              <em className="text-[#9f7a47]">right area.</em>
             </h2>
 
-            <p className="body-copy measure mt-6 text-[#202635]/65">
+            <p className="body-copy measure mt-6 text-[#2b3242]/65">
               Tell us what you are looking for and our property advisory team
               can help you compare locations, property types, and suitable
               opportunities.
             </p>
 
-            <p className="measure-narrow mt-4 text-sm leading-7 text-[#202635]/60">
+            <p className="measure-narrow mt-4 text-sm leading-7 text-[#2b3242]/60">
               Share your requirements and we&apos;ll help you understand which
               Dubai locations may fit your plans, and what is realistic in each
               of them.
             </p>
 
-            <div className="mt-8 flex flex-col items-start gap-3 border-t border-[#202635]/20 pt-6 lg:mt-auto">
-              <p className="eyebrow text-[#c97352]">Or speak to an advisor</p>
+            <div className="mt-8 flex flex-col items-start gap-3 border-t border-[#2b3242]/20 pt-6 lg:mt-auto">
+              <p className="eyebrow text-[#9f7a47]">Or speak to an advisor</p>
               <a
                 href={`tel:${contact.phoneHref}`}
-                className="block-title text-[#202635] transition-colors hover:text-[#c97352]"
+                className="block-title text-[#2b3242] transition-colors hover:text-[#9f7a47]"
               >
                 {contact.phoneDisplay}
               </a>
@@ -971,14 +920,14 @@ export function AreasPage() {
                 href={`https://wa.me/${contact.whatsapp}`}
                 target="_blank"
                 rel="noreferrer"
-                className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
+                className="line-link font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]"
               >
                 Chat on WhatsApp
               </a>
             </div>
           </div>
 
-          <div className="w-full rounded-sm bg-[#f5f0e6] p-5 shadow-sm sm:p-8">
+          <div className="w-full rounded-2xl bg-[#faf7f1] p-5 shadow-sm sm:p-8">
             <ContactForm compact inquiryType="area-advisory" />
           </div>
 
@@ -1002,7 +951,7 @@ export function ContactPage() {
             A good move
             <br />
             starts with a{" "}
-            <em className="text-[#c97352]">hello.</em>
+            <em className="text-[#9f7a47]">hello.</em>
           </>
         }
         copy="Tell us a little about what you are looking for. We&apos;ll come back with a thoughtful next step."
@@ -1010,7 +959,7 @@ export function ContactPage() {
       />
 
       {/* CONTACT INFORMATION + FORM */}
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
 
           <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 xl:gap-20">
@@ -1022,7 +971,7 @@ export function ContactPage() {
               <div className="mt-8">
                 <a
                   href={`tel:${contact.phoneHref}`}
-                  className="block-title block text-[#202635] transition-colors hover:text-[#c97352]"
+                  className="block-title block text-[#2b3242] transition-colors hover:text-[#9f7a47]"
                   data-testid="link-contact-page-phone"
                 >
                   {contact.phoneDisplay}
@@ -1030,7 +979,7 @@ export function ContactPage() {
 
                 <a
                   href={`mailto:${contact.email}`}
-                  className="mt-3 block break-all font-mono text-[10px] uppercase tracking-[0.14em] text-[#202635]/60 transition-colors hover:text-[#c97352]"
+                  className="mt-3 block break-all font-mono text-[11px] uppercase tracking-[0.14em] text-[#2b3242]/60 transition-colors hover:text-[#9f7a47]"
                   data-testid="link-contact-page-email"
                 >
                   {contact.email}
@@ -1040,7 +989,7 @@ export function ContactPage() {
                   href={`https://wa.me/${contact.whatsapp}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-5 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-[#c97352] line-link"
+                  className="mt-5 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[#9f7a47] line-link"
                   data-testid="link-contact-page-whatsapp"
                 >
                   WhatsApp us
@@ -1049,41 +998,41 @@ export function ContactPage() {
               </div>
 
               {/* STUDIO HOURS */}
-              <div className="mt-10 border-t border-[#202635]/15 pt-6">
-                <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#202635]/40">
+              <div className="mt-10 border-t border-[#2b3242]/15 pt-6">
+                <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#2b3242]/60">
                   Studio hours
                 </p>
 
-                <p className="mt-4 max-w-sm text-sm leading-7 text-[#202635]/60">
+                <p className="mt-4 max-w-sm text-sm leading-7 text-[#2b3242]/60">
                   {contact.studioHours}
                 </p>
               </div>
 
               {/* DUBAI OFFICE */}
-              <div className="mt-8 border-t border-[#202635]/15 pt-6">
-                <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#c97352]">
+              <div className="mt-8 border-t border-[#2b3242]/15 pt-6">
+                <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#9f7a47]">
                   Dubai office
                 </p>
 
                 <div className="mt-4 flex items-start gap-3">
                   <Globe2
                     size={16}
-                    className="mt-1 shrink-0 text-[#c97352]"
+                    className="mt-1 shrink-0 text-[#9f7a47]"
                   />
 
-                  <p className="text-sm leading-7 text-[#202635]/60">
+                  <p className="text-sm leading-7 text-[#2b3242]/60">
                     {contact.dubaiAddress}
                   </p>
                 </div>
               </div>
 
               {/* INDIA OFFICE */}
-              <div className="mt-8 border-t border-[#202635]/15 pt-6">
-                <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#c97352]">
+              <div className="mt-8 border-t border-[#2b3242]/15 pt-6">
+                <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#9f7a47]">
                   India office
                 </p>
 
-                <p className="mt-4 text-sm leading-7 text-[#202635]/60">
+                <p className="mt-4 text-sm leading-7 text-[#2b3242]/60">
                   {contact.indiaAddress}
                 </p>
               </div>
@@ -1092,22 +1041,22 @@ export function ContactPage() {
             {/* RIGHT - FORM */}
             <div>
               <div className="mb-7">
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">
+                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9f7a47]">
                   Property enquiry
                 </span>
 
-                <h2 className="block-title mt-4 text-[#202635]">
+                <h2 className="block-title mt-4 text-[#2b3242]">
                   Tell us what you&apos;re looking for.
                 </h2>
 
-                <p className="mt-3 max-w-xl text-sm leading-6 text-[#202635]/60">
+                <p className="mt-3 max-w-xl text-sm leading-6 text-[#2b3242]/60">
                   Whether you are buying, selling, investing, or simply
                   exploring Dubai property, share a few details and our team
                   will get back to you.
                 </p>
               </div>
 
-              <div className="rounded-sm bg-[#e9e4da] p-5 shadow-sm sm:p-8">
+              <div className="rounded-2xl bg-[#f2ede4] p-5 shadow-sm sm:p-8">
                 <ContactForm />
               </div>
             </div>
@@ -1117,35 +1066,35 @@ export function ContactPage() {
       </section>
 
       {/* BOTTOM CONTACT STRIP */}
-      <section className="site-section site-section-compact bg-[#c6d0c9]">
+      <section className="site-section site-section-compact bg-[#ebe4d7]">
         <div className="site-container grid gap-8 sm:grid-cols-3 sm:gap-10">
 
           <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#c97352]">
+            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#9f7a47]">
               Dubai
             </span>
-            <p className="card-title mt-3 text-[#202635]">
+            <p className="card-title mt-3 text-[#2b3242]">
               Property advisory
             </p>
           </div>
 
           <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#c97352]">
+            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#9f7a47]">
               India
             </span>
-            <p className="card-title mt-3 text-[#202635]">
+            <p className="card-title mt-3 text-[#2b3242]">
               DLF Phase 1, Gurugram
             </p>
           </div>
 
           <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#c97352]">
+            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#9f7a47]">
               Speak with us
             </span>
 
             <a
               href={`tel:${contact.phoneHref}`}
-              className="card-title mt-3 block text-[#202635] transition-colors hover:text-[#c97352]"
+              className="card-title mt-3 block text-[#2b3242] transition-colors hover:text-[#9f7a47]"
             >
               {contact.phoneDisplay}
             </a>
@@ -1199,7 +1148,7 @@ export function AboutApproachPage() {
           <>
             Calm is not passive.
             <br />
-            <em className="text-[#c97352]">It is prepared.</em>
+            <em className="text-[#9f7a47]">It is prepared.</em>
           </>
         }
         copy="A disciplined, transparent advisory practice shaped around the reality of Dubai real estate. No pressure, no developer bias — just considered guidance at every turn."
@@ -1207,16 +1156,16 @@ export function AboutApproachPage() {
       />
 
       {/* CORE PHILOSOPHY */}
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
           <SectionLabel>Core Philosophy</SectionLabel>
 
-          <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
+          <h2 className="section-title mt-6 max-w-4xl text-[#2b3242]">
             The standard of care should match the magnitude of the{' '}
-            <em className="text-[#c97352]">decision.</em>
+            <em className="text-[#9f7a47]">decision.</em>
           </h2>
 
-          <div className="body-copy measure mt-10 space-y-6 text-[#202635]/75">
+          <div className="body-copy measure mt-10 space-y-6 text-[#2b3242]/75">
             <p>
               In a fast-moving market like Dubai, speed is often confused with competence. We take the contrary view: that the best property moves are made with deliberation, contextual analysis, and an honest reading of both upside and downside.
             </p>
@@ -1228,7 +1177,7 @@ export function AboutApproachPage() {
       </section>
 
       {/* ADVISORY PILLARS */}
-      <section className="bg-[#e9e4da] site-section">
+      <section className="bg-[#f2ede4] site-section">
         <div className="site-container">
           <SectionIntro
             label="Structured Process"
@@ -1236,7 +1185,7 @@ export function AboutApproachPage() {
               <>
                 Four phases of
                 <br />
-                <em className="text-[#c97352]">considered advisory.</em>
+                <em className="text-[#9f7a47]">considered advisory.</em>
               </>
             }
             copy="From initial consultation through to post-handover asset management, our process ensures total clarity and legal security."
@@ -1248,15 +1197,15 @@ export function AboutApproachPage() {
               return (
                 <div
                   key={pillar.title}
-                  className="rounded-sm border border-[#202635]/15 bg-[#f5f0e6] p-6 shadow-xs transition-shadow hover:shadow-md sm:p-7"
+                  className="rounded-2xl border border-[#2b3242]/15 bg-[#faf7f1] p-6 shadow-xs transition-shadow hover:shadow-md sm:p-7"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xs bg-[#202635] text-[#d9c6a4]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xs bg-[#2b3242] text-[#d9c6a4]">
                     <Icon size={22} />
                   </div>
-                  <h3 className="block-title mt-6 text-[#202635]">
+                  <h3 className="block-title mt-6 text-[#2b3242]">
                     {pillar.title}
                   </h3>
-                  <p className="mt-4 text-sm leading-6 text-[#202635]/65">
+                  <p className="mt-4 text-sm leading-6 text-[#2b3242]/65">
                     {pillar.description}
                   </p>
                 </div>
@@ -1267,7 +1216,7 @@ export function AboutApproachPage() {
       </section>
 
       {/* CONVERSATION STRIP */}
-      <section className="bg-[#202635] site-section text-[#f5f0e6]">
+      <section className="bg-[#2b3242] site-section text-[#faf7f1]">
         <div className="site-container text-center">
           <SectionLabel>Connect With An Advisor</SectionLabel>
 
@@ -1276,7 +1225,7 @@ export function AboutApproachPage() {
             <em className="text-[#d9c6a4]">conversation.</em>
           </h2>
 
-          <p className="body-copy measure mx-auto mt-6 text-[#f5f0e6]/70">
+          <p className="body-copy measure mx-auto mt-6 text-[#faf7f1]/70">
             No sales pitches. Just a thoughtful discussion on your Dubai property plans, community options, and investment goals.
           </p>
 
@@ -1342,7 +1291,7 @@ export function IndiaOfficePage() {
           <>
             Connecting India to
             <br />
-            <em className="text-[#c97352]">prime Dubai real estate.</em>
+            <em className="text-[#9f7a47]">prime Dubai real estate.</em>
           </>
         }
         copy="Dedicated, local advisory for Indian business families, NRIs, and global investors seeking high-calibre residential and investment property in Dubai."
@@ -1350,16 +1299,16 @@ export function IndiaOfficePage() {
       />
 
       {/* OVERVIEW */}
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
           <SectionLabel>Local Presence, International Reach</SectionLabel>
 
-          <h2 className="section-title mt-6 max-w-4xl text-[#202635]">
+          <h2 className="section-title mt-6 max-w-4xl text-[#2b3242]">
             A trusted bridge between{' '}
-            <em className="text-[#c97352]">India and Dubai.</em>
+            <em className="text-[#9f7a47]">India and Dubai.</em>
           </h2>
 
-          <div className="body-copy measure mt-10 space-y-6 text-[#202635]/75">
+          <div className="body-copy measure mt-10 space-y-6 text-[#2b3242]/75">
             <p>
               For Indian residents and global NRI investors, Dubai represents one of the world’s most accessible, tax-efficient, and currency-stable real estate environments. However, cross-border property transactions require accurate regulatory context, reliable due diligence, and dedicated post-purchase coordination.
             </p>
@@ -1371,7 +1320,7 @@ export function IndiaOfficePage() {
       </section>
 
       {/* SERVICES FOR INDIAN INVESTORS */}
-      <section className="bg-[#dfe2dc] site-section">
+      <section className="bg-[#efeae2] site-section">
         <div className="site-container">
           <SectionIntro
             label="Cross-Border Services"
@@ -1379,7 +1328,7 @@ export function IndiaOfficePage() {
               <>
                 Tailored solutions for
                 <br />
-                <em className="text-[#c97352]">Indian & NRI clients.</em>
+                <em className="text-[#9f7a47]">Indian & NRI clients.</em>
               </>
             }
             copy="Every step of the acquisition process is handled with complete regulatory compliance and transparent communication."
@@ -1389,15 +1338,15 @@ export function IndiaOfficePage() {
             {benefits.map((item) => (
               <div
                 key={item.title}
-                className="rounded-sm border border-[#202635]/15 bg-[#f5f0e6] p-6 shadow-xs transition-shadow hover:shadow-md sm:p-7"
+                className="rounded-2xl border border-[#2b3242]/15 bg-[#faf7f1] p-6 shadow-xs transition-shadow hover:shadow-md sm:p-7"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xs bg-[#c97352] text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xs bg-[#8f6d3f] text-[#fffdf8]">
                   <Check size={20} />
                 </div>
-                <h3 className="block-title mt-6 text-[#202635]">
+                <h3 className="block-title mt-6 text-[#2b3242]">
                   {item.title}
                 </h3>
-                <p className="mt-4 text-sm leading-6 text-[#202635]/65">
+                <p className="mt-4 text-sm leading-6 text-[#2b3242]/65">
                   {item.description}
                 </p>
               </div>
@@ -1407,32 +1356,32 @@ export function IndiaOfficePage() {
       </section>
 
       {/* OFFICE DETAILS & CONSULTATION FORM */}
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 xl:gap-20">
           <div>
             <SectionLabel>India Office</SectionLabel>
 
-            <h2 className="section-title mt-6 text-[#202635]">
+            <h2 className="section-title mt-6 text-[#2b3242]">
               Meet our team in{' '}
-              <em className="text-[#c97352]">Gurugram.</em>
+              <em className="text-[#9f7a47]">Gurugram.</em>
             </h2>
 
-            <p className="body-copy measure mt-6 text-[#202635]/70">
+            <p className="body-copy measure mt-6 text-[#2b3242]/70">
               Schedule an in-person advisory meeting at our Gurugram desk or request a private video consultation with our senior UAE team.
             </p>
 
-            <div className="mt-8 space-y-6 rounded-sm border border-[#202635]/15 bg-[#e9e4da] p-6 sm:p-8">
+            <div className="mt-8 space-y-6 rounded-2xl border border-[#2b3242]/15 bg-[#f2ede4] p-6 sm:p-8">
               <div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">Address</span>
-                <p className="card-title mt-2 text-[#202635]">DLF Phase 1, Gurugram</p>
-                <p className="text-xs text-[#202635]/60">Haryana, India</p>
+                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9f7a47]">Address</span>
+                <p className="card-title mt-2 text-[#2b3242]">DLF Phase 1, Gurugram</p>
+                <p className="text-xs text-[#2b3242]/60">Haryana, India</p>
               </div>
 
-              <div className="border-t border-[#202635]/15 pt-6">
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">Direct Contact</span>
+              <div className="border-t border-[#2b3242]/15 pt-6">
+                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9f7a47]">Direct Contact</span>
                 <a
                   href={`tel:${contact.phoneHref}`}
-                  className="card-title mt-2 block text-[#202635] transition-colors hover:text-[#c97352]"
+                  className="card-title mt-2 block text-[#2b3242] transition-colors hover:text-[#9f7a47]"
                 >
                   {contact.phoneDisplay}
                 </a>
@@ -1440,7 +1389,7 @@ export function IndiaOfficePage() {
                   href={`https://wa.me/${contact.whatsapp}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-3 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-[#25D366] hover:underline"
+                  className="mt-3 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[#17753f] hover:underline"
                 >
                   <FaWhatsapp size={15} /> Chat on WhatsApp
                 </a>
@@ -1450,10 +1399,10 @@ export function IndiaOfficePage() {
 
           <div>
             <div className="mb-6">
-              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#c97352]">Enquiry Form</span>
-              <h3 className="block-title mt-2 text-[#202635]">Request an India Desk Consultation</h3>
+              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9f7a47]">Enquiry Form</span>
+              <h3 className="block-title mt-2 text-[#2b3242]">Request an India Desk Consultation</h3>
             </div>
-            <div className="rounded-sm bg-[#e9e4da] p-5 shadow-sm sm:p-8">
+            <div className="rounded-2xl bg-[#f2ede4] p-5 shadow-sm sm:p-8">
               <ContactForm inquiryType="india-office" />
             </div>
           </div>
@@ -1521,7 +1470,7 @@ export function MarketInsightsPage() {
           <>
             Dubai property fundamentals,
             <br />
-            <em className="text-[#c97352]">grounded in fact.</em>
+            <em className="text-[#9f7a47]">grounded in fact.</em>
           </>
         }
         copy="Independent regulatory context, rental yield mechanics, and macroeconomic foundations for informed property decisions across Dubai."
@@ -1529,7 +1478,7 @@ export function MarketInsightsPage() {
       />
 
       {/* CORE MARKET PILLARS */}
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
           <SectionIntro
             label="Market Fundamentals"
@@ -1537,7 +1486,7 @@ export function MarketInsightsPage() {
               <>
                 The structural pillars of
                 <br />
-                <em className="text-[#c97352]">Dubai real estate.</em>
+                <em className="text-[#9f7a47]">Dubai real estate.</em>
               </>
             }
             copy="Dubai’s property market is built on robust legal security, government escrow regulations, and global capital preservation."
@@ -1549,16 +1498,16 @@ export function MarketInsightsPage() {
               return (
                 <div
                   key={item.title}
-                  className="flex h-full flex-col rounded-sm border border-[#202635]/15 bg-[#e9e4da] p-6 shadow-xs transition-shadow hover:shadow-md sm:p-7"
+                  className="flex h-full flex-col rounded-2xl border border-[#2b3242]/15 bg-[#f2ede4] p-6 shadow-xs transition-shadow hover:shadow-md sm:p-7"
                 >
                   <div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xs bg-[#202635] text-[#d9c6a4]">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xs bg-[#2b3242] text-[#d9c6a4]">
                       <Icon size={22} />
                     </div>
-                    <h3 className="block-title mt-6 text-[#202635]">
+                    <h3 className="block-title mt-6 text-[#2b3242]">
                       {item.title}
                     </h3>
-                    <p className="mt-4 text-sm leading-6 text-[#202635]/70">
+                    <p className="mt-4 text-sm leading-6 text-[#2b3242]/70">
                       {item.description}
                     </p>
                   </div>
@@ -1570,47 +1519,47 @@ export function MarketInsightsPage() {
       </section>
 
       {/* GLOBAL COMPARISON TABLE */}
-      <section className="bg-[#dfe2dc] site-section">
+      <section className="bg-[#efeae2] site-section">
         <div className="site-container">
           <SectionLabel>Global Comparison</SectionLabel>
 
-          <h2 className="section-title mt-6 text-[#202635]">
+          <h2 className="section-title mt-6 text-[#2b3242]">
             Why global capital{' '}
-            <em className="text-[#c97352]">chooses Dubai.</em>
+            <em className="text-[#9f7a47]">chooses Dubai.</em>
           </h2>
 
-          <div className="mt-10 overflow-x-auto rounded-sm border border-[#202635]/15 bg-[#f5f0e6] shadow-xs">
-            <table className="w-full text-left font-sans text-sm text-[#202635]">
+          <div className="mt-10 overflow-x-auto rounded-sm border border-[#2b3242]/15 bg-[#faf7f1] shadow-xs">
+            <table className="w-full text-left font-sans text-sm text-[#2b3242]">
               <thead>
-                <tr className="border-b border-[#202635]/15 bg-[#202635] font-mono text-[10px] uppercase tracking-[0.14em] text-[#f5f0e6]">
+                <tr className="border-b border-[#2b3242]/15 bg-[#2b3242] font-mono text-[11px] uppercase tracking-[0.14em] text-[#faf7f1]">
                   <th className="p-4 sm:p-5">Indicator</th>
                   <th className="p-4 sm:p-5 text-[#d9c6a4]">Dubai</th>
                   <th className="p-4 sm:p-5">London</th>
                   <th className="p-4 sm:p-5">New York</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#202635]/10">
+              <tbody className="divide-y divide-[#2b3242]/10">
                 <tr>
                   <td className="p-4 font-serif text-base sm:p-5">Annual Property Tax</td>
-                  <td className="p-4 font-mono font-bold text-[#c97352] sm:p-5">0%</td>
+                  <td className="p-4 font-mono font-bold text-[#9f7a47] sm:p-5">0%</td>
                   <td className="p-4 sm:p-5">Council Tax & Band Rates</td>
                   <td className="p-4 sm:p-5">Approx. 1.2% – 2.0%</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-serif text-base sm:p-5">Capital Gains Tax</td>
-                  <td className="p-4 font-mono font-bold text-[#c97352] sm:p-5">0%</td>
+                  <td className="p-4 font-mono font-bold text-[#9f7a47] sm:p-5">0%</td>
                   <td className="p-4 sm:p-5">Up to 24%</td>
                   <td className="p-4 sm:p-5">Up to 20% + State Tax</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-serif text-base sm:p-5">Gross Rental Yields</td>
-                  <td className="p-4 font-mono font-bold text-[#c97352] sm:p-5">6.0% – 9.0%</td>
+                  <td className="p-4 font-mono font-bold text-[#9f7a47] sm:p-5">6.0% – 9.0%</td>
                   <td className="p-4 sm:p-5">2.5% – 4.0%</td>
                   <td className="p-4 sm:p-5">3.0% – 4.5%</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-serif text-base sm:p-5">Investor Residency Visa</td>
-                  <td className="p-4 font-mono font-bold text-[#c97352] sm:p-5">10-Year Golden Visa</td>
+                  <td className="p-4 font-mono font-bold text-[#9f7a47] sm:p-5">10-Year Golden Visa</td>
                   <td className="p-4 sm:p-5">Not Applicable</td>
                   <td className="p-4 sm:p-5">EB-5 ($800k+ USD)</td>
                 </tr>
@@ -1621,7 +1570,7 @@ export function MarketInsightsPage() {
       </section>
 
       {/* ADVISORY BRIEFING CTA */}
-      <section className="bg-[#202635] site-section text-[#f5f0e6]">
+      <section className="bg-[#2b3242] site-section text-[#faf7f1]">
         <div className="site-container text-center">
           <SectionLabel>Private Research Briefing</SectionLabel>
 
@@ -1630,7 +1579,7 @@ export function MarketInsightsPage() {
             <em className="text-[#d9c6a4]">market analysis.</em>
           </h2>
 
-          <p className="body-copy measure mx-auto mt-6 text-[#f5f0e6]/70">
+          <p className="body-copy measure mx-auto mt-6 text-[#faf7f1]/70">
             Connect with our advisory desk for detailed yield modeling, historical transaction data, and off-plan allocation strategies tailored to your investment mandate.
           </p>
 

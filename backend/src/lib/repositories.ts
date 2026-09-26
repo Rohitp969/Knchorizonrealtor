@@ -164,7 +164,10 @@ const FIELDS = {
     email: "email",
     passwordHash: "password_hash",
     role: "role",
+    isActive: "is_active",
+    canPublishArticles: "can_publish_articles",
     createdAt: "created_at",
+    updatedAt: "updated_at",
   },
   inquiries: {
     name: "name",

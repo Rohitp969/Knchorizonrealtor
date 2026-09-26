@@ -570,7 +570,11 @@ router.get("/admin/developers/:id/projects", async (req, res, next) => {
   }
 });
 
-router.post("/admin/uploads", upload.single("image"), async (req, res, next) => {
+/*
+ * Image upload: the file goes to Cloudinary and is recorded in the media library. Shared with
+ * the SEO console (routes/seo.ts), which mounts the same handler behind its own role check.
+ */
+export async function handleImageUpload(req: import("express").Request, res: import("express").Response, next: import("express").NextFunction) {
   if (!req.file) return res.status(400).json({ message: "An image file is required." });
   try {
     const { uploadToCloudinary } = await import("../lib/cloudinary.ts");
@@ -597,7 +601,9 @@ router.post("/admin/uploads", upload.single("image"), async (req, res, next) => 
     }
     return next(error);
   }
-});
+}
+
+router.post("/admin/uploads", upload.single("image"), handleImageUpload);
 
 // Media library routes
 router.get("/admin/media", async (_req, res, next) => {
@@ -883,7 +889,7 @@ router.delete("/admin/gallery/:id", async (req, res, next) => {
   } catch (error) { return next(error); }
 });
 
-export { uploadDir };
+export { upload, uploadDir };
 
 /*
  * Site settings.

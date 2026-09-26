@@ -15,7 +15,7 @@ import {
   type GalleryItem,
   type Property,
 } from '@/lib/site-data';
-import { usePageMeta } from '@/lib/seo';
+import { absoluteUrl, articleJsonLd, listingJsonLd, usePageMeta, useSeoData, type SeoFields } from '@/lib/seo';
 import { useContact, useSiteSettings } from '@/lib/site-settings';
 
 const price = (value: number, currency = 'AED') => `${currency} ${new Intl.NumberFormat('en-AE').format(value)}`;
@@ -54,22 +54,22 @@ function narrowToCategory(list: RemoteProperty[], category: string) {
 function AppliedFilters({ query, onClear, count }: { query: ReturnType<typeof parsePropertySearch>; onClear: string; count: ReactNode }) {
   const applied = describeSearch(query);
   return (
-    <div className="mt-6 border-b border-[#202635]/10 pb-6" data-testid="applied-filters">
+    <div className="mt-6 border-b border-[#2b3242]/10 pb-6" data-testid="applied-filters">
       <div className="flex flex-wrap items-center gap-2">
         {applied.map((entry) => (
           <span
             key={entry.label}
-            className="inline-flex items-center gap-1.5 rounded-sm border border-[#202635]/15 bg-white px-3 py-1.5 font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]"
+            className="inline-flex items-center gap-1.5 rounded-sm border border-[#2b3242]/15 bg-[#fffdf8] px-3 py-1.5 font-mono text-[11px] uppercase tracking-[.12em] text-[#2b3242]"
             data-testid={`filter-chip-${entry.label.toLowerCase().replace(/[^a-z]+/g, '-')}`}
           >
-            <span className="text-[#202635]/45">{entry.label}</span>
+            <span className="text-[#2b3242]/65">{entry.label}</span>
             <span className="font-semibold">{entry.value}</span>
           </span>
         ))}
       </div>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[.14em]">
-        <p className="text-[#202635]/60" aria-live="polite">{count}</p>
-        <Link href={onClear} className="line-link text-[#c97352]" data-testid="link-clear-search">Clear filters</Link>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-[.14em]">
+        <p className="text-[#2b3242]/60" aria-live="polite">{count}</p>
+        <Link href={onClear} className="line-link text-[#9f7a47]" data-testid="link-clear-search">Clear filters</Link>
       </div>
     </div>
   );
@@ -81,15 +81,15 @@ const isOffPlan = (item: RemoteProperty) => /off-plan|launching|construction/i.t
 function LoadingState() {
   return (
     <div className="py-16 text-center">
-      <p className="eyebrow text-[#c97352]">KNC Horizon</p>
-      <p className="block-title mt-4 text-[#202635]">Curating the latest edit…</p>
+      <p className="eyebrow text-[#9f7a47]">KNC Horizon</p>
+      <p className="block-title mt-4 text-[#2b3242]">Curating the latest edit…</p>
     </div>
   );
 }
 
 function ErrorState({ message }: { message: string }) {
   return (
-    <div className="rounded-sm border border-[#c97352]/30 bg-[#c97352]/10 p-6 text-sm leading-7 text-[#202635]/70 sm:p-7" role="alert">
+    <div className="rounded-2xl border border-[#9f7a47]/30 bg-[#8f6d3f]/10 p-6 text-sm leading-7 text-[#2b3242]/70 sm:p-7" role="alert">
       We couldn’t load this section. {message}
     </div>
   );
@@ -150,27 +150,27 @@ export function PropertiesLivePage() {
         title={
           <>
             Places worth<br />
-            <em className="text-[#c97352]">your attention.</em>
+            <em className="text-[#9f7a47]">your attention.</em>
           </>
         }
         copy="A considered selection of Dubai homes and opportunities, updated from our live property collection."
         image="/images/downtown-safa-park.jpg"
       />
       {/* The home hero search links to #results; scroll-margin keeps the fixed header off the search bar. */}
-      <section id="results" className="scroll-mt-16 bg-[#f5f0e6] site-section md:scroll-mt-20">
+      <section id="results" className="scroll-mt-16 bg-[#faf7f1] site-section md:scroll-mt-20">
         <div className="site-container">
           {/* Remount when the URL changes so the fields always mirror the active search */}
           <PropertySearch key={search} initial={query} tone="light" />
 
-          <div className="mt-8 flex flex-wrap gap-2 border-b border-[#202635]/15 pb-6">
+          <div className="mt-8 flex flex-wrap gap-2 border-b border-[#2b3242]/15 pb-6">
             {filters.map((item) => (
               <button
                 key={item}
                 onClick={() => setFilter(item)}
-                className={`px-4 py-2 font-mono text-[10px] uppercase tracking-[.13em] transition-colors ${
+                className={`rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[.13em] transition-colors ${
                   active === item
-                    ? 'bg-[#202635] text-[#f5f0e6]'
-                    : 'border border-[#202635]/20 text-[#202635]/60 hover:border-[#c97352] hover:text-[#c97352]'
+                    ? 'bg-[#2b3242] text-[#faf7f1]'
+                    : 'border border-[#2b3242]/20 text-[#2b3242]/60 hover:border-[#9f7a47] hover:text-[#9f7a47]'
                 }`}
               >
                 {item}
@@ -191,11 +191,11 @@ export function PropertiesLivePage() {
               <ErrorState message={error} />
             ) : filtered.length === 0 ? (
               <div className="py-16 text-center">
-                <p className="block-title text-[#202635]">{searching ? 'No properties found.' : 'Nothing in this edit yet.'}</p>
+                <p className="block-title text-[#2b3242]">{searching ? 'No properties found.' : 'Nothing in this edit yet.'}</p>
                 {searching && (
-                  <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#202635]/65">
+                  <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#2b3242]/65">
                     Our recommendations are not limited to what is listed here.{' '}
-                    <Link href="/contact" className="text-[#c97352] underline underline-offset-4">Share your brief</Link>
+                    <Link href="/contact" className="text-[#9f7a47] underline underline-offset-4">Share your brief</Link>
                     {' '}with an advisor, or try a wider search.
                   </p>
                 )}
@@ -271,8 +271,8 @@ export function CommunityDetailPage() {
   if (!name) {
     return (
       <main>
-        <PageHero label="Communities" title={<>Community<br /><em className="text-[#c97352]">not found.</em></>} copy="This community is not on our list yet." image="/images/maritime-city-towers.jpg" />
-        <section className="bg-[#f5f0e6] site-section text-center">
+        <PageHero label="Communities" title={<>Community<br /><em className="text-[#9f7a47]">not found.</em></>} copy="This community is not on our list yet." image="/images/maritime-city-towers.jpg" />
+        <section className="bg-[#faf7f1] site-section text-center">
           <Link href="/communities" className="btn btn-primary">Back to communities <ArrowUpRight size={14} /></Link>
         </section>
       </main>
@@ -283,19 +283,19 @@ export function CommunityDetailPage() {
     <main>
       <PageHero
         label={community?.shortDescription ?? area?.descriptor ?? 'Dubai, by neighbourhood'}
-        title={<>{name}<br /><em className="text-[#c97352]">at a glance.</em></>}
+        title={<>{name}<br /><em className="text-[#9f7a47]">at a glance.</em></>}
         copy={copy}
         image={image}
       />
 
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
-          <div className="flex flex-wrap items-end justify-between gap-6 border-b border-[#202635]/15 pb-6">
+          <div className="flex flex-wrap items-end justify-between gap-6 border-b border-[#2b3242]/15 pb-6">
             <div>
               <SectionLabel>Available now</SectionLabel>
-              <h2 className="section-title mt-6 text-[#202635]">Properties in <em className="text-[#c97352]">{name}.</em></h2>
+              <h2 className="section-title mt-6 text-[#2b3242]">Properties in <em className="text-[#9f7a47]">{name}.</em></h2>
             </div>
-            <p className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55" data-testid="text-community-property-count">
+            <p className="font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/65" data-testid="text-community-property-count">
               {loading ? 'Loading' : `${matchingProperties.length} ${matchingProperties.length === 1 ? 'property' : 'properties'}`}
             </p>
           </div>
@@ -304,10 +304,10 @@ export function CommunityDetailPage() {
             <LoadingState />
           ) : matchingProperties.length === 0 ? (
             <div className="py-16 text-center">
-              <p className="block-title text-[#202635]">No listings in {name} right now.</p>
-              <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#202635]/65">
+              <p className="block-title text-[#2b3242]">No listings in {name} right now.</p>
+              <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#2b3242]/65">
                 Our recommendations are not limited to what is listed here.{' '}
-                <Link href="/contact" className="text-[#c97352] underline underline-offset-4">Share your brief</Link>
+                <Link href="/contact" className="text-[#9f7a47] underline underline-offset-4">Share your brief</Link>
                 {' '}and an advisor will come back with what is quietly available.
               </p>
             </div>
@@ -322,14 +322,14 @@ export function CommunityDetailPage() {
       </section>
 
       {matchingProjects.length > 0 && (
-        <section className="bg-[#e9e4da] site-section">
+        <section className="bg-[#f2ede4] site-section">
           <div className="site-container">
-            <div className="flex flex-wrap items-end justify-between gap-6 border-b border-[#202635]/15 pb-6">
+            <div className="flex flex-wrap items-end justify-between gap-6 border-b border-[#2b3242]/15 pb-6">
               <div>
                 <SectionLabel>Under construction</SectionLabel>
-                <h2 className="section-title mt-6 text-[#202635]">Off-plan in <em className="text-[#c97352]">{name}.</em></h2>
+                <h2 className="section-title mt-6 text-[#2b3242]">Off-plan in <em className="text-[#9f7a47]">{name}.</em></h2>
               </div>
-              <p className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55" data-testid="text-community-project-count">
+              <p className="font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/65" data-testid="text-community-project-count">
                 {matchingProjects.length} {matchingProjects.length === 1 ? 'project' : 'projects'}
               </p>
             </div>
@@ -342,15 +342,15 @@ export function CommunityDetailPage() {
         </section>
       )}
 
-      <section className="site-section site-section-flush-top bg-[#f5f0e6]">
-        <div className="site-container flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-[#202635]/15 pt-8">
-          <Link href="/communities" className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]" data-testid="link-back-communities">
+      <section className="site-section site-section-flush-top bg-[#faf7f1]">
+        <div className="site-container flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-[#2b3242]/15 pt-8">
+          <Link href="/communities" className="line-link font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]" data-testid="link-back-communities">
             All communities
           </Link>
-          <Link href={`/properties?location=${encodeURIComponent(name)}`} className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55">
+          <Link href={`/properties?location=${encodeURIComponent(name)}`} className="line-link font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/65">
             Search {name}
           </Link>
-          <Link href="/contact" className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/55">
+          <Link href="/contact" className="line-link font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/65">
             Ask an advisor
           </Link>
         </div>
@@ -379,19 +379,44 @@ export function PropertyDetailPage() {
   const [property, setProperty] = useState<RemoteProperty | null>(
     (defaultMatch as unknown as RemoteProperty) || null
   );
+  const [seo, setSeo] = useState<SeoFields | null>(null);
   const [error, setError] = useState('');
+  const [, navigate] = useLocation();
+  const { settings: seoSettings } = useSeoData();
 
   usePageMeta(
     property?.title ?? 'Property details',
     property
       ? `${property.title} in ${property.location}. View details and request property information from KNC Horizon Realtor.`
-      : 'View property details and request information from KNC Horizon Realtor.'
+      : 'View property details and request information from KNC Horizon Realtor.',
+    {
+      path: property ? `/properties/${property.slug}` : undefined,
+      seo,
+      image: property?.images?.[0],
+      imageAlt: property?.title,
+      noindex: Boolean(error && !property),
+      jsonLd: property ? [listingJsonLd({
+        url: `${seoSettings.siteUrl}/properties/${property.slug}`,
+        name: property.title,
+        description: seo?.metaDescription || property.description,
+        image: property.images?.[0] ? absoluteUrl(property.images[0], seoSettings.siteUrl) : null,
+        price: property.price,
+        currency: property.currency,
+      })] : undefined,
+    },
   );
 
   useEffect(() => {
     if (!params?.slug) return;
-    apiFetch<{ property: RemoteProperty }>(`/public/properties/${params.slug}`)
-      .then((data) => setProperty(data.property))
+    apiFetch<{ property: RemoteProperty; seo?: SeoFields | null }>(`/public/properties/${params.slug}`)
+      .then((data) => {
+        setProperty(data.property);
+        setSeo(data.seo ?? null);
+        // A renamed listing answers on its old slug; move the address bar to the current one.
+        if (slugParams?.slug && data.property.slug && data.property.slug !== slugParams.slug) {
+          navigate(`/properties/${data.property.slug}`, { replace: true });
+        }
+      })
       .catch((reason) => {
         if (!property) setError(reason instanceof Error ? reason.message : 'Property not found.');
       });
@@ -399,10 +424,10 @@ export function PropertyDetailPage() {
 
   if (error && !property) {
     return (
-      <main className="bg-[#f5f0e6] site-section pt-40">
+      <main className="bg-[#faf7f1] site-section pt-40">
         <div className="mx-auto max-w-[900px]">
           <ErrorState message={error} />
-          <Link href="/properties" className="mt-7 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
+          <Link href="/properties" className="mt-7 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]">
             <ArrowLeft size={14} /> Back to properties
           </Link>
         </div>
@@ -431,17 +456,18 @@ export function PropertyDetailPage() {
         }
         copy={property.description}
         image={property.images[0] || '/images/dubai-skyline-from-sea.jpg'}
+        imageAlt={seo?.imageAlt || property.title}
       />
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container grid gap-12 lg:grid-cols-[1fr_.75fr] lg:gap-16 xl:gap-20">
           <div>
             {/* A lone image takes the full column; a pair or more splits into two. */}
             <div className={`grid gap-4 ${property.images.length > 1 ? 'sm:grid-cols-2' : ''}`}>
-              {property.images.map((image) => (
+              {property.images.map((image, index) => (
                 <div key={image} className="card-media card-media-wide">
                   <img
                     src={image}
-                    alt={property.title}
+                    alt={index === 0 && seo?.imageAlt ? seo.imageAlt : property.title}
                     onError={(event) => {
                       event.currentTarget.src = '/images/dubai-skyline-from-sea.jpg';
                     }}
@@ -452,21 +478,21 @@ export function PropertyDetailPage() {
             </div>
             <div className="mt-12">
               <SectionLabel>About this home</SectionLabel>
-              <p className="body-copy measure mt-5 text-[#202635]/65">{property.description}</p>
-              <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-[#202635]/15 pt-6 sm:grid-cols-3">
+              <p className="body-copy measure mt-5 text-[#2b3242]/65">{property.description}</p>
+              <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-[#2b3242]/15 pt-6 sm:grid-cols-3">
                 {property.amenities.map((item) => (
-                  <span key={item} className="flex items-start gap-2 text-sm text-[#202635]/65">
-                    <Check size={15} className="mt-0.5 text-[#c97352]" />
+                  <span key={item} className="flex items-start gap-2 text-sm text-[#2b3242]/65">
+                    <Check size={15} className="mt-0.5 text-[#9f7a47]" />
                     {item}
                   </span>
                 ))}
               </div>
             </div>
           </div>
-          <aside className="h-fit rounded-sm border border-[#202635]/15 bg-[#fcfaf6] p-6 shadow-sm sm:p-8 lg:sticky lg:top-28">
+          <aside className="h-fit rounded-2xl border border-[#2b3242]/15 bg-[#fffdf8] p-6 shadow-sm sm:p-8 lg:sticky lg:top-28">
             <SectionLabel>Property details</SectionLabel>
-            <p className="display mt-4 text-[2rem] leading-none text-[#202635] sm:text-[2.35rem]">{price(property.price, property.currency || defaultCurrency)}</p>
-            <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-4 border-y border-[#202635]/15 py-5 text-sm text-[#202635]/75">
+            <p className="display mt-4 text-[2rem] leading-none text-[#2b3242] sm:text-[2.35rem]">{price(property.price, property.currency || defaultCurrency)}</p>
+            <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-4 border-y border-[#2b3242]/15 py-5 text-sm text-[#2b3242]/75">
               <span>{property.bedrooms} bedrooms</span>
               <span>{property.bathrooms} bathrooms</span>
               <span>{new Intl.NumberFormat('en-AE').format(property.size)} sq ft</span>
@@ -474,7 +500,7 @@ export function PropertyDetailPage() {
             </div>
             <h3 className="block-title mt-10">
               Interested in<br />
-              <em className="text-[#c97352]">this address?</em>
+              <em className="text-[#9f7a47]">this address?</em>
             </h3>
             <div className="mt-6">
               <ContactForm compact propertySlug={property.slug} inquiryType="property" />
@@ -535,27 +561,27 @@ export function ProjectsPage() {
         title={
           <>
             Projects with<br />
-            <em className="text-[#c97352]">possibility.</em>
+            <em className="text-[#9f7a47]">possibility.</em>
           </>
         }
         copy="A live edit of Dubai’s most considered new addresses, from established developers and emerging neighbourhoods."
         image="/images/dubai-new-towers-aerial.jpg"
       />
       {/* The hero search links here with #results when off-plan is the chosen mode. */}
-      <section id="results" className="scroll-mt-16 bg-[#e9e4da] site-section md:scroll-mt-20">
+      <section id="results" className="scroll-mt-16 bg-[#f2ede4] site-section md:scroll-mt-20">
         <div className="site-container">
           {/* Remount when the URL changes so the fields always mirror the active search */}
           <PropertySearch key={search} initial={{ ...query, listing: 'offplan' }} tone="light" />
 
-          <div className="mt-8 flex flex-wrap gap-2 border-b border-[#202635]/15 pb-6">
+          <div className="mt-8 flex flex-wrap gap-2 border-b border-[#2b3242]/15 pb-6">
             {filters.map((item) => (
               <button
                 key={item}
                 onClick={() => setFilter(item)}
-                className={`px-4 py-2 font-mono text-[10px] uppercase tracking-[.13em] transition-colors ${
+                className={`rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[.13em] transition-colors ${
                   active === item
-                    ? 'bg-[#202635] text-[#f5f0e6]'
-                    : 'border border-[#202635]/20 text-[#202635]/60 hover:border-[#c97352] hover:text-[#c97352]'
+                    ? 'bg-[#2b3242] text-[#faf7f1]'
+                    : 'border border-[#2b3242]/20 text-[#2b3242]/60 hover:border-[#9f7a47] hover:text-[#9f7a47]'
                 }`}
               >
                 {item}
@@ -576,11 +602,11 @@ export function ProjectsPage() {
               <ErrorState message={error} />
             ) : filtered.length === 0 ? (
               <div className="py-16 text-center">
-                <p className="block-title text-[#202635]">{searching ? 'No projects found.' : 'Nothing in this edit yet.'}</p>
+                <p className="block-title text-[#2b3242]">{searching ? 'No projects found.' : 'Nothing in this edit yet.'}</p>
                 {searching && (
-                  <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#202635]/65">
+                  <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#2b3242]/65">
                     New releases reach us before they reach the portals.{' '}
-                    <Link href="/contact" className="text-[#c97352] underline underline-offset-4">Share your brief</Link>
+                    <Link href="/contact" className="text-[#9f7a47] underline underline-offset-4">Share your brief</Link>
                     {' '}with an advisor, or try a wider search.
                   </p>
                 )}
@@ -631,36 +657,36 @@ export function BlogPage() {
         title={
           <>
             Property, made<br />
-            <em className="text-[#c97352]">clearer.</em>
+            <em className="text-[#9f7a47]">clearer.</em>
           </>
         }
         copy="Practical guidance, local perspective, and thoughtful notes for your next move in Dubai real estate."
         image="/images/dubai-creek-dusk.jpg"
       />
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
-          <div className="flex flex-col gap-5 border-b border-[#202635]/15 pb-7 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-5 border-b border-[#2b3242]/15 pb-7 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-wrap gap-2">
               {categories.map((item) => (
                 <button
                   key={item}
                   onClick={() => setCategory(item)}
-                  className={`px-4 py-2 font-mono text-[10px] uppercase tracking-[.13em] ${
-                    category === item ? 'bg-[#202635] text-[#f5f0e6]' : 'border border-[#202635]/20'
+                  className={`rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[.13em] ${
+                    category === item ? 'bg-[#2b3242] text-[#faf7f1]' : 'border border-[#2b3242]/20'
                   }`}
                 >
                   {item}
                 </button>
               ))}
             </div>
-            <label className="flex items-center gap-3 border-b border-[#202635]/25 py-2 md:w-72">
-              <Search size={16} className="text-[#c97352]" />
+            <label className="flex items-center gap-3 border-b border-[#2b3242]/25 py-2 md:w-72">
+              <Search size={16} className="text-[#9f7a47]" />
               <span className="sr-only">Search blog</span>
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search the blog"
-                className="w-full bg-transparent text-sm outline-none placeholder:text-[#202635]/45"
+                className="w-full bg-transparent text-sm outline-none placeholder:text-[#2b3242]/65"
               />
             </label>
           </div>
@@ -670,8 +696,8 @@ export function BlogPage() {
             <ErrorState message={error} />
           ) : !filtered.length ? (
             <div className="py-16 text-center">
-              <p className="block-title text-[#202635]">No notes match this search.</p>
-              <p className="mt-4 text-sm text-[#202635]/60">Try another phrase or category.</p>
+              <p className="block-title text-[#2b3242]">No notes match this search.</p>
+              <p className="mt-4 text-sm text-[#2b3242]/60">Try another phrase or category.</p>
             </div>
           ) : (
             <div className={`mt-12 ${cardGrid(filtered.length)}`}>
@@ -687,23 +713,52 @@ export function BlogPage() {
 }
 
 export function BlogPostPage() {
-  const [, params] = useRoute('/blog/:slug');
+  const [, blogParams] = useRoute('/blog/:slug');
+  const [, journalParams] = useRoute('/journal/:slug');
+  const params = blogParams ?? journalParams;
   const defaultMatch = defaultPosts.find((p) => p.slug === params?.slug);
   const [post, setPost] = useState<Post | null>((defaultMatch as unknown as Post) || null);
   const [related, setRelated] = useState<Post[]>([]);
+  const [seo, setSeo] = useState<SeoFields | null>(null);
   const [error, setError] = useState('');
+  const [, navigate] = useLocation();
+  const { siteName } = useSiteSettings();
+  const { settings: seoSettings } = useSeoData();
+  const heroImage = post ? post.featuredImage || post.image || '/images/dubai-skyline-from-sea.jpg' : null;
 
+  // The blog admin saves the title as the SEO title by default; only a different one is a real override.
+  const customTitle = post?.seoTitle && post.seoTitle.trim() !== post.title.trim() ? post.seoTitle : null;
   usePageMeta(
-    post?.seoTitle ?? post?.title ?? 'Blog',
-    post?.seoDescription ?? post?.excerpt ?? 'Real-estate perspective from KNC Horizon Realtor.'
+    post?.title ?? 'Blog',
+    post?.excerpt ?? 'Real-estate perspective from KNC Horizon Realtor.',
+    {
+      path: post ? `/blog/${post.slug}` : undefined,
+      seo: post ? { ...seo, seoTitle: customTitle, metaDescription: post.seoDescription || null } : null,
+      image: heroImage,
+      imageAlt: post?.title,
+      type: 'article',
+      noindex: Boolean(error && !post),
+      jsonLd: post ? [articleJsonLd({
+        url: `${seoSettings.siteUrl}/blog/${post.slug}`,
+        headline: post.title,
+        description: post.seoDescription || post.excerpt,
+        image: heroImage ? absoluteUrl(heroImage, seoSettings.siteUrl) : null,
+        datePublished: post.publishedAt,
+        author: post.author,
+        siteName,
+        siteUrl: seoSettings.siteUrl,
+      })] : undefined,
+    },
   );
 
   useEffect(() => {
     if (!params?.slug) return;
-    apiFetch<{ blog: Post; related: Post[] }>(`/blogs/${params.slug}`)
+    apiFetch<{ blog: Post; related: Post[]; seo?: SeoFields | null }>(`/blogs/${params.slug}`)
       .then((data) => {
         setPost(data.blog);
         setRelated(data.related);
+        setSeo(data.seo ?? null);
+        if (data.blog.slug && data.blog.slug !== params.slug) navigate(`/blog/${data.blog.slug}`, { replace: true });
       })
       .catch((reason) => {
         if (!post) setError(reason instanceof Error ? reason.message : 'Blog post not found.');
@@ -712,10 +767,10 @@ export function BlogPostPage() {
 
   if (error && !post) {
     return (
-      <main className="bg-[#f5f0e6] site-section pt-40">
+      <main className="bg-[#faf7f1] site-section pt-40">
         <div className="mx-auto max-w-[900px]">
           <ErrorState message={error} />
-          <Link href="/blog" className="mt-7 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
+          <Link href="/blog" className="mt-7 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]">
             <ArrowLeft size={14} /> Back to blog
           </Link>
         </div>
@@ -732,6 +787,7 @@ export function BlogPostPage() {
   }
 
   const image = post.featuredImage || post.image || '/images/dubai-skyline-from-sea.jpg';
+  const internalLinks = seo?.internalLinks ?? [];
 
   return (
     <main>
@@ -740,26 +796,41 @@ export function BlogPostPage() {
         title={<>{post.title}</>}
         copy={post.excerpt}
         image={image}
+        imageAlt={seo?.imageAlt || post.title}
       />
-      <article className="site-section bg-[#f5f0e6]">
+      <article className="site-section bg-[#faf7f1]">
         <div className="site-container">
           {/* The reading column keeps the page's left grid line; the related cards below
               take the full container so they match the cards on every other page. */}
           <div className="max-w-[46rem]">
-            <p className="font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
+            <p className="font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]">
               {post.author} · {new Date(post.publishedAt).toLocaleDateString('en-GB', { dateStyle: 'long' })}
             </p>
-            <div className="body-copy mt-8 whitespace-pre-line text-[#202635]/80">
+            <div className="body-copy mt-8 whitespace-pre-line text-[#2b3242]/80">
               {post.content}
             </div>
-            <Link href="/blog" className="line-link mt-12 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]">
+            {internalLinks.length > 0 && (
+              <nav aria-label="Related pages" className="mt-10 border-t border-[#2b3242]/15 pt-6">
+                <p className="eyebrow text-[#9f7a47]">Related on KNC Horizon</p>
+                <ul className="mt-4 space-y-2.5">
+                  {internalLinks.map((link) => (
+                    <li key={link.href}>
+                      <Link href={link.href} className="inline-flex items-center gap-2 text-[15px] text-[#2b3242] underline decoration-[#9f7a47]/40 underline-offset-4 transition-colors hover:text-[#80623a] hover:decoration-[#9f7a47]">
+                        {link.label} <ArrowUpRight size={13} className="text-[#9f7a47]" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )}
+            <Link href="/blog" className="line-link mt-12 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]">
               <ArrowLeft size={14} /> Back to blog
             </Link>
           </div>
 
           {related.length > 0 && (
-            <section className="mt-16 border-t border-[#202635]/15 pt-8">
-              <p className="eyebrow text-[#c97352]">Keep reading</p>
+            <section className="mt-16 border-t border-[#2b3242]/15 pt-8">
+              <p className="eyebrow text-[#9f7a47]">Keep reading</p>
               <div className={`mt-6 ${cardGrid(related.length)}`}>
                 {related.map((item) => (
                   <Link key={item.id} href={`/blog/${item.slug}`} className="card-editorial group p-5">
@@ -768,11 +839,11 @@ export function BlogPostPage() {
                         src={item.featuredImage || item.image || '/images/dubai-skyline-from-sea.jpg'}
                         alt={item.title}
                         loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       />
                     </div>
-                    <p className="card-title mt-4 line-clamp-2 text-[#202635] transition-colors group-hover:text-[#c97352]">{item.title}</p>
-                    <span className="mt-auto inline-flex items-center gap-2 pt-4 font-mono text-[10px] uppercase tracking-[.12em] text-[#c97352] group-hover:underline">
+                    <p className="card-title mt-4 line-clamp-2 text-[#2b3242] transition-colors group-hover:text-[#9f7a47]">{item.title}</p>
+                    <span className="mt-auto inline-flex items-center gap-2 pt-4 font-mono text-[11px] uppercase tracking-[.12em] text-[#9f7a47] group-hover:underline">
                       Read note <ArrowUpRight size={12} />
                     </span>
                   </Link>
@@ -805,13 +876,13 @@ export function GalleryPage() {
         title={
           <>
             A sense of<br />
-            <em className="text-[#c97352]">place.</em>
+            <em className="text-[#9f7a47]">place.</em>
           </>
         }
         copy="A closer look at the textures, horizons, and details that shape the KNC point of view."
         image="/images/madinat-jumeirah-canal.jpg"
       />
-      <section className="bg-[#dfe2dc] site-section">
+      <section className="bg-[#efeae2] site-section">
         <div className={`site-container ${cardGrid(items.length)}`}>
           {items.map((item) => (
             <button
@@ -824,12 +895,12 @@ export function GalleryPage() {
                   src={item.image}
                   alt={item.alt}
                   loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                 />
               </div>
               <div className="mt-4">
-                <p className="eyebrow text-[#c97352]">{item.category}</p>
-                <p className="card-title mt-1 line-clamp-2 text-[#202635]">{item.title}</p>
+                <p className="eyebrow text-[#9f7a47]">{item.category}</p>
+                <p className="card-title mt-1 line-clamp-2 text-[#2b3242]">{item.title}</p>
               </div>
             </button>
           ))}
@@ -837,13 +908,13 @@ export function GalleryPage() {
       </section>
       {active && (
         <div
-          className="fixed inset-0 z-[70] grid place-items-center bg-[#202635]/90 p-5 backdrop-blur-sm sm:p-8"
+          className="fixed inset-0 z-[70] grid place-items-center bg-[#2b3242]/90 p-5 backdrop-blur-sm sm:p-8"
           role="dialog"
           aria-modal="true"
         >
           <button
             onClick={() => setActive(null)}
-            className="absolute right-5 top-5 text-[#f5f0e6] p-2 hover:text-[#c97352] transition-colors"
+            className="absolute right-5 top-5 text-[#faf7f1] p-2 hover:text-[#9f7a47] transition-colors"
             aria-label="Close gallery"
           >
             <X size={24} />
@@ -918,12 +989,12 @@ export function PropertiesFilterPage(props: PropertiesFilterPageProps = {}) {
   }, [category]);
 
   const titles: Record<string, React.ReactNode> = {
-    residential: <>Residential<br /><em className="text-[#c97352]">properties.</em></>,
-    commercial: <>Commercial<br /><em className="text-[#c97352]">spaces.</em></>,
-    investment: <>Investment<br /><em className="text-[#c97352]">opportunities.</em></>,
-    'off-plan': <>Off-Plan<br /><em className="text-[#c97352]">launches.</em></>,
-    sale: <>Properties<br /><em className="text-[#c97352]">for sale.</em></>,
-    rent: <>Properties<br /><em className="text-[#c97352]">for rent.</em></>
+    residential: <>Residential<br /><em className="text-[#9f7a47]">properties.</em></>,
+    commercial: <>Commercial<br /><em className="text-[#9f7a47]">spaces.</em></>,
+    investment: <>Investment<br /><em className="text-[#9f7a47]">opportunities.</em></>,
+    'off-plan': <>Off-Plan<br /><em className="text-[#9f7a47]">launches.</em></>,
+    sale: <>Properties<br /><em className="text-[#9f7a47]">for sale.</em></>,
+    rent: <>Properties<br /><em className="text-[#9f7a47]">for rent.</em></>
   };
 
   const copyMap: Record<string, string> = {
@@ -943,18 +1014,18 @@ export function PropertiesFilterPage(props: PropertiesFilterPageProps = {}) {
         copy={copyMap[category] || `A considered selection of ${category} properties in Dubai.`}
         image={({ sale: '/images/burj-khalifa-aerial.jpg', rent: '/images/jbr-residences-street.jpg', residential: '/images/the-greens-residential.jpg', commercial: '/images/difc-green-towers.jpg', investment: '/images/business-bay-skyline-day.jpg', 'off-plan': '/images/jvc-tower-construction-dusk.jpg' } as Record<string, string>)[category] ?? '/images/downtown-safa-park.jpg'}
       />
-      <section className="bg-[#f5f0e6] site-section">
+      <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
           {loading ? <LoadingState /> : error ? <ErrorState message={error} /> : items.length === 0 ? (
             <div className="py-16 text-center">
-              <p className="block-title text-[#202635]">No properties found in this category.</p>
-              <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#202635]/65">
+              <p className="block-title text-[#2b3242]">No properties found in this category.</p>
+              <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#2b3242]/65">
                 {category === 'off-plan' ? (
                   <>Completed stock is listed here. For launches still under construction, see our{' '}
-                    <Link href="/off-plan" className="text-[#c97352] underline underline-offset-4">off-plan projects</Link>.</>
+                    <Link href="/off-plan" className="text-[#9f7a47] underline underline-offset-4">off-plan projects</Link>.</>
                 ) : (
                   <>Our recommendations are not limited to what is listed here.{' '}
-                    <Link href="/contact" className="text-[#c97352] underline underline-offset-4">Share your brief</Link>
+                    <Link href="/contact" className="text-[#9f7a47] underline underline-offset-4">Share your brief</Link>
                     {' '}and an advisor will come back to you.</>
                 )}
               </p>
@@ -1023,11 +1094,11 @@ export function ProjectsFilterPage(props: ProjectsFilterPageProps = {}) {
   }, [filter]);
 
   const titles: Record<string, React.ReactNode> = {
-    featured: <>Featured<br /><em className="text-[#c97352]">projects.</em></>,
-    'new-launches': <>New<br /><em className="text-[#c97352]">launches.</em></>,
-    'off-plan': <>Off-Plan<br /><em className="text-[#c97352]">developments.</em></>,
-    apartments: <>Off-Plan<br /><em className="text-[#c97352]">apartments.</em></>,
-    'villas-townhouses': <>Villas &<br /><em className="text-[#c97352]">townhouses.</em></>
+    featured: <>Featured<br /><em className="text-[#9f7a47]">projects.</em></>,
+    'new-launches': <>New<br /><em className="text-[#9f7a47]">launches.</em></>,
+    'off-plan': <>Off-Plan<br /><em className="text-[#9f7a47]">developments.</em></>,
+    apartments: <>Off-Plan<br /><em className="text-[#9f7a47]">apartments.</em></>,
+    'villas-townhouses': <>Villas &<br /><em className="text-[#9f7a47]">townhouses.</em></>
   };
 
   const copyMap: Record<string, string> = {
@@ -1046,16 +1117,16 @@ export function ProjectsFilterPage(props: ProjectsFilterPageProps = {}) {
         copy={copyMap[filter] || `Explore our curated selection of ${filter.replace('-', ' ')} in Dubai.`}
         image={({ featured: '/images/burj-night-water.jpg', 'new-launches': '/images/dubai-waterfront-tower-construction.jpg', 'off-plan': '/images/dubai-tower-cranes-twilight.jpg', apartments: '/images/dubai-apartment-towers-sunset.jpg', 'villas-townhouses': '/images/daria-island-seafront-villa.jpg' } as Record<string, string>)[filter] ?? '/images/dubai-new-towers-aerial.jpg'}
       />
-      <section className="bg-[#e9e4da] site-section">
+      <section className="bg-[#f2ede4] site-section">
         <div className="site-container">
           {loading ? <LoadingState /> : error ? <ErrorState message={error} /> : projects.length === 0 ? (
              <div className="py-16 text-center">
-               <p className="block-title text-[#202635]">No projects found for this selection.</p>
-               <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#202635]/65">
+               <p className="block-title text-[#2b3242]">No projects found for this selection.</p>
+               <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#2b3242]/65">
                  See{' '}
-                 <Link href="/off-plan" className="text-[#c97352] underline underline-offset-4">every off-plan project</Link>
+                 <Link href="/off-plan" className="text-[#9f7a47] underline underline-offset-4">every off-plan project</Link>
                  {' '}on record, or{' '}
-                 <Link href="/contact" className="text-[#c97352] underline underline-offset-4">share your brief</Link>
+                 <Link href="/contact" className="text-[#9f7a47] underline underline-offset-4">share your brief</Link>
                  {' '}with an advisor.
                </p>
              </div>
@@ -1081,7 +1152,7 @@ export function DevelopersPage() {
   const [error, setError] = useState('');
 
   usePageMeta(
-    'Dubai Developers | KNC Horizon Realtor',
+    'Dubai Developers',
     'Explore established developers shaping residential, investment and mixed-use communities across Dubai.'
   );
 
@@ -1109,13 +1180,13 @@ export function DevelopersPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#f5f0e6]">
+    <main className="min-h-screen bg-[#faf7f1]">
       <PageHero
         label="Dubai developers"
         title={
           <>
             Names behind<br />
-            <em className="text-[#c97352]">Dubai's next chapter.</em>
+            <em className="text-[#9f7a47]">Dubai's next chapter.</em>
           </>
         }
         copy="Explore established developers shaping residential, investment and mixed-use communities across Dubai."
@@ -1125,12 +1196,12 @@ export function DevelopersPage() {
       {/* Main Developers Listing Section */}
       <section className="site-section">
         <div className="site-container">
-          <div className="mb-12 flex flex-col justify-between gap-4 border-b border-[#202635]/12 pb-6 sm:flex-row sm:items-end">
+          <div className="mb-12 flex flex-col justify-between gap-4 border-b border-[#2b3242]/12 pb-6 sm:flex-row sm:items-end">
             <div>
-              <p className="eyebrow text-[#c97352]">Selected Profiles</p>
-              <h2 className="section-title mt-6 text-[#202635]">Established master builders</h2>
+              <p className="eyebrow text-[#9f7a47]">Selected Profiles</p>
+              <h2 className="section-title mt-6 text-[#2b3242]">Established master builders</h2>
             </div>
-            <p className="font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/50 sm:pb-2">
+            <p className="font-mono text-[11px] uppercase tracking-[.13em] text-[#2b3242]/60 sm:pb-2">
               {developers.length} verified developer profiles
             </p>
           </div>
@@ -1149,7 +1220,7 @@ export function DevelopersPage() {
                   >
                     <div>
                       {/* Logo / Header Visual Treatment */}
-                      <div className="mb-5 flex min-h-[3.25rem] w-full items-center justify-between gap-3 border-b border-[#202635]/10 pb-4">
+                      <div className="mb-5 flex min-h-[3.25rem] w-full items-center justify-between gap-3 border-b border-[#2b3242]/10 pb-4">
                         {dev.logo ? (
                           <div className="h-10 max-w-[140px] opacity-85 mix-blend-multiply">
                             <img
@@ -1160,38 +1231,38 @@ export function DevelopersPage() {
                             />
                           </div>
                         ) : (
-                          <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-[#202635]/5 font-serif text-lg font-medium text-[#202635]">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-[#2b3242]/5 font-serif text-lg font-medium text-[#2b3242]">
                             {dev.name.charAt(0)}
                           </div>
                         )}
                         {dev.featured && (
-                          <span className="border border-[#c97352]/30 bg-[#c97352]/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[.14em] text-[#c97352]">
+                          <span className="border border-[#9f7a47]/30 bg-[#8f6d3f]/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[.14em] text-[#9f7a47]">
                             Featured
                           </span>
                         )}
                       </div>
 
                       {/* Name & Short Description */}
-                      <h3 className="card-title line-clamp-2 text-[#202635] transition-colors group-hover:text-[#c97352]">
+                      <h3 className="card-title line-clamp-2 text-[#2b3242] transition-colors group-hover:text-[#9f7a47]">
                         {dev.name}
                       </h3>
-                      <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#202635]/65">
+                      <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#2b3242]/65">
                         {dev.shortDescription || dev.description}
                       </p>
 
                       {/* Verified Areas */}
                       {dev.areas && dev.areas.length > 0 && (
-                        <div className="mt-4 flex flex-wrap gap-1.5 border-t border-[#202635]/10 pt-3">
+                        <div className="mt-4 flex flex-wrap gap-1.5 border-t border-[#2b3242]/10 pt-3">
                           {dev.areas.slice(0, 3).map((area) => (
                             <span
                               key={area}
-                              className="bg-[#202635]/5 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[#202635]/60"
+                              className="bg-[#2b3242]/5 px-2 py-0.5 font-mono text-[11px] uppercase tracking-wider text-[#2b3242]/60"
                             >
                               {area}
                             </span>
                           ))}
                           {dev.areas.length > 3 && (
-                            <span className="font-mono text-[10px] text-[#202635]/40 self-center">
+                            <span className="font-mono text-[11px] text-[#2b3242]/60 self-center">
                               +{dev.areas.length - 3}
                             </span>
                           )}
@@ -1200,16 +1271,16 @@ export function DevelopersPage() {
                     </div>
 
                     {/* Actions & Official Website */}
-                    <div className="mt-5 flex flex-col items-start gap-3 border-t border-[#202635]/12 pt-4">
+                    <div className="mt-5 flex flex-col items-start gap-3 border-t border-[#2b3242]/12 pt-4">
                       {websiteUrl && (
                         <a
                           href={websiteUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[.12em] text-[#202635]/55 hover:text-[#c97352] transition-colors"
+                          className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[.12em] text-[#2b3242]/65 hover:text-[#9f7a47] transition-colors"
                           aria-label={`Visit official website for ${dev.name}`}
                         >
-                          <Globe size={11} className="text-[#c97352]" />
+                          <Globe size={11} className="text-[#9f7a47]" />
                           <span>Official website</span>
                           <ExternalLink size={10} className="opacity-70" />
                         </a>
@@ -1232,14 +1303,14 @@ export function DevelopersPage() {
       </section>
 
       {/* Professional Advisory CTA Section */}
-      <section className="bg-[#dfe2dc] site-section border-t border-[#202635]/12">
+      <section className="bg-[#efeae2] site-section border-t border-[#2b3242]/12">
         <div className="site-container grid items-center gap-10 lg:grid-cols-[1.15fr_.85fr] lg:gap-16">
           <div>
             <SectionLabel>Developer Advisory</SectionLabel>
-            <h2 className="section-title mt-6 text-[#202635]">
-              Looking for the <em className="text-[#c97352]">right developer?</em>
+            <h2 className="section-title mt-6 text-[#2b3242]">
+              Looking for the <em className="text-[#9f7a47]">right developer?</em>
             </h2>
-            <p className="body-copy measure mt-6 text-[#202635]/70">
+            <p className="body-copy measure mt-6 text-[#2b3242]/70">
               Every developer in Dubai brings distinct architectural standards, community masterplans, and delivery horizons. Our independent advisory helps you compare opportunities objectively based on your investment goals and lifestyle criteria.
             </p>
           </div>

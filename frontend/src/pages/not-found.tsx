@@ -13,19 +13,19 @@ const suggestions = [
 ];
 
 export default function NotFound() {
-  usePageMeta('Page not found', 'The page you were looking for is no longer here. Browse Dubai properties, off-plan releases and communities with KNC Horizon Realtor.');
+  usePageMeta('Page not found', 'The page you were looking for is no longer here. Browse Dubai properties, off-plan releases and communities with KNC Horizon Realtor.', { seo: null, noindex: true });
 
   return (
-    <main className="bg-[#f5f0e6]">
+    <main className="bg-[#faf7f1]">
       <section className="flex min-h-[70svh] items-center site-section">
         <div className="site-container">
           <SectionLabel>Error 404</SectionLabel>
 
-          <h1 className="page-title mt-5 max-w-3xl text-[#202635]">
+          <h1 className="page-title mt-5 max-w-3xl text-[#2b3242]">
             This page has moved on.
           </h1>
 
-          <p className="body-copy measure mt-6 text-[#202635]/70">
+          <p className="body-copy measure mt-6 text-[#2b3242]/70">
             The page you were looking for is no longer here. These are the places most
             people are heading instead.
           </p>
@@ -39,13 +39,13 @@ export default function NotFound() {
             </Link>
           </div>
 
-          <nav aria-label="Suggested pages" className="mt-12 border-t border-[#202635]/15 pt-6">
+          <nav aria-label="Suggested pages" className="mt-12 border-t border-[#2b3242]/15 pt-6">
             <ul className="flex flex-wrap gap-x-8 gap-y-3">
               {suggestions.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="line-link font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
+                    className="line-link font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]"
                   >
                     {item.label}
                   </Link>

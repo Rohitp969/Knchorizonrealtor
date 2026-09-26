@@ -125,8 +125,8 @@ type MenuBox = { left: number; width: number; listHeight: number; above: boolean
 
 function Flag({ code }: { code: string }) {
   const src = FLAGS[code];
-  if (!src) return <Globe size={16} className="shrink-0 text-[#202635]/50" aria-hidden="true" />;
-  return <img src={src} alt="" width={20} height={14} loading="lazy" decoding="async" className="h-[14px] w-5 shrink-0 rounded-[2px] object-cover ring-1 ring-black/10" />;
+  if (!src) return <Globe size={16} className="shrink-0 text-[#2b3242]/60" aria-hidden="true" />;
+  return <img src={src} alt="" width={20} height={14} loading="lazy" decoding="async" className="h-[14px] w-5 shrink-0 rounded-[2px] object-cover ring-1 ring-[#2b3242]/10" />;
 }
 
 export function PhoneInput({ id, value, onChange, defaultCountry = 'AE', variant = 'underline', valueFormat = 'international', required, showError, error, describedBy, testId = 'input-phone', ariaLabel }: Props) {
@@ -532,14 +532,14 @@ export function PhoneInput({ id, value, onChange, defaultCountry = 'AE', variant
   const boxed = variant === 'boxed';
   const errorColour = '#b23b2e'; // 4.6:1 or better on every form background
   const wrapperClass = boxed
-    ? `mt-1.5 flex items-stretch rounded-sm border bg-white text-sm transition-colors ${invalid ? 'border-[#b23b2e]' : 'border-[#202635]/20 focus-within:border-[#c97352]'}`
-    : `mt-3 flex items-stretch border-b transition-colors ${invalid ? 'border-[#b23b2e]' : 'border-[#202635]/25 focus-within:border-[#c97352]'}`;
+    ? `mt-1.5 flex items-stretch rounded-sm border bg-[#fffdf8] text-sm transition-colors ${invalid ? 'border-[#b23b2e]' : 'border-[#2b3242]/20 focus-within:border-[#9f7a47]'}`
+    : `mt-3 flex items-stretch border-b transition-colors ${invalid ? 'border-[#b23b2e]' : 'border-[#2b3242]/25 focus-within:border-[#9f7a47]'}`;
   const buttonClass = boxed
-    ? 'flex shrink-0 items-center gap-1.5 rounded-l-sm px-3 py-2.5 text-sm text-[#202635] outline-none hover:bg-[#202635]/[.04] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#c97352]'
-    : 'flex min-h-11 shrink-0 items-center gap-1.5 rounded-sm py-3 pr-3 text-base text-[#202635] outline-none hover:text-[#c97352] focus-visible:text-[#c97352] focus-visible:ring-2 focus-visible:ring-[#c97352] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent';
+    ? 'flex shrink-0 items-center gap-1.5 rounded-l-sm px-3 py-2.5 text-sm text-[#2b3242] outline-none hover:bg-[#2b3242]/[.04] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#9f7a47]'
+    : 'flex min-h-11 shrink-0 items-center gap-1.5 rounded-sm py-3 pr-3 text-base text-[#2b3242] outline-none hover:text-[#9f7a47] focus-visible:text-[#9f7a47] focus-visible:ring-2 focus-visible:ring-[#9f7a47] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent';
   const inputClass = boxed
-    ? 'min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-[#202635]/35'
-    : 'min-w-0 flex-1 bg-transparent py-3 pl-3 text-base outline-none placeholder:text-[#202635]/30';
+    ? 'min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-[#2b3242]/35'
+    : 'min-w-0 flex-1 bg-transparent py-3 pl-3 text-base outline-none placeholder:text-[#2b3242]/30';
 
   const menuStyle: CSSProperties | undefined = box
     ? { position: 'fixed', left: box.left, width: box.width, ...(box.above ? { bottom: box.bottom } : { top: box.top }) }
@@ -562,9 +562,9 @@ export function PhoneInput({ id, value, onChange, defaultCountry = 'AE', variant
         >
           <Flag code={country} />
           <span className="tabular-nums">+{dialFor(country)}</span>
-          <ChevronDown size={14} className={`text-[#202635]/45 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
+          <ChevronDown size={14} className={`text-[#2b3242]/65 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
         </button>
-        <span aria-hidden="true" className={boxed ? 'my-2 w-px bg-[#202635]/15' : 'my-3 w-px bg-[#202635]/15'} />
+        <span aria-hidden="true" className={boxed ? 'my-2 w-px bg-[#2b3242]/15' : 'my-3 w-px bg-[#2b3242]/15'} />
         <input
           ref={inputRef}
           id={inputId}
@@ -591,11 +591,11 @@ export function PhoneInput({ id, value, onChange, defaultCountry = 'AE', variant
         <div
           ref={menuRef}
           style={menuStyle}
-          className={`z-[70] flex overflow-hidden rounded-sm border border-[#202635]/15 bg-[#fcfaf6] shadow-[0_18px_40px_-18px_rgba(32,38,53,.45)] ${box.above ? 'flex-col' : 'flex-col'}`}
+          className={`z-[70] flex overflow-hidden rounded-sm border border-[#2b3242]/15 bg-[#fffdf8] shadow-[0_18px_40px_-18px_rgba(43,50,66,.45)] ${box.above ? 'flex-col' : 'flex-col'}`}
           data-testid={`${testId}-menu`}
         >
-          <div className="flex items-center gap-2 border-b border-[#202635]/10 px-3">
-            <Search size={14} className="shrink-0 text-[#202635]/40" aria-hidden="true" />
+          <div className="flex items-center gap-2 border-b border-[#2b3242]/10 px-3">
+            <Search size={14} className="shrink-0 text-[#2b3242]/60" aria-hidden="true" />
             <input
               ref={searchRef}
               type="text"
@@ -610,7 +610,7 @@ export function PhoneInput({ id, value, onChange, defaultCountry = 'AE', variant
               onKeyDown={onSearchKey}
               placeholder="Search country or code"
               autoComplete="off"
-              className="min-w-0 flex-1 bg-transparent py-2.5 text-base outline-none placeholder:text-[#202635]/40 sm:text-sm"
+              className="min-w-0 flex-1 bg-transparent py-2.5 text-base outline-none placeholder:text-[#2b3242]/60 sm:text-sm"
               data-testid={`${testId}-search`}
             />
           </div>
@@ -633,16 +633,16 @@ export function PhoneInput({ id, value, onChange, defaultCountry = 'AE', variant
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => choose(option.code)}
                 onMouseMove={() => { if (index !== active) setActive(index); }}
-                className={`flex min-h-10 cursor-pointer items-center gap-3 px-3 py-2 text-sm ${index === active ? 'bg-[#202635]/[.07] shadow-[inset_3px_0_0_#202635]' : ''} ${option.code === country ? 'font-medium text-[#202635]' : 'text-[#202635]/80'} ${!query && loaded && index === PREFERRED.length - 1 ? 'border-b border-[#202635]/10' : ''}`}
+                className={`flex min-h-10 cursor-pointer items-center gap-3 px-3 py-2 text-sm ${index === active ? 'bg-[#2b3242]/[.07] shadow-[inset_3px_0_0_#2b3242]' : ''} ${option.code === country ? 'font-medium text-[#2b3242]' : 'text-[#2b3242]/80'} ${!query && loaded && index === PREFERRED.length - 1 ? 'border-b border-[#2b3242]/10' : ''}`}
                 data-testid={`${testId}-option-${option.code}`}
               >
                 <Flag code={option.code} />
                 <span className="min-w-0 flex-1 truncate">{option.name}</span>
-                <span className="shrink-0 tabular-nums text-[#202635]/55">+{option.dial}</span>
+                <span className="shrink-0 tabular-nums text-[#2b3242]/65">+{option.dial}</span>
               </li>
             ))}
           </ul>
-          <p role="status" className={filtered.length ? 'sr-only' : 'px-3 py-3 text-sm text-[#202635]/60'}>
+          <p role="status" className={filtered.length ? 'sr-only' : 'px-3 py-3 text-sm text-[#2b3242]/60'}>
             {filtered.length ? (query ? `${filtered.length} ${filtered.length === 1 ? 'country' : 'countries'} found` : '') : `No country matches “${query}”.`}
           </p>
         </div>,

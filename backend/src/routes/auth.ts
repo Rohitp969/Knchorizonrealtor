@@ -1,6 +1,6 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
-import { authenticate, requireAdmin, type AuthenticatedRequest } from "../lib/auth.ts";
+import { authenticate, requireConsoleUser, type AuthenticatedRequest } from "../lib/auth.ts";
 import { queryOne } from "../lib/postgres.ts";
 import { insertRow, toApi } from "../lib/repositories.ts";
 
@@ -12,6 +12,7 @@ router.post("/auth/login", async (req, res, next) => {
     if (!email || !password) return res.status(400).json({ message: "Email and password are required." });
     const result = await authenticate(email, password);
     if (!result) return res.status(401).json({ message: "Invalid admin credentials." });
+    if (result === "disabled") return res.status(403).json({ message: "This account has been disabled. Please contact the administrator." });
     return res.json(result);
   } catch (error) {
     return next(error);
@@ -42,7 +43,8 @@ router.post("/auth/register", async (req, res, next) => {
   }
 });
 
-router.get("/auth/me", requireAdmin, (req: AuthenticatedRequest, res) => {
+// The console's session check: administrators, agents and SEO managers, read from the database.
+router.get("/auth/me", requireConsoleUser, (req: AuthenticatedRequest, res) => {
   res.json({ user: req.user });
 });
 

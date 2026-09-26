@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowUpRight, Check, ExternalLink, Globe, MapPin } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, ExternalLink, Globe, MapPin } from 'lucide-react';
 import { Link, useRoute } from 'wouter';
 import { ContactForm, ErrorState, PageHero, SectionLabel } from '@/components/blocks';
 import { apiFetch, type Developer, type Project } from '@/lib/api';
@@ -174,9 +174,9 @@ export function DeveloperDetailPage() {
 
   if (loading && !developer) {
     return (
-      <main className="min-h-screen bg-[#f5f0e6] px-5 py-40">
+      <main className="min-h-screen bg-[#faf7f1] px-5 py-40">
         <div className="site-container text-center">
-          <p className="eyebrow text-[#c97352]">Dubai Developers</p>
+          <p className="eyebrow text-[#9f7a47]">Dubai Developers</p>
           <h1 className="page-title mt-5">Loading developer profile…</h1>
         </div>
       </main>
@@ -185,12 +185,12 @@ export function DeveloperDetailPage() {
 
   if (error && !developer) {
     return (
-      <main className="site-section min-h-screen bg-[#f5f0e6] pt-40">
+      <main className="site-section min-h-screen bg-[#faf7f1] pt-40">
         <div className="mx-auto max-w-[900px]">
           <ErrorState message={error} />
           <Link
             href="/developers"
-            className="mt-7 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352]"
+            className="mt-7 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47]"
           >
             <ArrowLeft size={14} /> Back to developers
           </Link>
@@ -204,7 +204,7 @@ export function DeveloperDetailPage() {
   const websiteUrl = developer.officialWebsite || developer.website;
 
   return (
-    <main className="min-h-screen bg-[#f5f0e6]">
+    <main className="min-h-screen bg-[#faf7f1]">
       {/* Hero Section */}
       <PageHero
         label="Dubai Developer Profile"
@@ -212,7 +212,7 @@ export function DeveloperDetailPage() {
           <>
             {developer.name}
             <br />
-            <em className="text-[#c97352]">master builder.</em>
+            <em className="text-[#9f7a47]">master builder.</em>
           </>
         }
         copy={developer.shortDescription || developer.description}
@@ -221,7 +221,7 @@ export function DeveloperDetailPage() {
         <div className="mt-8 flex items-center gap-4">
           <Link
             href="/developers"
-            className="btn btn-outline-light bg-[#202635]/60 backdrop-blur-xs"
+            className="btn btn-outline-light bg-[#2b3242]/60 backdrop-blur-xs"
           >
             <ArrowLeft size={12} /> All developers
           </Link>
@@ -234,22 +234,22 @@ export function DeveloperDetailPage() {
           {/* Left Column: Profile Details */}
           <div>
             {/* Header with Logo and Official Link */}
-            <div className="flex flex-wrap items-center justify-between gap-6 border-b border-[#202635]/15 pb-8">
+            <div className="flex flex-wrap items-center justify-between gap-6 border-b border-[#2b3242]/15 pb-8">
               <div>
-                <span className="font-mono text-[10px] uppercase tracking-[.18em] text-[#c97352]">
+                <span className="font-mono text-[11px] uppercase tracking-[.18em] text-[#9f7a47]">
                   Developer Profile
                 </span>
-                <h2 className="section-title mt-6 text-[#202635]">{developer.name}</h2>
+                <h2 className="section-title mt-6 text-[#2b3242]">{developer.name}</h2>
               </div>
               {websiteUrl && (
                 <a
                   href={websiteUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn-secondary bg-[#fcfaf6]"
+                  className="btn btn-secondary bg-[#fffdf8]"
                   aria-label={`Open official website of ${developer.name}`}
                 >
-                  <Globe size={13} className="text-[#c97352]" />
+                  <Globe size={13} className="text-[#9f7a47]" />
                   <span>Official Website</span>
                   <ExternalLink size={12} />
                 </a>
@@ -259,28 +259,28 @@ export function DeveloperDetailPage() {
             {/* Verified Descriptions */}
             <div className="mt-10">
               <SectionLabel>Overview</SectionLabel>
-              <p className="body-copy measure mt-4 font-medium text-[#202635]/80">
+              <p className="body-copy measure mt-4 font-medium text-[#2b3242]/80">
                 {developer.shortDescription}
               </p>
-              <p className="measure mt-4 text-sm leading-7 text-[#202635]/65">
+              <p className="measure mt-4 text-sm leading-7 text-[#2b3242]/65">
                 {developer.description}
               </p>
             </div>
 
             {/* Verified Areas / Communities */}
             {developer.areas && developer.areas.length > 0 && (
-              <div className="mt-12 border-t border-[#202635]/15 pt-8">
+              <div className="mt-12 border-t border-[#2b3242]/15 pt-8">
                 <SectionLabel>Verified Footprint &amp; Communities</SectionLabel>
-                <p className="mt-2 text-xs text-[#202635]/55">
+                <p className="mt-2 text-xs text-[#2b3242]/65">
                   Established presence and community master developments across Dubai:
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   {developer.areas.map((area) => (
                     <span
                       key={area}
-                      className="inline-flex items-center gap-1.5 border border-[#202635]/15 bg-[#fcfaf6] px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]"
+                      className="inline-flex items-center gap-1.5 border border-[#2b3242]/15 bg-[#fffdf8] px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]"
                     >
-                      <MapPin size={11} className="text-[#c97352]" />
+                      <MapPin size={11} className="text-[#9f7a47]" />
                       {area}
                     </span>
                   ))}
@@ -289,23 +289,23 @@ export function DeveloperDetailPage() {
             )}
 
             {/* Projects Section */}
-            <div className="mt-14 border-t border-[#202635]/15 pt-10">
+            <div className="mt-14 border-t border-[#2b3242]/15 pt-10">
               <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
                   <SectionLabel>Portfolio</SectionLabel>
-                  <h3 className="block-title mt-2 text-[#202635]">Assigned projects</h3>
+                  <h3 className="block-title mt-2 text-[#2b3242]">Assigned projects</h3>
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/50">
+                <span className="font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/60">
                   {projects.length} {projects.length === 1 ? 'project' : 'projects'} on record
                 </span>
               </div>
 
               {projects.length === 0 ? (
-                <div className="rounded-sm border border-[#202635]/15 bg-[#fcfaf6] p-8 text-center sm:p-10">
-                  <p className="block-title mx-auto max-w-lg text-[#202635]">
+                <div className="rounded-2xl border border-[#2b3242]/15 bg-[#fffdf8] p-8 text-center sm:p-10">
+                  <p className="block-title mx-auto max-w-lg text-[#2b3242]">
                     Projects are being updated. Contact our team for current opportunities.
                   </p>
-                  <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#202635]/60">
+                  <p className="measure-narrow mx-auto mt-4 text-sm leading-7 text-[#2b3242]/60">
                     KNC Horizon Realtor advises clients across verified private sales and new releases directly connected with {developer.name}.
                   </p>
                 </div>
@@ -325,28 +325,28 @@ export function DeveloperDetailPage() {
                             onError={(e) => {
                               e.currentTarget.src = fallbackImage;
                             }}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                           />
                         </div>
-                        <div className="mt-4 flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[.13em] text-[#202635]/55">
-                          <span className="shrink-0 text-[#c97352]">{project.category || 'Development'}</span>
+                        <div className="mt-4 flex items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-[.13em] text-[#2b3242]/65">
+                          <span className="shrink-0 text-[#9f7a47]">{project.category || 'Development'}</span>
                           <span className="truncate">{project.location}</span>
                         </div>
-                        <h4 className="card-title mt-2 line-clamp-2 text-[#202635] transition-colors group-hover:text-[#c97352]">
+                        <h4 className="card-title mt-2 line-clamp-2 text-[#2b3242] transition-colors group-hover:text-[#9f7a47]">
                           {project.title}
                         </h4>
-                        <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#202635]/65">{project.description}</p>
+                        <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#2b3242]/65">{project.description}</p>
                       </div>
 
-                      <div className="mt-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[#202635]/12 pt-4">
-                        <span className="font-sans text-sm font-semibold text-[#202635]">
+                      <div className="mt-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[#2b3242]/12 pt-4">
+                        <span className="font-sans text-sm font-semibold text-[#2b3242]">
                           {project.startingPrice
                             ? `From AED ${new Intl.NumberFormat('en-AE').format(project.startingPrice)}`
                             : 'Price on request'}
                         </span>
                         <Link
                           href={`/projects/${project.slug}`}
-                          className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[.13em] text-[#c97352] hover:underline"
+                          className="inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-[.13em] text-[#9f7a47] hover:underline"
                         >
                           View project <ArrowUpRight size={11} />
                         </Link>
@@ -360,16 +360,16 @@ export function DeveloperDetailPage() {
 
           {/* Right Column: Advisory & Enquiry CTA Form */}
           <aside className="h-fit lg:sticky lg:top-28">
-            <div className="rounded-sm border border-[#202635]/15 bg-[#fcfaf6] p-6 shadow-sm sm:p-8">
+            <div className="rounded-2xl border border-[#2b3242]/15 bg-[#fffdf8] p-6 shadow-sm sm:p-8">
               <SectionLabel>Advisory Brief</SectionLabel>
-              <h3 className="block-title mt-3 text-[#202635]">
-                Enquire regarding <em className="text-[#c97352]">{developer.name}.</em>
+              <h3 className="block-title mt-3 text-[#2b3242]">
+                Enquire regarding <em className="text-[#9f7a47]">{developer.name}.</em>
               </h3>
-              <p className="mt-4 text-sm leading-6 text-[#202635]/65">
+              <p className="mt-4 text-sm leading-6 text-[#2b3242]/65">
                 Our property advisors provide unbiased market perspective on upcoming releases, masterplan comparisons, and private allocation across {developer.name} developments.
               </p>
 
-              <div className="mt-6 border-t border-[#202635]/12 pt-6">
+              <div className="mt-6 border-t border-[#2b3242]/12 pt-6">
                 <ContactForm
                   compact
                   inquiryType="developer"
@@ -377,8 +377,8 @@ export function DeveloperDetailPage() {
                 />
               </div>
 
-              <div className="mt-8 border-t border-[#202635]/12 pt-5">
-                <p className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/50">
+              <div className="mt-8 border-t border-[#2b3242]/12 pt-5">
+                <p className="font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/60">
                   Immediate assistance
                 </p>
                 <div className="mt-3 flex items-center justify-between">
@@ -386,13 +386,13 @@ export function DeveloperDetailPage() {
                     href={`https://wa.me/${contact.whatsapp}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.14em] text-[#c97352] hover:underline"
+                    className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47] hover:underline"
                   >
                     Chat on WhatsApp <ArrowUpRight size={12} />
                   </a>
                   <Link
                     href="/contact"
-                    className="font-mono text-[10px] uppercase tracking-[.14em] text-[#202635]/65 hover:text-[#c97352]"
+                    className="font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/65 hover:text-[#9f7a47]"
                   >
                     Office details
                   </Link>

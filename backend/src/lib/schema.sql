@@ -326,3 +326,80 @@ create table if not exists settings (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- ---------------------------------------------------------------------------
+-- SEO manager accounts
+-- ---------------------------------------------------------------------------
+-- Account status and the article publishing permission. Every existing account stays
+-- active; publishing is off unless a super admin turns it on for an SEO manager.
+alter table users add column if not exists is_active boolean not null default true;
+alter table users add column if not exists can_publish_articles boolean not null default false;
+alter table users add column if not exists updated_at timestamptz;
+
+-- The role list gains seo_manager. The original inline check has a generated name, so find
+-- whichever check constraint covers `role` and swap it only while it predates seo_manager.
+do $$
+declare
+  existing text;
+begin
+  for existing in
+    select conname from pg_constraint
+     where conrelid = 'users'::regclass and contype = 'c'
+       and pg_get_constraintdef(oid) ilike '%role%'
+       and pg_get_constraintdef(oid) not ilike '%seo_manager%'
+  loop
+    execute format('alter table users drop constraint %I', existing);
+  end loop;
+  if not exists (
+    select 1 from pg_constraint
+     where conrelid = 'users'::regclass and contype = 'c'
+       and pg_get_constraintdef(oid) ilike '%seo_manager%'
+  ) then
+    alter table users add constraint users_role_check
+      check (role in ('admin', 'agent', 'user', 'seo_manager'));
+  end if;
+end $$;
+
+-- ---------------------------------------------------------------------------
+-- seo_meta: SEO fields for a static page, a property, a project or a blog post
+-- ---------------------------------------------------------------------------
+-- Exactly one target per row. Properties, projects and posts are real foreign keys, so the
+-- SEO record follows its listing and disappears with it. A post's SEO title and description
+-- stay in posts.seo_title / posts.seo_description, which the blog admin already edits.
+create table if not exists seo_meta (
+  id               text primary key default knc_new_id(),
+  page_key         text unique,
+  property_id      text unique references properties (id) on delete cascade,
+  project_id       text unique references projects (id) on delete cascade,
+  post_id          text unique references posts (id) on delete cascade,
+  seo_title        text,
+  meta_description text,
+  focus_keyword    text,
+  related_keywords text[] not null default '{}',
+  canonical_url    text,
+  og_title         text,
+  og_description   text,
+  og_image         text,
+  image_alt        text,
+  noindex          boolean not null default false,
+  -- Articles only: hand-picked links to other pages of the site, as [{ "href", "label" }].
+  internal_links   jsonb not null default '[]'::jsonb,
+  -- Slugs this record used to have, so a renamed listing's old URL still resolves.
+  previous_slugs   text[] not null default '{}',
+  updated_by       text references users (id) on delete set null,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now(),
+  constraint seo_meta_one_target check (num_nonnulls(page_key, property_id, project_id, post_id) = 1)
+);
+
+create index if not exists seo_meta_previous_slugs_idx on seo_meta using gin (previous_slugs);
+
+-- Site-wide SEO defaults: one row, id 'seo'.
+create table if not exists seo_settings (
+  id                   text primary key default 'seo' check (id = 'seo'),
+  site_url             text,
+  default_og_image     text,
+  default_og_image_alt text,
+  updated_by           text references users (id) on delete set null,
+  updated_at           timestamptz not null default now()
+);

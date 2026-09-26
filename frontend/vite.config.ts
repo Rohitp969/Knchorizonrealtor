@@ -11,7 +11,10 @@ export default defineConfig(({ mode }) => {
     resolve: { alias: { "@": path.resolve(import.meta.dirname, "src") }, dedupe: ["react", "react-dom"] },
     server: {
       port: 5173, host: "0.0.0.0",
-      proxy: { "/api": { target: env.API_SERVER_URL || "http://localhost:5000", changeOrigin: true } }
+      proxy: {
+        "/api": { target: env.API_SERVER_URL || "http://localhost:5000", changeOrigin: true },
+        "/sitemap.xml": { target: env.API_SERVER_URL || "http://localhost:5000", changeOrigin: true, rewrite: () => "/api/sitemap.xml" },
+      }
     },
     preview: { port: 4173, host: "0.0.0.0" },
     build: {
