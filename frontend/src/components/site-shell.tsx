@@ -9,11 +9,12 @@ import { apiFetch } from '@/lib/api';
 import { categoryOf, projectSegment, isNewLaunchProject, type SearchRow } from '@/lib/property-search';
 import type { Project } from '@/lib/api';
 
-type NavItem = { label: string; href: string; needs?: 'sale' | 'rent' | 'commercial' | 'newLaunch' | 'apartments' | 'villas' };
+type NavItem = { label: string; href: string; needs?: 'sale' | 'rent' | 'residential' | 'commercial' | 'newLaunch' | 'apartments' | 'villas' };
 
 const propertyItems: NavItem[] = [
   { label: 'For Sale', href: '/properties/sale', needs: 'sale' },
   { label: 'For Rent', href: '/properties/rent', needs: 'rent' },
+  { label: 'Residential', href: '/properties/residential', needs: 'residential' },
   { label: 'Commercial', href: '/properties/commercial', needs: 'commercial' },
   { label: 'All Properties', href: '/properties' },
 ];
@@ -46,6 +47,7 @@ function useStockedNav() {
       setStock({
         sale: listings.some((row) => row.mode === 'buy'),
         rent: listings.some((row) => row.mode === 'rent'),
+        residential: listings.some((row) => row.mode !== 'offplan' && categoryOf(row.type) === 'Residential'),
         commercial: listings.some((row) => row.mode !== 'offplan' && categoryOf(row.type) === 'Commercial'),
         newLaunch: list.some(isNewLaunchProject),
         apartments: list.some((project) => projectSegment(project) === 'apartments'),

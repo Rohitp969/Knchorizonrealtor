@@ -34,6 +34,7 @@ const COUNT_LABELS: Record<string, string> = {
   published: 'Published properties',
   forSale: 'For sale',
   forRent: 'For rent',
+  residential: 'Residential',
   commercial: 'Commercial',
   projects: 'Off-plan projects',
   developers: 'Developers',

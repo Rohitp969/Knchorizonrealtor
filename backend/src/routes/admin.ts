@@ -274,8 +274,10 @@ async function linkProjectDeveloper(projectId: string) {
 
 /*
  * The commercial tile used to look for a type literally called "commercial", so an office or
- * a retail unit never counted. These are the commercial types the public search offers.
+ * a retail unit never counted. These are the residential and commercial types the public
+ * search offers (SEARCH_CATEGORIES in frontend/src/lib/property-search.ts).
  */
+const RESIDENTIAL_TYPES = ["Apartment", "Villa", "Townhouse", "Penthouse", "Duplex", "Loft", "Compound", "Whole Building", "Residential Plot"];
 const COMMERCIAL_TYPES = ["Office", "Retail", "Shop", "Showroom", "Warehouse", "Staff Accommodation", "Commercial Plot"];
 
 router.get("/admin/dashboard", async (_req, res, next) => {
@@ -286,6 +288,7 @@ router.get("/admin/dashboard", async (_req, res, next) => {
       insights,
       forSale,
       forRent,
+      residential,
       commercial,
       projects,
       developers,
@@ -303,6 +306,7 @@ router.get("/admin/dashboard", async (_req, res, next) => {
       // listing_type is absent on older records, so the status text is the fallback.
       count(`select count(*) from properties where listing_type = 'sale' or status ilike '%sale%'`),
       count(`select count(*) from properties where listing_type = 'rent' or status ilike '%rent%'`),
+      count(`select count(*) from properties where type = any($1::text[]) or property_type = any($1::text[])`, [RESIDENTIAL_TYPES]),
       count(`select count(*) from properties where type = any($1::text[]) or property_type = any($1::text[])`, [COMMERCIAL_TYPES]),
       count(`select count(*) from projects`),
       count(`select count(*) from developers`),
@@ -321,6 +325,7 @@ router.get("/admin/dashboard", async (_req, res, next) => {
         published: publishedProperties,
         forSale,
         forRent,
+        residential,
         commercial,
         projects,
         developers,
