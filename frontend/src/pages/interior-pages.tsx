@@ -5,6 +5,7 @@ import { Link } from 'wouter';
 import { ContactForm, FaqSection, PageHero, SectionIntro, SectionLabel, ServiceRow, cardGrid } from '@/components/blocks';
 import { areas, services, specialistServices } from '@/lib/site-data';
 import { useContact } from '@/lib/site-settings';
+import { optimizedImage } from '@/lib/cloudinary-image';
 import { apiFetch, type Project, type RemoteProperty } from '@/lib/api';
 
 export function AboutPage() {
@@ -22,7 +23,7 @@ export function AboutPage() {
           </>
         }
         copy="We are an independent Dubai property advisory for people who value context, candour, and an exceptionally well-handled move."
-        image="/images/dubai-skyline-creek-sunset.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577270/knc-horizon/hero/dubai-skyline-creek-sunset.jpg"
       />
 
       {/* OUR POINT OF VIEW */}
@@ -151,7 +152,7 @@ export function ServicesPage() {
           </>
         }
         copy="Buying, selling, renting, or investing — the route is different for everyone. The standard of care should not be."
-        image="/images/dubai-skyline-golf-course.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577271/knc-horizon/hero/dubai-skyline-golf-course.jpg"
       />
 
       {/* CORE ADVISORY SERVICES */}
@@ -206,7 +207,7 @@ export function ServicesPage() {
                 <div>
                   <div className="card-media mb-6">
                     <img
-                      src={specialist.image}
+                      src={optimizedImage(specialist.image, 800)}
                       alt={specialist.title}
                       loading="lazy"
                       className="h-full w-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-[1.03]"
@@ -315,7 +316,7 @@ export function DesignBuildPage() {
           </>
         }
         copy="A property-focused design and coordination service for clients who want their Dubai home or investment property to feel considered, practical, and ready for its next chapter."
-        image="/images/dubai-hills-construction.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577270/knc-horizon/hero/dubai-hills-construction.jpg"
       />
 
       {/* INTRO */}
@@ -550,7 +551,7 @@ export function InteriorsPage() {
           </>
         }
         copy="Interior direction and furniture solutions shaped around the property, its purpose, and the people who will use it."
-        image="/images/dubai-apartment-living-room.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577269/knc-horizon/hero/dubai-apartment-living-room.jpg"
       />
 
       {/* INTRO / IMAGE */}
@@ -561,7 +562,7 @@ export function InteriorsPage() {
             {/* CONTROLLED IMAGE */}
             <div className="card-media card-media-wide lg:aspect-[4/3]">
               <img
-                src="/images/dubai-interior-styling.jpg"
+                src={optimizedImage('https://res.cloudinary.com/complaintreview/image/upload/v1790577275/knc-horizon/interiors/dubai-interior-styling.jpg', 1200)}
                 alt="Black side table with a white ceramic vase of dried stems beside a boucle headboard"
                 loading="lazy"
               />
@@ -790,7 +791,7 @@ export function AreasPage() {
           </>
         }
         copy="Dubai is a city of very different neighbourhoods. We help you understand each location, its character, and the property opportunities it offers."
-        image="/images/marina-resort-greens.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577274/knc-horizon/hero/marina-resort-greens.jpg"
       />
 
       {/* AREA NOTES */}
@@ -825,7 +826,7 @@ export function AreasPage() {
               >
                 <div className="card-media image-reveal">
                   <img
-                    src={area.image}
+                    src={optimizedImage(area.image, 800)}
                     alt={`${area.name}, Dubai`}
                     loading="lazy"
                     className="transition-transform duration-700 group-hover:scale-[1.03]"
@@ -955,7 +956,7 @@ export function ContactPage() {
           </>
         }
         copy="Tell us a little about what you are looking for. We&apos;ll come back with a thoughtful next step."
-        image="/images/jlt-towers-sheikh-zayed-road.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577273/knc-horizon/hero/jlt-towers-sheikh-zayed-road.jpg"
       />
 
       {/* CONTACT INFORMATION + FORM */}
@@ -1152,7 +1153,7 @@ export function AboutApproachPage() {
           </>
         }
         copy="A disciplined, transparent advisory practice shaped around the reality of Dubai real estate. No pressure, no developer bias — just considered guidance at every turn."
-        image="/images/al-fahidi-wind-towers.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577267/knc-horizon/hero/al-fahidi-wind-towers.jpg"
       />
 
       {/* CORE PHILOSOPHY */}
@@ -1295,7 +1296,7 @@ export function IndiaOfficePage() {
           </>
         }
         copy="Dedicated, local advisory for Indian business families, NRIs, and global investors seeking high-calibre residential and investment property in Dubai."
-        image="/images/gurugram-skyline.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577272/knc-horizon/hero/gurugram-skyline.jpg"
       />
 
       {/* OVERVIEW */}
@@ -1474,7 +1475,7 @@ export function MarketInsightsPage() {
           </>
         }
         copy="Independent regulatory context, rental yield mechanics, and macroeconomic foundations for informed property decisions across Dubai."
-        image="/images/sheikh-zayed-road-aerial.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577274/knc-horizon/hero/sheikh-zayed-road-aerial.jpg"
       />
 
       {/* CORE MARKET PILLARS */}

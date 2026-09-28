@@ -5,8 +5,9 @@ import { ContactForm, ErrorState, PageHero, SectionLabel } from '@/components/bl
 import { apiFetch, type Project } from '@/lib/api';
 import { defaultProjects } from '@/lib/site-data';
 import { absoluteUrl, listingJsonLd, usePageMeta, useSeoData, type SeoFields } from '@/lib/seo';
+import { altFor, optimizedImage } from '@/lib/cloudinary-image';
 
-const fallbackImage = '/images/dubai-skyline-from-sea.jpg';
+const fallbackImage = 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg';
 
 export function ProjectDetailPage() {
   // Both /projects/:slug and the /project/:id alias registered in App.tsx land here
@@ -97,7 +98,7 @@ export function ProjectDetailPage() {
         }
         copy={project.description}
         image={project.image || fallbackImage}
-        imageAlt={seo?.imageAlt || project.title}
+        imageAlt={seo?.imageAlt || project.coverImageAlt || project.title}
       />
       <section className="bg-[#faf7f1] site-section">
         <div className="site-container grid gap-12 lg:grid-cols-[1fr_.75fr] lg:gap-16 xl:gap-20">
@@ -106,8 +107,8 @@ export function ProjectDetailPage() {
               {images.map((image) => (
                 <div key={image} className="card-media card-media-wide">
                   <img
-                    src={image}
-                    alt={project.title}
+                    src={optimizedImage(image, 1200)}
+                    alt={project.gallery?.length ? altFor(image, project.galleryImages, project.title) : project.coverImageAlt || project.title}
                     onError={(event) => {
                       event.currentTarget.src = fallbackImage;
                     }}

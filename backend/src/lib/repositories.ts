@@ -33,6 +33,10 @@ const FIELDS = {
     images: "images",
     imageUrl: "image_url",
     imagePath: "image_path",
+    coverImage: "cover_image",
+    coverImagePublicId: "cover_image_public_id",
+    coverImageAlt: "cover_image_alt",
+    galleryImages: "gallery_images",
     amenities: "amenities",
     highlights: "highlights",
     featured: "featured",
@@ -55,7 +59,10 @@ const FIELDS = {
     imageUrl: "image_url",
     imagePath: "image_path",
     coverImage: "cover_image",
+    coverImagePublicId: "cover_image_public_id",
+    coverImageAlt: "cover_image_alt",
     gallery: "gallery",
+    galleryImages: "gallery_images",
     amenities: "amenities",
     highlights: "highlights",
     completionDate: "completion_date",
@@ -96,6 +103,8 @@ const FIELDS = {
     imageUrl: "image_url",
     imagePath: "image_path",
     featuredImage: "featured_image",
+    featuredImagePublicId: "featured_image_public_id",
+    featuredImageAlt: "featured_image_alt",
     author: "author",
     published: "published",
     status: "status",
@@ -143,6 +152,7 @@ const FIELDS = {
     title: "title",
     category: "category",
     image: "image",
+    imagePublicId: "image_public_id",
     imageUrl: "image_url",
     imagePath: "image_path",
     alt: "alt",
@@ -199,6 +209,9 @@ const FIELDS = {
     mimetype: "mimetype",
     size: "size",
     folder: "folder",
+    width: "width",
+    height: "height",
+    format: "format",
     createdAt: "created_at",
   },
   settings: {
@@ -257,13 +270,19 @@ export function toApiList(table: TableName, rows: Record<string, unknown>[]) {
   return rows.map((row) => toApi(table, row)!);
 }
 
+/*
+ * jsonb columns go to the driver as JSON text. Handed a JS array, node-postgres would write a
+ * Postgres array literal ({...}), which a jsonb column rejects.
+ */
+const JSON_COLUMNS = new Set(["gallery_images"]);
+
 /** Turns a camelCase document into a column -> value map, ignoring unknown keys. */
 export function toColumns(table: TableName, document: Record<string, unknown>) {
   const map = FIELDS[table] as FieldMap;
   const columns: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(document)) {
     const column = map[key];
-    if (column && value !== undefined) columns[column] = value;
+    if (column && value !== undefined) columns[column] = JSON_COLUMNS.has(column) ? JSON.stringify(value) : value;
   }
   if (table === "settings") columns.value = JSON.stringify(settingsValue(document));
   return columns;

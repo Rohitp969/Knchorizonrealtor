@@ -61,13 +61,14 @@ const tones = {
     activeTab: 'text-[#2b3242] shadow-[inset_0_-2px_0_#2b3242]',
     panel: 'bg-transparent',
   },
-  // On cream page sections
+  // On cream page sections. The tabs sit on the same cream as the fields, like the home
+  // page search; a navy tab strip here looked heavy against the light page.
   light: {
-    shell: 'overflow-hidden rounded-2xl border border-[#2b3242]/12 shadow-[0_18px_46px_-30px_rgba(43,50,66,.5)]',
-    bar: 'border-[#faf7f1]/12 bg-[#2b3242] text-[#faf7f1]',
-    tab: 'text-[#faf7f1]/60 hover:text-[#faf7f1]',
-    activeTab: 'bg-[#fffdf8] text-[#2b3242]',
-    panel: 'bg-[#fffdf8]',
+    shell: 'overflow-hidden rounded-2xl border border-[#2b3242]/12 bg-[#fffdf8] shadow-[0_18px_46px_-30px_rgba(43,50,66,.5)]',
+    bar: 'border-[#2b3242]/10 bg-transparent text-[#2b3242]',
+    tab: 'text-[#2b3242]/65 hover:text-[#2b3242]',
+    activeTab: 'text-[#2b3242] shadow-[inset_0_-2px_0_#2b3242]',
+    panel: 'bg-transparent',
   },
 };
 

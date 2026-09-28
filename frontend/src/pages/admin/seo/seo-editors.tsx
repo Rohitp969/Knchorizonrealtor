@@ -5,6 +5,7 @@ import type { AdminUser } from '@/lib/admin-api';
 import { DEFAULT_OG_IMAGE, resolveHead, type SeoFields } from '@/lib/seo';
 import { ImagePicker, Modal, Spinner, StateBlock, adminButtonClass, useToast } from '@/pages/admin/admin-ui';
 import { seoApi, toSeoInput, type Article, type ArticleStatus, type SeoInput, type SeoListing, type SeoOverview, type SeoPageRow } from './seo-api';
+import { optimizedImage } from '@/lib/cloudinary-image';
 import { articleSeoTitle, headInputFor, pageDefaults, projectDescription, propertyDescription, type SeoTarget } from './seo-rules';
 import {
   EditorLayout,
@@ -178,7 +179,7 @@ export function ListingSeoEditor({ kind, item, overview, onClose, onSaved }: {
 
 /* ================================================================== article */
 
-const EMPTY_ARTICLE = { title: '', slug: '', excerpt: '', content: '', category: 'General', author: 'KNC Horizon', featuredImage: '' };
+const EMPTY_ARTICLE = { title: '', slug: '', excerpt: '', content: '', category: 'General', author: 'KNC Horizon', featuredImage: '', featuredImageAlt: '' };
 
 const STATUS_COPY: Record<ArticleStatus, { tone: 'draft' | 'review' | 'live'; label: string; note: string }> = {
   draft: { tone: 'draft', label: 'Draft', note: 'Only visible in this console.' },
@@ -208,7 +209,7 @@ export function ArticleEditor({ articleId, overview, user, onClose, onSaved }: {
       .then(({ article, seo }) => {
         if (!active) return;
         setLoaded(article);
-        setFields({ title: article.title, slug: article.slug, excerpt: article.excerpt, content: article.content, category: article.category, author: article.author, featuredImage: article.featuredImage });
+        setFields({ title: article.title, slug: article.slug, excerpt: article.excerpt, content: article.content, category: article.category, author: article.author, featuredImage: article.featuredImage, featuredImageAlt: article.featuredImageAlt ?? '' });
         setValues(toSeoInput(seo, { seoTitle: articleSeoTitle(article.title, article.seoTitle) ?? '', metaDescription: article.seoDescription ?? '' }));
         setSlugTouched(true);
       })
@@ -308,11 +309,24 @@ export function ArticleEditor({ articleId, overview, user, onClose, onSaved }: {
                 {locked ? (
                   <div>
                     <span className={labelClass}>Featured image</span>
-                    {fields.featuredImage && <img src={fields.featuredImage} alt="" className="mt-2 h-24 w-36 rounded-lg object-cover" />}
+                    {fields.featuredImage && <img src={optimizedImage(fields.featuredImage, 320)} alt={fields.featuredImageAlt} className="mt-2 h-24 w-36 rounded-lg object-cover" />}
+                    {/* Alt text is an SEO field, so it stays editable on a live article. */}
+                    <div className="mt-3">
+                      <TextField label="Featured image alt text" value={fields.featuredImageAlt} onChange={(value) => set('featuredImageAlt', value)} placeholder="What the photo shows" error={errors.featuredImageAlt} />
+                    </div>
                   </div>
                 ) : (
                   <div>
-                    <ImagePicker label="Featured image" value={fields.featuredImage} onChange={(next) => set('featuredImage', String(Array.isArray(next) ? next[0] ?? '' : next))} loadLibrary={seoApi.media} uploadImage={seoApi.upload} />
+                    <ImagePicker
+                      label="Featured image"
+                      value={fields.featuredImage}
+                      onChange={(next) => set('featuredImage', String(Array.isArray(next) ? next[0] ?? '' : next))}
+                      folder="knc-horizon/blog"
+                      alt={fields.featuredImageAlt}
+                      onAltChange={(value) => set('featuredImageAlt', value)}
+                      loadLibrary={seoApi.media}
+                      uploadImage={seoApi.upload}
+                    />
                     {errors.featuredImage && <span className="mt-1 block text-xs text-[#b23b2e]">{errors.featuredImage}</span>}
                   </div>
                 )}

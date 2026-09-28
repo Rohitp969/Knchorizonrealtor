@@ -1,4 +1,5 @@
 import { createContext, createElement, useContext, useEffect, useId, useState, type ReactNode } from 'react';
+import { BRAND_LOGOS } from '@/lib/brand';
 import { useLocation } from 'wouter';
 import { apiFetch } from '@/lib/api';
 import { useSiteSettings } from '@/lib/site-settings';
@@ -16,7 +17,7 @@ import { useSiteSettings } from '@/lib/site-settings';
 /** The public site's canonical origin (the apex domain redirects here). */
 export const SITE_URL = 'https://www.knchorizonrealtor.com';
 /** Share image used when a page has none of its own and the console sets no default. */
-export const DEFAULT_OG_IMAGE = '/images/hero-dubai-skyline.jpg';
+export const DEFAULT_OG_IMAGE = 'https://res.cloudinary.com/complaintreview/image/upload/v1790577261/knc-horizon/communities/hero-dubai-skyline.jpg';
 
 export type InternalLink = { href: string; label: string };
 
@@ -266,8 +267,8 @@ export function organizationJsonLd({ siteName, siteUrl, phone, email }: Contact)
     '@type': 'RealEstateAgent',
     name: siteName,
     url: `${siteUrl}/`,
-    logo: `${siteUrl}/brand/knc-logo-stacked.svg`,
-    image: `${siteUrl}${DEFAULT_OG_IMAGE}`,
+    logo: BRAND_LOGOS.stacked,
+    image: absoluteUrl(DEFAULT_OG_IMAGE, siteUrl),
     ...(phone ? { telephone: phone } : {}),
     ...(email ? { email } : {}),
     address: { '@type': 'PostalAddress', addressLocality: 'Dubai', addressCountry: 'AE' },
@@ -303,6 +304,6 @@ export function articleJsonLd({ url, headline, description, image, datePublished
     ...(datePublished ? { datePublished } : {}),
     ...(dateModified ? { dateModified } : {}),
     author: { '@type': 'Organization', name: author || siteName },
-    publisher: { '@type': 'Organization', name: siteName, logo: { '@type': 'ImageObject', url: `${siteUrl}/brand/knc-logo-stacked.svg` } },
+    publisher: { '@type': 'Organization', name: siteName, logo: { '@type': 'ImageObject', url: BRAND_LOGOS.stacked } },
   };
 }

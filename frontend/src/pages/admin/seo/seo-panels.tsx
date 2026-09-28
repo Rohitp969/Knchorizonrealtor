@@ -548,7 +548,7 @@ function SeoSettingsForm({ overview, user, onSaved }: { overview: SeoOverview; u
         <div className="md:col-span-2">
           <span className={labelClass}>Default share image</span>
           <div className="mt-1.5">
-            <ImagePicker label="Used by pages without their own image" value={image} onChange={(next) => setImage(String(Array.isArray(next) ? next[0] ?? '' : next))} help={`Empty uses ${DEFAULT_OG_IMAGE}.`} loadLibrary={seoApi.media} uploadImage={seoApi.upload} />
+            <ImagePicker label="Used by pages without their own image" value={image} onChange={(next) => setImage(String(Array.isArray(next) ? next[0] ?? '' : next))} help={`Empty uses ${DEFAULT_OG_IMAGE}.`} folder="knc-horizon/pages" loadLibrary={seoApi.media} uploadImage={seoApi.upload} />
             {errors.defaultOgImage && <span className="mt-1 block text-xs text-[#b23b2e]">{errors.defaultOgImage}</span>}
           </div>
         </div>

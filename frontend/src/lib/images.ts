@@ -35,9 +35,11 @@ export type ImageRecord = {
 };
 
 /**
- * Real, licensed photographs of Dubai that the admin can pick as presets. Every file is stored
- * locally in frontend/public/images/, so picking a preset never hotlinks another site. Source,
- * licence and photographer of every site photo are listed in IMAGE_SOURCES.md.
+ * Real, licensed photographs of Dubai that the admin can pick as presets. option1_url is the
+ * photo's Cloudinary URL (knc-horizon/...), where the site serves it from; option2_local names
+ * the file it was migrated from (frontend/public/images/ was emptied on 28 September 2026 and
+ * git history keeps the files). Nothing is hotlinked from another site.
+ * Source, licence and photographer of every site photo are listed in IMAGE_SOURCES.md.
  */
 export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
   dubai_skyline_from_sea: {
@@ -45,7 +47,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
     name: 'Dubai skyline from the sea',
     description: 'The Dubai skyline and the Burj Al Arab seen across the sea. CC0, Wikimedia Commons, Ronald Sagarino. Source: https://commons.wikimedia.org/wiki/File:Dubai_skylines_(Pixabay_1536496).jpg',
     usedIn: 'Home: closing call-to-action; also the fallback when an image is missing',
-    option1_url: '/images/dubai-skyline-from-sea.jpg',
+    option1_url: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg',
     option2_local: {
       filename: 'dubai-skyline-from-sea.jpg',
       folder: 'frontend/public/images/',
@@ -58,7 +60,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
     name: 'Downtown Dubai and Burj Lake',
     description: 'The Burj Khalifa and Downtown Dubai towers beside Burj Lake at sunset. CC0, Wikimedia Commons, Christian Raggini. Source: https://commons.wikimedia.org/wiki/File:The_Dubai_Fountain_%26_Burj_Khalifa_Pixabay.jpg',
     usedIn: 'Community: Downtown Dubai',
-    option1_url: '/images/dubai-fountain-downtown.jpg',
+    option1_url: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/communities/dubai-fountain-downtown.jpg',
     option2_local: {
       filename: 'dubai-fountain-downtown.jpg',
       folder: 'frontend/public/images/',
@@ -71,7 +73,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
     name: 'Dubai Marina canal by day',
     description: 'Residential towers along the Dubai Marina canal on a clear day. CC0, Wikimedia Commons, EditQ. Source: https://commons.wikimedia.org/wiki/File:Dubai_Marina_3.jpg',
     usedIn: 'Community: Dubai Marina',
-    option1_url: '/images/dubai-marina-canal-day.jpg',
+    option1_url: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/communities/dubai-marina-canal-day.jpg',
     option2_local: {
       filename: 'dubai-marina-canal-day.jpg',
       folder: 'frontend/public/images/',
@@ -84,7 +86,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
     name: 'Palm Jumeirah from above',
     description: 'The resort Palm Jumeirah, Dubai, United Arab Emirates, is featured in this image photographed by Expedition 10 Commander Leroy Chiao from the International Spac. Public domain, Wikimedia Commons, Commander Leroy Chiao. Source: https://commons.wikimedia.org/wiki/File:Palm_Island_Resort.jpg',
     usedIn: 'Community: Palm Jumeirah; gallery',
-    option1_url: '/images/palm-jumeirah-aerial.jpg',
+    option1_url: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577261/knc-horizon/communities/palm-jumeirah-aerial.jpg',
     option2_local: {
       filename: 'palm-jumeirah-aerial.jpg',
       folder: 'frontend/public/images/',
@@ -97,7 +99,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
     name: 'Business Bay at night',
     description: '​迪拜夜晚天际线. CC0, Wikimedia Commons, Robert Bock. Source: https://commons.wikimedia.org/wiki/File:Dubai_skyline_unsplash.jpg',
     usedIn: 'Community: Business Bay; gallery',
-    option1_url: '/images/hero-dubai-skyline.jpg',
+    option1_url: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577261/knc-horizon/communities/hero-dubai-skyline.jpg',
     option2_local: {
       filename: 'hero-dubai-skyline.jpg',
       folder: 'frontend/public/images/',
@@ -110,7 +112,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
     name: 'Jumeirah coast and Burj Al Arab',
     description: 'Dubai coastline. CC0, Wikimedia Commons, Ahmad Ardity. Source: https://commons.wikimedia.org/wiki/File:Dubai_skyscrapers,_coastline_and_Burj_Al-Arab.jpg',
     usedIn: 'Community: Jumeirah; gallery',
-    option1_url: '/images/jumeirah-coast-burj-al-arab.jpg',
+    option1_url: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577261/knc-horizon/communities/jumeirah-coast-burj-al-arab.jpg',
     option2_local: {
       filename: 'jumeirah-coast-burj-al-arab.jpg',
       folder: 'frontend/public/images/',
@@ -123,7 +125,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
     name: 'Dubai villa community',
     description: 'Low-rise villa community in Dubai seen from above, with towers on the horizon. Unsplash License, Unsplash, Kate Trysh. Source: https://unsplash.com/photos/Yeq7xHJ87_U',
     usedIn: 'Community: Arabian Ranches (representative Dubai villa community; Arabian Ranches itself has no free-licence photo)',
-    option1_url: '/images/dubai-villa-community-aerial.jpg',
+    option1_url: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/communities/dubai-villa-community-aerial.jpg',
     option2_local: {
       filename: 'dubai-villa-community-aerial.jpg',
       folder: 'frontend/public/images/',
@@ -136,7 +138,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
     name: 'Townhouse street in Dubai',
     description: 'Row of Mediterranean-style townhouses on a quiet Dubai community street, city skyline in the distance. Unsplash License, Unsplash, Ben Koorengevel. Source: https://unsplash.com/photos/a-beautiful-cityscape-with-buildings-and-streets-R9Dc1pwBTjY',
     usedIn: 'Listing: Park Row (townhouse)',
-    option1_url: '/images/dubai-townhouse-street.jpg',
+    option1_url: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577287/knc-horizon/properties/dubai-townhouse-street.jpg',
     option2_local: {
       filename: 'dubai-townhouse-street.jpg',
       folder: 'frontend/public/images/',
@@ -149,7 +151,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
     name: 'Dubai Creek Harbour towers',
     description: 'Residential towers at Dubai Creek Harbour in late-afternoon sun, with palm trees below. Unsplash License, Unsplash, Aadil Sabeer. Source: https://unsplash.com/photos/cars-parked-near-high-rise-buildings-during-daytime-onP3aM_3tuA',
     usedIn: 'Listing: Creekside Loft (Dubai Creek Harbour)',
-    option1_url: '/images/dubai-creek-harbour-towers.jpg',
+    option1_url: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577285/knc-horizon/properties/dubai-creek-harbour-towers.jpg',
     option2_local: {
       filename: 'dubai-creek-harbour-towers.jpg',
       folder: 'frontend/public/images/',
@@ -162,7 +164,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
     name: 'Tower under construction in Dubai',
     description: 'Residential tower under construction with two tower cranes beside a finished apartment building in Dubai. Unsplash License, Unsplash, Kate Trysh. Source: https://unsplash.com/photos/a-couple-of-tall-buildings-next-to-each-other-9HP5UpkyptM',
     usedIn: 'Blog: A clear-eyed guide to buying off-plan in Dubai',
-    option1_url: '/images/dubai-tower-construction-cranes.jpg',
+    option1_url: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577259/knc-horizon/blog/dubai-tower-construction-cranes.jpg',
     option2_local: {
       filename: 'dubai-tower-construction-cranes.jpg',
       folder: 'frontend/public/images/',
@@ -175,7 +177,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
     name: 'Furnished Dubai living room',
     description: 'Finished Dubai living room with grey sofa, glass coffee table, white rug and ring pendant light. Unsplash License, Unsplash, Riyas Mohammed. Source: https://unsplash.com/photos/a-living-room-with-a-gray-couch-and-a-white-rug-_BBps6MAJ2w',
     usedIn: 'Service card: Interiors & Furniture (home and Services)',
-    option1_url: '/images/dubai-living-room-finished.jpg',
+    option1_url: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577275/knc-horizon/interiors/dubai-living-room-finished.jpg',
     option2_local: {
       filename: 'dubai-living-room-finished.jpg',
       folder: 'frontend/public/images/',
@@ -188,7 +190,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
     name: 'Al Fahidi wind towers',
     description: 'Traditional sand-coloured houses with wind towers around a quiet courtyard in Al Bastakiya, old Dubai. CC0 1.0, Wikimedia Commons, EditQ. Source: https://commons.wikimedia.org/wiki/File:Al_Bastakiya_5.jpg',
     usedIn: 'Header: Our Approach',
-    option1_url: '/images/al-fahidi-wind-towers.jpg',
+    option1_url: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577267/knc-horizon/hero/al-fahidi-wind-towers.jpg',
     option2_local: {
       filename: 'al-fahidi-wind-towers.jpg',
       folder: 'frontend/public/images/',
@@ -198,7 +200,7 @@ export const VERIFIED_IMAGES: Record<string, ImageRecord> = {
   },
 };
 
-export const DEFAULT_FALLBACK_IMAGE = '/images/dubai-skyline-from-sea.jpg';
+export const DEFAULT_FALLBACK_IMAGE = 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg';
 
 /**
  * Resolves the display image URL from any item or path.

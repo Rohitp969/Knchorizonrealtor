@@ -1,0 +1,1644 @@
+[
+  {
+    "local": "/images/city-walk-residences.jpg",
+    "folder": "knc-horizon/blog",
+    "publicId": "knc-horizon/blog/city-walk-residences",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577259/knc-horizon/blog/city-walk-residences.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 176905
+  },
+  {
+    "local": "/images/dubai-coast-from-space.jpg",
+    "folder": "knc-horizon/blog",
+    "publicId": "knc-horizon/blog/dubai-coast-from-space",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577258/knc-horizon/blog/dubai-coast-from-space.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 155328
+  },
+  {
+    "local": "/images/dubai-residential-buildings.jpg",
+    "folder": "knc-horizon/blog",
+    "publicId": "knc-horizon/blog/dubai-residential-buildings",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577259/knc-horizon/blog/dubai-residential-buildings.jpg",
+    "width": 1280,
+    "height": 749,
+    "format": "jpg",
+    "bytes": 228608
+  },
+  {
+    "local": "/images/dubai-tower-construction-cranes.jpg",
+    "folder": "knc-horizon/blog",
+    "publicId": "knc-horizon/blog/dubai-tower-construction-cranes",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577259/knc-horizon/blog/dubai-tower-construction-cranes.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 222154
+  },
+  {
+    "local": "/images/marina-palm-view.jpg",
+    "folder": "knc-horizon/blog",
+    "publicId": "knc-horizon/blog/marina-palm-view",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/blog/marina-palm-view.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 186594
+  },
+  {
+    "local": "/images/dubai-fountain-downtown.jpg",
+    "folder": "knc-horizon/communities",
+    "publicId": "knc-horizon/communities/dubai-fountain-downtown",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/communities/dubai-fountain-downtown.jpg",
+    "width": 1280,
+    "height": 720,
+    "format": "jpg",
+    "bytes": 190748
+  },
+  {
+    "local": "/images/dubai-marina-canal-day.jpg",
+    "folder": "knc-horizon/communities",
+    "publicId": "knc-horizon/communities/dubai-marina-canal-day",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/communities/dubai-marina-canal-day.jpg",
+    "width": 1280,
+    "height": 960,
+    "format": "jpg",
+    "bytes": 338743
+  },
+  {
+    "local": "/images/dubai-villa-community-aerial.jpg",
+    "folder": "knc-horizon/communities",
+    "publicId": "knc-horizon/communities/dubai-villa-community-aerial",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/communities/dubai-villa-community-aerial.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 174842
+  },
+  {
+    "local": "/images/hero-dubai-skyline.jpg",
+    "folder": "knc-horizon/communities",
+    "publicId": "knc-horizon/communities/hero-dubai-skyline",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577261/knc-horizon/communities/hero-dubai-skyline.jpg",
+    "width": 1920,
+    "height": 1280,
+    "format": "jpg",
+    "bytes": 337243
+  },
+  {
+    "local": "/images/jumeirah-coast-burj-al-arab.jpg",
+    "folder": "knc-horizon/communities",
+    "publicId": "knc-horizon/communities/jumeirah-coast-burj-al-arab",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577261/knc-horizon/communities/jumeirah-coast-burj-al-arab.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 309981
+  },
+  {
+    "local": "/images/palm-jumeirah-aerial.jpg",
+    "folder": "knc-horizon/communities",
+    "publicId": "knc-horizon/communities/palm-jumeirah-aerial",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577261/knc-horizon/communities/palm-jumeirah-aerial.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 246567
+  },
+  {
+    "local": "/images/binghatti-building.jpg",
+    "folder": "knc-horizon/developers",
+    "publicId": "knc-horizon/developers/binghatti-building",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577261/knc-horizon/developers/binghatti-building.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 122938
+  },
+  {
+    "local": "/images/bluewaters-ain-dubai.jpg",
+    "folder": "knc-horizon/developers",
+    "publicId": "knc-horizon/developers/bluewaters-ain-dubai",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577262/knc-horizon/developers/bluewaters-ain-dubai.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 181993
+  },
+  {
+    "local": "/images/business-bay-canal-night.jpg",
+    "folder": "knc-horizon/developers",
+    "publicId": "knc-horizon/developers/business-bay-canal-night",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577262/knc-horizon/developers/business-bay-canal-night.jpg",
+    "width": 1280,
+    "height": 584,
+    "format": "jpg",
+    "bytes": 198495
+  },
+  {
+    "local": "/images/damac-hills-towers.jpg",
+    "folder": "knc-horizon/developers",
+    "publicId": "knc-horizon/developers/damac-hills-towers",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577262/knc-horizon/developers/damac-hills-towers.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 235677
+  },
+  {
+    "local": "/images/dubai-mall-emaar.jpg",
+    "folder": "knc-horizon/developers",
+    "publicId": "knc-horizon/developers/dubai-mall-emaar",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577263/knc-horizon/developers/dubai-mall-emaar.jpg",
+    "width": 1280,
+    "height": 806,
+    "format": "jpg",
+    "bytes": 203816
+  },
+  {
+    "local": "/images/dubai-silicon-oasis.jpg",
+    "folder": "knc-horizon/developers",
+    "publicId": "knc-horizon/developers/dubai-silicon-oasis",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577263/knc-horizon/developers/dubai-silicon-oasis.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 180414
+  },
+  {
+    "local": "/images/meydan-bridge-night.jpg",
+    "folder": "knc-horizon/developers",
+    "publicId": "knc-horizon/developers/meydan-bridge-night",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577263/knc-horizon/developers/meydan-bridge-night.jpg",
+    "width": 1280,
+    "height": 790,
+    "format": "jpg",
+    "bytes": 209016
+  },
+  {
+    "local": "/images/palm-jumeirah-avenue.jpg",
+    "folder": "knc-horizon/developers",
+    "publicId": "knc-horizon/developers/palm-jumeirah-avenue",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577264/knc-horizon/developers/palm-jumeirah-avenue.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 412343
+  },
+  {
+    "local": "/images/abras-dubai-creek.jpg",
+    "folder": "knc-horizon/gallery",
+    "publicId": "knc-horizon/gallery/abras-dubai-creek",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577264/knc-horizon/gallery/abras-dubai-creek.jpg",
+    "width": 1280,
+    "height": 960,
+    "format": "jpg",
+    "bytes": 257921
+  },
+  {
+    "local": "/images/community-garden-villas.jpg",
+    "folder": "knc-horizon/gallery",
+    "publicId": "knc-horizon/gallery/community-garden-villas",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577264/knc-horizon/gallery/community-garden-villas.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 335510
+  },
+  {
+    "local": "/images/dubai-desert-dunes.jpg",
+    "folder": "knc-horizon/gallery",
+    "publicId": "knc-horizon/gallery/dubai-desert-dunes",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577264/knc-horizon/gallery/dubai-desert-dunes.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 123301
+  },
+  {
+    "local": "/images/dubai-metro-skyline.jpg",
+    "folder": "knc-horizon/gallery",
+    "publicId": "knc-horizon/gallery/dubai-metro-skyline",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577265/knc-horizon/gallery/dubai-metro-skyline.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 204181
+  },
+  {
+    "local": "/images/dubai-miracle-garden.jpg",
+    "folder": "knc-horizon/gallery",
+    "publicId": "knc-horizon/gallery/dubai-miracle-garden",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577265/knc-horizon/gallery/dubai-miracle-garden.jpg",
+    "width": 1280,
+    "height": 748,
+    "format": "jpg",
+    "bytes": 289676
+  },
+  {
+    "local": "/images/dubai-spice-souk.jpg",
+    "folder": "knc-horizon/gallery",
+    "publicId": "knc-horizon/gallery/dubai-spice-souk",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577266/knc-horizon/gallery/dubai-spice-souk.jpg",
+    "width": 1280,
+    "height": 892,
+    "format": "jpg",
+    "bytes": 412515
+  },
+  {
+    "local": "/images/hatta-mountains-reservoir.jpg",
+    "folder": "knc-horizon/gallery",
+    "publicId": "knc-horizon/gallery/hatta-mountains-reservoir",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577266/knc-horizon/gallery/hatta-mountains-reservoir.jpg",
+    "width": 1280,
+    "height": 960,
+    "format": "jpg",
+    "bytes": 378431
+  },
+  {
+    "local": "/images/jumeira-public-beach.jpg",
+    "folder": "knc-horizon/gallery",
+    "publicId": "knc-horizon/gallery/jumeira-public-beach",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577266/knc-horizon/gallery/jumeira-public-beach.jpg",
+    "width": 1280,
+    "height": 960,
+    "format": "jpg",
+    "bytes": 243083
+  },
+  {
+    "local": "/images/jumeirah-mosque.jpg",
+    "folder": "knc-horizon/gallery",
+    "publicId": "knc-horizon/gallery/jumeirah-mosque",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577266/knc-horizon/gallery/jumeirah-mosque.jpg",
+    "width": 1280,
+    "height": 960,
+    "format": "jpg",
+    "bytes": 331459
+  },
+  {
+    "local": "/images/al-fahidi-wind-towers.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/al-fahidi-wind-towers",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577267/knc-horizon/hero/al-fahidi-wind-towers.jpg",
+    "width": 1600,
+    "height": 1200,
+    "format": "jpg",
+    "bytes": 361952
+  },
+  {
+    "local": "/images/burj-khalifa-aerial.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/burj-khalifa-aerial",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577267/knc-horizon/hero/burj-khalifa-aerial.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 408860
+  },
+  {
+    "local": "/images/burj-night-water.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/burj-night-water",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577267/knc-horizon/hero/burj-night-water.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 124210
+  },
+  {
+    "local": "/images/business-bay-skyline-day.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/business-bay-skyline-day",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577268/knc-horizon/hero/business-bay-skyline-day.jpg",
+    "width": 1600,
+    "height": 1200,
+    "format": "jpg",
+    "bytes": 371997
+  },
+  {
+    "local": "/images/daria-island-seafront-villa.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/daria-island-seafront-villa",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577268/knc-horizon/hero/daria-island-seafront-villa.jpg",
+    "width": 1280,
+    "height": 1024,
+    "format": "jpg",
+    "bytes": 270082
+  },
+  {
+    "local": "/images/difc-green-towers.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/difc-green-towers",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577268/knc-horizon/hero/difc-green-towers.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 278324
+  },
+  {
+    "local": "/images/downtown-safa-park.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/downtown-safa-park",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577268/knc-horizon/hero/downtown-safa-park.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 168655
+  },
+  {
+    "local": "/images/downtown-skyline-cranes.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/downtown-skyline-cranes",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577269/knc-horizon/hero/downtown-skyline-cranes.jpg",
+    "width": 1280,
+    "height": 1024,
+    "format": "jpg",
+    "bytes": 300282
+  },
+  {
+    "local": "/images/dubai-apartment-living-room.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/dubai-apartment-living-room",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577269/knc-horizon/hero/dubai-apartment-living-room.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 263151
+  },
+  {
+    "local": "/images/dubai-apartment-towers-sunset.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/dubai-apartment-towers-sunset",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577269/knc-horizon/hero/dubai-apartment-towers-sunset.jpg",
+    "width": 1280,
+    "height": 640,
+    "format": "jpg",
+    "bytes": 139014
+  },
+  {
+    "local": "/images/dubai-creek-dusk.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/dubai-creek-dusk",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577269/knc-horizon/hero/dubai-creek-dusk.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 260898
+  },
+  {
+    "local": "/images/dubai-hills-construction.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/dubai-hills-construction",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577270/knc-horizon/hero/dubai-hills-construction.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 288584
+  },
+  {
+    "local": "/images/dubai-new-towers-aerial.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/dubai-new-towers-aerial",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577271/knc-horizon/hero/dubai-new-towers-aerial.jpg",
+    "width": 1280,
+    "height": 960,
+    "format": "jpg",
+    "bytes": 524459
+  },
+  {
+    "local": "/images/dubai-skyline-creek-sunset.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/dubai-skyline-creek-sunset",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577270/knc-horizon/hero/dubai-skyline-creek-sunset.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 132991
+  },
+  {
+    "local": "/images/dubai-skyline-golf-course.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/dubai-skyline-golf-course",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577271/knc-horizon/hero/dubai-skyline-golf-course.jpg",
+    "width": 1600,
+    "height": 836,
+    "format": "jpg",
+    "bytes": 256443
+  },
+  {
+    "local": "/images/dubai-tower-cranes-twilight.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/dubai-tower-cranes-twilight",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577271/knc-horizon/hero/dubai-tower-cranes-twilight.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 126047
+  },
+  {
+    "local": "/images/dubai-waterfront-tower-construction.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/dubai-waterfront-tower-construction",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577271/knc-horizon/hero/dubai-waterfront-tower-construction.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 163105
+  },
+  {
+    "local": "/images/fountain-pen-writing.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/fountain-pen-writing",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577272/knc-horizon/hero/fountain-pen-writing.jpg",
+    "width": 1280,
+    "height": 961,
+    "format": "jpg",
+    "bytes": 125485
+  },
+  {
+    "local": "/images/gurugram-skyline.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/gurugram-skyline",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577272/knc-horizon/hero/gurugram-skyline.jpg",
+    "width": 1600,
+    "height": 1080,
+    "format": "jpg",
+    "bytes": 213545
+  },
+  {
+    "local": "/images/hero-dubai-sunset.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/hero-dubai-sunset",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577272/knc-horizon/hero/hero-dubai-sunset.jpg",
+    "width": 2400,
+    "height": 800,
+    "format": "jpg",
+    "bytes": 208798
+  },
+  {
+    "local": "/images/jbr-residences-street.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/jbr-residences-street",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577273/knc-horizon/hero/jbr-residences-street.jpg",
+    "width": 1280,
+    "height": 960,
+    "format": "jpg",
+    "bytes": 387681
+  },
+  {
+    "local": "/images/jlt-towers-sheikh-zayed-road.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/jlt-towers-sheikh-zayed-road",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577273/knc-horizon/hero/jlt-towers-sheikh-zayed-road.jpg",
+    "width": 1600,
+    "height": 1041,
+    "format": "jpg",
+    "bytes": 472254
+  },
+  {
+    "local": "/images/jvc-tower-construction-dusk.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/jvc-tower-construction-dusk",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577273/knc-horizon/hero/jvc-tower-construction-dusk.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 124180
+  },
+  {
+    "local": "/images/madinat-jumeirah-canal.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/madinat-jumeirah-canal",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577274/knc-horizon/hero/madinat-jumeirah-canal.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 360260
+  },
+  {
+    "local": "/images/marina-resort-greens.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/marina-resort-greens",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577274/knc-horizon/hero/marina-resort-greens.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 201032
+  },
+  {
+    "local": "/images/maritime-city-towers.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/maritime-city-towers",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577274/knc-horizon/hero/maritime-city-towers.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 255366
+  },
+  {
+    "local": "/images/sheikh-zayed-road-aerial.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/sheikh-zayed-road-aerial",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577274/knc-horizon/hero/sheikh-zayed-road-aerial.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 210449
+  },
+  {
+    "local": "/images/signing-documents.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/signing-documents",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577275/knc-horizon/hero/signing-documents.jpg",
+    "width": 1280,
+    "height": 854,
+    "format": "jpg",
+    "bytes": 146998
+  },
+  {
+    "local": "/images/the-greens-residential.jpg",
+    "folder": "knc-horizon/hero",
+    "publicId": "knc-horizon/hero/the-greens-residential",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577275/knc-horizon/hero/the-greens-residential.jpg",
+    "width": 1280,
+    "height": 720,
+    "format": "jpg",
+    "bytes": 247613
+  },
+  {
+    "local": "/images/dubai-interior-styling.jpg",
+    "folder": "knc-horizon/interiors",
+    "publicId": "knc-horizon/interiors/dubai-interior-styling",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577275/knc-horizon/interiors/dubai-interior-styling.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 166454
+  },
+  {
+    "local": "/images/dubai-living-room-finished.jpg",
+    "folder": "knc-horizon/interiors",
+    "publicId": "knc-horizon/interiors/dubai-living-room-finished",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577275/knc-horizon/interiors/dubai-living-room-finished.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 129040
+  },
+  {
+    "local": "/images/dubai-townhouses-construction.jpg",
+    "folder": "knc-horizon/interiors",
+    "publicId": "knc-horizon/interiors/dubai-townhouses-construction",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577276/knc-horizon/interiors/dubai-townhouses-construction.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 153583
+  },
+  {
+    "local": "/brand/knc-logo-emblem-light.svg",
+    "folder": "knc-horizon/logos",
+    "publicId": "knc-horizon/logos/knc-logo-emblem-light",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577276/knc-horizon/logos/knc-logo-emblem-light.svg",
+    "width": 313,
+    "height": 111,
+    "format": "svg",
+    "bytes": 2730
+  },
+  {
+    "local": "/brand/knc-logo-emblem.svg",
+    "folder": "knc-horizon/logos",
+    "publicId": "knc-horizon/logos/knc-logo-emblem",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577276/knc-horizon/logos/knc-logo-emblem.svg",
+    "width": 313,
+    "height": 111,
+    "format": "svg",
+    "bytes": 2731
+  },
+  {
+    "local": "/brand/knc-logo-horizontal-light.svg",
+    "folder": "knc-horizon/logos",
+    "publicId": "knc-horizon/logos/knc-logo-horizontal-light",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577276/knc-horizon/logos/knc-logo-horizontal-light.svg",
+    "width": 679,
+    "height": 111,
+    "format": "svg",
+    "bytes": 9278
+  },
+  {
+    "local": "/brand/knc-logo-horizontal.svg",
+    "folder": "knc-horizon/logos",
+    "publicId": "knc-horizon/logos/knc-logo-horizontal",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577276/knc-horizon/logos/knc-logo-horizontal.svg",
+    "width": 679,
+    "height": 111,
+    "format": "svg",
+    "bytes": 9275
+  },
+  {
+    "local": "/brand/knc-logo-stacked-light.svg",
+    "folder": "knc-horizon/logos",
+    "publicId": "knc-horizon/logos/knc-logo-stacked-light",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577278/knc-horizon/logos/knc-logo-stacked-light.svg",
+    "width": 322,
+    "height": 205,
+    "format": "svg",
+    "bytes": 9881
+  },
+  {
+    "local": "/brand/knc-logo-stacked.svg",
+    "folder": "knc-horizon/logos",
+    "publicId": "knc-horizon/logos/knc-logo-stacked",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577278/knc-horizon/logos/knc-logo-stacked.svg",
+    "width": 322,
+    "height": 205,
+    "format": "svg",
+    "bytes": 9882
+  },
+  {
+    "local": "/favicon.svg",
+    "folder": "knc-horizon/logos",
+    "publicId": "knc-horizon/logos/favicon",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790586480/knc-horizon/logos/favicon.svg",
+    "width": 180,
+    "height": 180,
+    "format": "svg",
+    "bytes": 2779
+  },
+  {
+    "local": "/images/difc-aerial-day.jpg",
+    "folder": "knc-horizon/pages",
+    "publicId": "knc-horizon/pages/difc-aerial-day",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/difc-aerial-day.jpg",
+    "width": 1280,
+    "height": 960,
+    "format": "jpg",
+    "bytes": 379521
+  },
+  {
+    "local": "/images/dubai-skyline-from-sea.jpg",
+    "folder": "knc-horizon/pages",
+    "publicId": "knc-horizon/pages/dubai-skyline-from-sea",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 159297
+  },
+  {
+    "local": "/images/dubai-islands-from-space.jpg",
+    "folder": "knc-horizon/projects",
+    "publicId": "knc-horizon/projects/dubai-islands-from-space",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577280/knc-horizon/projects/dubai-islands-from-space.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 257720
+  },
+  {
+    "local": "/images/dubai-villa-community-golf-lake.jpg",
+    "folder": "knc-horizon/projects",
+    "publicId": "knc-horizon/projects/dubai-villa-community-golf-lake",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577280/knc-horizon/projects/dubai-villa-community-golf-lake.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 199289
+  },
+  {
+    "local": "/images/jaddaf-waterfront.jpg",
+    "folder": "knc-horizon/projects",
+    "publicId": "knc-horizon/projects/jaddaf-waterfront",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577281/knc-horizon/projects/jaddaf-waterfront.jpg",
+    "width": 1280,
+    "height": 702,
+    "format": "jpg",
+    "bytes": 250908
+  },
+  {
+    "local": "/images/jumeirah-islands-lakeside-villas.jpg",
+    "folder": "knc-horizon/projects",
+    "publicId": "knc-horizon/projects/jumeirah-islands-lakeside-villas",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577282/knc-horizon/projects/jumeirah-islands-lakeside-villas.jpg",
+    "width": 1280,
+    "height": 1024,
+    "format": "jpg",
+    "bytes": 262815
+  },
+  {
+    "local": "/images/jvc-towers-construction.jpg",
+    "folder": "knc-horizon/projects",
+    "publicId": "knc-horizon/projects/jvc-towers-construction",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577282/knc-horizon/projects/jvc-towers-construction.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 344513
+  },
+  {
+    "local": "/images/port-rashid-waterfront.jpg",
+    "folder": "knc-horizon/projects",
+    "publicId": "knc-horizon/projects/port-rashid-waterfront",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577282/knc-horizon/projects/port-rashid-waterfront.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 128691
+  },
+  {
+    "local": "/images/ras-al-khor-towers.jpg",
+    "folder": "knc-horizon/projects",
+    "publicId": "knc-horizon/projects/ras-al-khor-towers",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577283/knc-horizon/projects/ras-al-khor-towers.jpg",
+    "width": 1280,
+    "height": 963,
+    "format": "jpg",
+    "bytes": 317147
+  },
+  {
+    "local": "/images/address-sky-view-night.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/address-sky-view-night",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577283/knc-horizon/properties/address-sky-view-night.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 219628
+  },
+  {
+    "local": "/images/business-bay-apartment-canal-view-lounge.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/32418264/pexels-photo-32418264.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/32418264/",
+    "crop": {
+      "x": 261,
+      "y": 0,
+      "width": 2139,
+      "height": 1604
+    },
+    "publicId": "knc-horizon/properties/business-bay-apartment-canal-view-lounge",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590501/knc-horizon/properties/business-bay-apartment-canal-view-lounge.jpg",
+    "width": 2139,
+    "height": 1603,
+    "format": "jpg",
+    "bytes": 295659
+  },
+  {
+    "local": "/images/business-bay-apartment-dining-room.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/32418265/pexels-photo-32418265.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/32418265/",
+    "crop": {
+      "x": 261,
+      "y": 0,
+      "width": 2139,
+      "height": 1604
+    },
+    "publicId": "knc-horizon/properties/business-bay-apartment-dining-room",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590501/knc-horizon/properties/business-bay-apartment-dining-room.jpg",
+    "width": 2139,
+    "height": 1603,
+    "format": "jpg",
+    "bytes": 339093
+  },
+  {
+    "local": "/images/business-bay-canal-day.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/business-bay-canal-day",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577283/knc-horizon/properties/business-bay-canal-day.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 274425
+  },
+  {
+    "local": "/images/business-bay-residence-bathroom-view.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/36903893/pexels-photo-36903893.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/36903893/",
+    "publicId": "knc-horizon/properties/business-bay-residence-bathroom-view",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590501/knc-horizon/properties/business-bay-residence-bathroom-view.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 400484
+  },
+  {
+    "local": "/images/business-bay-residence-kitchen-island.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/36903860/pexels-photo-36903860.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/36903860/",
+    "crop": {
+      "x": 0,
+      "y": 26,
+      "width": 2064,
+      "height": 1548
+    },
+    "publicId": "knc-horizon/properties/business-bay-residence-kitchen-island",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590502/knc-horizon/properties/business-bay-residence-kitchen-island.jpg",
+    "width": 2064,
+    "height": 1548,
+    "format": "jpg",
+    "bytes": 347368
+  },
+  {
+    "local": "/images/business-bay-residence-pool-deck.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/36903870/pexels-photo-36903870.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/36903870/",
+    "publicId": "knc-horizon/properties/business-bay-residence-pool-deck",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590503/knc-horizon/properties/business-bay-residence-pool-deck.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 637557
+  },
+  {
+    "local": "/images/business-bay-towers-aerial.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/business-bay-towers-aerial",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577284/knc-horizon/properties/business-bay-towers-aerial.jpg",
+    "width": 1280,
+    "height": 889,
+    "format": "jpg",
+    "bytes": 321220
+  },
+  {
+    "local": "/images/downtown-dubai-apartment-dining-table.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30336909/pexels-photo-30336909.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30336909/",
+    "crop": {
+      "x": 0,
+      "y": 540,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/downtown-dubai-apartment-dining-table",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590503/knc-horizon/properties/downtown-dubai-apartment-dining-table.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 372019
+  },
+  {
+    "local": "/images/downtown-dubai-apartment-living-dining.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/29080566/pexels-photo-29080566.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/29080566/",
+    "crop": {
+      "x": 0,
+      "y": 900,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/downtown-dubai-apartment-living-dining",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590503/knc-horizon/properties/downtown-dubai-apartment-living-dining.jpg",
+    "width": 2336,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 297977
+  },
+  {
+    "local": "/images/downtown-dubai-apartment-sofa-corner.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30336905/pexels-photo-30336905.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30336905/",
+    "crop": {
+      "x": 0,
+      "y": 720,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/downtown-dubai-apartment-sofa-corner",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590504/knc-horizon/properties/downtown-dubai-apartment-sofa-corner.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 308839
+  },
+  {
+    "local": "/images/downtown-dubai-apartment-twin-bedroom.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/29080565/pexels-photo-29080565.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/29080565/",
+    "crop": {
+      "x": 0,
+      "y": 900,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/downtown-dubai-apartment-twin-bedroom",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590504/knc-horizon/properties/downtown-dubai-apartment-twin-bedroom.jpg",
+    "width": 2336,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 270517
+  },
+  {
+    "local": "/images/downtown-dubai-balcony-burj-khalifa-dusk.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/33363140/pexels-photo-33363140.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/33363140/",
+    "crop": {
+      "x": 0,
+      "y": 792,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/downtown-dubai-balcony-burj-khalifa-dusk",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590505/knc-horizon/properties/downtown-dubai-balcony-burj-khalifa-dusk.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 229488,
+    "note": "earlier crop; media library only"
+  },
+  {
+    "local": "/images/downtown-dubai-balcony-burj-khalifa.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/29080570/pexels-photo-29080570.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/29080570/",
+    "crop": {
+      "x": 168,
+      "y": 0,
+      "width": 2232,
+      "height": 1600
+    },
+    "publicId": "knc-horizon/properties/downtown-dubai-balcony-burj-khalifa",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590505/knc-horizon/properties/downtown-dubai-balcony-burj-khalifa.jpg",
+    "width": 2232,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 360022
+  },
+  {
+    "local": "/images/downtown-dubai-balcony-table-burj-khalifa.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/33363140/pexels-photo-33363140.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/33363140/",
+    "crop": {
+      "x": 0,
+      "y": 1188,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/downtown-dubai-balcony-table-burj-khalifa",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790592004/knc-horizon/properties/downtown-dubai-balcony-table-burj-khalifa.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 399989
+  },
+  {
+    "local": "/images/downtown-night-aerial.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/downtown-night-aerial",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577284/knc-horizon/properties/downtown-night-aerial.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 244222
+  },
+  {
+    "local": "/images/dubai-apartment-balcony-midrise-view.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/29247919/pexels-photo-29247919.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/29247919/",
+    "publicId": "knc-horizon/properties/dubai-apartment-balcony-midrise-view",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590506/knc-horizon/properties/dubai-apartment-balcony-midrise-view.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 499095
+  },
+  {
+    "local": "/images/dubai-apartment-kitchen-bar-table.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/29149072/pexels-photo-29149072.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/29149072/",
+    "publicId": "knc-horizon/properties/dubai-apartment-kitchen-bar-table",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590506/knc-horizon/properties/dubai-apartment-kitchen-bar-table.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 370113
+  },
+  {
+    "local": "/images/dubai-apartment-living-room-sofa.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/29149071/pexels-photo-29149071.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/29149071/",
+    "crop": {
+      "x": 0,
+      "y": 1080,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/dubai-apartment-living-room-sofa",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590507/knc-horizon/properties/dubai-apartment-living-room-sofa.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 346309
+  },
+  {
+    "local": "/images/dubai-apartment-open-plan-living.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/33621947/pexels-photo-33621947.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/33621947/",
+    "publicId": "knc-horizon/properties/dubai-apartment-open-plan-living",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590508/knc-horizon/properties/dubai-apartment-open-plan-living.jpg",
+    "width": 2400,
+    "height": 1601,
+    "format": "jpg",
+    "bytes": 350954
+  },
+  {
+    "local": "/images/dubai-contemporary-villa.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-contemporary-villa",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577284/knc-horizon/properties/dubai-contemporary-villa.jpg",
+    "width": 1280,
+    "height": 720,
+    "format": "jpg",
+    "bytes": 221908
+  },
+  {
+    "local": "/images/dubai-coworking-office.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-coworking-office",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577284/knc-horizon/properties/dubai-coworking-office.jpg",
+    "width": 1280,
+    "height": 850,
+    "format": "jpg",
+    "bytes": 258013
+  },
+  {
+    "local": "/images/dubai-creek-harbour-marina-from-above.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/19495373/pexels-photo-19495373.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/19495373/",
+    "crop": {
+      "x": 0,
+      "y": 612,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/dubai-creek-harbour-marina-from-above",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590507/knc-horizon/properties/dubai-creek-harbour-marina-from-above.jpg",
+    "width": 2336,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 494399
+  },
+  {
+    "local": "/images/dubai-creek-harbour-towers.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-creek-harbour-towers",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577285/knc-horizon/properties/dubai-creek-harbour-towers.jpg",
+    "width": 1280,
+    "height": 746,
+    "format": "jpg",
+    "bytes": 190012
+  },
+  {
+    "local": "/images/dubai-creek-sunset-skyline.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/19495374/pexels-photo-19495374.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/19495374/",
+    "crop": {
+      "x": 0,
+      "y": 1188,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/dubai-creek-sunset-skyline",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590508/knc-horizon/properties/dubai-creek-sunset-skyline.jpg",
+    "width": 2336,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 230914
+  },
+  {
+    "local": "/images/dubai-marina-apartment-bathroom-vanity.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30554300/pexels-photo-30554300.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30554300/",
+    "crop": {
+      "x": 0,
+      "y": 612,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/dubai-marina-apartment-bathroom-vanity",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590510/knc-horizon/properties/dubai-marina-apartment-bathroom-vanity.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 298720
+  },
+  {
+    "local": "/images/dubai-marina-apartment-bedroom.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30554296/pexels-photo-30554296.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30554296/",
+    "publicId": "knc-horizon/properties/dubai-marina-apartment-bedroom",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590509/knc-horizon/properties/dubai-marina-apartment-bedroom.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 361399
+  },
+  {
+    "local": "/images/dubai-marina-apartment-living-room.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-marina-apartment-living-room",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790581630/knc-horizon/properties/dubai-marina-apartment-living-room.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 463566
+  },
+  {
+    "local": "/images/dubai-marina-apartment-sofa-olive-tree.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30554291/pexels-photo-30554291.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30554291/",
+    "crop": {
+      "x": 0,
+      "y": 1188,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/dubai-marina-apartment-sofa-olive-tree",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590510/knc-horizon/properties/dubai-marina-apartment-sofa-olive-tree.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 374323
+  },
+  {
+    "local": "/images/dubai-marina-canal-window-view.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-marina-canal-window-view",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790581635/knc-horizon/properties/dubai-marina-canal-window-view.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 444478
+  },
+  {
+    "local": "/images/dubai-marina-dusk.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-marina-dusk",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577286/knc-horizon/properties/dubai-marina-dusk.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 281745
+  },
+  {
+    "local": "/images/dubai-marina-night-view-high-floor.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-marina-night-view-high-floor",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790581630/knc-horizon/properties/dubai-marina-night-view-high-floor.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 834328
+  },
+  {
+    "local": "/images/dubai-marina-promenade.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-marina-promenade",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577286/knc-horizon/properties/dubai-marina-promenade.jpg",
+    "width": 1400,
+    "height": 1050,
+    "format": "jpg",
+    "bytes": 267541
+  },
+  {
+    "local": "/images/dubai-mediterranean-villas.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-mediterranean-villas",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577286/knc-horizon/properties/dubai-mediterranean-villas.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 273152
+  },
+  {
+    "local": "/images/dubai-modern-villa-garage-front.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/34188582/pexels-photo-34188582.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/34188582/",
+    "publicId": "knc-horizon/properties/dubai-modern-villa-garage-front",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589060/knc-horizon/properties/dubai-modern-villa-garage-front.jpg",
+    "width": 2400,
+    "height": 1350,
+    "format": "jpg",
+    "bytes": 589838
+  },
+  {
+    "local": "/images/dubai-office-breakout-world-map.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.unsplash.com/photo-1654520015223-fa862c7a845b?w=2400&q=85&fm=jpg&fit=max",
+    "page": "https://unsplash.com/photos/8L3QuLJeTKs",
+    "publicId": "knc-horizon/properties/dubai-office-breakout-world-map",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589060/knc-horizon/properties/dubai-office-breakout-world-map.jpg",
+    "width": 2400,
+    "height": 1594,
+    "format": "jpg",
+    "bytes": 881154
+  },
+  {
+    "local": "/images/dubai-office-coffee-bar-reception.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.unsplash.com/photo-1654520015352-19f19a8862de?w=2400&q=85&fm=jpg&fit=max",
+    "page": "https://unsplash.com/photos/T3jf5TUaHOE",
+    "publicId": "knc-horizon/properties/dubai-office-coffee-bar-reception",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589060/knc-horizon/properties/dubai-office-coffee-bar-reception.jpg",
+    "width": 2400,
+    "height": 1627,
+    "format": "jpg",
+    "bytes": 891897
+  },
+  {
+    "local": "/images/dubai-office-lounge-glass-partition.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/20417389/pexels-photo-20417389.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/20417389/",
+    "crop": {
+      "x": 0,
+      "y": 1692,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/dubai-office-lounge-glass-partition",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790592004/knc-horizon/properties/dubai-office-lounge-glass-partition.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 564765
+  },
+  {
+    "local": "/images/dubai-office-meeting-room-breakout.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/20417389/pexels-photo-20417389.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/20417389/",
+    "note": "uncropped original; media library only",
+    "publicId": "knc-horizon/properties/dubai-office-meeting-room-breakout",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589060/knc-horizon/properties/dubai-office-meeting-room-breakout.jpg",
+    "width": 2400,
+    "height": 3600,
+    "format": "jpg",
+    "bytes": 1075417
+  },
+  {
+    "local": "/images/dubai-office-meeting-room-lounge.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/20417389/pexels-photo-20417389.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/20417389/",
+    "crop": {
+      "x": 0,
+      "y": 1512,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/dubai-office-meeting-room-lounge",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590829/knc-horizon/properties/dubai-office-meeting-room-lounge.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 467421,
+    "note": "earlier crop; media library only"
+  },
+  {
+    "local": "/images/dubai-penthouse-dining-room.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-penthouse-dining-room",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790585306/knc-horizon/properties/dubai-penthouse-dining-room.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 344607
+  },
+  {
+    "local": "/images/dubai-penthouse-living-room.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-penthouse-living-room",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790585306/knc-horizon/properties/dubai-penthouse-living-room.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 363127
+  },
+  {
+    "local": "/images/dubai-penthouse-master-bedroom.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-penthouse-master-bedroom",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790585306/knc-horizon/properties/dubai-penthouse-master-bedroom.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 351273
+  },
+  {
+    "local": "/images/dubai-studio-apartment-sofa-bed.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/32168965/pexels-photo-32168965.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/32168965/",
+    "publicId": "knc-horizon/properties/dubai-studio-apartment-sofa-bed",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590509/knc-horizon/properties/dubai-studio-apartment-sofa-bed.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 416343
+  },
+  {
+    "local": "/images/dubai-studio-balcony-breakfast.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/32168955/pexels-photo-32168955.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/32168955/",
+    "publicId": "knc-horizon/properties/dubai-studio-balcony-breakfast",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590511/knc-horizon/properties/dubai-studio-balcony-breakfast.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 444467
+  },
+  {
+    "local": "/images/dubai-townhouse-dining-room.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.unsplash.com/photo-1637747018746-bece2b8a0309?w=2400&q=85&fm=jpg&fit=max",
+    "page": "https://unsplash.com/photos/XnWwYYFvGrE",
+    "publicId": "knc-horizon/properties/dubai-townhouse-dining-room",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589062/knc-horizon/properties/dubai-townhouse-dining-room.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 724915
+  },
+  {
+    "local": "/images/dubai-townhouse-garden-swing-lawn.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30250659/pexels-photo-30250659.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30250659/",
+    "crop": {
+      "x": 0,
+      "y": 1188,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/dubai-townhouse-garden-swing-lawn",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590829/knc-horizon/properties/dubai-townhouse-garden-swing-lawn.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 474110
+  },
+  {
+    "local": "/images/dubai-townhouse-garden-swing.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30250659/pexels-photo-30250659.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30250659/",
+    "note": "uncropped original; media library only",
+    "publicId": "knc-horizon/properties/dubai-townhouse-garden-swing",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589062/knc-horizon/properties/dubai-townhouse-garden-swing.jpg",
+    "width": 2400,
+    "height": 3600,
+    "format": "jpg",
+    "bytes": 1130971
+  },
+  {
+    "local": "/images/dubai-townhouse-living-room-arched-doors.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.unsplash.com/photo-1637747022660-12ce5ce4e420?w=2400&q=85&fm=jpg&fit=max",
+    "page": "https://unsplash.com/photos/MME_XnKUTIg",
+    "publicId": "knc-horizon/properties/dubai-townhouse-living-room-arched-doors",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589062/knc-horizon/properties/dubai-townhouse-living-room-arched-doors.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 1133848
+  },
+  {
+    "local": "/images/dubai-townhouse-patio-lounge.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30250657/pexels-photo-30250657.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30250657/",
+    "note": "uncropped original; media library only",
+    "publicId": "knc-horizon/properties/dubai-townhouse-patio-lounge",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589062/knc-horizon/properties/dubai-townhouse-patio-lounge.jpg",
+    "width": 2400,
+    "height": 3600,
+    "format": "jpg",
+    "bytes": 847244
+  },
+  {
+    "local": "/images/dubai-townhouse-patio-seating.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30250657/pexels-photo-30250657.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30250657/",
+    "crop": {
+      "x": 0,
+      "y": 1008,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/dubai-townhouse-patio-seating",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590829/knc-horizon/properties/dubai-townhouse-patio-seating.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 372927
+  },
+  {
+    "local": "/images/dubai-townhouse-row-street.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/34188578/pexels-photo-34188578.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/34188578/",
+    "publicId": "knc-horizon/properties/dubai-townhouse-row-street",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589063/knc-horizon/properties/dubai-townhouse-row-street.jpg",
+    "width": 2400,
+    "height": 1350,
+    "format": "jpg",
+    "bytes": 404938
+  },
+  {
+    "local": "/images/dubai-townhouse-row.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-townhouse-row",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577286/knc-horizon/properties/dubai-townhouse-row.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 166672
+  },
+  {
+    "local": "/images/dubai-townhouse-sofa-by-garden-doors.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30250660/pexels-photo-30250660.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30250660/",
+    "crop": {
+      "x": 0,
+      "y": 792,
+      "width": 2400,
+      "height": 1800
+    },
+    "publicId": "knc-horizon/properties/dubai-townhouse-sofa-by-garden-doors",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790590829/knc-horizon/properties/dubai-townhouse-sofa-by-garden-doors.jpg",
+    "width": 2400,
+    "height": 1800,
+    "format": "jpg",
+    "bytes": 386594
+  },
+  {
+    "local": "/images/dubai-townhouse-sofa-garden-doors.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30250660/pexels-photo-30250660.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30250660/",
+    "note": "uncropped original; media library only",
+    "publicId": "knc-horizon/properties/dubai-townhouse-sofa-garden-doors",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589063/knc-horizon/properties/dubai-townhouse-sofa-garden-doors.jpg",
+    "width": 2400,
+    "height": 3600,
+    "format": "jpg",
+    "bytes": 795672
+  },
+  {
+    "local": "/images/dubai-townhouse-street.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-townhouse-street",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577287/knc-horizon/properties/dubai-townhouse-street.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 189280
+  },
+  {
+    "local": "/images/dubai-villa-bedroom-media-wall.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30217120/pexels-photo-30217120.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30217120/",
+    "publicId": "knc-horizon/properties/dubai-villa-bedroom-media-wall",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589848/knc-horizon/properties/dubai-villa-bedroom-media-wall.jpg",
+    "width": 2400,
+    "height": 1602,
+    "format": "jpg",
+    "bytes": 257254
+  },
+  {
+    "local": "/images/dubai-villa-community-lake.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-villa-community-lake",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577287/knc-horizon/properties/dubai-villa-community-lake.jpg",
+    "width": 1280,
+    "height": 960,
+    "format": "jpg",
+    "bytes": 325595
+  },
+  {
+    "local": "/images/dubai-villa-ensuite-bathroom.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30217152/pexels-photo-30217152.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30217152/",
+    "publicId": "knc-horizon/properties/dubai-villa-ensuite-bathroom",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589848/knc-horizon/properties/dubai-villa-ensuite-bathroom.jpg",
+    "width": 2400,
+    "height": 1602,
+    "format": "jpg",
+    "bytes": 316100
+  },
+  {
+    "local": "/images/dubai-villa-lap-pool-deck.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/10647324/pexels-photo-10647324.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/10647324/",
+    "publicId": "knc-horizon/properties/dubai-villa-lap-pool-deck",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589063/knc-horizon/properties/dubai-villa-lap-pool-deck.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 631517
+  },
+  {
+    "local": "/images/dubai-villa-master-bedroom-suite.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/30217028/pexels-photo-30217028.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/30217028/",
+    "publicId": "knc-horizon/properties/dubai-villa-master-bedroom-suite",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589848/knc-horizon/properties/dubai-villa-master-bedroom-suite.jpg",
+    "width": 2400,
+    "height": 1602,
+    "format": "jpg",
+    "bytes": 291942
+  },
+  {
+    "local": "/images/dubai-villa-pool-terrace-lounge.jpg",
+    "folder": "knc-horizon/properties",
+    "source": "https://images.pexels.com/photos/10647349/pexels-photo-10647349.jpeg?cs=srgb&fm=jpg&w=2400&q=88",
+    "page": "https://www.pexels.com/photo/10647349/",
+    "publicId": "knc-horizon/properties/dubai-villa-pool-terrace-lounge",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790589063/knc-horizon/properties/dubai-villa-pool-terrace-lounge.jpg",
+    "width": 2400,
+    "height": 1600,
+    "format": "jpg",
+    "bytes": 812238
+  },
+  {
+    "local": "/images/dubai-villas-pools-aerial.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-villas-pools-aerial",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577287/knc-horizon/properties/dubai-villas-pools-aerial.jpg",
+    "width": 1280,
+    "height": 719,
+    "format": "jpg",
+    "bytes": 288390
+  },
+  {
+    "local": "/images/dubai-water-canal-night.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/dubai-water-canal-night",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577288/knc-horizon/properties/dubai-water-canal-night.jpg",
+    "width": 1280,
+    "height": 927,
+    "format": "jpg",
+    "bytes": 253630
+  },
+  {
+    "local": "/images/jlt-lake-towers.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/jlt-lake-towers",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577288/knc-horizon/properties/jlt-lake-towers.jpg",
+    "width": 1280,
+    "height": 960,
+    "format": "jpg",
+    "bytes": 414345
+  },
+  {
+    "local": "/images/jvc-circle-aerial.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/jvc-circle-aerial",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577288/knc-horizon/properties/jvc-circle-aerial.jpg",
+    "width": 1280,
+    "height": 853,
+    "format": "jpg",
+    "bytes": 306365
+  },
+  {
+    "local": "/images/palm-jumeirah-frond-villas.jpg",
+    "folder": "knc-horizon/properties",
+    "publicId": "knc-horizon/properties/palm-jumeirah-frond-villas",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790577289/knc-horizon/properties/palm-jumeirah-frond-villas.jpg",
+    "width": 1280,
+    "height": 960,
+    "format": "jpg",
+    "bytes": 236404
+  }
+]

@@ -6,8 +6,9 @@ import { apiFetch, type Developer, type Project } from '@/lib/api';
 import { defaultProjects } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
 import { useContact } from '@/lib/site-settings';
+import { optimizedImage } from '@/lib/cloudinary-image';
 
-const fallbackImage = '/images/dubai-skyline-from-sea.jpg';
+const fallbackImage = 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg';
 
 const defaultDevelopersBySlug: Record<string, Developer> = {
   emaar: {
@@ -320,8 +321,8 @@ export function DeveloperDetailPage() {
                       <div>
                         <div className="card-media image-reveal">
                           <img
-                            src={project.image || fallbackImage}
-                            alt={project.title}
+                            src={optimizedImage(project.image || fallbackImage, 800)}
+                            alt={project.coverImageAlt || project.title}
                             onError={(e) => {
                               e.currentTarget.src = fallbackImage;
                             }}

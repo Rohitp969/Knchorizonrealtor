@@ -17,6 +17,7 @@ import {
 } from '@/lib/site-data';
 import { absoluteUrl, articleJsonLd, listingJsonLd, usePageMeta, useSeoData, type SeoFields } from '@/lib/seo';
 import { useContact, useSiteSettings } from '@/lib/site-settings';
+import { altFor, optimizedImage } from '@/lib/cloudinary-image';
 
 const price = (value: number, currency = 'AED') => `${currency} ${new Intl.NumberFormat('en-AE').format(value)}`;
 const propertyCard = (item: RemoteProperty, currency = 'AED'): Property => ({
@@ -27,7 +28,8 @@ const propertyCard = (item: RemoteProperty, currency = 'AED'): Property => ({
   type: item.type,
   price: price(item.price, item.currency || currency),
   details: `${item.bedrooms} beds · ${item.bathrooms} baths · ${new Intl.NumberFormat('en-AE').format(item.size)} sq ft`,
-  image: item.images[0] || '/images/dubai-skyline-from-sea.jpg',
+  image: item.images[0] || 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg',
+  imageAlt: item.coverImageAlt || undefined,
   note: item.status,
 });
 
@@ -154,7 +156,7 @@ export function PropertiesLivePage() {
           </>
         }
         copy="A considered selection of Dubai homes and opportunities, updated from our live property collection."
-        image="/images/downtown-safa-park.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577268/knc-horizon/hero/downtown-safa-park.jpg"
       />
       {/* The home hero search links to #results; scroll-margin keeps the fixed header off the search bar. */}
       <section id="results" className="scroll-mt-16 bg-[#faf7f1] site-section md:scroll-mt-20">
@@ -254,7 +256,7 @@ export function CommunityDetailPage() {
   }, [slug]);
 
   const name = community?.name ?? area?.name ?? '';
-  const image = community?.image || area?.image || '/images/dubai-skyline-from-sea.jpg';
+  const image = community?.image || area?.image || 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg';
   const copy = community?.description || area?.detail || '';
 
   usePageMeta(
@@ -271,7 +273,7 @@ export function CommunityDetailPage() {
   if (!name) {
     return (
       <main>
-        <PageHero label="Communities" title={<>Community<br /><em className="text-[#9f7a47]">not found.</em></>} copy="This community is not on our list yet." image="/images/maritime-city-towers.jpg" />
+        <PageHero label="Communities" title={<>Community<br /><em className="text-[#9f7a47]">not found.</em></>} copy="This community is not on our list yet." image="https://res.cloudinary.com/complaintreview/image/upload/v1790577274/knc-horizon/hero/maritime-city-towers.jpg" />
         <section className="bg-[#faf7f1] site-section text-center">
           <Link href="/communities" className="btn btn-primary">Back to communities <ArrowUpRight size={14} /></Link>
         </section>
@@ -455,8 +457,8 @@ export function PropertyDetailPage() {
           </>
         }
         copy={property.description}
-        image={property.images[0] || '/images/dubai-skyline-from-sea.jpg'}
-        imageAlt={seo?.imageAlt || property.title}
+        image={property.images[0] || 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg'}
+        imageAlt={seo?.imageAlt || property.coverImageAlt || property.title}
       />
       <section className="bg-[#faf7f1] site-section">
         <div className="site-container grid gap-12 lg:grid-cols-[1fr_.75fr] lg:gap-16 xl:gap-20">
@@ -466,10 +468,10 @@ export function PropertyDetailPage() {
               {property.images.map((image, index) => (
                 <div key={image} className="card-media card-media-wide">
                   <img
-                    src={image}
-                    alt={index === 0 && seo?.imageAlt ? seo.imageAlt : property.title}
+                    src={optimizedImage(image, 1200)}
+                    alt={index === 0 ? seo?.imageAlt || property.coverImageAlt || property.title : altFor(image, property.galleryImages, property.title)}
                     onError={(event) => {
-                      event.currentTarget.src = '/images/dubai-skyline-from-sea.jpg';
+                      event.currentTarget.src = 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg';
                     }}
                     className="h-full w-full object-cover"
                   />
@@ -565,7 +567,7 @@ export function ProjectsPage() {
           </>
         }
         copy="A live edit of Dubai’s most considered new addresses, from established developers and emerging neighbourhoods."
-        image="/images/dubai-new-towers-aerial.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577271/knc-horizon/hero/dubai-new-towers-aerial.jpg"
       />
       {/* The hero search links here with #results when off-plan is the chosen mode. */}
       <section id="results" className="scroll-mt-16 bg-[#f2ede4] site-section md:scroll-mt-20">
@@ -661,7 +663,7 @@ export function BlogPage() {
           </>
         }
         copy="Practical guidance, local perspective, and thoughtful notes for your next move in Dubai real estate."
-        image="/images/dubai-creek-dusk.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577269/knc-horizon/hero/dubai-creek-dusk.jpg"
       />
       <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
@@ -724,7 +726,7 @@ export function BlogPostPage() {
   const [, navigate] = useLocation();
   const { siteName } = useSiteSettings();
   const { settings: seoSettings } = useSeoData();
-  const heroImage = post ? post.featuredImage || post.image || '/images/dubai-skyline-from-sea.jpg' : null;
+  const heroImage = post ? post.featuredImage || post.image || 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg' : null;
 
   // The blog admin saves the title as the SEO title by default; only a different one is a real override.
   const customTitle = post?.seoTitle && post.seoTitle.trim() !== post.title.trim() ? post.seoTitle : null;
@@ -786,7 +788,7 @@ export function BlogPostPage() {
     );
   }
 
-  const image = post.featuredImage || post.image || '/images/dubai-skyline-from-sea.jpg';
+  const image = post.featuredImage || post.image || 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg';
   const internalLinks = seo?.internalLinks ?? [];
 
   return (
@@ -796,7 +798,7 @@ export function BlogPostPage() {
         title={<>{post.title}</>}
         copy={post.excerpt}
         image={image}
-        imageAlt={seo?.imageAlt || post.title}
+        imageAlt={seo?.imageAlt || post.featuredImageAlt || post.title}
       />
       <article className="site-section bg-[#faf7f1]">
         <div className="site-container">
@@ -836,8 +838,8 @@ export function BlogPostPage() {
                   <Link key={item.id} href={`/blog/${item.slug}`} className="card-editorial group p-5">
                     <div className="card-media image-reveal">
                       <img
-                        src={item.featuredImage || item.image || '/images/dubai-skyline-from-sea.jpg'}
-                        alt={item.title}
+                        src={optimizedImage(item.featuredImage || item.image || 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg', 800)}
+                        alt={item.featuredImageAlt || item.title}
                         loading="lazy"
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       />
@@ -880,7 +882,7 @@ export function GalleryPage() {
           </>
         }
         copy="A closer look at the textures, horizons, and details that shape the KNC point of view."
-        image="/images/madinat-jumeirah-canal.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577274/knc-horizon/hero/madinat-jumeirah-canal.jpg"
       />
       <section className="bg-[#efeae2] site-section">
         <div className={`site-container ${cardGrid(items.length)}`}>
@@ -892,7 +894,7 @@ export function GalleryPage() {
             >
               <div className="card-media">
                 <img
-                  src={item.image}
+                  src={optimizedImage(item.image, 800)}
                   alt={item.alt}
                   loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
@@ -921,7 +923,7 @@ export function GalleryPage() {
           </button>
           <figure className="max-h-[90vh] max-w-5xl text-center">
             <img
-              src={active.image}
+              src={optimizedImage(active.image, 1600)}
               alt={active.alt}
               className="max-h-[75vh] w-auto mx-auto object-contain rounded-sm shadow-2xl"
             />
@@ -1012,7 +1014,7 @@ export function PropertiesFilterPage(props: PropertiesFilterPageProps = {}) {
         label={displayTitles[category] || `${category} properties`}
         title={titles[category] || titles['residential']}
         copy={copyMap[category] || `A considered selection of ${category} properties in Dubai.`}
-        image={({ sale: '/images/burj-khalifa-aerial.jpg', rent: '/images/jbr-residences-street.jpg', residential: '/images/the-greens-residential.jpg', commercial: '/images/difc-green-towers.jpg', investment: '/images/business-bay-skyline-day.jpg', 'off-plan': '/images/jvc-tower-construction-dusk.jpg' } as Record<string, string>)[category] ?? '/images/downtown-safa-park.jpg'}
+        image={({ sale: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577267/knc-horizon/hero/burj-khalifa-aerial.jpg', rent: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577273/knc-horizon/hero/jbr-residences-street.jpg', residential: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577275/knc-horizon/hero/the-greens-residential.jpg', commercial: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577268/knc-horizon/hero/difc-green-towers.jpg', investment: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577268/knc-horizon/hero/business-bay-skyline-day.jpg', 'off-plan': 'https://res.cloudinary.com/complaintreview/image/upload/v1790577273/knc-horizon/hero/jvc-tower-construction-dusk.jpg' } as Record<string, string>)[category] ?? 'https://res.cloudinary.com/complaintreview/image/upload/v1790577268/knc-horizon/hero/downtown-safa-park.jpg'}
       />
       <section className="bg-[#faf7f1] site-section">
         <div className="site-container">
@@ -1115,7 +1117,7 @@ export function ProjectsFilterPage(props: ProjectsFilterPageProps = {}) {
         label={displayFilterTitles[filter] || filter.replace('-', ' ')}
         title={titles[filter] || titles['featured']}
         copy={copyMap[filter] || `Explore our curated selection of ${filter.replace('-', ' ')} in Dubai.`}
-        image={({ featured: '/images/burj-night-water.jpg', 'new-launches': '/images/dubai-waterfront-tower-construction.jpg', 'off-plan': '/images/dubai-tower-cranes-twilight.jpg', apartments: '/images/dubai-apartment-towers-sunset.jpg', 'villas-townhouses': '/images/daria-island-seafront-villa.jpg' } as Record<string, string>)[filter] ?? '/images/dubai-new-towers-aerial.jpg'}
+        image={({ featured: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577267/knc-horizon/hero/burj-night-water.jpg', 'new-launches': 'https://res.cloudinary.com/complaintreview/image/upload/v1790577271/knc-horizon/hero/dubai-waterfront-tower-construction.jpg', 'off-plan': 'https://res.cloudinary.com/complaintreview/image/upload/v1790577271/knc-horizon/hero/dubai-tower-cranes-twilight.jpg', apartments: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577269/knc-horizon/hero/dubai-apartment-towers-sunset.jpg', 'villas-townhouses': 'https://res.cloudinary.com/complaintreview/image/upload/v1790577268/knc-horizon/hero/daria-island-seafront-villa.jpg' } as Record<string, string>)[filter] ?? 'https://res.cloudinary.com/complaintreview/image/upload/v1790577271/knc-horizon/hero/dubai-new-towers-aerial.jpg'}
       />
       <section className="bg-[#f2ede4] site-section">
         <div className="site-container">
@@ -1190,7 +1192,7 @@ export function DevelopersPage() {
           </>
         }
         copy="Explore established developers shaping residential, investment and mixed-use communities across Dubai."
-        image="/images/downtown-skyline-cranes.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577269/knc-horizon/hero/downtown-skyline-cranes.jpg"
       />
 
       {/* Main Developers Listing Section */}
@@ -1224,7 +1226,7 @@ export function DevelopersPage() {
                         {dev.logo ? (
                           <div className="h-10 max-w-[140px] opacity-85 mix-blend-multiply">
                             <img
-                              src={dev.logo}
+                              src={optimizedImage(dev.logo, 320)}
                               alt={`${dev.name} official logo`}
                               loading="lazy"
                               className="h-full w-full object-contain object-left"

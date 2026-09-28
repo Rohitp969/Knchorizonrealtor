@@ -21,7 +21,8 @@ import {
   type FieldError,
   type SeoRow,
 } from "../lib/seo.ts";
-import { handleImageUpload, upload } from "./admin.ts";
+import { acceptImage, handleImageUpload } from "./admin.ts";
+import { cleanAlt, publicIdsFor } from "../lib/media.ts";
 
 /*
  * SEO: the public SEO data, the SEO console and the SEO manager accounts.
@@ -195,6 +196,7 @@ for (const kind of ["properties", "projects"] as const) {
 type PostRow = {
   id: string; slug: string; title: string; excerpt: string | null; content: string; category: string | null;
   author: string | null; featured_image: string | null; image: string | null; status: string | null;
+  featured_image_alt: string | null;
   published: boolean; published_at: string | Date; seo_title: string | null; seo_description: string | null;
   updated_at: string | Date;
 };
@@ -209,6 +211,7 @@ function articleToApi(row: PostRow) {
     category: row.category ?? "General",
     author: row.author ?? "KNC Horizon",
     featuredImage: row.featured_image || row.image || "",
+    featuredImageAlt: row.featured_image_alt ?? "",
     status: articleStatus(row),
     publishedAt: row.published_at,
     updatedAt: row.updated_at,
@@ -250,6 +253,10 @@ async function saveArticle(req: AuthenticatedRequest, res: Response, existing?: 
   if (author.length > 80) errors.push({ field: "author", message: "Author must be 80 characters or fewer." });
   const featuredImage = oneLine(body.featuredImage);
   if (featuredImage && !isImageRef(featuredImage)) errors.push({ field: "featuredImage", message: "Featured image must be an https:// URL or a site path such as /images/photo.jpg." });
+  // Alt text is an SEO field, so it stays editable on a live article like the other SEO fields.
+  const existingFeatured = oneLine(existing?.featured_image || existing?.image);
+  const featuredImageAlt = cleanAlt(body.featuredImageAlt) ?? (featuredImage === existingFeatured ? existing?.featured_image_alt ?? "" : "");
+  const featuredImagePublicId = featuredImage ? (await publicIdsFor([featuredImage])).get(featuredImage) ?? null : null;
   const status = ARTICLE_STATUSES.find((value) => value === body.status) ?? "draft";
 
   const slug = slugResult.slug;
@@ -282,15 +289,16 @@ async function saveArticle(req: AuthenticatedRequest, res: Response, existing?: 
   }
 
   const published = status === "published";
-  const columns = [title, slug, excerpt, content, category, author, featuredImage || null, status, published, seo.seoTitle, seo.metaDescription];
+  const columns = [title, slug, excerpt, content, category, author, featuredImage || null, status, published, seo.seoTitle, seo.metaDescription, featuredImageAlt, featuredImagePublicId];
   let row: PostRow | undefined;
   if (existing) {
     row = await queryOne<PostRow>(
       `update posts set title = $1, slug = $2, excerpt = $3, content = $4, category = $5, author = $6,
               featured_image = $7, image = coalesce($7, ''), status = $8, published = $9,
-              published_at = case when $9::boolean and not $12::boolean then now() else published_at end,
-              seo_title = $10, seo_description = $11, updated_at = now()
-        where id = $13 returning *`,
+              published_at = case when $9::boolean and not $14::boolean then now() else published_at end,
+              seo_title = $10, seo_description = $11, featured_image_alt = $12, featured_image_public_id = $13,
+              updated_at = now()
+        where id = $15 returning *`,
       [...columns, wasLive, existing.id],
     );
     if (wasLive && existing.slug !== slug) {
@@ -299,8 +307,9 @@ async function saveArticle(req: AuthenticatedRequest, res: Response, existing?: 
   } else {
     row = await queryOne<PostRow>(
       `insert into posts (title, slug, excerpt, content, category, author, featured_image, image, status, published,
-                          seo_title, seo_description, published_at, created_at, updated_at)
-       values ($1, $2, $3, $4, $5, $6, $7, coalesce($7, ''), $8, $9, $10, $11, now(), now(), now())
+                          seo_title, seo_description, featured_image_alt, featured_image_public_id,
+                          published_at, created_at, updated_at)
+       values ($1, $2, $3, $4, $5, $6, $7, coalesce($7, ''), $8, $9, $10, $11, $12, $13, now(), now(), now())
        returning *`,
       columns,
     );
@@ -322,11 +331,13 @@ router.put("/seo/articles/:id", handle(async (req, res) => {
 /* ---- images for articles and OG images ---- */
 
 router.get("/seo/media", handle(async (_req, res) => {
-  const rows = await query(`select id, url, filename, created_at from media order by created_at desc limit 300`);
-  return res.json({ items: rows.map((row) => ({ id: row.id, url: row.url, filename: row.filename, createdAt: row.created_at })) });
+  const rows = await query(`select id, url, public_id, filename, folder, created_at from media order by created_at desc limit 300`);
+  return res.json({
+    items: rows.map((row) => ({ id: row.id, url: row.url, publicId: row.public_id, filename: row.filename, folder: row.folder, createdAt: row.created_at })),
+  });
 }));
 
-router.post("/seo/uploads", upload.single("image"), handleImageUpload);
+router.post("/seo/uploads", acceptImage, handleImageUpload);
 
 /* ---- site-wide SEO settings ---- */
 

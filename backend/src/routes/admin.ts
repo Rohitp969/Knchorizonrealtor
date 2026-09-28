@@ -1,8 +1,20 @@
-import { Router } from "express";
-import { mkdir } from "node:fs/promises";
+import { Router, type NextFunction, type Request, type Response } from "express";
 import path from "node:path";
 import multer from "multer";
 import { requireAdmin } from "../lib/auth.ts";
+import {
+  ACCEPTED_IMAGE_LABEL,
+  MAX_IMAGE_BYTES,
+  MEDIA_FOLDERS,
+  MediaError,
+  cloudinaryStatus,
+  deleteImage,
+  detectImageType,
+  mediaFolder,
+  uploadImage,
+} from "../lib/cloudinary.ts";
+import { attachPublicIds, cleanAlt, cleanGallery, imageUsage, storedGallery } from "../lib/media.ts";
+import { isImageRef } from "../lib/seo.ts";
 import { count, isId, query, queryOne } from "../lib/postgres.ts";
 import {
   contains,
@@ -22,24 +34,117 @@ import { readSettings, SUPPORTED_CURRENCIES, validateSettings, writeSettings } f
 const router = Router();
 router.use(requireAdmin);
 
+/*
+ * Images uploaded before Cloudinary were written to this folder. app.ts still serves it at
+ * /api/uploads so records pointing there keep working; nothing new is written to it.
+ */
 const uploadDir = path.resolve(process.cwd(), "artifacts/api-server/uploads");
+
+/*
+ * An upload is held in memory and streamed straight to Cloudinary, so nothing depends on the
+ * server's disk, which Render wipes at every deploy. The browser's file type is only a first
+ * filter; the file's own bytes are checked before anything is sent (detectImageType).
+ */
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: async (_req, _file, callback) => {
-      await mkdir(uploadDir, { recursive: true });
-      callback(null, uploadDir);
-    },
-    filename: (_req, file, callback) => callback(null, `${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.-]/g, "-")}`),
-  }),
+  storage: multer.memoryStorage(),
   fileFilter: (_req, file, callback) => {
-    const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
-    if (!allowed.includes(file.mimetype.toLowerCase())) {
-      return callback(new Error("Unsupported file format. Please upload a JPG, PNG, or WEBP image."));
-    }
-    callback(null, true);
+    const type = file.mimetype.toLowerCase();
+    // Some browsers send HEIC photos as octet-stream; the byte check decides for those.
+    if (type.startsWith("image/") || type === "application/octet-stream" || type === "") return callback(null, true);
+    return callback(new MediaError(400, `"${file.originalname}" is not an image. Upload a ${ACCEPTED_IMAGE_LABEL} file.`));
   },
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: MAX_IMAGE_BYTES, files: 1 },
 });
+
+/** Takes one image from the "image" field and answers upload problems with a clear 4xx. */
+export function acceptImage(req: Request, res: Response, next: NextFunction) {
+  upload.single("image")(req, res, (error: unknown) => {
+    if (!error) return next();
+    if (error instanceof MediaError) return res.status(error.status).json({ message: error.message });
+    if (error instanceof multer.MulterError) {
+      if (error.code === "LIMIT_FILE_SIZE") {
+        return res.status(413).json({ message: `That image is larger than ${MAX_IMAGE_BYTES / 1024 / 1024} MB. Resize or compress it, then upload again.` });
+      }
+      if (error.code === "LIMIT_FILE_COUNT" || error.code === "LIMIT_UNEXPECTED_FILE") {
+        return res.status(400).json({ message: 'Send one image per upload, in the "image" field.' });
+      }
+      return res.status(400).json({ message: `The upload could not be read: ${error.message}` });
+    }
+    return next(error);
+  });
+}
+
+/** MediaError carries its own status; anything else is a server fault for the error handler. */
+function sendError(res: Response, next: NextFunction, error: unknown) {
+  if (error instanceof MediaError) return res.status(error.status).json({ message: error.message });
+  return next(error);
+}
+
+/** An image URL field: undefined when not sent, "" when cleared, otherwise a usable URL. */
+function imageField(value: unknown, label: string) {
+  if (typeof value !== "string") return undefined;
+  const url = value.trim();
+  if (url && !isImageRef(url)) throw new MediaError(400, `${label} must be an https:// URL or a site path such as /images/photo.jpg.`);
+  return url;
+}
+
+function galleryField(value: unknown) {
+  if (!Array.isArray(value)) return undefined;
+  for (const entry of value) {
+    const url = typeof entry === "string" ? entry : (entry as { url?: unknown })?.url;
+    if (typeof url === "string" && url.trim() && !isImageRef(url.trim())) {
+      throw new MediaError(400, `Gallery image "${url.trim().slice(0, 80)}" must be an https:// URL or a site path such as /images/photo.jpg.`);
+    }
+  }
+  return cleanGallery(value);
+}
+
+/*
+ * A property shows one cover and a gallery. `images` (cover first, then the gallery) is what
+ * the website has always read, so it is rebuilt from the two on every save. A client that
+ * still sends only `images` gets its first entry as the cover and the rest as the gallery.
+ */
+function propertyImages(body: Record<string, unknown>, existing?: PropertyDoc) {
+  const existingImages = existing?.images ?? [];
+  const existingCover = existing?.coverImage || existingImages[0] || "";
+  const existingGallery = storedGallery(existing?.galleryImages, existingImages.filter((url) => url !== existingCover));
+  let cover = imageField(body.coverImage, "Cover image");
+  let gallery = galleryField(body.galleryImages);
+  if (cover === undefined && gallery === undefined && Array.isArray(body.images)) {
+    const urls = galleryField(body.images) ?? [];
+    cover = urls[0]?.url ?? "";
+    gallery = urls.slice(1).map((image) => ({ ...image, alt: existingGallery.find((old) => old.url === image.url)?.alt ?? "" }));
+  }
+  const coverImage = cover ?? existingCover;
+  const galleryImages = (gallery ?? existingGallery).filter((image) => image.url !== coverImage);
+  return {
+    coverImage,
+    coverImageAlt: cleanAlt(body.coverImageAlt) ?? (coverImage === existingCover ? existing?.coverImageAlt ?? "" : ""),
+    galleryImages,
+    images: [coverImage, ...galleryImages.map((image) => image.url)].filter(Boolean),
+  };
+}
+
+/*
+ * A project's cover is `image`, which every public page reads; coverImage is kept equal to it
+ * so the two can never disagree. The gallery is separate from the cover, and `gallery` (plain
+ * URLs) is what the project page reads.
+ */
+function projectImages(body: Record<string, unknown>, existing?: ProjectDoc) {
+  const existingCover = existing?.image || existing?.coverImage || "";
+  const existingGallery = storedGallery(existing?.galleryImages, existing?.gallery ?? []);
+  const cover = imageField(typeof body.image === "string" ? body.image : body.coverImage, "Cover image");
+  const gallery = galleryField(body.galleryImages) ?? galleryField(body.gallery);
+  const image = cover ?? existingCover;
+  const galleryImages = gallery ?? existingGallery;
+  return {
+    image,
+    coverImage: image,
+    coverImageAlt: cleanAlt(body.coverImageAlt) ?? (image === existingCover ? existing?.coverImageAlt ?? "" : ""),
+    galleryImages,
+    gallery: galleryImages.map((entry) => entry.url),
+  };
+}
 
 function cleanBody(body: Record<string, unknown>) {
   const { _id, id, createdAt, updatedAt, ...rest } = body;
@@ -66,6 +171,9 @@ function resourceFor(name: string) {
 }
 
 function blogBody(body: Record<string, unknown>, existing?: BlogPostDoc) {
+  // One featured image. `image` is kept equal to it, so pages reading either field agree.
+  const existingFeatured = existing?.featuredImage || existing?.image || "";
+  const featuredImage = imageField(typeof body.featuredImage === "string" ? body.featuredImage : body.image, "Featured image") ?? existingFeatured;
   const title = typeof body.title === "string" ? body.title.trim() : existing?.title;
   const slug = typeof body.slug === "string" ? body.slug.trim().toLowerCase() : existing?.slug;
   const content = typeof body.content === "string" ? body.content.trim() : existing?.content;
@@ -75,8 +183,9 @@ function blogBody(body: Record<string, unknown>, existing?: BlogPostDoc) {
   return {
     title, slug, content,
     excerpt: typeof body.excerpt === "string" ? body.excerpt.trim() : existing?.excerpt ?? "",
-    featuredImage: typeof body.featuredImage === "string" ? body.featuredImage.trim() : existing?.featuredImage ?? (typeof body.image === "string" ? body.image : existing?.image ?? ""),
-    image: typeof body.image === "string" ? body.image.trim() : existing?.image ?? (typeof body.featuredImage === "string" ? body.featuredImage : ""),
+    featuredImage,
+    image: featuredImage,
+    featuredImageAlt: cleanAlt(body.featuredImageAlt) ?? (featuredImage === existingFeatured ? existing?.featuredImageAlt ?? "" : ""),
     category: typeof body.category === "string" ? body.category.trim() : existing?.category ?? "General",
     author: typeof body.author === "string" ? body.author.trim() : existing?.author ?? "KNC Horizon",
     status,
@@ -154,7 +263,7 @@ function propertyBody(body: Record<string, unknown>, _unknown?: unknown, existin
   const bathrooms = typeof body.bathrooms === "number" ? body.bathrooms : existing?.bathrooms ?? 1;
   const size = typeof body.size === "number" ? body.size : existing?.size ?? 0;
   const description = typeof body.description === "string" ? body.description.trim() : existing?.description ?? "";
-  const images = Array.isArray(body.images) ? body.images.map(String) : existing?.images ?? [];
+  const pictures = propertyImages(body, existing);
   const amenities = Array.isArray(body.amenities) ? body.amenities.map(String) : existing?.amenities ?? [];
   const featured = typeof body.featured === "boolean" ? body.featured : existing?.featured ?? false;
   const published = typeof body.published === "boolean" ? body.published : existing?.published ?? false;
@@ -176,7 +285,7 @@ function propertyBody(body: Record<string, unknown>, _unknown?: unknown, existin
     bathrooms,
     size,
     description,
-    images,
+    ...pictures,
     amenities,
     featured,
     published,
@@ -192,9 +301,7 @@ function projectBody(body: Record<string, unknown>, _unknown?: unknown, existing
   const location = typeof body.location === "string" ? body.location.trim() : existing?.location ?? "";
   const startingPrice = typeof body.startingPrice === "number" ? body.startingPrice : existing?.startingPrice ?? 0;
   const handover = typeof body.handover === "string" ? body.handover.trim() : existing?.handover ?? "";
-  const image = typeof body.image === "string" ? body.image.trim() : existing?.image ?? "";
-  const coverImage = typeof body.coverImage === "string" ? body.coverImage.trim() : existing?.coverImage ?? "";
-  const gallery = Array.isArray(body.gallery) ? body.gallery.map(String) : existing?.gallery ?? [];
+  const pictures = projectImages(body, existing);
   const amenities = Array.isArray(body.amenities) ? body.amenities.map(String) : existing?.amenities ?? [];
   const highlights = Array.isArray(body.highlights) ? body.highlights.map(String) : existing?.highlights ?? [];
   // These were missing, so editing a project through the admin silently dropped its
@@ -221,11 +328,9 @@ function projectBody(body: Record<string, unknown>, _unknown?: unknown, existing
     completionDate,
     startingPrice,
     handover,
-    image,
+    ...pictures,
     imageUrl,
     imagePath,
-    coverImage,
-    gallery,
     amenities,
     highlights,
     newLaunch,
@@ -411,9 +516,9 @@ router.post("/admin/blog", async (req, res, next) => {
   try {
     const document = blogBody(req.body as Record<string, unknown>);
     if (!document) return res.status(400).json({ message: "Title, slug, and content are required." });
-    const row = await insertRow("posts", { ...document, createdAt: new Date() });
+    const row = await insertRow("posts", { ...(await attachPublicIds(document, { featuredImage: "featuredImagePublicId" })), createdAt: new Date() });
     return res.status(201).json({ post: toApi("posts", row) });
-  } catch (error) { return next(error); }
+  } catch (error) { return sendError(res, next, error); }
 });
 
 router.patch("/admin/blog/:id", async (req, res, next) => {
@@ -423,9 +528,9 @@ router.patch("/admin/blog/:id", async (req, res, next) => {
     if (!existing) return res.status(404).json({ message: "Blog post not found." });
     const document = blogBody(req.body as Record<string, unknown>, toApi("posts", existing) as unknown as BlogPostDoc);
     if (!document) return res.status(400).json({ message: "Title, slug, and content are required." });
-    const row = await updateRow("posts", req.params.id, document);
+    const row = await updateRow("posts", req.params.id, await attachPublicIds(document, { featuredImage: "featuredImagePublicId" }));
     return res.json({ post: toApi("posts", row) });
-  } catch (error) { return next(error); }
+  } catch (error) { return sendError(res, next, error); }
 });
 
 router.delete("/admin/blog/:id", async (req, res, next) => {
@@ -440,9 +545,9 @@ router.post("/blogs", async (req, res, next) => {
   try {
     const document = blogBody(req.body as Record<string, unknown>);
     if (!document) return res.status(400).json({ message: "Title, slug, and content are required." });
-    const row = await insertRow("posts", { ...document, createdAt: new Date() });
+    const row = await insertRow("posts", { ...(await attachPublicIds(document, { featuredImage: "featuredImagePublicId" })), createdAt: new Date() });
     return res.status(201).json({ blog: toApi("posts", row) });
-  } catch (error) { return next(error); }
+  } catch (error) { return sendError(res, next, error); }
 });
 
 router.put("/blogs/:id", async (req, res, next) => {
@@ -452,9 +557,9 @@ router.put("/blogs/:id", async (req, res, next) => {
     if (!existing) return res.status(404).json({ message: "Blog post not found." });
     const document = blogBody(req.body as Record<string, unknown>, toApi("posts", existing) as unknown as BlogPostDoc);
     if (!document) return res.status(400).json({ message: "Title, slug, and content are required." });
-    const row = await updateRow("posts", req.params.id, document);
+    const row = await updateRow("posts", req.params.id, await attachPublicIds(document, { featuredImage: "featuredImagePublicId" }));
     return res.json({ blog: toApi("posts", row) });
-  } catch (error) { return next(error); }
+  } catch (error) { return sendError(res, next, error); }
 });
 
 router.delete("/blogs/:id", async (req, res, next) => {
@@ -576,62 +681,76 @@ router.get("/admin/developers/:id/projects", async (req, res, next) => {
 });
 
 /*
- * Image upload: the file goes to Cloudinary and is recorded in the media library. Shared with
- * the SEO console (routes/seo.ts), which mounts the same handler behind its own role check.
+ * Image upload: one file becomes one Cloudinary asset in the folder the console asked for,
+ * and one row in the media library (secure URL, public_id, size). Shared with the SEO console
+ * (routes/seo.ts), which mounts the same handler behind its own role check. A console that
+ * uploads several files sends one request per file, so each is its own asset and one failure
+ * does not take the others down.
  */
-export async function handleImageUpload(req: import("express").Request, res: import("express").Response, next: import("express").NextFunction) {
-  if (!req.file) return res.status(400).json({ message: "An image file is required." });
+export async function handleImageUpload(req: Request, res: Response, next: NextFunction) {
+  const file = req.file;
+  if (!file?.buffer?.length) return res.status(400).json({ message: "Choose an image file to upload." });
+  let uploaded: Awaited<ReturnType<typeof uploadImage>> | undefined;
   try {
-    const { uploadToCloudinary } = await import("../lib/cloudinary.ts");
-    const folder = typeof req.body.folder === "string" ? req.body.folder : "knc-horizon";
-    const result = await uploadToCloudinary(req.file.path, folder);
-    // Store in the media table for the Media Library
-    await insertRow("media", {
-      url: result.url,
-      publicId: result.publicId,
-      filename: req.file.originalname,
-      mimetype: req.file.mimetype,
-      size: req.file.size,
+    const type = detectImageType(file.buffer);
+    if (!type) return res.status(400).json({ message: `"${file.originalname}" is not a valid image. Upload a ${ACCEPTED_IMAGE_LABEL} file.` });
+    const folder = mediaFolder((req.body as Record<string, unknown> | undefined)?.folder);
+    uploaded = await uploadImage(file.buffer, { folder, filename: file.originalname });
+    const row = await insertRow("media", {
+      url: uploaded.url,
+      publicId: uploaded.publicId,
+      filename: file.originalname,
+      mimetype: type,
+      size: uploaded.bytes ?? file.size,
       folder,
+      width: uploaded.width,
+      height: uploaded.height,
+      format: uploaded.format,
       createdAt: new Date(),
     });
-    // Clean up temp file
-    const { unlink } = await import("node:fs/promises");
-    await unlink(req.file.path).catch(() => {});
-    return res.status(201).json({ url: result.url, publicId: result.publicId, filename: req.file.originalname });
-  } catch (error: any) {
-    // Fallback to local URL if Cloudinary fails
-    if (error.message?.includes("Missing Cloudinary")) {
-      return res.status(201).json({ url: `/api/uploads/${req.file.filename}`, filename: req.file.filename, warning: error.message });
-    }
-    return next(error);
+    return res.status(201).json({ item: toApi("media", row), url: uploaded.url, publicId: uploaded.publicId, filename: file.originalname, folder });
+  } catch (error) {
+    // The asset reached Cloudinary but could not be recorded: remove it rather than orphan it.
+    if (uploaded && !(error instanceof MediaError)) await deleteImage(uploaded.publicId).catch(() => {});
+    return sendError(res, next, error);
   }
 }
 
-router.post("/admin/uploads", upload.single("image"), handleImageUpload);
+router.post("/admin/uploads", acceptImage, handleImageUpload);
 
 // Media library routes
 router.get("/admin/media", async (_req, res, next) => {
   try {
     const rows = await listAll("media", "created_at desc");
-    return res.json({ items: toApiList("media", rows) });
+    const { configured, cloudName } = cloudinaryStatus();
+    return res.json({ items: toApiList("media", rows), folders: MEDIA_FOLDERS, cloudinary: { configured, cloudName } });
   } catch (error) { return next(error); }
 });
 
+/*
+ * Deleting removes the Cloudinary asset first and the library row only once that worked, so a
+ * failed delete never leaves a row pointing nowhere or an asset nobody can find. An image the
+ * website still shows is refused with the list of records using it; ?force=1 deletes anyway.
+ */
 router.delete("/admin/media/:id", async (req, res, next) => {
   try {
     if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid media id." });
-    const row = await queryOne<{ public_id: string | null }>(`select * from media where id = $1`, [req.params.id]);
+    const row = await queryOne<{ url: string; public_id: string | null }>(`select * from media where id = $1`, [req.params.id]);
     if (!row) return res.status(404).json({ message: "Media not found." });
-    if (row.public_id) {
-      try {
-        const { deleteFromCloudinary } = await import("../lib/cloudinary.ts");
-        await deleteFromCloudinary(row.public_id);
-      } catch { /* ignore cloudinary delete errors */ }
+    const force = req.query.force === "1" || req.query.force === "true";
+    if (!force) {
+      const usedBy = await imageUsage(row.url);
+      if (usedBy.length) {
+        return res.status(409).json({
+          message: `This image is still shown on the website by ${usedBy.length} ${usedBy.length === 1 ? "record" : "records"}. Replace it there first, or delete it anyway.`,
+          usedBy,
+        });
+      }
     }
+    if (row.public_id) await deleteImage(row.public_id);
     await deleteRow("media", req.params.id);
     return res.status(204).send();
-  } catch (error) { return next(error); }
+  } catch (error) { return sendError(res, next, error); }
 });
 
 // Communities CRUD
@@ -770,9 +889,9 @@ router.post("/admin/properties", async (req, res, next) => {
   try {
     const document = propertyBody(req.body as Record<string, unknown>);
     if (!document) return res.status(400).json({ message: "Title and slug are required." });
-    const row = await insertRow("properties", { ...document, createdAt: new Date() });
+    const row = await insertRow("properties", { ...(await attachPublicIds(document, { coverImage: "coverImagePublicId" }, "galleryImages")), createdAt: new Date() });
     return res.status(201).json({ item: toApi("properties", row) });
-  } catch (error) { return next(error); }
+  } catch (error) { return sendError(res, next, error); }
 });
 
 router.put("/admin/properties/:id", async (req, res, next) => {
@@ -782,9 +901,9 @@ router.put("/admin/properties/:id", async (req, res, next) => {
     if (!existing) return res.status(404).json({ message: "Property not found." });
     const document = propertyBody(req.body as Record<string, unknown>, undefined, toApi("properties", existing) as unknown as PropertyDoc);
     if (!document) return res.status(400).json({ message: "Title and slug are required." });
-    const row = await updateRow("properties", req.params.id, document);
+    const row = await updateRow("properties", req.params.id, await attachPublicIds(document, { coverImage: "coverImagePublicId" }, "galleryImages"));
     return res.json({ item: toApi("properties", row) });
-  } catch (error) { return next(error); }
+  } catch (error) { return sendError(res, next, error); }
 });
 
 router.delete("/admin/properties/:id", async (req, res, next) => {
@@ -819,10 +938,10 @@ router.post("/admin/projects", async (req, res, next) => {
   try {
     const document = projectBody(req.body as Record<string, unknown>);
     if (!document) return res.status(400).json({ message: "Title and slug are required." });
-    const row = await insertRow("projects", { ...document, createdAt: new Date() });
+    const row = await insertRow("projects", { ...(await attachPublicIds(document, { coverImage: "coverImagePublicId" }, "galleryImages")), createdAt: new Date() });
     if (row?.id) await linkProjectDeveloper(String(row.id));
     return res.status(201).json({ item: toApi("projects", await findById("projects", String(row?.id))) });
-  } catch (error) { return next(error); }
+  } catch (error) { return sendError(res, next, error); }
 });
 
 router.put("/admin/projects/:id", async (req, res, next) => {
@@ -832,10 +951,10 @@ router.put("/admin/projects/:id", async (req, res, next) => {
     if (!existing) return res.status(404).json({ message: "Project not found." });
     const document = projectBody(req.body as Record<string, unknown>, undefined, toApi("projects", existing) as unknown as ProjectDoc);
     if (!document) return res.status(400).json({ message: "Title and slug are required." });
-    await updateRow("projects", req.params.id, document);
+    await updateRow("projects", req.params.id, await attachPublicIds(document, { coverImage: "coverImagePublicId" }, "galleryImages"));
     await linkProjectDeveloper(req.params.id);
     return res.json({ item: toApi("projects", await findById("projects", req.params.id)) });
-  } catch (error) { return next(error); }
+  } catch (error) { return sendError(res, next, error); }
 });
 
 router.delete("/admin/projects/:id", async (req, res, next) => {
@@ -849,13 +968,14 @@ router.delete("/admin/projects/:id", async (req, res, next) => {
 // Gallery CRUD
 function galleryBody(body: Record<string, unknown>) {
   const title = typeof body.title === "string" ? body.title.trim() : "";
-  const image = typeof body.image === "string" ? body.image.trim() : "";
+  const image = imageField(body.image, "Image") ?? "";
   if (!title || !image) return undefined;
   return {
     title,
     image,
     category: typeof body.category === "string" ? body.category.trim() : "General",
-    alt: typeof body.alt === "string" ? body.alt.trim() : title,
+    // Alt text is what search engines and screen readers get; the title stands in when empty.
+    alt: cleanAlt(body.alt) || title,
   };
 }
 
@@ -870,9 +990,9 @@ router.post("/admin/gallery", async (req, res, next) => {
   try {
     const document = galleryBody(req.body as Record<string, unknown>);
     if (!document) return res.status(400).json({ message: "Title and image URL are required." });
-    const row = await insertRow("gallery", { ...document, createdAt: new Date() });
+    const row = await insertRow("gallery", { ...(await attachPublicIds(document, { image: "imagePublicId" })), createdAt: new Date() });
     return res.status(201).json({ item: toApi("gallery", row) });
-  } catch (error) { return next(error); }
+  } catch (error) { return sendError(res, next, error); }
 });
 
 router.put("/admin/gallery/:id", async (req, res, next) => {
@@ -881,9 +1001,9 @@ router.put("/admin/gallery/:id", async (req, res, next) => {
     const document = galleryBody(req.body as Record<string, unknown>);
     if (!document) return res.status(400).json({ message: "Title and image URL are required." });
     if (!(await findById("gallery", req.params.id))) return res.status(404).json({ message: "Gallery item not found." });
-    const row = await updateRow("gallery", req.params.id, document);
+    const row = await updateRow("gallery", req.params.id, await attachPublicIds(document, { image: "imagePublicId" }));
     return res.json({ item: toApi("gallery", row) });
-  } catch (error) { return next(error); }
+  } catch (error) { return sendError(res, next, error); }
 });
 
 router.delete("/admin/gallery/:id", async (req, res, next) => {

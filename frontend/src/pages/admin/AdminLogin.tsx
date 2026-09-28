@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { ArrowUpRight, Loader2, Lock } from 'lucide-react';
 
 import { adminLogin } from '@/lib/admin-api';
+import { BRAND_LOGOS } from '@/lib/brand';
 
 /** Admin sign-in. Credentials are checked by the backend against the hashed user in PostgreSQL. */
 export function AdminLogin({ onSignedIn, notice }: { onSignedIn: () => void; notice?: string }) {
@@ -26,7 +27,7 @@ export function AdminLogin({ onSignedIn, notice }: { onSignedIn: () => void; not
   return (
     <main className="admin-shell flex min-h-[100dvh] items-center justify-center bg-[#f1ebe1] px-5 py-16">
       <div className="w-full max-w-[26rem]">
-        <img src="/brand/knc-logo-stacked.svg" alt="KNC Horizon Realtor" className="h-24 w-auto" />
+        <img src={BRAND_LOGOS.stacked} alt="KNC Horizon Realtor" className="h-24 w-auto" />
 
         <h1 className="mt-8 font-serif text-3xl leading-tight text-[#2b3242]">Admin console</h1>
         <p className="mt-2 text-sm text-[#2b3242]/60">Sign in with your KNC account. Administrators and SEO managers use the same sign-in.</p>

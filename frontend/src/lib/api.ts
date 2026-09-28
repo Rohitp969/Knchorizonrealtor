@@ -37,10 +37,16 @@ export type RemoteProperty = {
   images: string[];
   imageUrl?: string;
   imagePath?: string;
+  coverImage?: string;
+  coverImageAlt?: string;
+  galleryImages?: GalleryImage[];
   amenities: string[];
   featured: boolean;
   published: boolean;
 };
+
+/** One image of a gallery, with the alt text the admin wrote for it. */
+export type GalleryImage = { url: string; alt?: string; publicId?: string | null };
 
 export type Project = {
   id: string;
@@ -55,7 +61,9 @@ export type Project = {
   imageUrl?: string;
   imagePath?: string;
   coverImage?: string;
+  coverImageAlt?: string;
   gallery?: string[];
+  galleryImages?: GalleryImage[];
   category?: string;
   status?: string;
   amenities?: string[];
@@ -100,6 +108,7 @@ export type Post = {
   imageUrl?: string;
   imagePath?: string;
   featuredImage?: string;
+  featuredImageAlt?: string;
   author: string;
   publishedAt: string;
   status?: 'draft' | 'published';

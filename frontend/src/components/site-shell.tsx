@@ -4,6 +4,7 @@ import { ArrowUp, ArrowUpRight, ChevronDown, Mail, Menu, Phone, X } from 'lucide
 import { FaWhatsapp, FaInstagram, FaFacebookF, FaLinkedinIn, FaYoutube, FaXTwitter, FaTiktok } from 'react-icons/fa6';
 import { SOCIAL } from '@/lib/contact-info';
 import { useContact } from '@/lib/site-settings';
+import { BRAND_LOGOS, type BrandLogo } from '@/lib/brand';
 import { NewsletterForm } from '@/components/blocks';
 import { apiFetch } from '@/lib/api';
 import { categoryOf, projectSegment, isNewLaunchProject, type SearchRow } from '@/lib/property-search';
@@ -72,21 +73,16 @@ const insightsItems = [
 ];
 
 /*
- * The KNC Horizon Realtor logo (public/brand). Both colourways stay mounted so the header can
- * cross-fade from the ivory logo over the hero photo to the navy one once it turns solid.
- * Between 1024px and 1279px the full desktop menu leaves no room for the wordmark, so the
- * header shows the KNC emblem alone there.
+ * The KNC Horizon Realtor logo: the stacked mark (KNC over HORIZON REALTOR), the same in the
+ * header and the footer, only smaller in the header. It is narrow (1.57 : 1), so the header
+ * fits it at every width without swapping to a separate emblem. Both colourways stay mounted
+ * so the header can cross-fade from the ivory logo over the hero photo to the navy one once
+ * it turns solid.
  */
-const EMBLEM_ONLY = '(min-width: 1024px) and (max-width: 1279.98px)';
-
-export function BrandMark({ inverse = false, stacked = false }: { inverse?: boolean; stacked?: boolean }) {
-  const kind = stacked ? 'stacked' : 'horizontal';
-  const size = stacked ? 'h-24 w-auto' : 'h-8 w-auto sm:h-9 lg:h-10 xl:h-9 2xl:h-10';
+export function BrandMark({ inverse = false, large = false }: { inverse?: boolean; large?: boolean }) {
+  const size = large ? 'h-24 w-auto' : 'h-12 w-auto md:h-14';
   const logo = (tone: '' | '-light', className: string) => (
-    <picture>
-      {!stacked && <source media={EMBLEM_ONLY} srcSet={`/brand/knc-logo-emblem${tone}.svg`} />}
-      <img src={`/brand/knc-logo-${kind}${tone}.svg`} alt="" className={`${size} transition-opacity duration-500 ${className}`} />
-    </picture>
+    <img src={BRAND_LOGOS[`stacked${tone}` as BrandLogo]} alt="" className={`${size} transition-opacity duration-500 ${className}`} />
   );
   return (
     <Link href="/" className="relative inline-flex shrink-0 items-center transition-opacity hover:opacity-85" aria-label="KNC Horizon Realtor home" data-testid="link-brand-home">
@@ -156,7 +152,7 @@ export function Navbar() {
 
   return (
     <>
-      <header className={`site-gutter fixed inset-x-0 top-0 z-40 transition-all duration-500 ${inverse ? 'bg-transparent text-[#faf7f1]' : 'border-b border-[#e6dccb]/80 bg-[#faf7f1]/95 text-[#2b3242] shadow-[0_12px_30px_-26px_rgba(43,50,66,0.45)] backdrop-blur-md'} ${scrolled ? 'py-3' : 'py-4 md:py-5'}`}>
+      <header className={`site-gutter fixed inset-x-0 top-0 z-40 transition-all duration-500 ${inverse ? 'bg-transparent text-[#faf7f1]' : 'border-b border-[#e6dccb]/80 bg-[#faf7f1]/95 text-[#2b3242] shadow-[0_12px_30px_-26px_rgba(43,50,66,0.45)] backdrop-blur-md'} ${scrolled ? 'py-2' : 'py-3'}`}>
         <div className="site-container flex items-center justify-between gap-6">
           <BrandMark inverse={inverse} />
           <nav ref={navRef} className="hidden items-center gap-5 lg:flex xl:gap-7" aria-label="Primary navigation">
@@ -292,7 +288,7 @@ export function Footer() {
 
           {/* Brand & Introduction */}
           <div className="col-span-full lg:col-span-1">
-            <BrandMark inverse stacked />
+            <BrandMark inverse large />
             <p className="block-title mt-7 max-w-sm text-[#d9c6a4]">
               A more considered way to move through Dubai.
             </p>

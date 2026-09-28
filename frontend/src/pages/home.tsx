@@ -21,6 +21,7 @@ import { PropertySearch } from '@/components/property-search';
 
 import { areas, defaultDevelopers, services, specialistServices } from '@/lib/site-data';
 import { useContact } from '@/lib/site-settings';
+import { optimizedImage } from '@/lib/cloudinary-image';
 
 export default function Home() {
   const contact = useContact();
@@ -56,7 +57,7 @@ export default function Home() {
         >
           {/* CC0 public domain: Rupak Chatterjee, via Wikimedia Commons (File:Dubai UAE Landscape.jpg) */}
           <img
-            src="/images/hero-dubai-sunset.jpg"
+            src={optimizedImage('https://res.cloudinary.com/complaintreview/image/upload/v1790577272/knc-horizon/hero/hero-dubai-sunset.jpg', 2400)}
             alt="The Dubai skyline and the Burj Khalifa silhouetted against a golden sunset across the water"
             className="hero-image h-full w-full object-cover"
             fetchPriority="high"
@@ -379,7 +380,7 @@ export default function Home() {
                 <div>
                   <div className="card-media">
                     <img
-                      src={service.image}
+                      src={optimizedImage(service.image, 800)}
                       alt={service.title}
                       loading="lazy"
                       className="
@@ -541,7 +542,7 @@ export default function Home() {
             "
           >
             <img
-              src="/images/difc-aerial-day.jpg"
+              src={optimizedImage('https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/difc-aerial-day.jpg', 1200)}
               alt="The DIFC and Sheikh Zayed Road business towers seen from above in daylight"
               loading="lazy"
               className="
@@ -660,7 +661,7 @@ export default function Home() {
         className="site-section relative min-h-[22rem] overflow-hidden bg-[#2b3242] text-[#faf7f1] sm:min-h-[24rem] md:min-h-[27rem]"
       >
         <img
-          src="/images/dubai-skyline-from-sea.jpg"
+          src={optimizedImage('https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg', 1920)}
           alt="The Dubai skyline and the Burj Al Arab seen across the sea"
           loading="lazy"
           className="

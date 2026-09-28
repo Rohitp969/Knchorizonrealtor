@@ -1,4 +1,4 @@
-import { adminRequest, type AdminUser, type MediaItem } from '@/lib/admin-api';
+import { DEFAULT_MEDIA_FOLDER, adminRequest, type AdminUser, type MediaItem, type UploadedImage } from '@/lib/admin-api';
 import type { InternalLink } from '@/lib/seo';
 
 /*
@@ -79,6 +79,7 @@ export type Article = {
   category: string;
   author: string;
   featuredImage: string;
+  featuredImageAlt?: string;
   status: ArticleStatus;
   publishedAt: string;
   updatedAt: string;
@@ -109,6 +110,7 @@ export type ArticleInput = {
   category: string;
   author: string;
   featuredImage: string;
+  featuredImageAlt: string;
   status: ArticleStatus;
   seo: SeoInput;
 };
@@ -134,11 +136,11 @@ export const seoApi = {
   createArticle: (body: ArticleInput) => adminRequest<{ article: Article; seo: SeoRecord }>('/seo/articles', json('POST', body)),
   updateArticle: (id: string, body: ArticleInput) => adminRequest<{ article: Article; seo: SeoRecord }>(`/seo/articles/${id}`, json('PUT', body)),
   media: () => adminRequest<{ items: MediaItem[] }>('/seo/media').then((data) => data.items ?? []),
-  upload: (file: File) => {
+  upload: (file: File, folder: string = DEFAULT_MEDIA_FOLDER) => {
     const body = new FormData();
     body.append('image', file);
-    body.append('folder', 'knc-horizon');
-    return adminRequest<{ url: string; warning?: string }>('/seo/uploads', { method: 'POST', body });
+    body.append('folder', folder);
+    return adminRequest<UploadedImage>('/seo/uploads', { method: 'POST', body });
   },
   saveSettings: (patch: Partial<SeoSettings>) => adminRequest<{ settings: SeoSettings }>('/seo/settings', json('PUT', patch)),
   managers: () => adminRequest<{ managers: SeoManager[] }>('/admin/seo-managers').then((data) => data.managers ?? []),

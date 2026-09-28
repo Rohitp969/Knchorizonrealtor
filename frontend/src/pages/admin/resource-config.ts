@@ -1,4 +1,4 @@
-import { SEARCH_TYPES } from '@/lib/property-search';
+import { SEARCH_TYPES, categoryOf } from '@/lib/property-search';
 /*
  * One entry per admin section. Endpoints and field names come from the existing
  * Express routes (backend/src/routes/admin.ts) and the PostgreSQL tables (backend/src/lib/schema.sql) —
@@ -14,6 +14,7 @@ export type FieldType =
   | 'select'
   | 'boolean'
   | 'image'
+  | 'gallery'
   | 'tags'
   | 'date';
 
@@ -31,6 +32,10 @@ export type FieldConfig = {
   slugFrom?: string;
   full?: boolean;
   group?: string;
+  /** Image fields: the field that holds this image's alt text. */
+  altField?: string;
+  /** Image and gallery fields: the Cloudinary folder new uploads go to. */
+  folder?: string | ((values: Record<string, any>) => string);
 };
 
 export type ColumnConfig = {
@@ -69,6 +74,8 @@ export type ResourceConfig = {
   filters?: FilterConfig[];
   fields: FieldConfig[];
   defaults?: Record<string, unknown>;
+  /** Shapes a stored record into the form's fields (e.g. a cover and gallery from older data). */
+  formValues?: (item: Record<string, any>) => Record<string, any>;
   emptyHint?: string;
 };
 
@@ -99,6 +106,30 @@ const FEATURED_FILTER: FilterConfig = {
 export const PROPERTY_TYPES = SEARCH_TYPES;
 export const LISTING_TYPES = ['sale', 'rent'];
 export const PROPERTY_STATUS = ['For sale', 'For rent', 'Off-plan', 'Under construction', 'Sold', 'Leased'];
+
+/*
+ * The Cloudinary folder each section uploads to. Properties and projects pick theirs from the
+ * record being edited; the admin can still choose another folder for any single upload.
+ */
+const propertyFolder = (values: Record<string, any>) =>
+  /off-?plan/i.test(String(values.status ?? '')) ? 'knc-horizon/properties/off-plan'
+    : categoryOf(String(values.type ?? '')) === 'Commercial' ? 'knc-horizon/properties/commercial'
+      : 'knc-horizon/properties/residential';
+
+const projectFolder = (values: Record<string, any>) =>
+  values.newLaunch ? 'knc-horizon/projects/new-launches'
+    : values.featured ? 'knc-horizon/projects/featured'
+      : 'knc-horizon/projects/off-plan';
+
+type GalleryEntry = { url: string; alt: string };
+
+/** A stored gallery, or for records saved before galleries existed, one built from plain URLs. */
+function galleryFrom(stored: unknown, urls: unknown): GalleryEntry[] {
+  if (Array.isArray(stored) && stored.length) {
+    return stored.filter((entry) => entry && typeof entry.url === 'string').map((entry) => ({ url: entry.url, alt: entry.alt ?? '' }));
+  }
+  return Array.isArray(urls) ? urls.filter((url): url is string => typeof url === 'string' && Boolean(url)).map((url) => ({ url, alt: '' })) : [];
+}
 
 export const resources: Record<string, ResourceConfig> = {
   properties: {
@@ -162,13 +193,19 @@ export const resources: Record<string, ResourceConfig> = {
       { name: 'description', label: 'Description', type: 'textarea', required: true, full: true, group: 'Content' },
       { name: 'amenities', label: 'Amenities', type: 'tags', full: true, help: 'Comma separated', group: 'Content' },
       { name: 'highlights', label: 'Highlights', type: 'tags', full: true, help: 'Comma separated', group: 'Content' },
-      { name: 'images', label: 'Images', type: 'image', full: true, help: 'First image is the main one', group: 'Media' },
+      { name: 'coverImage', label: 'Cover image', type: 'image', full: true, altField: 'coverImageAlt', folder: propertyFolder, help: 'Shown on property cards and at the top of the listing.', group: 'Media' },
+      { name: 'galleryImages', label: 'Gallery images', type: 'gallery', full: true, folder: propertyFolder, help: 'Select several files at once; each is uploaded as its own image. Give every photo alt text.', group: 'Media' },
       { name: 'featured', label: 'Featured on the home page', type: 'boolean', group: 'Visibility' },
       { name: 'published', label: 'Published on the website', type: 'boolean', group: 'Visibility' },
     ],
     defaults: {
       currency: 'AED', type: 'Apartment', listingType: 'sale', status: 'For sale',
-      bedrooms: 0, bathrooms: 0, size: 0, price: 0, images: [], amenities: [], featured: false, published: true,
+      bedrooms: 0, bathrooms: 0, size: 0, price: 0, coverImage: '', coverImageAlt: '', galleryImages: [], amenities: [], featured: false, published: true,
+    },
+    formValues: (item) => {
+      const images: string[] = Array.isArray(item.images) ? item.images : [];
+      const cover = item.coverImage || images[0] || '';
+      return { ...item, coverImage: cover, coverImageAlt: item.coverImageAlt ?? '', galleryImages: galleryFrom(item.galleryImages, images.filter((url) => url !== cover)) };
     },
     emptyHint: 'Add your first property to publish it on the public Properties page.',
   },
@@ -223,13 +260,20 @@ export const resources: Record<string, ResourceConfig> = {
       { name: 'description', label: 'Description', type: 'textarea', required: true, full: true, group: 'Content' },
       { name: 'amenities', label: 'Amenities', type: 'tags', full: true, group: 'Content' },
       { name: 'highlights', label: 'Payment plan / highlights', type: 'tags', full: true, help: 'Comma separated', group: 'Content' },
-      { name: 'image', label: 'Cover image', type: 'image', full: true, group: 'Media' },
+      { name: 'image', label: 'Cover image', type: 'image', full: true, altField: 'coverImageAlt', folder: projectFolder, help: 'Shown on project cards and at the top of the project page.', group: 'Media' },
+      { name: 'galleryImages', label: 'Gallery images', type: 'gallery', full: true, folder: projectFolder, help: 'Select several files at once; each is uploaded as its own image. Give every photo alt text.', group: 'Media' },
       { name: 'newLaunch', label: 'New launch', type: 'boolean', group: 'Visibility' },
       { name: 'offPlan', label: 'Off-plan', type: 'boolean', group: 'Visibility' },
       { name: 'featured', label: 'Featured', type: 'boolean', group: 'Visibility' },
       { name: 'published', label: 'Published on the website', type: 'boolean', group: 'Visibility' },
     ],
-    defaults: { startingPrice: 0, featured: false, published: true, offPlan: true, newLaunch: false, amenities: [], highlights: [] },
+    defaults: { startingPrice: 0, featured: false, published: true, offPlan: true, newLaunch: false, amenities: [], highlights: [], galleryImages: [] },
+    formValues: (item) => ({
+      ...item,
+      image: item.image || item.coverImage || '',
+      coverImageAlt: item.coverImageAlt ?? '',
+      galleryImages: galleryFrom(item.galleryImages, item.gallery),
+    }),
     emptyHint: 'Projects added here appear on the public Off-Plan pages.',
   },
 
@@ -263,8 +307,8 @@ export const resources: Record<string, ResourceConfig> = {
       { name: 'shortDescription', label: 'Short description', type: 'textarea', full: true, group: 'Content' },
       { name: 'description', label: 'Description', type: 'textarea', required: true, full: true, group: 'Content' },
       { name: 'areas', label: 'Communities / areas', type: 'tags', full: true, help: 'Comma separated', group: 'Content' },
-      { name: 'logo', label: 'Logo', type: 'image', group: 'Media' },
-      { name: 'coverImage', label: 'Cover image', type: 'image', group: 'Media' },
+      { name: 'logo', label: 'Logo', type: 'image', folder: 'knc-horizon/developers', group: 'Media' },
+      { name: 'coverImage', label: 'Cover image', type: 'image', folder: 'knc-horizon/developers', group: 'Media' },
       { name: 'featured', label: 'Featured', type: 'boolean', group: 'Visibility' },
       { name: 'published', label: 'Published on the website', type: 'boolean', group: 'Visibility' },
     ],
@@ -301,7 +345,7 @@ export const resources: Record<string, ResourceConfig> = {
       { name: 'description', label: 'Description', type: 'textarea', required: true, full: true, group: 'Content' },
       { name: 'highlights', label: 'Highlights', type: 'tags', full: true, group: 'Content' },
       { name: 'propertyTypes', label: 'Property types', type: 'tags', full: true, group: 'Content' },
-      { name: 'image', label: 'Image', type: 'image', full: true, group: 'Media' },
+      { name: 'image', label: 'Image', type: 'image', full: true, folder: 'knc-horizon/communities', group: 'Media' },
       { name: 'featured', label: 'Featured', type: 'boolean', group: 'Visibility' },
       { name: 'published', label: 'Published on the website', type: 'boolean', group: 'Visibility' },
     ],
@@ -340,12 +384,13 @@ export const resources: Record<string, ResourceConfig> = {
       { name: 'publishedAt', label: 'Publish date', type: 'date', group: 'Details' },
       { name: 'excerpt', label: 'Excerpt', type: 'textarea', full: true, group: 'Content' },
       { name: 'content', label: 'Content', type: 'richtext', required: true, full: true, group: 'Content' },
-      { name: 'image', label: 'Featured image', type: 'image', full: true, group: 'Media' },
+      { name: 'featuredImage', label: 'Featured image', type: 'image', full: true, altField: 'featuredImageAlt', folder: 'knc-horizon/blog', group: 'Media' },
       { name: 'seoTitle', label: 'SEO title', type: 'text', group: 'SEO' },
       { name: 'seoDescription', label: 'SEO description', type: 'textarea', full: true, group: 'SEO' },
       { name: 'published', label: 'Published on the website', type: 'boolean', group: 'Visibility' },
     ],
     defaults: { published: true, author: 'KNC Horizon Realtor', category: 'Perspective' },
+    formValues: (item) => ({ ...item, featuredImage: item.featuredImage || item.image || '', featuredImageAlt: item.featuredImageAlt ?? '' }),
   },
 
   insights: {
@@ -379,7 +424,7 @@ export const resources: Record<string, ResourceConfig> = {
       { name: 'sourceUrl', label: 'Source URL', type: 'text', placeholder: 'https://', group: 'Source' },
       { name: 'summary', label: 'Summary', type: 'textarea', required: true, full: true, group: 'Content' },
       { name: 'content', label: 'Content', type: 'richtext', required: true, full: true, group: 'Content' },
-      { name: 'image', label: 'Image', type: 'image', full: true, group: 'Media' },
+      { name: 'image', label: 'Image', type: 'image', full: true, folder: 'knc-horizon/blog', group: 'Media' },
       { name: 'featured', label: 'Featured', type: 'boolean', group: 'Visibility' },
       { name: 'published', label: 'Published', type: 'boolean', group: 'Visibility' },
     ],
@@ -407,8 +452,8 @@ export const resources: Record<string, ResourceConfig> = {
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, group: 'Details' },
       { name: 'category', label: 'Category', type: 'text', required: true, group: 'Details' },
-      { name: 'alt', label: 'Alt text', type: 'text', required: true, help: 'Describes the photo for screen readers', full: true, group: 'Details' },
-      { name: 'image', label: 'Image', type: 'image', required: true, full: true, group: 'Media' },
+      { name: 'alt', label: 'Alt text', type: 'text', required: true, help: 'Describes the photo for search engines and screen readers', full: true, group: 'Details' },
+      { name: 'image', label: 'Image', type: 'image', required: true, full: true, folder: 'knc-horizon/gallery', help: 'One photo per gallery item, stored as its own Cloudinary image.', group: 'Media' },
     ],
     defaults: { category: 'Interiors' },
   },

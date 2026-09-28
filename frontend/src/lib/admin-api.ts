@@ -37,20 +37,31 @@ export function clearAdminToken() {
   }
 }
 
-/** A failed request; `errors` carries the server's per-field messages when it sent any. */
+/**
+ * A failed request. `errors` carries the server's per-field messages, `usedBy` the records
+ * still showing an image the admin tried to delete, and `status` the HTTP status.
+ */
 export class AdminRequestError extends Error {
   errors?: { field: string; message: string }[];
+  usedBy?: { kind: string; name: string }[];
+  status?: number;
 }
 
 async function readError(response: Response, ErrorType: typeof AdminRequestError = AdminRequestError) {
-  const payload = (await response.json().catch(() => ({}))) as { message?: string; errors?: { field: string; message: string }[] };
+  const payload = (await response.json().catch(() => ({}))) as {
+    message?: string;
+    errors?: { field: string; message: string }[];
+    usedBy?: { kind: string; name: string }[];
+  };
   const message = payload.message
     || (response.status === 404 ? 'Not found.'
       : response.status === 422 ? 'Some fields need attention.'
         : response.status >= 500 ? 'The server had a problem completing that request.'
           : `Request failed (${response.status}).`);
   const error = new ErrorType(message);
+  error.status = response.status;
   if (Array.isArray(payload.errors)) error.errors = payload.errors;
+  if (Array.isArray(payload.usedBy)) error.usedBy = payload.usedBy;
   return error;
 }
 
@@ -120,32 +131,79 @@ export async function fetchAdminUser() {
   return user;
 }
 
-/** Sends a real file to the backend, which stores it in Cloudinary and returns a permanent URL. */
-export async function uploadAdminImage(file: File, folder = 'knc-horizon') {
-  const body = new FormData();
-  body.append('image', file);
-  body.append('folder', folder);
-  return adminRequest<{ url: string; publicId?: string; filename: string; warning?: string }>(
-    '/admin/uploads',
-    { method: 'POST', body },
-  );
-}
+/*
+ * The Cloudinary folders, the same closed list the backend accepts
+ * (backend/src/lib/cloudinary.ts). Every upload names one of them.
+ */
+export const MEDIA_FOLDERS = [
+  'knc-horizon/properties',
+  'knc-horizon/properties/residential',
+  'knc-horizon/properties/commercial',
+  'knc-horizon/properties/investment',
+  'knc-horizon/properties/off-plan',
+  'knc-horizon/projects',
+  'knc-horizon/projects/featured',
+  'knc-horizon/projects/new-launches',
+  'knc-horizon/projects/off-plan',
+  'knc-horizon/developers',
+  'knc-horizon/communities',
+  'knc-horizon/interiors',
+  'knc-horizon/gallery',
+  'knc-horizon/blog',
+  'knc-horizon/pages',
+  'knc-horizon/hero',
+  'knc-horizon/logos',
+  'knc-horizon/india-office',
+] as const;
+
+export const DEFAULT_MEDIA_FOLDER = 'knc-horizon/pages';
 
 export type MediaItem = {
   id: string;
   url: string;
-  publicId?: string;
+  publicId?: string | null;
   filename?: string;
   mimetype?: string;
   size?: number;
   folder?: string;
+  width?: number | null;
+  height?: number | null;
+  format?: string | null;
   createdAt?: string;
 };
 
-export function listMedia() {
-  return adminRequest<{ items: MediaItem[] }>('/admin/media').then((data) => data.items ?? []);
+export type UploadedImage = { url: string; publicId?: string; filename?: string; folder?: string; item?: MediaItem };
+
+/** Sends one file to the backend, which stores it as its own Cloudinary asset in `folder`. */
+export async function uploadAdminImage(file: File, folder: string = DEFAULT_MEDIA_FOLDER) {
+  const body = new FormData();
+  body.append('image', file);
+  body.append('folder', folder);
+  return adminRequest<UploadedImage>('/admin/uploads', { method: 'POST', body });
 }
 
-export function deleteMedia(id: string) {
-  return adminRequest<void>(`/admin/media/${id}`, { method: 'DELETE' });
+export type MediaLibrary = {
+  items: MediaItem[];
+  folders: string[];
+  cloudinary?: { configured: boolean; cloudName: string | null };
+};
+
+export function loadMediaLibrary() {
+  return adminRequest<MediaLibrary>('/admin/media').then((data) => ({
+    items: data.items ?? [],
+    folders: data.folders?.length ? data.folders : [...MEDIA_FOLDERS],
+    cloudinary: data.cloudinary,
+  }));
+}
+
+export function listMedia() {
+  return loadMediaLibrary().then((library) => library.items);
+}
+
+/**
+ * Deletes from Cloudinary and the library. An image still shown on the website is refused
+ * (AdminRequestError with `usedBy`) unless `force` is set.
+ */
+export function deleteMedia(id: string, options: { force?: boolean } = {}) {
+  return adminRequest<void>(`/admin/media/${id}${options.force ? '?force=1' : ''}`, { method: 'DELETE' });
 }

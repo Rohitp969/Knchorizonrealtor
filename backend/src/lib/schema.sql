@@ -403,3 +403,30 @@ create table if not exists seo_settings (
   updated_by           text references users (id) on delete set null,
   updated_at           timestamptz not null default now()
 );
+
+-- ---------------------------------------------------------------------------
+-- Cloudinary images: secure URL, public_id and alt text for every image a record uses
+-- ---------------------------------------------------------------------------
+-- Additive only. The URL columns the website already reads (properties.images,
+-- projects.image / gallery, posts.image / featured_image, gallery.image) stay authoritative
+-- and keep working for the local /images/ files until those are moved to Cloudinary.
+-- A gallery entry is { "url", "alt", "publicId" }; publicId is null for a non-Cloudinary URL.
+alter table properties add column if not exists cover_image text;
+alter table properties add column if not exists cover_image_public_id text;
+alter table properties add column if not exists cover_image_alt text;
+alter table properties add column if not exists gallery_images jsonb not null default '[]'::jsonb;
+
+alter table projects add column if not exists cover_image_public_id text;
+alter table projects add column if not exists cover_image_alt text;
+alter table projects add column if not exists gallery_images jsonb not null default '[]'::jsonb;
+
+alter table posts add column if not exists featured_image_public_id text;
+alter table posts add column if not exists featured_image_alt text;
+
+alter table gallery add column if not exists image_public_id text;
+
+-- What Cloudinary reported for each upload, shown in the Media Library.
+alter table media add column if not exists width integer;
+alter table media add column if not exists height integer;
+alter table media add column if not exists format text;
+create index if not exists media_url_idx on media (url);

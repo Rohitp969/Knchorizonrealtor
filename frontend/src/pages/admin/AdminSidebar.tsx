@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 
 import type { AdminUser } from '@/lib/admin-api';
+import { BRAND_LOGOS } from '@/lib/brand';
 
 export type AdminResource =
   | 'overview'
@@ -135,7 +136,7 @@ export function AdminSidebar({
         {/* Header / Brand */}
         <div className="flex h-16 items-center justify-between border-b border-[#2b3242]/10 px-5">
           <Link href="/admin" className="flex flex-col gap-1" aria-label="KNC Horizon Realtor admin console">
-            <img src="/brand/knc-logo-horizontal.svg" alt="" className="h-7 w-auto" />
+            <img src={BRAND_LOGOS.horizontal} alt="" className="h-7 w-auto" />
             <span className="font-mono text-[9px] uppercase tracking-[.2em] text-[#9f7a47]">
               {role === 'seo_manager' ? 'SEO Console' : 'Admin Console'}
             </span>

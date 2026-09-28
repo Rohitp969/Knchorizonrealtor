@@ -3,6 +3,7 @@ import app from "./app.ts";
 import { logger } from "./lib/logger.ts";
 import { connectToPostgres } from "./lib/postgres.ts";
 import { bootstrapDatabase } from "./lib/bootstrap.ts";
+import { cloudinaryStatus } from "./lib/cloudinary.ts";
 
 /*
  * Render assigns the port through PORT and the service must listen on it, so that always
@@ -16,6 +17,10 @@ if (Number.isNaN(port) || port <= 0) {
 }
 
 async function start() {
+  // Names only, never values: on Render this line says at a glance whether uploads can work.
+  const cloudinary = cloudinaryStatus();
+  if (cloudinary.configured) logger.info({ cloudName: cloudinary.cloudName }, "Cloudinary image uploads are configured");
+  else logger.warn({ missing: cloudinary.missing }, "Cloudinary is not configured: admin image uploads will be refused until these are set");
   await connectToPostgres();
   await bootstrapDatabase();
   app.listen(port, (err) => {

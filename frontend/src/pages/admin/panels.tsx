@@ -1,7 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Check, Loader2, Mail, Phone, RefreshCw, Search, Trash2, Upload } from 'lucide-react';
+import { AlertTriangle, Check, Loader2, Mail, Phone, RefreshCw, Search, Trash2, Upload } from 'lucide-react';
 
-import { adminRequest, deleteMedia, listMedia, uploadAdminImage, type AdminUser, type MediaItem } from '@/lib/admin-api';
+import {
+  AdminRequestError,
+  DEFAULT_MEDIA_FOLDER,
+  MEDIA_FOLDERS,
+  adminRequest,
+  deleteMedia,
+  loadMediaLibrary,
+  uploadAdminImage,
+  type AdminUser,
+  type MediaItem,
+  type MediaLibrary,
+} from '@/lib/admin-api';
+import { optimizedImage } from '@/lib/cloudinary-image';
 import {
   AdminPanelHeader,
   ConfirmDialog,
@@ -10,6 +22,7 @@ import {
   Spinner,
   StateBlock,
   adminButtonClass,
+  uploadEach,
   useToast,
 } from '@/pages/admin/admin-ui';
 import type { AdminResource } from '@/pages/admin/AdminSidebar';
@@ -508,103 +521,178 @@ export function SubscribersPanel() {
 
 /* ---------------------------------------------------------------- media library */
 
+function formatBytes(bytes?: number) {
+  if (!bytes) return '';
+  return bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
+}
+
+/** One labelled line of monospace detail (URL, public_id) that can be selected and copied. */
+function MediaDetail({ label, value }: { label: string; value?: string | null }) {
+  return (
+    <p className="mt-1.5 min-w-0">
+      <span className="font-mono text-[9px] uppercase tracking-[.12em] text-[#2b3242]/50">{label}</span>
+      <span className="block truncate font-mono text-[11px] text-[#2b3242]/80" title={value ?? ''}>{value || '—'}</span>
+    </p>
+  );
+}
+
 export function MediaPanel() {
   const toast = useToast();
-  const [items, setItems] = useState<MediaItem[] | null>(null);
+  const [library, setLibrary] = useState<MediaLibrary | null>(null);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
-  const [uploading, setUploading] = useState(false);
+  const [folderFilter, setFolderFilter] = useState('');
+  const [uploadFolder, setUploadFolder] = useState<string>(DEFAULT_MEDIA_FOLDER);
+  const [progress, setProgress] = useState('');
+  const [failures, setFailures] = useState<string[]>([]);
   const [deleting, setDeleting] = useState<MediaItem | null>(null);
+  const [usedBy, setUsedBy] = useState<{ kind: string; name: string }[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState<MediaItem | null>(null);
 
   const load = useCallback(async () => {
     try {
-      setItems(await listMedia());
+      setLibrary(await loadMediaLibrary());
       setError('');
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'Could not load the media library.');
-      setItems([]);
+      setLibrary({ items: [], folders: [...MEDIA_FOLDERS] });
     }
   }, []);
 
   useEffect(() => { load(); }, [load]);
 
-  const upload = async (files: FileList | null) => {
-    if (!files?.length) return;
-    setUploading(true);
+  // Each selected file is its own request and its own Cloudinary asset; one failure does not stop the rest.
+  const upload = async (list: FileList | null) => {
+    if (!list?.length) return;
+    const files = Array.from(list);
+    setFailures([]);
+    setProgress(`Uploading 0 of ${files.length}…`);
     try {
-      for (const file of Array.from(files)) {
-        const result = await uploadAdminImage(file);
-        if (result.warning) toast('error', result.warning);
+      const outcomes = await uploadEach(files, (file) => uploadAdminImage(file, uploadFolder), (done, total) => setProgress(`Uploading ${done} of ${total}…`));
+      const uploaded = outcomes.filter((outcome) => outcome.result).length;
+      const failed = outcomes.flatMap((outcome) => (outcome.error ? [outcome.error] : []));
+      if (uploaded) toast('success', `${uploaded} ${uploaded === 1 ? 'image' : 'images'} uploaded to ${uploadFolder}.`);
+      if (failed.length) {
+        setFailures(failed);
+        toast('error', `${failed.length} ${failed.length === 1 ? 'image' : 'images'} could not be uploaded.`);
       }
-      toast('success', files.length > 1 ? `${files.length} files uploaded.` : 'File uploaded.');
       await load();
-    } catch (reason) {
-      toast('error', reason instanceof Error ? reason.message : 'Upload failed.');
     } finally {
-      setUploading(false);
+      setProgress('');
     }
   };
+
+  const closeDelete = () => { setDeleting(null); setUsedBy(null); };
 
   const remove = async () => {
     if (!deleting) return;
     setBusy(true);
     try {
-      await deleteMedia(deleting.id);
-      setItems((current) => (current ?? []).filter((item) => item.id !== deleting.id));
-      toast('success', 'Media deleted.');
-      setDeleting(null);
+      await deleteMedia(deleting.id, { force: Boolean(usedBy) });
+      setLibrary((current) => (current ? { ...current, items: current.items.filter((item) => item.id !== deleting.id) } : current));
+      toast('success', 'Image deleted from Cloudinary and the media library.');
+      closeDelete();
     } catch (reason) {
-      toast('error', reason instanceof Error ? reason.message : 'Delete failed.');
+      if (reason instanceof AdminRequestError && reason.status === 409 && reason.usedBy?.length) {
+        setUsedBy(reason.usedBy);
+      } else {
+        toast('error', reason instanceof Error ? reason.message : 'Delete failed.');
+      }
     } finally {
       setBusy(false);
     }
   };
 
-  const filtered = (items ?? []).filter((item) =>
-    [item.filename, item.folder, item.url].some((value) => String(value ?? '').toLowerCase().includes(query.trim().toLowerCase())),
+  const items = library?.items ?? [];
+  const folders = [...new Set([...(library?.folders ?? []), ...items.map((item) => item.folder ?? '').filter(Boolean)])];
+  const needle = query.trim().toLowerCase();
+  const filtered = items.filter((item) =>
+    (!folderFilter || item.folder === folderFilter)
+    && (!needle || [item.filename, item.folder, item.url, item.publicId].some((value) => String(value ?? '').toLowerCase().includes(needle))),
   );
+  const notConfigured = library?.cloudinary && !library.cloudinary.configured;
 
   return (
     <div>
-      <AdminPanelHeader title="Media library" description={items ? `${items.length} file${items.length === 1 ? '' : 's'} stored` : 'Loading…'}>
-        <label className={`${adminButtonClass()} cursor-pointer`}>
-          {uploading ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />} {uploading ? 'Uploading…' : 'Upload files'}
-          <input type="file" accept="image/*" multiple className="hidden" onChange={(event) => upload(event.target.files)} data-testid="input-media-upload" />
+      <AdminPanelHeader
+        title="Media library"
+        description={library ? `${items.length} image${items.length === 1 ? '' : 's'} in Cloudinary${library.cloudinary?.cloudName ? ` · ${library.cloudinary.cloudName}` : ''}` : 'Loading…'}
+      >
+        <select
+          value={uploadFolder}
+          onChange={(event) => setUploadFolder(event.target.value)}
+          className="rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] px-3 py-2.5 font-mono text-[11px] text-[#2b3242] outline-none focus:border-[#9f7a47]"
+          aria-label="Folder for new uploads"
+          data-testid="select-media-folder"
+        >
+          {MEDIA_FOLDERS.map((folder) => <option key={folder} value={folder}>{folder}</option>)}
+        </select>
+        <label className={`${adminButtonClass()} ${progress || notConfigured ? 'pointer-events-none opacity-50' : 'cursor-pointer'}`}>
+          {progress ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />} {progress || 'Upload images'}
+          <input type="file" accept="image/*,.heic,.heif" multiple className="hidden" disabled={Boolean(progress) || Boolean(notConfigured)} onChange={(event) => { upload(event.target.files); event.target.value = ''; }} data-testid="input-media-upload" />
         </label>
         <button type="button" className={adminButtonClass('ghost')} onClick={load}><RefreshCw size={13} /> Refresh</button>
       </AdminPanelHeader>
 
-      <label className="relative mt-5 flex items-center">
-        <Search size={15} className="pointer-events-none absolute left-3 text-[#2b3242]/60" />
-        <span className="sr-only">Search media</span>
-        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search file name…" className="w-full rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#9f7a47]" />
-      </label>
+      {notConfigured && (
+        <p className="mt-5 flex items-start gap-2 rounded-lg border border-[#9f7a47]/35 bg-[#8f6d3f]/8 px-4 py-3 text-sm text-[#7c2d12]" role="alert">
+          <AlertTriangle size={16} className="mt-0.5 shrink-0" />
+          Cloudinary is not configured on the server, so images cannot be uploaded or deleted. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET in the backend environment (Render → Environment) and restart it.
+        </p>
+      )}
+
+      {failures.length > 0 && (
+        <div className="mt-5 rounded-lg border border-[#9f7a47]/35 bg-[#8f6d3f]/8 px-4 py-3 text-sm text-[#7c2d12]" role="alert">
+          <p className="font-medium">Not uploaded:</p>
+          <ul className="mt-1 list-disc space-y-0.5 pl-5 text-xs">{failures.map((failure) => <li key={failure}>{failure}</li>)}</ul>
+        </div>
+      )}
+
+      <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+        <label className="relative flex flex-1 items-center">
+          <Search size={15} className="pointer-events-none absolute left-3 text-[#2b3242]/60" />
+          <span className="sr-only">Search media</span>
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search file name, URL or public_id…" className="w-full rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#9f7a47]" />
+        </label>
+        <select value={folderFilter} onChange={(event) => setFolderFilter(event.target.value)} className="rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] px-3 py-2.5 text-sm outline-none focus:border-[#9f7a47]" aria-label="Filter by folder" data-testid="filter-media-folder">
+          <option value="">All folders</option>
+          {folders.map((folder) => <option key={folder} value={folder}>{folder}</option>)}
+        </select>
+      </div>
 
       <div className="mt-5">
-        {items === null ? (
+        {library === null ? (
           <Spinner label="Loading media…" />
         ) : error ? (
           <StateBlock tone="error" title="Could not load media" message={error} action={<button className={adminButtonClass('ghost')} onClick={load}>Try again</button>} />
         ) : filtered.length === 0 ? (
-          <StateBlock title="No media yet" message="Upload images here, or from any image field in the other sections. Files are stored in Cloudinary and reusable everywhere." />
+          <StateBlock
+            title={items.length ? 'Nothing matches' : 'No media yet'}
+            message={items.length ? 'Try another search or folder.' : 'Upload images here, or from any image field in the other sections. Each file becomes its own Cloudinary asset, reusable everywhere.'}
+          />
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3" data-testid="media-grid">
             {filtered.map((item) => (
-              <figure key={item.id} className="overflow-hidden rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)]">
-                <button type="button" onClick={() => setPreview(item)} className="block h-32 w-full bg-[#2b3242]/5">
-                  <img src={item.url} alt={item.filename ?? ''} loading="lazy" className="h-full w-full object-cover" />
+              <figure key={item.id} className="min-w-0 overflow-hidden rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)]" data-testid={`media-item-${item.id}`}>
+                <button type="button" onClick={() => setPreview(item)} className="block h-40 w-full bg-[#2b3242]/5" aria-label={`Preview ${item.filename ?? 'image'}`}>
+                  <img src={optimizedImage(item.url, 480)} alt={item.filename ?? ''} loading="lazy" className="h-full w-full object-cover" />
                 </button>
-                <figcaption className="px-3 py-2">
-                  <p className="truncate text-xs text-[#2b3242]">{item.filename ?? 'image'}</p>
-                  <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[.1em] text-[#2b3242]/65">
-                    {item.folder ?? 'knc-horizon'} · {item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-GB') : ''}
+                <figcaption className="px-3 py-3">
+                  <p className="truncate text-sm text-[#2b3242]" title={item.filename}>{item.filename ?? 'image'}</p>
+                  <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] text-[#2b3242]/60">
+                    <span className="rounded-md bg-[#2b3242]/6 px-1.5 py-0.5 text-[#2b3242]/75">{item.folder ?? '—'}</span>
+                    {item.width && item.height ? <span>{item.width}×{item.height}</span> : null}
+                    {item.format ? <span className="uppercase">{item.format}</span> : null}
+                    {item.size ? <span>{formatBytes(item.size)}</span> : null}
+                    {item.createdAt ? <span>{new Date(item.createdAt).toLocaleDateString('en-GB')}</span> : null}
                   </p>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    <CopyButton value={item.url} label="Copy" />
-                    <button type="button" onClick={() => setDeleting(item)} className="grid h-8 w-8 place-items-center rounded-lg border border-[#2b3242]/15 text-[#b23b2e] hover:border-[#b23b2e]" title="Delete">
-                      <Trash2 size={12} />
+                  <MediaDetail label="Cloudinary URL" value={item.url} />
+                  <MediaDetail label="public_id" value={item.publicId} />
+                  <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                    <CopyButton value={item.url} label="Copy URL" />
+                    <button type="button" onClick={() => setDeleting(item)} className="ml-auto grid h-9 w-9 place-items-center rounded-lg border border-[#2b3242]/15 text-[#b23b2e] hover:border-[#b23b2e]" title="Delete" aria-label={`Delete ${item.filename ?? 'image'}`} data-testid={`button-delete-media-${item.id}`}>
+                      <Trash2 size={13} />
                     </button>
                   </div>
                 </figcaption>
@@ -617,20 +705,30 @@ export function MediaPanel() {
       <Modal open={Boolean(preview)} title={preview?.filename ?? 'Preview'} onClose={() => setPreview(null)} wide>
         {preview && (
           <div>
-            <img src={preview.url} alt={preview.filename ?? ''} className="mx-auto max-h-[55vh] w-auto rounded-lg" />
-            <p className="mt-4 break-all rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] shadow-[0_1px_2px_rgba(43,50,66,0.04)] px-3 py-2 font-mono text-xs text-[#2b3242]/70">{preview.url}</p>
-            <div className="mt-3 flex gap-2"><CopyButton value={preview.url} /></div>
+            <img src={optimizedImage(preview.url, 1600)} alt={preview.filename ?? ''} className="mx-auto max-h-[55vh] w-auto rounded-lg" />
+            <div className="mt-4 rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] px-3 py-2 shadow-[0_1px_2px_rgba(43,50,66,0.04)]">
+              <MediaDetail label="Folder" value={preview.folder} />
+              <p className="mt-1.5 break-all font-mono text-xs text-[#2b3242]/70"><span className="block font-mono text-[9px] uppercase tracking-[.12em] text-[#2b3242]/50">Cloudinary URL</span>{preview.url}</p>
+              <p className="mt-1.5 break-all font-mono text-xs text-[#2b3242]/70"><span className="block font-mono text-[9px] uppercase tracking-[.12em] text-[#2b3242]/50">public_id</span>{preview.publicId || '—'}</p>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <CopyButton value={preview.url} />
+              {preview.publicId && <CopyButton value={preview.publicId} label="Copy public_id" />}
+            </div>
           </div>
         )}
       </Modal>
 
       <ConfirmDialog
         open={Boolean(deleting)}
-        title="Delete media?"
-        message="The file will be removed from Cloudinary and the media library."
-        warning="Pages still using this image will show a broken image."
+        title={usedBy ? 'This image is still in use' : 'Delete image?'}
+        message={usedBy
+          ? `“${deleting?.filename ?? 'This image'}” is shown by: ${usedBy.map((use) => `${use.kind} “${use.name}”`).join(', ')}. Deleting it leaves those pages without this picture.`
+          : `“${deleting?.filename ?? 'This image'}” will be removed from Cloudinary and the media library.`}
+        warning={usedBy ? 'Replace it in those records first, or delete it anyway.' : undefined}
+        confirmLabel={usedBy ? 'Delete anyway' : 'Delete'}
         busy={busy}
-        onCancel={() => setDeleting(null)}
+        onCancel={closeDelete}
         onConfirm={remove}
       />
     </div>

@@ -7,6 +7,8 @@ export type Property = {
   price: string;
   details: string;
   image: string;
+  /** The admin's alt text for the cover, when there is one. */
+  imageAlt?: string;
   note: string;
 };
 
@@ -45,7 +47,7 @@ export const properties: Property[] = [
     type: 'Private Villa',
     price: 'AED 24,500,000',
     details: '5 beds · 7 baths · 8,420 sq ft',
-    image: '/images/palm-jumeirah-frond-villas.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577289/knc-horizon/properties/palm-jumeirah-frond-villas.jpg',
     note: 'Waterfront / Private access',
   },
   {
@@ -56,7 +58,7 @@ export const properties: Property[] = [
     type: 'Skyline Penthouse',
     price: 'AED 8,900,000',
     details: '3 beds · 4 baths · 2,980 sq ft',
-    image: '/images/dubai-marina-promenade.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790585306/knc-horizon/properties/dubai-penthouse-living-room.jpg',
     note: 'Turnkey / Sea view',
   },
   {
@@ -67,7 +69,7 @@ export const properties: Property[] = [
     type: 'Contemporary Villa',
     price: 'AED 11,750,000',
     details: '4 beds · 5 baths · 4,870 sq ft',
-    image: '/images/dubai-contemporary-villa.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577284/knc-horizon/properties/dubai-contemporary-villa.jpg',
     note: 'Quiet street / Garden',
   },
   {
@@ -78,7 +80,7 @@ export const properties: Property[] = [
     type: 'Luxury Apartment',
     price: 'AED 4,250,000',
     details: '2 beds · 3 baths · 1,640 sq ft',
-    image: '/images/address-sky-view-night.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790590503/knc-horizon/properties/downtown-dubai-apartment-living-dining.jpg',
     note: 'Burj view / Turnkey',
   },
 ];
@@ -94,8 +96,8 @@ export const services: Service[] = [
 ];
 
 export const specialistServices: SpecialistService[] = [
-  { id: 'design-build', index: '07', title: 'Design & Build', description: 'From first concept to final handover, we coordinate the design, procurement, and delivery of spaces made for the way you live.', image: '/images/dubai-townhouses-construction.jpg', href: '/design-build' },
-  { id: 'interiors', index: '08', title: 'Interiors & Furniture', description: 'A complete interior perspective: material palettes, bespoke furniture, styling, and the quiet details that make a place feel finished.', image: '/images/dubai-living-room-finished.jpg', href: '/interiors' },
+  { id: 'design-build', index: '07', title: 'Design & Build', description: 'From first concept to final handover, we coordinate the design, procurement, and delivery of spaces made for the way you live.', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577276/knc-horizon/interiors/dubai-townhouses-construction.jpg', href: '/design-build' },
+  { id: 'interiors', index: '08', title: 'Interiors & Furniture', description: 'A complete interior perspective: material palettes, bespoke furniture, styling, and the quiet details that make a place feel finished.', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577275/knc-horizon/interiors/dubai-living-room-finished.jpg', href: '/interiors' },
 ];
 
 export const faqs = [
@@ -106,12 +108,12 @@ export const faqs = [
 ];
 
 export const areas: Area[] = [
-  { id: 'downtown-dubai', name: 'Downtown Dubai', descriptor: 'The city at its centre', image: '/images/dubai-fountain-downtown.jpg', detail: 'Iconic views, cultural energy, and a walkable rhythm for people who want to be close to everything.' },
-  { id: 'dubai-marina', name: 'Dubai Marina', descriptor: 'The city by water', image: '/images/dubai-marina-canal-day.jpg', detail: 'A vertical neighbourhood of considered residences, restaurants, and open horizons.' },
-  { id: 'palm-jumeirah', name: 'Palm Jumeirah', descriptor: 'Island life, redefined', image: '/images/palm-jumeirah-aerial.jpg', detail: 'Waterfront villas, private beaches, and a slower rhythm at the edge of the city.' },
-  { id: 'business-bay', name: 'Business Bay', descriptor: 'A vertical pulse', image: '/images/hero-dubai-skyline.jpg', detail: 'A central address where ambitious towers, water, and the city’s working rhythm meet.' },
-  { id: 'jumeirah', name: 'Jumeirah', descriptor: 'An established ease', image: '/images/jumeirah-coast-burj-al-arab.jpg', detail: 'Leafy streets, beach access, and a more residential pace in one of Dubai’s enduring communities.' },
-  { id: 'arabian-ranches', name: 'Arabian Ranches', descriptor: 'Space to settle', image: '/images/dubai-villa-community-aerial.jpg', detail: 'Landscaped streets, generous homes, and a grounded sense of community away from the rush.' },
+  { id: 'downtown-dubai', name: 'Downtown Dubai', descriptor: 'The city at its centre', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/communities/dubai-fountain-downtown.jpg', detail: 'Iconic views, cultural energy, and a walkable rhythm for people who want to be close to everything.' },
+  { id: 'dubai-marina', name: 'Dubai Marina', descriptor: 'The city by water', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/communities/dubai-marina-canal-day.jpg', detail: 'A vertical neighbourhood of considered residences, restaurants, and open horizons.' },
+  { id: 'palm-jumeirah', name: 'Palm Jumeirah', descriptor: 'Island life, redefined', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577261/knc-horizon/communities/palm-jumeirah-aerial.jpg', detail: 'Waterfront villas, private beaches, and a slower rhythm at the edge of the city.' },
+  { id: 'business-bay', name: 'Business Bay', descriptor: 'A vertical pulse', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577261/knc-horizon/communities/hero-dubai-skyline.jpg', detail: 'A central address where ambitious towers, water, and the city’s working rhythm meet.' },
+  { id: 'jumeirah', name: 'Jumeirah', descriptor: 'An established ease', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577261/knc-horizon/communities/jumeirah-coast-burj-al-arab.jpg', detail: 'Leafy streets, beach access, and a more residential pace in one of Dubai’s enduring communities.' },
+  { id: 'arabian-ranches', name: 'Arabian Ranches', descriptor: 'Space to settle', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/communities/dubai-villa-community-aerial.jpg', detail: 'Landscaped streets, generous homes, and a grounded sense of community away from the rush.' },
 ];
 
 export type GalleryItem = {
@@ -137,7 +139,11 @@ export const defaultRemoteProperties = [
     bathrooms: 7,
     size: 8420,
     description: 'A private waterfront villa shaped around quiet mornings, generous entertaining, and direct access to the water.',
-    images: ['/images/palm-jumeirah-frond-villas.jpg'],
+    images: [
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790577289/knc-horizon/properties/palm-jumeirah-frond-villas.jpg',
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790589063/knc-horizon/properties/dubai-villa-lap-pool-deck.jpg',
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790589063/knc-horizon/properties/dubai-villa-pool-terrace-lounge.jpg',
+    ],
     amenities: ['Private beach', 'Infinity pool', 'Staff suite', 'Sea views'],
     featured: true,
     published: true,
@@ -156,7 +162,13 @@ export const defaultRemoteProperties = [
     bathrooms: 4,
     size: 2980,
     description: 'A turnkey skyline residence with a wide marina outlook and a considered, light-filled interior.',
-    images: ['/images/dubai-marina-promenade.jpg'],
+    images: [
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790585306/knc-horizon/properties/dubai-penthouse-living-room.jpg',
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790585306/knc-horizon/properties/dubai-penthouse-dining-room.jpg',
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790585306/knc-horizon/properties/dubai-penthouse-master-bedroom.jpg',
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790581630/knc-horizon/properties/dubai-marina-night-view-high-floor.jpg',
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790581635/knc-horizon/properties/dubai-marina-canal-window-view.jpg',
+    ],
     amenities: ['Sea view', 'Concierge', 'Residents lounge', 'Private lift'],
     featured: true,
     published: true,
@@ -175,7 +187,10 @@ export const defaultRemoteProperties = [
     bathrooms: 5,
     size: 4870,
     description: 'A calm contemporary family home on a quiet street, with garden rooms that bring the outside in.',
-    images: ['/images/dubai-contemporary-villa.jpg'],
+    images: [
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790577284/knc-horizon/properties/dubai-contemporary-villa.jpg',
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790589060/knc-horizon/properties/dubai-modern-villa-garage-front.jpg',
+    ],
     amenities: ['Private garden', 'Study', 'Garage', 'Community pool'],
     featured: false,
     published: true,
@@ -194,7 +209,12 @@ export const defaultRemoteProperties = [
     bathrooms: 3,
     size: 1640,
     description: 'A polished city apartment with Burj Khalifa views and the service of one of Downtown’s most recognisable addresses.',
-    images: ['/images/address-sky-view-night.jpg'],
+    images: [
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790590503/knc-horizon/properties/downtown-dubai-apartment-living-dining.jpg',
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790590505/knc-horizon/properties/downtown-dubai-balcony-burj-khalifa.jpg',
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790590504/knc-horizon/properties/downtown-dubai-apartment-twin-bedroom.jpg',
+      'https://res.cloudinary.com/complaintreview/image/upload/v1790577283/knc-horizon/properties/address-sky-view-night.jpg',
+    ],
     amenities: ['Burj view', 'Valet parking', 'Pool', 'Fitness studio'],
     featured: false,
     published: true,
@@ -211,7 +231,7 @@ export const defaultProjects = [
     startingPrice: 5500000,
     handover: 'Q4 2028',
     description: 'A low-density collection of villas and gardens designed around water, landscape, and long-term liveability.',
-    image: '/images/jumeirah-islands-lakeside-villas.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577282/knc-horizon/projects/jumeirah-islands-lakeside-villas.jpg',
     featured: true,
   },
   {
@@ -223,7 +243,7 @@ export const defaultProjects = [
     startingPrice: 3200000,
     handover: 'Q2 2028',
     description: 'A waterfront address for buyers looking for a distinctive design language, resort amenities, and a central coastal position.',
-    image: '/images/port-rashid-waterfront.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577282/knc-horizon/projects/port-rashid-waterfront.jpg',
     featured: true,
   },
   {
@@ -237,7 +257,7 @@ export const defaultProjects = [
     startingPrice: 2900000,
     handover: 'Q1 2029',
     description: 'A new collection of family villas set around open landscapes, trails, and everyday community life.',
-    image: '/images/dubai-villa-community-golf-lake.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577280/knc-horizon/projects/dubai-villa-community-golf-lake.jpg',
     featured: false,
   },
   {
@@ -251,7 +271,7 @@ export const defaultProjects = [
     startingPrice: 2100000,
     handover: 'Q4 2028',
     description: 'A golf-side vertical neighbourhood with generous views, thoughtful amenities, and a strong central position.',
-    image: '/images/ras-al-khor-towers.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577283/knc-horizon/projects/ras-al-khor-towers.jpg',
     featured: false,
   },
   {
@@ -265,7 +285,7 @@ export const defaultProjects = [
     startingPrice: 1250000,
     handover: 'Q3 2027',
     description: 'A compact waterfront address for buyers seeking access, amenity, and a considered entry into the Dubai market.',
-    image: '/images/jaddaf-waterfront.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577281/knc-horizon/projects/jaddaf-waterfront.jpg',
     featured: false,
   },
 ];
@@ -278,7 +298,7 @@ export const defaultPosts = [
     excerpt: 'A local read on choosing between the energy of Downtown, the water of the Marina, and the space of the suburbs.',
     content: 'Dubai rewards a slower first question: how do you want an ordinary Tuesday to feel? From walkable city life to private garden streets, the right community is the one that supports the life you are building.',
     category: 'Area guide',
-    image: '/images/marina-palm-view.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/blog/marina-palm-view.jpg',
     author: 'KNC Horizon',
     publishedAt: '2025-01-15T00:00:00.000Z',
   },
@@ -289,7 +309,7 @@ export const defaultPosts = [
     excerpt: 'The questions worth asking about a developer, a handover, a payment plan, and the value of a future address.',
     content: 'Off-plan property can offer access to a new generation of communities, but the strongest decisions come from context. Understand the developer, the delivery timeline, the surrounding infrastructure, and how the payment plan fits your horizon.',
     category: 'Investment',
-    image: '/images/dubai-tower-construction-cranes.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577259/knc-horizon/blog/dubai-tower-construction-cranes.jpg',
     author: 'KNC Horizon',
     publishedAt: '2025-02-01T00:00:00.000Z',
   },
@@ -300,7 +320,7 @@ export const defaultPosts = [
     excerpt: 'A practical checklist for comparing a home beyond the headline rent.',
     content: 'The strongest rental decisions come from looking at the whole year, not only the first month. Consider the building, the commute, the renewal terms, the maintenance response, and the daily ease of the address.',
     category: 'Renting',
-    image: '/images/dubai-residential-buildings.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577259/knc-horizon/blog/dubai-residential-buildings.jpg',
     author: 'KNC Horizon',
     publishedAt: '2025-02-14T00:00:00.000Z',
   },
@@ -311,18 +331,18 @@ export const defaultPosts = [
     excerpt: 'The right shortlist is not the longest one. It is the one that makes the decision clearer.',
     content: 'A good search begins with a few strong filters and the confidence to remove what does not fit. When the brief reflects how you actually live, the right homes become easier to recognise.',
     category: 'Perspective',
-    image: '/images/city-walk-residences.jpg',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577259/knc-horizon/blog/city-walk-residences.jpg',
     author: 'KNC Horizon',
     publishedAt: '2025-02-20T00:00:00.000Z',
   },
 ];
 
 export const defaultGallery: GalleryItem[] = [
-  { id: 'gal-1', title: 'Abras on Dubai Creek', category: 'Heritage', image: '/images/abras-dubai-creek.jpg', alt: 'Traditional wooden abra boats flying the UAE flag crossing Dubai Creek in daylight' },
-  { id: 'gal-2', title: 'The Spice Souk', category: 'Heritage', image: '/images/dubai-spice-souk.jpg', alt: 'Woven baskets and bowls piled with colourful dried flowers and spices at the Dubai Spice Souk' },
-  { id: 'gal-3', title: 'Jumeirah Mosque', category: 'Architecture', image: '/images/jumeirah-mosque.jpg', alt: 'Jumeirah Mosque in Dubai with a carved stone dome and twin minarets behind trees under a blue sky' },
-  { id: 'gal-4', title: 'Desert dunes', category: 'Landscapes', image: '/images/dubai-desert-dunes.jpg', alt: 'Rippled orange sand dunes stretching into the distance in the desert outside Dubai' },
-  { id: 'gal-5', title: 'Jumeira Public Beach', category: 'Waterfront', image: '/images/jumeira-public-beach.jpg', alt: 'Wide pale-sand Jumeira Public Beach in Dubai with a lifeguard tower, palms and distant beachgoers' },
+  { id: 'gal-1', title: 'Abras on Dubai Creek', category: 'Heritage', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577264/knc-horizon/gallery/abras-dubai-creek.jpg', alt: 'Traditional wooden abra boats flying the UAE flag crossing Dubai Creek in daylight' },
+  { id: 'gal-2', title: 'The Spice Souk', category: 'Heritage', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577266/knc-horizon/gallery/dubai-spice-souk.jpg', alt: 'Woven baskets and bowls piled with colourful dried flowers and spices at the Dubai Spice Souk' },
+  { id: 'gal-3', title: 'Jumeirah Mosque', category: 'Architecture', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577266/knc-horizon/gallery/jumeirah-mosque.jpg', alt: 'Jumeirah Mosque in Dubai with a carved stone dome and twin minarets behind trees under a blue sky' },
+  { id: 'gal-4', title: 'Desert dunes', category: 'Landscapes', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577264/knc-horizon/gallery/dubai-desert-dunes.jpg', alt: 'Rippled orange sand dunes stretching into the distance in the desert outside Dubai' },
+  { id: 'gal-5', title: 'Jumeira Public Beach', category: 'Waterfront', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577266/knc-horizon/gallery/jumeira-public-beach.jpg', alt: 'Wide pale-sand Jumeira Public Beach in Dubai with a lifeguard tower, palms and distant beachgoers' },
 ];
 
 // Verified public developer profiles (name, description, official website only)

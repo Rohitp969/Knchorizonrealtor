@@ -1,3 +1,5 @@
+import type { GalleryImage } from "./media.ts";
+
 /*
  * Two shapes, on purpose.
  *
@@ -31,6 +33,11 @@ export type PropertyDoc = {
   images: string[];
   imageUrl?: string;
   imagePath?: string;
+  /** The cover (also images[0]); the gallery holds the rest, each with its own alt text. */
+  coverImage?: string;
+  coverImagePublicId?: string | null;
+  coverImageAlt?: string;
+  galleryImages?: GalleryImage[];
   amenities: string[];
   highlights?: string[];
   featured: boolean;
@@ -56,7 +63,10 @@ export type ProjectDoc = {
   imageUrl?: string;
   imagePath?: string;
   coverImage?: string;
+  coverImagePublicId?: string | null;
+  coverImageAlt?: string;
   gallery?: string[];
+  galleryImages?: GalleryImage[];
   amenities?: string[];
   highlights?: string[];
   completionDate?: string;
@@ -101,6 +111,8 @@ export type BlogPostDoc = {
   imageUrl?: string;
   imagePath?: string;
   featuredImage?: string;
+  featuredImagePublicId?: string | null;
+  featuredImageAlt?: string;
   author: string;
   published: boolean;
   status?: "draft" | "published";

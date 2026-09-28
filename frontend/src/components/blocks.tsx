@@ -5,6 +5,7 @@ import { Link } from 'wouter';
 import { defaultPosts, defaultProjects, properties, type Area, type Property, type Service, faqs } from '@/lib/site-data';
 import { apiFetch, type Post, type Project, type RemoteProperty } from '@/lib/api';
 import { useSiteSettings } from '@/lib/site-settings';
+import { optimizedImage } from '@/lib/cloudinary-image';
 import { PhoneInput, type PhoneChange } from '@/components/phone-input';
 
 export const fadeUp = {
@@ -89,10 +90,10 @@ export function PropertyCard({ property, featured = false, className = '' }: { p
       >
         <div className={`mobile-card-image image-reveal card-media ${featured ? 'card-media-wide' : ''}`}>
           <img
-            src={property.image}
-            alt={`${property.title}, ${property.location}`}
+            src={optimizedImage(property.image, 800)}
+            alt={property.imageAlt || `${property.title}, ${property.location}`}
             loading="lazy"
-            onError={(event) => { event.currentTarget.src = '/images/dubai-skyline-from-sea.jpg'; }}
+            onError={(event) => { event.currentTarget.src = 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg'; }}
             className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             data-testid={`img-property-${property.id}`}
           />
@@ -146,7 +147,8 @@ function remotePropertyCard(item: RemoteProperty, currency: string): Property {
     type: item.type,
     price: `${item.currency || currency} ${new Intl.NumberFormat('en-AE').format(item.price)}`,
     details: `${item.bedrooms} beds · ${item.bathrooms} baths · ${new Intl.NumberFormat('en-AE').format(item.size)} sq ft`,
-    image: item.images?.[0] || '/images/dubai-skyline-from-sea.jpg',
+    image: item.images?.[0] || 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg',
+    imageAlt: item.coverImageAlt || undefined,
     note: item.status,
   };
 }
@@ -196,7 +198,7 @@ export function FeaturedProperties() {
 
 
 export const aed = (value: number, currency = 'AED') => `${currency} ${new Intl.NumberFormat('en-AE').format(value)}`;
-const FALLBACK_IMAGE = '/images/dubai-skyline-from-sea.jpg';
+const FALLBACK_IMAGE = 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg';
 
 /* One project card used by the home page, /projects, /off-plan and their filters. */
 export function ProjectCard({ project }: { project: Project }) {
@@ -211,8 +213,8 @@ export function ProjectCard({ project }: { project: Project }) {
       <div>
         <div className="card-media image-reveal">
           <img
-            src={project.image || FALLBACK_IMAGE}
-            alt={`${project.title} by ${project.developer}, ${project.location}`}
+            src={optimizedImage(project.image || FALLBACK_IMAGE, 800)}
+            alt={project.coverImageAlt || `${project.title} by ${project.developer}, ${project.location}`}
             loading="lazy"
             onError={(event) => { event.currentTarget.src = FALLBACK_IMAGE; }}
             className="transition-transform duration-700 group-hover:scale-[1.03]"
@@ -252,8 +254,8 @@ export function PostCard({ post }: { post: Post }) {
       <div>
         <div className="card-media image-reveal">
           <img
-            src={post.image || FALLBACK_IMAGE}
-            alt={post.title}
+            src={optimizedImage(post.featuredImage || post.image || FALLBACK_IMAGE, 800)}
+            alt={post.featuredImageAlt || post.title}
             loading="lazy"
             onError={(event) => { event.currentTarget.src = FALLBACK_IMAGE; }}
             className="transition-transform duration-700 group-hover:scale-[1.03]"
@@ -354,7 +356,7 @@ export function AreaCard({ area, index, className = 'w-full' }: { area: Area; in
     <motion.article initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={fadeUp} transition={{ delay: index * .08 }} className={`group ${className}`} data-testid={`card-area-${area.id}`}>
       <Link href={`/communities/${area.id}`} className="card-editorial group block p-5" data-testid={`link-area-${area.id}`}>
         <div className="card-media bg-[#2b3242]">
-          <img src={area.image} alt={area.name} loading="lazy" className="h-full w-full object-cover opacity-85 transition-transform duration-700 ease-out group-hover:scale-[1.03]" data-testid={`img-area-${area.id}`} />
+          <img src={optimizedImage(area.image, 800)} alt={area.name} loading="lazy" className="h-full w-full object-cover opacity-85 transition-transform duration-700 ease-out group-hover:scale-[1.03]" data-testid={`img-area-${area.id}`} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#2b3242]/85 via-[#2b3242]/20 to-transparent" />
           <div className="absolute inset-x-5 bottom-5 text-[#faf7f1]">
             <p className="font-mono text-[11px] uppercase tracking-[.15em] text-[#d9c6a4]">Dubai · Community</p>
@@ -558,7 +560,7 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
 export function PageHero({ label, title, copy, image, imageAlt = '', children }: { label: string; title: ReactNode; copy: string; image?: string; imageAlt?: string; children?: ReactNode }) {
   return (
     <section className={`page-hero site-gutter relative flex items-end overflow-hidden ${image ? 'bg-[#2b3242]' : 'bg-[#efeae2]'}`}>
-      {image && <><img src={image} alt={imageAlt} loading="eager" fetchPriority="high" className="page-hero-image absolute inset-0 h-full w-full object-cover object-center opacity-65" /><div className="absolute inset-0 bg-gradient-to-t from-[#2b3242]/90 via-[#2b3242]/20 to-[#2b3242]/35" /></>}
+      {image && <><img src={optimizedImage(image, 1920)} alt={imageAlt} loading="eager" fetchPriority="high" className="page-hero-image absolute inset-0 h-full w-full object-cover object-center opacity-65" /><div className="absolute inset-0 bg-gradient-to-t from-[#2b3242]/90 via-[#2b3242]/20 to-[#2b3242]/35" /></>}
       <div className="site-container relative z-10">
         <SectionLabel light={!!image}>{label}</SectionLabel>
         <h1 className={`page-title mt-5 max-w-4xl ${image ? 'text-[#faf7f1]' : 'text-[#2b3242]'}`}>{title}</h1>

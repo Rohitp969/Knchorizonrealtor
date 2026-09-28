@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Eye, EyeOff, Pencil, Plus, RefreshCw, Search, Star, Trash2, ExternalLink, Loader2 } from 'lucide-react';
 
 import { adminRequest } from '@/lib/admin-api';
+import { optimizedImage } from '@/lib/cloudinary-image';
 import {
   slugify,
   type FieldConfig,
@@ -10,6 +11,7 @@ import {
 import {
   AdminPanelHeader,
   ConfirmDialog,
+  GalleryPicker,
   ImagePicker,
   Modal,
   Spinner,
@@ -254,7 +256,7 @@ export function ResourceManager({
                             {column.type === 'image' ? (
                               <span className="block h-11 w-16 overflow-hidden rounded-lg bg-[#2b3242]/8">
                                 {firstImage(item, column.name) ? (
-                                  <img src={firstImage(item, column.name)} alt="" loading="lazy" className="h-full w-full object-cover" />
+                                  <img src={optimizedImage(firstImage(item, column.name), 160)} alt="" loading="lazy" className="h-full w-full object-cover" />
                                 ) : null}
                               </span>
                             ) : column.type === 'badge' ? (
@@ -381,6 +383,12 @@ export function ResourceManager({
 
 /* ---------------------------------------------------------------- form */
 
+/** Where an image field's uploads go: its own folder, worked out from the record when needed. */
+function folderFor(field: FieldConfig, values: Record<string, any>) {
+  if (typeof field.folder === 'function') return field.folder(values);
+  return field.folder ?? 'knc-horizon/pages';
+}
+
 function ResourceForm({
   config,
   item,
@@ -394,7 +402,10 @@ function ResourceForm({
   onClose: () => void;
   onSaved: (item: Item, mode: 'create' | 'update') => void;
 }) {
-  const [values, setValues] = useState<Record<string, any>>(() => ({ ...(config.defaults ?? {}), ...(item ?? {}) }));
+  const [values, setValues] = useState<Record<string, any>>(() => {
+    const start = { ...(config.defaults ?? {}), ...(item ?? {}) };
+    return config.formValues ? config.formValues(start) : start;
+  });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -485,7 +496,7 @@ function ResourceForm({
                 const inputClass = `mt-1.5 w-full rounded-lg border bg-[#fffdf8] px-3 py-2.5 text-sm outline-none focus:border-[#9f7a47] ${invalid ? 'border-[#b23b2e]' : 'border-[#2b3242]/20'}`;
 
                 return (
-                  <div key={field.name} className={field.full || field.type === 'image' || field.type === 'textarea' || field.type === 'richtext' ? 'sm:col-span-2' : ''}>
+                  <div key={field.name} className={field.full || field.type === 'image' || field.type === 'gallery' || field.type === 'textarea' || field.type === 'richtext' ? 'sm:col-span-2' : ''}>
                     {field.type === 'boolean' ? (
                       <label className="flex items-center gap-3 rounded-lg border border-[#2b3242]/15 bg-[#fffdf8] px-3 py-2.5 text-sm">
                         <input
@@ -498,11 +509,25 @@ function ResourceForm({
                         <span>{field.label}</span>
                       </label>
                     ) : field.type === 'image' ? (
-                      <ImagePicker
+                      <>
+                        <ImagePicker
+                          label={field.required ? `${field.label} *` : field.label}
+                          value={value ?? (config.imageKey === field.name && Array.isArray(config.defaults?.[field.name]) ? [] : '')}
+                          multiple={Array.isArray(config.defaults?.[field.name]) || Array.isArray(value)}
+                          help={field.help}
+                          folder={folderFor(field, values)}
+                          alt={field.altField ? values[field.altField] ?? '' : undefined}
+                          onAltChange={field.altField ? (alt) => setValue(field.altField!, alt) : undefined}
+                          onChange={(next) => setValue(field.name, next)}
+                        />
+                        {fieldErrors[field.name] && <span className="mt-1 block text-xs text-[#b23b2e]">{fieldErrors[field.name]}</span>}
+                      </>
+                    ) : field.type === 'gallery' ? (
+                      <GalleryPicker
                         label={field.label}
-                        value={value ?? (config.imageKey === field.name && Array.isArray(config.defaults?.[field.name]) ? [] : '')}
-                        multiple={Array.isArray(config.defaults?.[field.name]) || Array.isArray(value)}
+                        value={Array.isArray(value) ? value : []}
                         help={field.help}
+                        folder={folderFor(field, values)}
                         onChange={(next) => setValue(field.name, next)}
                       />
                     ) : (

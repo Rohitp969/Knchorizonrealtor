@@ -4,6 +4,7 @@ import { AlertTriangle, CheckCircle2, EyeOff, Info, Plus, Trash2, XCircle } from
 import { useSiteSettings } from '@/lib/site-settings';
 import { canonicalPath, type Head, type HeadContext, type InternalLink } from '@/lib/seo';
 import { ImagePicker, adminButtonClass } from '@/pages/admin/admin-ui';
+import { BRAND_FAVICON } from '@/lib/brand';
 import { seoApi, type SeoInput, type SeoOverview, type SeoSettings } from './seo-api';
 import { DESCRIPTION_MAX, DESCRIPTION_MIN, TITLE_MAX, TITLE_MIN, type Severity } from './seo-rules';
 
@@ -94,7 +95,7 @@ export function GooglePreview({ head, siteName }: { head: Head; siteName: string
         <div className="max-w-[600px]">
           <div className="flex items-center gap-2.5">
             <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full border border-[#dadce0] bg-white">
-              <img src="/favicon.svg" alt="" className="h-5 w-5" />
+              <img src={BRAND_FAVICON} alt="" className="h-5 w-5" />
             </span>
             <span className="min-w-0 leading-tight">
               <span className="block truncate text-[14px] text-[#202124]">{siteName}</span>
@@ -316,6 +317,7 @@ export function SeoFieldsForm({ values, onChange, errors, defaults, slug, linkTa
               value={values.ogImage}
               onChange={(next) => set('ogImage', String(Array.isArray(next) ? next[0] ?? '' : next))}
               help={`Leave empty to use ${defaults.ogImage}. Best size 1200 × 630.`}
+              folder="knc-horizon/pages"
               loadLibrary={seoApi.media}
               uploadImage={seoApi.upload}
             />

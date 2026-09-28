@@ -15,7 +15,7 @@ export function PrivacyPage() {
         label="KNC Horizon Realtor"
         title={<>Privacy Policy</>}
         copy="How KNC Horizon Realtor handles information shared through our website, property enquiries and communication channels."
-        image="/images/signing-documents.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577275/knc-horizon/hero/signing-documents.jpg"
       >
         <p className="mt-6 font-mono text-[11px] uppercase tracking-[.18em] text-[#faf7f1]/55">
           Last updated · September 2026
@@ -342,7 +342,7 @@ export function TermsPage() {
         label="KNC Horizon Realtor"
         title={<>Terms &amp; Conditions</>}
         copy="Important information about using the KNC Horizon Realtor website and the property information published through it."
-        image="/images/fountain-pen-writing.jpg"
+        image="https://res.cloudinary.com/complaintreview/image/upload/v1790577272/knc-horizon/hero/fountain-pen-writing.jpg"
       >
         <p className="mt-6 font-mono text-[11px] uppercase tracking-[.18em] text-[#faf7f1]/55">
           Last updated · September 2026
