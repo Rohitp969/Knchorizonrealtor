@@ -25,21 +25,24 @@ export function AdminLogin({ onSignedIn, notice }: { onSignedIn: () => void; not
   };
 
   return (
-    <main className="admin-shell flex min-h-[100dvh] items-center justify-center bg-[#f1ebe1] px-5 py-16">
-      <div className="w-full max-w-[26rem]">
-        <img src={BRAND_LOGOS.stacked} alt="KNC Horizon Realtor" className="h-24 w-auto" />
+    <main className="admin-shell flex min-h-[100dvh] items-center justify-center bg-[#f1ebe1] px-5 py-10">
+      <div className="w-full max-w-[25rem]">
+        {/* One card holds the logo, the heading and the form, so the page reads as a single
+            sign-in panel instead of loose pieces stacked down the left edge. */}
+        <form onSubmit={submit} className="rounded-2xl border border-[#2b3242]/10 bg-[#fcfaf5] px-6 py-8 shadow-[0_24px_48px_-32px_rgba(43,50,66,0.4)] sm:px-8" noValidate>
+          <div className="text-center">
+            <img src={BRAND_LOGOS.stacked} alt="KNC Horizon Realtor" className="mx-auto h-16 w-auto" />
+            <h1 className="mt-6 font-serif text-2xl leading-tight text-[#2b3242]">Admin console</h1>
+            <p className="mt-2 text-sm leading-relaxed text-[#2b3242]/60">Sign in with your KNC account. Administrators and SEO managers use the same sign-in.</p>
+          </div>
 
-        <h1 className="mt-8 font-serif text-3xl leading-tight text-[#2b3242]">Admin console</h1>
-        <p className="mt-2 text-sm text-[#2b3242]/60">Sign in with your KNC account. Administrators and SEO managers use the same sign-in.</p>
+          {notice && (
+            <p className="mt-5 rounded-lg border border-[#9f7a47]/30 bg-[#8f6d3f]/8 px-3 py-2 text-center text-sm text-[#7c2d12]" role="status">
+              {notice}
+            </p>
+          )}
 
-        {notice && (
-          <p className="mt-5 rounded-lg border border-[#9f7a47]/30 bg-[#8f6d3f]/8 px-3 py-2 text-sm text-[#7c2d12]" role="status">
-            {notice}
-          </p>
-        )}
-
-        <form onSubmit={submit} className="mt-7 rounded-2xl border border-[#2b3242]/10 bg-[#fcfaf5] p-5 shadow-[0_24px_48px_-32px_rgba(43,50,66,0.4)] sm:p-6" noValidate>
-          <label className="block">
+          <label className="mt-6 block">
             <span className="font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/65">Email</span>
             <input
               required
@@ -82,9 +85,11 @@ export function AdminLogin({ onSignedIn, notice }: { onSignedIn: () => void; not
           </button>
         </form>
 
-        <a href="/" className="mt-6 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47] hover:underline">
-          Back to website <ArrowUpRight size={13} />
-        </a>
+        <p className="mt-6 text-center">
+          <a href="/" className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47] hover:underline">
+            Back to website <ArrowUpRight size={13} />
+          </a>
+        </p>
       </div>
     </main>
   );

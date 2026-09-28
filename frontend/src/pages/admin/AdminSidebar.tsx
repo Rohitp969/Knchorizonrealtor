@@ -135,10 +135,13 @@ export function AdminSidebar({
       >
         {/* Header / Brand */}
         <div className="flex h-16 items-center justify-between border-b border-[#2b3242]/10 px-5">
-          <Link href="/admin" className="flex flex-col gap-1" aria-label="KNC Horizon Realtor admin console">
-            <img src={BRAND_LOGOS.horizontal} alt="" className="h-7 w-auto" />
-            <span className="font-mono text-[9px] uppercase tracking-[.2em] text-[#9f7a47]">
-              {role === 'seo_manager' ? 'SEO Console' : 'Admin Console'}
+          {/* The same stacked logo as the website and the sign-in page. */}
+          <Link href="/admin" className="flex items-center gap-3" aria-label="KNC Horizon Realtor admin console">
+            <img src={BRAND_LOGOS.stacked} alt="" className="h-10 w-auto" />
+            <span className="border-l border-[#2b3242]/15 pl-3 font-mono text-[9px] uppercase leading-relaxed tracking-[.2em] text-[#9f7a47]">
+              {role === 'seo_manager' ? 'SEO' : 'Admin'}
+              <br />
+              Console
             </span>
           </Link>
 
