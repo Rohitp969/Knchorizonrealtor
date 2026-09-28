@@ -1,4 +1,4 @@
-import { PAGE_META } from '@/lib/page-meta';
+import { PAGE_IMAGES, PAGE_META } from '@/lib/page-meta';
 import { resolveHead, type Head, type HeadContext, type HeadInput, type SeoFields } from '@/lib/seo';
 import type { SeoArticleRow, SeoListing, SeoOverview, SeoPageRow, SeoRecord } from './seo-api';
 
@@ -29,7 +29,8 @@ export const projectDescription = (title: string, location: string) =>
 
 export function pageDefaults(path: string) {
   const [title, description] = PAGE_META[path] ?? ['', ''];
-  return { title, description };
+  const [image, imageAlt] = PAGE_IMAGES[path] ?? [null, null];
+  return { title, description, image, imageAlt };
 }
 
 /** The blog admin saves the title as the SEO title by default; only a different one counts as set. */
@@ -55,7 +56,11 @@ export function seoFieldsFor(target: SeoTarget): SeoFields | null {
 /** The input the public page would pass to resolveHead() for this target. */
 export function headInputFor(target: SeoTarget, seo: SeoFields | null = seoFieldsFor(target)): HeadInput {
   const path = pathFor(target);
-  if (target.kind === 'page') return { ...pageDefaults(path), path, seo };
+  if (target.kind === 'page') {
+    const defaults = pageDefaults(path);
+    // The built-in alt text describes the page's own photo, so it is dropped once another image is set.
+    return { ...defaults, path, seo, imageAlt: seo?.ogImage ? null : defaults.imageAlt };
+  }
   if (target.kind === 'article') {
     const { item } = target;
     return { title: item.title, description: item.excerpt, path, seo, image: item.image, imageAlt: item.title, type: 'article' };

@@ -84,7 +84,7 @@ export function PageSeoEditor({ page, overview, onClose, onSaved }: { page: SeoP
             values={values}
             onChange={setValues}
             errors={errors}
-            defaults={{ title: defaults.title ? `${defaults.title} | ${ctx.siteName}` : ctx.siteName, description: defaults.description, canonical: `${ctx.siteUrl}${page.path}`, ogImage: ctx.defaultOgImage || DEFAULT_OG_IMAGE }}
+            defaults={{ title: defaults.title ? `${defaults.title} | ${ctx.siteName}` : ctx.siteName, description: defaults.description, canonical: `${ctx.siteUrl}${page.path}`, ogImage: defaults.image || ctx.defaultOgImage || DEFAULT_OG_IMAGE }}
             slug={{ value: page.path, prefix: ctx.siteUrl.replace(/^https?:\/\//, ''), hint: 'Static page addresses are part of the site structure and cannot be renamed here.' }}
             imageAltHint="Describes the OG image above, when one is set."
           />

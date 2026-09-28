@@ -61,7 +61,7 @@ import {
 
 import { DeveloperDetailPage } from '@/pages/developer-detail-page';
 import { canonicalPath, organizationJsonLd, PRIORITY_FALLBACK, PRIORITY_STATIC, SeoProvider, useHead, useSeoData } from '@/lib/seo';
-import { PAGE_META } from '@/lib/page-meta';
+import { PAGE_IMAGES, PAGE_META } from '@/lib/page-meta';
 
 import {
   Route,
@@ -90,10 +90,13 @@ function Router() {
    */
   const contact = useContact();
   const { siteName } = useSiteSettings();
-  const { settings: seoSettings } = useSeoData();
+  const { settings: seoSettings, pages: seoPages } = useSeoData();
   const isAdmin = location === '/admin' || location.startsWith('/admin/');
   const staticMeta = PAGE_META[location] ?? PAGE_META[canonicalPath(location)];
   const [metaTitle, metaDescription] = staticMeta ?? ['', 'A more considered way to move through Dubai property.'];
+  // The page's own photo is its share image; its alt text is dropped once the console sets another image.
+  const shareImage: [string, string] | undefined = PAGE_IMAGES[location] ?? PAGE_IMAGES[canonicalPath(location)];
+  const customShareImage = Boolean(seoPages[canonicalPath(location)]?.ogImage);
 
   useHead(
     isAdmin
@@ -102,6 +105,8 @@ function Router() {
           title: metaTitle,
           description: metaDescription,
           path: location,
+          image: shareImage?.[0],
+          imageAlt: customShareImage ? undefined : shareImage?.[1],
           jsonLd: location === '/'
             ? [organizationJsonLd({ siteName, siteUrl: seoSettings.siteUrl, phone: contact.phoneDisplay, email: contact.email })]
             : undefined,
