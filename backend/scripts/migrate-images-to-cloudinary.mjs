@@ -11,7 +11,8 @@
  * scripts/cloudinary-images.json is the plan and the record: one entry per image with the
  * folder it belongs in and, once uploaded, its public_id and secure URL. `local` is the image's
  * file name (its old site path). A new photo carries `source`, the licensed original's URL
- * (e.g. the Pexels download), and is uploaded straight from there; `crop` ({ x, y, width,
+ * (e.g. the Pexels download), and is uploaded straight from there; the favicon files carry a
+ * `source` path beside this script (scripts/brand/); `crop` ({ x, y, width,
  * height } in source pixels) keeps only that part, used to frame a portrait photo for the
  * site's landscape cards or to leave a third-party sign out. Each image becomes its own
  * asset, public_id = folder + file name, uploaded with overwrite:false, so running the upload
@@ -78,9 +79,11 @@ async function upload() {
   const worker = async () => {
     while (next < pending.length) {
       const entry = pending[next++];
-      const file = entry.source ?? path.join(PUBLIC_DIR, entry.local);
+      // `source` is a URL, or a file kept beside this script (scripts/brand/...).
+      const file = !entry.source ? path.join(PUBLIC_DIR, entry.local)
+        : /^https?:\/\//.test(entry.source) ? entry.source : path.join(here, entry.source);
       try {
-        if (!entry.source && !fs.existsSync(file)) throw new Error("file not found and no source URL");
+        if (!/^https?:\/\//.test(file) && !fs.existsSync(file)) throw new Error("file not found and no source URL");
         const name = path.basename(entry.local).replace(/\.[^.]+$/, "");
         const result = await cloudinary.uploader.upload(file, {
           folder: entry.folder,

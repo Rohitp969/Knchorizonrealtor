@@ -600,6 +600,83 @@
     "bytes": 153583
   },
   {
+    "local": "/brand/knc-apple-touch-icon.png",
+    "folder": "knc-horizon/logos",
+    "source": "brand/knc-apple-touch-icon.png",
+    "publicId": "knc-horizon/logos/knc-apple-touch-icon",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790594286/knc-horizon/logos/knc-apple-touch-icon.png",
+    "width": 180,
+    "height": 180,
+    "format": "png",
+    "bytes": 5086
+  },
+  {
+    "local": "/brand/knc-favicon-192.png",
+    "folder": "knc-horizon/logos",
+    "source": "brand/knc-favicon-192.png",
+    "publicId": "knc-horizon/logos/knc-favicon-192",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790594286/knc-horizon/logos/knc-favicon-192.png",
+    "width": 192,
+    "height": 192,
+    "format": "png",
+    "bytes": 7250
+  },
+  {
+    "local": "/brand/knc-favicon-48.png",
+    "folder": "knc-horizon/logos",
+    "source": "brand/knc-favicon-48.png",
+    "publicId": "knc-horizon/logos/knc-favicon-48",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790594286/knc-horizon/logos/knc-favicon-48.png",
+    "width": 48,
+    "height": 48,
+    "format": "png",
+    "bytes": 1432
+  },
+  {
+    "local": "/brand/knc-favicon-512.png",
+    "folder": "knc-horizon/logos",
+    "source": "brand/knc-favicon-512.png",
+    "publicId": "knc-horizon/logos/knc-favicon-512",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790594287/knc-horizon/logos/knc-favicon-512.png",
+    "width": 512,
+    "height": 512,
+    "format": "png",
+    "bytes": 21621
+  },
+  {
+    "local": "/brand/knc-favicon-96.png",
+    "folder": "knc-horizon/logos",
+    "source": "brand/knc-favicon-96.png",
+    "publicId": "knc-horizon/logos/knc-favicon-96",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790594287/knc-horizon/logos/knc-favicon-96.png",
+    "width": 96,
+    "height": 96,
+    "format": "png",
+    "bytes": 3371
+  },
+  {
+    "local": "/brand/knc-favicon-ico.ico",
+    "folder": "knc-horizon/logos",
+    "source": "brand/knc-favicon-ico.ico",
+    "publicId": "knc-horizon/logos/knc-favicon-ico",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790594287/knc-horizon/logos/knc-favicon-ico.ico",
+    "width": 16,
+    "height": 16,
+    "format": "ico",
+    "bytes": 2619
+  },
+  {
+    "local": "/brand/knc-favicon.svg",
+    "folder": "knc-horizon/logos",
+    "source": "brand/knc-favicon.svg",
+    "publicId": "knc-horizon/logos/knc-favicon",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790594287/knc-horizon/logos/knc-favicon.svg",
+    "width": 180,
+    "height": 180,
+    "format": "svg",
+    "bytes": 2899
+  },
+  {
     "local": "/brand/knc-logo-emblem-light.svg",
     "folder": "knc-horizon/logos",
     "publicId": "knc-horizon/logos/knc-logo-emblem-light",
@@ -667,7 +744,8 @@
     "width": 180,
     "height": 180,
     "format": "svg",
-    "bytes": 2779
+    "bytes": 2779,
+    "note": "first favicon; replaced by knc-favicon on 28 September 2026, kept so the old URL keeps working"
   },
   {
     "local": "/images/difc-aerial-day.jpg",

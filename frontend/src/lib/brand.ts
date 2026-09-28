@@ -2,7 +2,7 @@
  * The KNC Horizon Realtor logos and favicon, served from Cloudinary (knc-horizon/logos).
  * Nothing is served from public/ any more; git history keeps the original SVG files.
  */
-export const BRAND_FAVICON = 'https://res.cloudinary.com/complaintreview/image/upload/v1790586480/knc-horizon/logos/favicon.svg';
+export const BRAND_FAVICON = 'https://res.cloudinary.com/complaintreview/image/upload/v1790594287/knc-horizon/logos/knc-favicon.svg';
 
 export const BRAND_LOGOS = {
   'horizontal': 'https://res.cloudinary.com/complaintreview/image/upload/v1790577276/knc-horizon/logos/knc-logo-horizontal.svg',

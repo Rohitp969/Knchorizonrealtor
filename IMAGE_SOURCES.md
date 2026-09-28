@@ -45,6 +45,7 @@ Every photo on the KNC Horizon Realtor website is listed here: what it shows, wh
 
 - **Cloudinary** delivers every image the site shows: cloud `complaintreview`, root folder `knc-horizon/`. Each file is its own asset, public_id `knc-horizon/<folder>/<file name without extension>`, e.g. `https://res.cloudinary.com/complaintreview/image/upload/v…/knc-horizon/properties/dubai-marina-promenade.jpg`. The pages ask Cloudinary for `f_auto,q_auto` and a width that fits the layout.
 - **No image is served from the site itself.** The files that used to live in `frontend/public/images/`, `frontend/public/brand/` and `frontend/public/favicon.svg` were uploaded to Cloudinary unchanged (same bytes) and removed from the repo on 28 September 2026; git history still has them. The "File" column below is each photo's file name in Cloudinary.
+- **Favicon.** The masters are in `backend/scripts/brand/` (`knc-favicon.svg` and the PNG, ICO and Apple files rendered from it). `frontend/index.html` links the Cloudinary copies, and `frontend/vercel.json` answers `/favicon.ico`, `/favicon.svg`, `/favicon.png` and `/apple-touch-icon.png` with them. The emblem is sized to sit inside the circle Google Search crops favicons to.
 - **`backend/scripts/cloudinary-images.json`** lists every image with its folder, public_id and URL; photos added later also carry `source`, the licensed original they were uploaded from. `backend/scripts/migrate-images-to-cloudinary.mjs` uploads new entries and registers them in the media library.
 
 | Folder | What it holds | Files |
@@ -58,7 +59,7 @@ Every photo on the KNC Horizon Realtor website is listed here: what it shows, wh
 | `knc-horizon/blog` | Blog covers | 5 |
 | `knc-horizon/hero` | Page headers | 29 |
 | `knc-horizon/pages` | Other in-page photos and the fallback image | 2 |
-| `knc-horizon/logos` | KNC Horizon Realtor logos and favicon (SVG) | 7 |
+| `knc-horizon/logos` | KNC Horizon Realtor logos (6 SVG) and favicon files (SVG, PNG 48/96/192/512, ICO, Apple touch icon, and the first favicon) | 14 |
 
 Images the admin uploads go to the same account, in these folders or their sub-folders, such as `knc-horizon/properties/residential`.
 

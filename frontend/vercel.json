@@ -6,6 +6,26 @@
       "destination": "https://knchorizonrealtor.onrender.com/api/sitemap.xml"
     },
     {
+      "source": "/favicon.ico",
+      "destination": "https://res.cloudinary.com/complaintreview/image/upload/v1790594287/knc-horizon/logos/knc-favicon-ico.ico"
+    },
+    {
+      "source": "/favicon.svg",
+      "destination": "https://res.cloudinary.com/complaintreview/image/upload/v1790594287/knc-horizon/logos/knc-favicon.svg"
+    },
+    {
+      "source": "/favicon.png",
+      "destination": "https://res.cloudinary.com/complaintreview/image/upload/v1790594287/knc-horizon/logos/knc-favicon-96.png"
+    },
+    {
+      "source": "/apple-touch-icon.png",
+      "destination": "https://res.cloudinary.com/complaintreview/image/upload/v1790594286/knc-horizon/logos/knc-apple-touch-icon.png"
+    },
+    {
+      "source": "/apple-touch-icon-precomposed.png",
+      "destination": "https://res.cloudinary.com/complaintreview/image/upload/v1790594286/knc-horizon/logos/knc-apple-touch-icon.png"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
