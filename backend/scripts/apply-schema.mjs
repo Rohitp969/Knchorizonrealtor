@@ -1,5 +1,5 @@
 /*
- * Creates the Supabase PostgreSQL schema. Idempotent: every statement is
+ * Creates the PostgreSQL schema. Idempotent: every statement is
  * `create ... if not exists`, so running it again on a populated database changes nothing.
  *
  *   node scripts/apply-schema.mjs

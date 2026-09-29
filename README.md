@@ -14,7 +14,7 @@ KNC-Horizon-Realtor/
 ├── README.md                  yeh file
 ├── docs/
 │   ├── IMAGE_SOURCES.md       har photo kahan se aayi, uska licence
-│   └── DATABASE_MIGRATION.md  database ek jagah se doosri jagah le jaane ka record
+│   └── DATABASE.md            database: tables, server ki dekhbhaal, backup
 │
 ├── frontend/
 │   ├── index.html             Google tag, favicon, default title
@@ -147,7 +147,6 @@ Saare pages `frontend/src/pages/` me hain. Har page ki apni file hai.
 | `apply-schema.mjs` | Database ki tables banana (dobara chalane par kuch nahi bigadta) |
 | `test-api.mjs` | Saare API check karna |
 | `test-email.mjs` | `.env` ki mail settings se ek test email bhejna (`npm run test:email`) |
-| `export-mongo.mjs`, `migrate-mongo-to-postgres.mjs`, `verify-data.mjs` | Purane MongoDB se data laane ke tools. Kaam 23 September 2026 ko ho chuka hai. |
 
 ## Aam badlav kahan karein
 

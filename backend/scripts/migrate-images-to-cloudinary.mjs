@@ -62,7 +62,7 @@ async function db() {
   const url = process.env.DATABASE_URL;
   const client = new pg.Client({
     connectionString: url,
-    // A local database without TLS says so with sslmode=disable; Supabase always uses TLS.
+    // A local database without TLS says so with sslmode=disable; the live one always uses TLS.
     ssl: /sslmode=disable/.test(url) ? false
       : process.env.DATABASE_SSL_CA ? { ca: process.env.DATABASE_SSL_CA, rejectUnauthorized: true } : { rejectUnauthorized: false },
   });

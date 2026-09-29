@@ -2,15 +2,11 @@ import { Pool, types, type PoolClient, type QueryResultRow } from "pg";
 import { logger } from "./logger.ts";
 
 /*
- * Supabase PostgreSQL, reached through the Supavisor session pooler on 5432.
+ * The PostgreSQL database.
  *
- * The connection string lives in DATABASE_URL and is never written into source. TLS is
- * always on: the pooler terminates SSL, and `sslmode` in the URL (if present) is honoured
- * through `ssl` below rather than by node-postgres' own URL parsing, which ignores it.
- *
- * Session mode (5432) rather than transaction mode (6543) because the app uses prepared
- * statements and multi-statement transactions during migration, which transaction pooling
- * does not support.
+ * The connection string lives in DATABASE_URL and is never written into source. The
+ * connection is encrypted with TLS; `sslmode=disable` in the URL turns that off, which is
+ * only for a test database on the same computer.
  */
 
 // numeric/int8 come back as strings by default so large values survive; every numeric
@@ -35,12 +31,12 @@ export function getPool(): Pool {
   pool = new Pool({
     connectionString,
     /*
-     * TLS is always negotiated. Supavisor presents a certificate signed by Supabase's own
-     * root, which is not in the public trust store, so the chain cannot be verified against
-     * the platform CAs — the connection is encrypted but the peer is unverified.
+     * TLS is always negotiated. The server's certificate is its own, not one signed by a
+     * public authority, so the chain cannot be verified against the platform CAs — the
+     * connection is encrypted but the peer is unverified.
      *
-     * Set DATABASE_SSL_CA to the contents of Supabase's CA certificate (Project Settings →
-     * Database → SSL configuration) to turn full verification on.
+     * Set DATABASE_SSL_CA to the contents of the server's CA certificate to turn full
+     * verification on.
      */
     ssl: process.env.DATABASE_SSL_CA
       ? { ca: process.env.DATABASE_SSL_CA, rejectUnauthorized: true }
@@ -165,7 +161,7 @@ export function buildInsert(
   return { columns: names.join(", "), placeholders: placeholders.join(", "), values, nextIndex: index };
 }
 
-/** A 24-character hex id, the same shape the MongoDB ObjectIds had. */
+/** A 24-character hex id, the shape of every id in the database. */
 export function newId(): string {
   const bytes = new Uint8Array(12);
   globalThis.crypto.getRandomValues(bytes);

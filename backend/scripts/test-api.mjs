@@ -59,7 +59,7 @@ check("pagination block present", typeof properties.body?.pagination?.total === 
 const first = properties.body?.properties?.[0];
 check("property keeps camelCase API shape", Boolean(first?.id && first?.slug && first?.title && Array.isArray(first?.images) && Array.isArray(first?.amenities)),
   first ? Object.keys(first).slice(0, 8).join(",") : "no rows");
-check("property id is the 24-hex id from MongoDB", /^[0-9a-f]{24}$/.test(String(first?.id ?? "")), String(first?.id));
+check("property id is a 24-hex id", /^[0-9a-f]{24}$/.test(String(first?.id ?? "")), String(first?.id));
 check("numeric fields are numbers", typeof first?.price === "number" && typeof first?.bedrooms === "number");
 
 const detail = await api("/public/properties/palm-jumeirah-azure");

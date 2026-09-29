@@ -1,14 +1,14 @@
--- KNC Horizon Realtor — Supabase PostgreSQL schema.
+-- KNC Horizon Realtor — PostgreSQL schema.
 --
--- Migrated from MongoDB. Every table keeps the 24-character hexadecimal id the MongoDB
--- ObjectIds had, so existing links, JWT subjects and admin references keep resolving; new
--- rows get the same shape from gen_random_bytes(12). Running this file is idempotent: it
--- only ever creates what is missing, and never drops or truncates anything.
+-- Every id is 24 hexadecimal characters. The first records came with ids of that shape, so
+-- existing links, JWT subjects and admin references keep resolving; new rows get the same
+-- shape from gen_random_bytes(12). Running this file is idempotent: it only ever creates
+-- what is missing, and never drops or truncates anything.
 
 create extension if not exists pgcrypto;
 create extension if not exists pg_trgm;
 
--- Generates a 24-char hex id in the ObjectId shape the application already uses.
+-- Generates a 24-char hex id, the shape the application already uses.
 create or replace function knc_new_id() returns text
   language sql volatile as $$ select encode(gen_random_bytes(12), 'hex') $$;
 

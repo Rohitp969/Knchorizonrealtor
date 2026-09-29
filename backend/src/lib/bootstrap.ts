@@ -6,14 +6,11 @@ import { query, queryOne, queryScript } from "./postgres.ts";
 import { logger } from "./logger.ts";
 
 /*
- * Start-up work against Supabase PostgreSQL.
+ * Start-up work against the database.
  *
  * This deliberately does NOT seed content. The properties, projects, developers, posts,
- * communities, insights, gallery items and testimonials were migrated from MongoDB and are
- * real records the client owns; re-running a demo seed over them would overwrite edits made
- * through the admin console. The old demo seed (src/lib/seed.ts) and the MongoDB connection
- * (src/lib/mongodb.ts) were removed on 29 September 2026 and are in git history — see
- * scripts/migrate-mongo-to-postgres.mjs for how the data arrived.
+ * communities, insights, gallery items and testimonials are real records the client owns
+ * and edits through the admin console; nothing here may write over them.
  *
  * What does run: the schema (create-if-missing, so a fresh environment comes up ready) and
  * the admin account named in ADMIN_EMAIL / ADMIN_PASSWORD, because without it nobody can

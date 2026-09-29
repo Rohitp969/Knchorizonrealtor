@@ -5,7 +5,7 @@ import type { GalleryImage } from "./media.ts";
  *
  * `*Doc` types are the camelCase documents the API accepts and returns. They are what the
  * request validators build and what the frontend reads, and they did not change when the
- * database moved from MongoDB to PostgreSQL.
+ * database was replaced.
  *
  * `*Row` types are the snake_case rows as PostgreSQL stores them. Only the few places that
  * read a column directly need one; everything else goes through the maps in repositories.ts.
