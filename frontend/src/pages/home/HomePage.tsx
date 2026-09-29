@@ -1,4 +1,3 @@
-
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ArrowUpRight, Compass, Eye, HandHeart, Headset } from 'lucide-react';
 import { Link } from 'wouter';

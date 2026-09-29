@@ -143,7 +143,8 @@ export function DeveloperDetailPage() {
 
   usePageMeta(
     developer ? `KNC Horizon Realtor | ${developer.name}` : 'Developer Profile | KNC Horizon Realtor',
-    developer?.shortDescription || developer?.description || 'Explore verified Dubai developers with KNC Horizon Realtor.'
+    developer?.shortDescription || developer?.description || 'Explore verified Dubai developers with KNC Horizon Realtor.',
+    { image: developer?.coverImage, imageAlt: developer?.name },
   );
 
   useEffect(() => {

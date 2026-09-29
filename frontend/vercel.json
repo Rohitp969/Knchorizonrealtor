@@ -7,15 +7,15 @@
     },
     {
       "source": "/favicon.ico",
-      "destination": "https://res.cloudinary.com/complaintreview/image/upload/v1790594287/knc-horizon/logos/knc-favicon-ico.ico"
+      "destination": "https://res.cloudinary.com/complaintreview/image/upload/v1790662326/knc-horizon/logos/knc-icon-ico.ico"
     },
     {
       "source": "/favicon.svg",
-      "destination": "https://res.cloudinary.com/complaintreview/image/upload/v1790594287/knc-horizon/logos/knc-favicon.svg"
+      "destination": "https://res.cloudinary.com/complaintreview/image/upload/v1790662327/knc-horizon/logos/knc-icon.svg"
     },
     {
       "source": "/favicon.png",
-      "destination": "https://res.cloudinary.com/complaintreview/image/upload/v1790594287/knc-horizon/logos/knc-favicon-96.png"
+      "destination": "https://res.cloudinary.com/complaintreview/image/upload/v1790662326/knc-horizon/logos/knc-icon-96.png"
     },
     {
       "source": "/apple-touch-icon.png",

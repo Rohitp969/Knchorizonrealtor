@@ -619,7 +619,8 @@
     "width": 192,
     "height": 192,
     "format": "png",
-    "bytes": 7250
+    "bytes": 7250,
+    "note": "navy-tile favicon; replaced by knc-icon on 29 September 2026, kept so the old URL keeps working"
   },
   {
     "local": "/brand/knc-favicon-48.png",
@@ -630,7 +631,8 @@
     "width": 48,
     "height": 48,
     "format": "png",
-    "bytes": 1432
+    "bytes": 1432,
+    "note": "navy-tile favicon; replaced by knc-icon on 29 September 2026, kept so the old URL keeps working"
   },
   {
     "local": "/brand/knc-favicon-512.png",
@@ -641,7 +643,8 @@
     "width": 512,
     "height": 512,
     "format": "png",
-    "bytes": 21621
+    "bytes": 21621,
+    "note": "navy-tile favicon at 512 px; never linked by the site"
   },
   {
     "local": "/brand/knc-favicon-96.png",
@@ -652,7 +655,8 @@
     "width": 96,
     "height": 96,
     "format": "png",
-    "bytes": 3371
+    "bytes": 3371,
+    "note": "navy-tile favicon; replaced by knc-icon on 29 September 2026, kept so the old URL keeps working"
   },
   {
     "local": "/brand/knc-favicon-ico.ico",
@@ -663,7 +667,8 @@
     "width": 16,
     "height": 16,
     "format": "ico",
-    "bytes": 2619
+    "bytes": 2619,
+    "note": "navy-tile favicon; replaced by knc-icon on 29 September 2026, kept so the old URL keeps working"
   },
   {
     "local": "/brand/knc-favicon.svg",
@@ -674,7 +679,68 @@
     "width": 180,
     "height": 180,
     "format": "svg",
-    "bytes": 2899
+    "bytes": 2899,
+    "note": "navy-tile favicon; replaced by knc-icon on 29 September 2026, kept so the old URL keeps working"
+  },
+  {
+    "local": "/brand/knc-icon-192.png",
+    "folder": "knc-horizon/logos",
+    "source": "brand/knc-icon-192.png",
+    "note": "favicon on a transparent background",
+    "publicId": "knc-horizon/logos/knc-icon-192",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790662326/knc-horizon/logos/knc-icon-192.png",
+    "width": 192,
+    "height": 192,
+    "format": "png",
+    "bytes": 7241
+  },
+  {
+    "local": "/brand/knc-icon-48.png",
+    "folder": "knc-horizon/logos",
+    "source": "brand/knc-icon-48.png",
+    "note": "favicon on a transparent background",
+    "publicId": "knc-horizon/logos/knc-icon-48",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790662326/knc-horizon/logos/knc-icon-48.png",
+    "width": 48,
+    "height": 48,
+    "format": "png",
+    "bytes": 1828
+  },
+  {
+    "local": "/brand/knc-icon-96.png",
+    "folder": "knc-horizon/logos",
+    "source": "brand/knc-icon-96.png",
+    "note": "favicon on a transparent background",
+    "publicId": "knc-horizon/logos/knc-icon-96",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790662326/knc-horizon/logos/knc-icon-96.png",
+    "width": 96,
+    "height": 96,
+    "format": "png",
+    "bytes": 3875
+  },
+  {
+    "local": "/brand/knc-icon-ico.ico",
+    "folder": "knc-horizon/logos",
+    "source": "brand/knc-icon-ico.ico",
+    "note": "favicon on a transparent background",
+    "publicId": "knc-horizon/logos/knc-icon-ico",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790662326/knc-horizon/logos/knc-icon-ico.ico",
+    "width": 16,
+    "height": 16,
+    "format": "ico",
+    "bytes": 3293
+  },
+  {
+    "local": "/brand/knc-icon.svg",
+    "folder": "knc-horizon/logos",
+    "source": "brand/knc-icon.svg",
+    "note": "favicon on a transparent background",
+    "publicId": "knc-horizon/logos/knc-icon",
+    "url": "https://res.cloudinary.com/complaintreview/image/upload/v1790662327/knc-horizon/logos/knc-icon.svg",
+    "width": 180,
+    "height": 180,
+    "format": "svg",
+    "bytes": 8224
   },
   {
     "local": "/brand/knc-logo-emblem-light.svg",

@@ -1,5 +1,8 @@
 # MongoDB → Supabase PostgreSQL
 
+This is the record of the database move made on 23 September 2026. Paths below are inside
+`backend/`.
+
 The KNC Horizon API now reads and writes Supabase PostgreSQL. MongoDB was **not** deleted:
 it still holds every original document and remains the rollback source.
 
@@ -94,21 +97,27 @@ than duplicating. It never writes to MongoDB.
 
 ## Rolling back to MongoDB
 
-Nothing was removed, so a rollback is a code change only:
+The MongoDB database was never written to, so a rollback is a code change only. The two
+MongoDB files, `src/lib/mongodb.ts` and `src/lib/seed.ts`, were removed from the code on
+29 September 2026 because nothing used them; git history has them (last present in commit
+`dbed2fc`).
 
-1. In `src/index.ts`, import `connectToMongo` from `./lib/mongodb` and `seedDatabase` from
+1. `git checkout dbed2fc -- backend/src/lib/mongodb.ts backend/src/lib/seed.ts`
+2. In `src/index.ts`, import `connectToMongo` from `./lib/mongodb` and `seedDatabase` from
    `./lib/seed`, and call those instead of `connectToPostgres()` / `bootstrapDatabase()`.
-2. `git checkout` the previous revision of `src/routes/*.ts`, `src/lib/auth.ts` and
+3. `git checkout` the pre-migration revision of `src/routes/*.ts`, `src/lib/auth.ts` and
    `src/lib/models.ts`.
-3. `MONGODB_URI` / `MONGODB_DB` are still in `.env`, and the `mongodb` package is still a
+4. `MONGODB_URI` / `MONGODB_DB` are still in `.env`, and the `mongodb` package is still a
    dependency.
+
+Everything saved since 23 September 2026 (enquiries, SEO, Cloudinary photos) is only in
+PostgreSQL, so a rollback would lose it.
 
 The MongoDB database itself needs no restore: it was never written to. `backups/mongo-*/`
 holds a point-in-time JSON copy if one is ever wanted.
 
 ## Seed data
 
-`src/lib/seed.ts` is retained for reference but is **no longer called**. Its content is
-demo/sample data; the live records came from the migration and are the client's own. Running
-it would overwrite edits made through the admin console. Start-up now only ensures the schema
-and the admin account.
+The old demo seed is **not part of the code any more** (see above). Its content was
+demo/sample data; the live records came from the migration and are the client's own.
+Start-up only ensures the schema and the admin account.

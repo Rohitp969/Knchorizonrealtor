@@ -6,13 +6,14 @@
  *   node scripts/migrate-images-to-cloudinary.mjs upload        # upload every file not uploaded yet
  *   node scripts/migrate-images-to-cloudinary.mjs db            # dry run: list the DB references it would change
  *   node scripts/migrate-images-to-cloudinary.mjs db --apply    # back up, then rewrite them in one transaction
- *   node scripts/migrate-images-to-cloudinary.mjs restore backups/<file>.json
+ *   node scripts/migrate-images-to-cloudinary.mjs restore backups/database/cloudinary-image-migration/<file>.json
  *
  * scripts/cloudinary-images.json is the plan and the record: one entry per image with the
  * folder it belongs in and, once uploaded, its public_id and secure URL. `local` is the image's
  * file name (its old site path). A new photo carries `source`, the licensed original's URL
  * (e.g. the Pexels download), and is uploaded straight from there; the favicon files carry a
- * `source` path beside this script (scripts/brand/); `crop` ({ x, y, width,
+ * `source` path beside this script (scripts/brand/), which only has to exist while a new
+ * favicon file is being uploaded; `crop` ({ x, y, width,
  * height } in source pixels) keeps only that part, used to frame a portrait photo for the
  * site's landscape cards or to leave a third-party sign out. Each image becomes its own
  * asset, public_id = folder + file name, uploaded with overwrite:false, so running the upload
@@ -20,7 +21,8 @@
  *
  * The database step only swaps a local path (/images/x.jpg) for that file's Cloudinary URL,
  * fills the public_id columns beside it, and adds the assets to the media library. Nothing is
- * deleted. The previous value of every changed column is written to backups/ first, and
+ * deleted. The previous value of every changed column is written to
+ * backups/database/cloudinary-image-migration/ first, and
  * `restore` puts them back.
  *
  * Credentials come from backend/.env (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY,
@@ -36,7 +38,7 @@ import pg from "pg";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const MANIFEST = path.join(here, "cloudinary-images.json");
 const PUBLIC_DIR = path.resolve(here, "../../frontend/public");
-const BACKUP_DIR = path.resolve(here, "../backups");
+const BACKUP_DIR = path.resolve(here, "../backups/database/cloudinary-image-migration");
 const [command, ...rest] = process.argv.slice(2);
 
 const manifest = JSON.parse(fs.readFileSync(MANIFEST, "utf8"));
@@ -275,7 +277,7 @@ async function migrateDatabase(apply) {
 }
 
 async function restore(file) {
-  if (!file) throw new Error("Name the backup file: restore backups/cloudinary-image-migration-....json");
+  if (!file) throw new Error("Name the backup file: restore backups/database/cloudinary-image-migration/cloudinary-image-migration-....json");
   const backup = JSON.parse(fs.readFileSync(path.resolve(file), "utf8"));
   const client = await db();
   try {

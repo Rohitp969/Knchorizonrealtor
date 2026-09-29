@@ -46,7 +46,12 @@ Every photo on the KNC Horizon Realtor website is listed here: what it shows, wh
 - **Cloudinary** delivers every image the site shows: cloud `complaintreview`, root folder `knc-horizon/`. Each file is its own asset, public_id `knc-horizon/<folder>/<file name without extension>`, e.g. `https://res.cloudinary.com/complaintreview/image/upload/v…/knc-horizon/properties/dubai-marina-promenade.jpg`. The pages ask Cloudinary for `f_auto,q_auto` and a width that fits the layout.
 - **No image is served from the site itself.** The files that used to live in `frontend/public/images/`, `frontend/public/brand/` and `frontend/public/favicon.svg` were uploaded to Cloudinary unchanged (same bytes) and removed from the repo on 28 September 2026; git history still has them. The "File" column below is each photo's file name in Cloudinary.
 - **Logo.** The site uses one logo everywhere, the stacked mark (`knc-logo-stacked`, and `knc-logo-stacked-light` on dark backgrounds): header, footer, admin sign-in, admin sidebar and structured data. The horizontal and emblem versions are in Cloudinary but not used.
-- **Favicon.** The masters are in `backend/scripts/brand/` (`knc-favicon.svg` and the PNG, ICO and Apple files rendered from it). `frontend/index.html` links the Cloudinary copies, and `frontend/vercel.json` answers `/favicon.ico`, `/favicon.svg`, `/favicon.png` and `/apple-touch-icon.png` with them. The emblem is sized to sit inside the circle Google Search crops favicons to.
+- **Favicon.** Since 29 September 2026 the favicon is the KNC mark on a transparent background, in the gold of the site logo: `knc-icon` (SVG), `knc-icon-48`, `knc-icon-96`, `knc-icon-192` (PNG) and `knc-icon-ico` (ICO with 16, 32 and 48 px).
+  - `frontend/index.html` links the Cloudinary files, and `frontend/vercel.json` answers `/favicon.ico`, `/favicon.svg`, `/favicon.png` and `/apple-touch-icon.png` with them.
+  - The mark is drawn bolder at small sizes (under 32 px without the horizon arc), because its fine strokes fade out in a browser tab. It sits inside the circle Google Search crops favicons to.
+  - The Apple touch icon (`knc-apple-touch-icon`) keeps its navy tile: iOS paints transparent pixels black.
+  - The earlier navy-tile files (`knc-favicon*`) stay in Cloudinary so old links keep working; the site no longer links them.
+  - The files the upload read from `backend/scripts/brand/` were removed from the repo on 29 September 2026. Cloudinary holds the same bytes, and git history has the earlier navy-tile files.
 - **`backend/scripts/cloudinary-images.json`** lists every image with its folder, public_id and URL; photos added later also carry `source`, the licensed original they were uploaded from. `backend/scripts/migrate-images-to-cloudinary.mjs` uploads new entries and registers them in the media library.
 
 | Folder | What it holds | Files |
@@ -60,7 +65,7 @@ Every photo on the KNC Horizon Realtor website is listed here: what it shows, wh
 | `knc-horizon/blog` | Blog covers | 5 |
 | `knc-horizon/hero` | Page headers | 29 |
 | `knc-horizon/pages` | Other in-page photos and the fallback image | 2 |
-| `knc-horizon/logos` | KNC Horizon Realtor logos (6 SVG) and favicon files (SVG, PNG 48/96/192/512, ICO, Apple touch icon, and the first favicon) | 14 |
+| `knc-horizon/logos` | KNC Horizon Realtor logos (6 SVG), the favicon (SVG, PNG 48/96/192, ICO), the Apple touch icon, and the earlier navy-tile favicon files (SVG, PNG 48/96/192/512, ICO, and the first favicon) | 19 |
 
 Images the admin uploads go to the same account, in these folders or their sub-folders, such as `knc-horizon/properties/residential`.
 

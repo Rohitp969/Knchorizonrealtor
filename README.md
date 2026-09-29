@@ -1,43 +1,163 @@
-# KNC Horizon Realtor — kya badla (README)
+# KNC Horizon Realtor
 
-## ✅ Maine ye kaam kar diye hain
+Dubai real estate website. Do hisse hain:
 
-1. **Contact page ab alag page hai.** Pehle "Contact us" button homepage par hi scroll kar deta tha. Ab har jagah se (navbar, footer, mobile menu) `/contact` par le jaata hai — ek dedicated page.
+- **`frontend/`**: website aur admin panel (React + Vite). Vercel par chalta hai.
+- **`backend/`**: API aur database ka kaam (Node + Express + Supabase PostgreSQL). Render par chalta hai.
 
-2. **Blog ko "Explore" ke andar daal diya.** Top navbar mein "Blog" alag se nahi hai ab — woh "Explore" dropdown ke andar mil jaayega (India Office bhi wahin hai).
+Saari photos aur logo Cloudinary par hain (`knc-horizon/` folder). Project me koi image file nahi hai.
 
-3. **Duplicate page hata diya.** Website mein "Journal" aur "Blog" — dono ek jaisa page tha (sirf naam alag). Aapki pasand ke hisaab se **Journal hata diya, sirf Blog rakha hai.**
+## Folder structure
 
-4. **India Office page rakha hai** — jaisa aapne bataya.
+```
+KNC-Horizon-Realtor/
+├── README.md                  yeh file
+├── docs/
+│   ├── IMAGE_SOURCES.md       har photo kahan se aayi, uska licence
+│   └── DATABASE_MIGRATION.md  MongoDB se Supabase par jaane ka record
+│
+├── frontend/
+│   ├── index.html             Google tag, favicon, default title
+│   ├── middleware.ts          har page ka title aur share image HTML me likhta hai (WhatsApp, Facebook ke liye)
+│   ├── vercel.json            Vercel ke rules (sitemap, favicon)
+│   ├── public/                robots.txt, Google verification file
+│   └── src/
+│       ├── App.tsx            saare routes (kaunsa URL kaunsa page kholta hai)
+│       ├── main.tsx           app yahan se shuru hota hai
+│       ├── index.css          colours, fonts, saari styling
+│       ├── pages/             website ke pages, section ke hisaab se (neeche table)
+│       ├── components/        jo cheezein kai pages par lagti hain
+│       ├── lib/               data, API, SEO, settings
+│       └── hooks/             toast (chhota message) ka hook
+│
+└── backend/
+    ├── src/
+    │   ├── index.ts           server yahan se shuru hota hai
+    │   ├── app.ts             Express app
+    │   ├── routes/            API ke raste
+    │   └── lib/               database, login, email, Cloudinary, SEO
+    ├── scripts/               ek baar chalane wale tools
+    └── backups/               database ke backup (sirf is computer par, git me nahi)
+```
 
-5. **Login / Register / Admin panel rakha hai** — jaisa aapne bataya, isse aap khud property, blog posts, aur enquiries manage kar sakte ho login karke.
+## Kaunsa page kis file me hai
 
-6. **Poora phone number / WhatsApp / email ek jagah se control hota hai ab.**
-   Pehle `+971 58 514 1770` jaisa fake demo number 10+ jagah par hardcoded tha. Ab sirf ek file update karni hai:
+Saare pages `frontend/src/pages/` me hain. Har page ki apni file hai.
 
-   👉 `frontend/src/lib/contact-info.ts`
+| Website ka page | URL | File |
+|---|---|---|
+| Home | `/` | `home/HomePage.tsx` |
+| About | `/about` | `about/AboutPage.tsx` |
+| Our Approach | `/about/approach` | `about/AboutApproachPage.tsx` |
+| India Office | `/about/india-office` | `about/IndiaOfficePage.tsx` |
+| All Properties | `/properties` | `properties/PropertiesLivePage.tsx` |
+| Sale, Rent, Residential, Commercial, Investment | `/properties/sale` waghera | `properties/PropertiesFilterPage.tsx` |
+| Ek property | `/properties/<naam>` | `properties/PropertyDetailPage.tsx` |
+| Off-Plan Projects | `/off-plan` | `projects/ProjectsPage.tsx` |
+| New Launches, Apartments, Villas & Townhouses | `/off-plan/new-launches` waghera | `projects/ProjectsFilterPage.tsx` |
+| Ek project | `/projects/<naam>` | `projects/ProjectDetailPage.tsx` |
+| Developers | `/developers`, `/off-plan/developers` | `developers/DevelopersPage.tsx` |
+| Ek developer | `/developers/<naam>` | `developers/DeveloperDetailPage.tsx` |
+| Communities | `/communities`, `/areas` | `communities/CommunitiesPage.tsx` |
+| Ek community | `/communities/<naam>` | `communities/CommunityDetailPage.tsx` |
+| Services | `/services` | `services/ServicesPage.tsx` |
+| Design & Build | `/design-build` | `services/DesignBuildPage.tsx` |
+| Interiors & Furniture | `/interiors` | `services/InteriorsPage.tsx` |
+| Blog | `/blog` | `blog/BlogPage.tsx` |
+| Ek blog post | `/blog/<naam>` | `blog/BlogPostPage.tsx` |
+| Market Insights | `/market-insights` | `market-insights/MarketInsightsPage.tsx` |
+| Gallery | `/gallery` | `gallery/GalleryPage.tsx` |
+| Contact | `/contact` | `contact/ContactPage.tsx` |
+| Privacy Policy | `/privacy-policy` | `legal/PrivacyPage.tsx` |
+| Terms & Conditions | `/terms-and-conditions` | `legal/TermsPage.tsx` |
+| Page nahi mila (404) | koi bhi galat URL | `not-found/NotFoundPage.tsx` |
+| Admin panel | `/admin` | `admin/` folder |
 
-   Isme apna **real phone number, WhatsApp number, email, aur address** daal dena — pura website automatically update ho jaayega (navbar, footer, contact page, WhatsApp bubble, sab jagah).
+`pages/shared/listing-helpers.tsx` me woh cheezein hain jo listing wale pages me same hain: price likhne ka tarika, property card, loading aur error message.
 
-7. **Purana dead/commented code hata diya** (home.tsx mein ek purana draft version comment ke roop mein pada tha, use hi nahi ho raha tha — hata diya, code clean hai ab).
+### Admin panel (`frontend/src/pages/admin/`)
 
-## ⚠️ Ye cheezein abhi bhi "demo/sample" hain — real banani hongi
+| File | Kaam |
+|---|---|
+| `AdminPage.tsx` | Admin ka main page: login check, phir sahi panel dikhata hai |
+| `AdminLogin.tsx` | Sign-in page |
+| `AdminSidebar.tsx` | Left side ka menu |
+| `AdminDashboard.tsx` | Panel ka dhancha (sidebar + content) |
+| `panels.tsx` | Overview, Enquiries, Subscribers, Media Library, Settings |
+| `ResourceManager.tsx` | Properties, projects, blog waghera ki list aur form |
+| `resource-config.ts` | Har form me kaunse fields hain |
+| `admin-ui.tsx` | Admin ke buttons, modal, image picker |
+| `seo/` | SEO console: pages, listings, articles, SEO managers |
 
-Aapne kaha "sab kuch real hona chahiye" — is baat ko seedha rakhte hue, ye batana zaroori hai ki kya-kya abhi fake/demo hai:
+## Components (`frontend/src/components/`)
 
-- **`frontend/src/lib/contact-info.ts`** — phone/WhatsApp/email/address abhi placeholder hai (`+00 000...`). **Apna asli number/email/address yahan daalo.**
+| File | Kya hai |
+|---|---|
+| `site-shell.tsx` | Navbar, footer, logo, WhatsApp button |
+| `blocks.tsx` | Property card, project card, blog card, page ka header (hero), contact form, FAQ |
+| `property-search.tsx` | Buy / Rent / Off-Plan wala search bar |
+| `phone-input.tsx` | Country code wala phone field |
+| `select-field.tsx` | Dropdown |
+| `error-boundary.tsx` | Page me error aaye to saaf message |
+| `ui/` | Toast aur tooltip |
 
-- **Property listings & blog posts** — `backend/src/lib/seed.ts` mein jo properties (Azure House, Meridian Residence, etc.) aur blog posts hain, woh sab **sample/demo data** hai, kisi real property ka nahi. Do options hain:
-  - Admin panel se (Login → Admin) khud real listings daal do, ya
-  - Mujhe apni real property details (naam, location, price, photos, details) bhejo, main directly daal dunga.
+## Lib (`frontend/src/lib/`)
 
-- **Website ki images** — abhi jo villa/interior/marina wali photos lagi hain, woh **AI-generated demo images** hain (asli photo nahi hai kisi real building ki). Ye clearly ek issue hai jo aapne point out kiya. Iske liye mujhe ek cheez chahiye aapse:
-  - Agar aapke paas apni properties/office ki **real photos** hain, unhe bhej do — main unhe seedha website mein laga dunga sahi jagah par.
-  - Agar nahi hai, toh main real (non-AI) stock photography dhundh ke suggest kar sakta hoon, jo aap download karke `frontend/public/images/` folder mein daal sakte ho (maine filenames wahi rakhe hain jo code use karta hai, toh sirf file replace karni hogi).
+| File | Kya hai |
+|---|---|
+| `contact-info.ts` | Phone, WhatsApp, email, address (jab admin Settings khaali ho) |
+| `site-settings.tsx` | Admin Settings se site ka naam, phone waghera laata hai |
+| `site-data.ts` | Services, areas, FAQ aur woh data jo API band hone par dikhta hai |
+| `page-meta.ts` | Har static page ka title, description aur share image |
+| `seo.ts`, `seo-head.ts` | Title, description, og:image banane ke rules |
+| `brand.ts` | Logo aur favicon ke Cloudinary links |
+| `cloudinary-image.ts` | Cloudinary se sahi size ki photo mangna |
+| `api.ts` | Website ke API calls aur data ke types |
+| `admin-api.ts` | Admin panel ke API calls, upload folders |
+| `property-search.ts` | Search aur filter ka logic |
+| `utils.ts` | Chhota helper |
 
-- **Company ka naam** — abhi "KNC Horizon Realtor" hai. Agar ye hi real naam hai toh kuch nahi karna. Agar alag naam hai, batao — main sab jagah se update kar dunga.
+## Backend
 
-## Website kaise chalayein (local par test karne ke liye)
+| Folder / file | Kya hai |
+|---|---|
+| `src/routes/content.ts` | Website ka data: properties, projects, blog, developers, communities |
+| `src/routes/leads.ts` | Enquiry form aur newsletter |
+| `src/routes/auth.ts` | Login |
+| `src/routes/admin.ts` | Admin panel ke saare kaam, image upload |
+| `src/routes/seo.ts` | SEO console, sitemap.xml |
+| `src/routes/health.ts` | Server chal raha hai ya nahi |
+| `src/lib/schema.sql` | Database ki tables |
+| `src/lib/postgres.ts`, `repositories.ts`, `models.ts` | Database se baat karna |
+| `src/lib/bootstrap.ts` | Server start par tables aur admin account pakka karta hai |
+| `src/lib/cloudinary.ts`, `media.ts` | Photo upload aur Media Library |
+| `src/lib/mailer.ts` | Enquiry ka email |
+| `src/lib/auth.ts`, `settings.ts`, `seo.ts`, `logger.ts` | Login, settings, SEO, logs |
+
+### Scripts (`backend/scripts/`)
+
+| File | Kaam |
+|---|---|
+| `migrate-images-to-cloudinary.mjs` | Nayi photos Cloudinary par daalna |
+| `cloudinary-images.json` | Cloudinary ki har photo ki list |
+| `apply-schema.mjs` | Database ki tables banana (dobara chalane par kuch nahi bigadta) |
+| `test-api.mjs` | Saare API check karna |
+| `export-mongo.mjs`, `migrate-mongo-to-postgres.mjs`, `verify-data.mjs` | Purane MongoDB se data laane ke tools. Kaam 23 September 2026 ko ho chuka hai. |
+
+## Aam badlav kahan karein
+
+| Kya badalna hai | Kahan |
+|---|---|
+| Phone, WhatsApp, email, address | Admin panel > Settings |
+| Property, project, blog, developer | Admin panel |
+| Page ka SEO title, description, share image | Admin panel > SEO |
+| Kisi page ka text | Us page ki file (upar table) |
+| Navbar ya footer | `frontend/src/components/site-shell.tsx` |
+| Colours, fonts | `frontend/src/index.css` |
+| Logo, favicon | `frontend/src/lib/brand.ts` (file Cloudinary par `knc-horizon/logos` me) |
+| Naya page ka URL | `frontend/src/App.tsx` |
+
+## Local par chalana
 
 ```
 cd frontend
@@ -45,12 +165,23 @@ npm install
 npm run dev
 ```
 
-Backend (agar chalana ho — properties/blog/contact-form save karne ke liye):
-
 ```
 cd backend
 npm install
 npm run dev
 ```
 
-Backend ko Supabase PostgreSQL connection aur `.env` chahiye hoga (`DATABASE_URL`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` waghera).
+Backend ko `backend/.env` chahiye (`DATABASE_URL`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `CLOUDINARY_*`). Yeh file git me nahi jaati.
+
+**Dhyan:** backend start hote hi live database se judta hai, tables check karta hai aur admin password dobara set karta hai.
+
+## Check aur deploy
+
+```
+cd frontend
+npm run typecheck
+npm run build
+```
+
+- **Frontend:** GitHub par push karte hi Vercel deploy kar deta hai.
+- **Backend:** Render push par apne aap deploy nahi karta. Render dashboard me "Manual Deploy" dabana hota hai.

@@ -1,5 +1,5 @@
 import { PAGE_IMAGES, PAGE_META } from '@/lib/page-meta';
-import { resolveHead, type Head, type HeadContext, type HeadInput, type SeoFields } from '@/lib/seo';
+import { projectDescription, propertyDescription, resolveHead, type Head, type HeadContext, type HeadInput, type SeoFields } from '@/lib/seo';
 import type { SeoArticleRow, SeoListing, SeoOverview, SeoPageRow, SeoRecord } from './seo-api';
 
 /*
@@ -22,10 +22,7 @@ export type SeoTarget =
 
 /* ------------------------------------------------------------------ built-in values */
 
-export const propertyDescription = (title: string, location: string) =>
-  `${title} in ${location}. View details and request property information from KNC Horizon Realtor.`;
-export const projectDescription = (title: string, location: string) =>
-  `${title} in ${location}. Explore the project and request its brief from KNC Horizon Realtor.`;
+export { projectDescription, propertyDescription };
 
 export function pageDefaults(path: string) {
   const [title, description] = PAGE_META[path] ?? ['', ''];

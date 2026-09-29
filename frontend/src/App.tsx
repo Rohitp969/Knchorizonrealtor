@@ -5,63 +5,55 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
-import NotFound from '@/pages/not-found';
-import Home from '@/pages/home';
-
-import {
-  AboutApproachPage,
-  AboutPage,
-  AreasPage,
-  CommunitiesPage,
-  ContactPage,
-  DesignBuildPage,
-  IndiaOfficePage,
-  InteriorsPage,
-  MarketInsightsPage,
-  ServicesPage,
-} from '@/pages/interior-pages';
-
-import { AdminPage } from '@/pages/admin/AdminPage';
-
-import { ProjectDetailPage } from '@/pages/advanced-pages';
-
-import {
-  BlogPage,
-  BlogPostPage,
-  CommunityDetailPage,
-  GalleryPage,
-  ProjectsPage,
-  PropertiesLivePage,
-  PropertyDetailPage,
-  PropertiesFilterPage,
-  ProjectsFilterPage,
-  DevelopersPage,
-} from '@/pages/content-pages';
-
 import { SiteShell } from '@/components/site-shell';
 import { SiteSettingsProvider, useContact, useSiteSettings } from '@/lib/site-settings';
+import { canonicalPath, organizationJsonLd, PRIORITY_FALLBACK, PRIORITY_STATIC, SeoProvider, useHead, useSeoData } from '@/lib/seo';
+import { PAGE_IMAGES, PAGE_META } from '@/lib/page-meta';
 import { MotionConfig } from 'framer-motion';
 
 /*
  * ============================================================
- * LEGAL PAGES
+ * PAGES
  * ============================================================
  *
- * Both PrivacyPage and TermsPage are now inside:
- *
- * src/pages/legal-pages.tsx
- *
- * Separate PrivacyPage.tsx and TermsPage.tsx files are not
- * required when this import is used.
+ * One file per page, in a folder named after its section of the
+ * site: src/pages/<section>/<PageName>.tsx
  */
-import {
-  PrivacyPage,
-  TermsPage,
-} from '@/pages/legal-pages';
+import Home from '@/pages/home/HomePage';
 
-import { DeveloperDetailPage } from '@/pages/developer-detail-page';
-import { canonicalPath, organizationJsonLd, PRIORITY_FALLBACK, PRIORITY_STATIC, SeoProvider, useHead, useSeoData } from '@/lib/seo';
-import { PAGE_IMAGES, PAGE_META } from '@/lib/page-meta';
+import { AboutPage } from '@/pages/about/AboutPage';
+import { AboutApproachPage } from '@/pages/about/AboutApproachPage';
+import { IndiaOfficePage } from '@/pages/about/IndiaOfficePage';
+
+import { PropertiesLivePage } from '@/pages/properties/PropertiesLivePage';
+import { PropertiesFilterPage } from '@/pages/properties/PropertiesFilterPage';
+import { PropertyDetailPage } from '@/pages/properties/PropertyDetailPage';
+
+import { ProjectsPage } from '@/pages/projects/ProjectsPage';
+import { ProjectsFilterPage } from '@/pages/projects/ProjectsFilterPage';
+import { ProjectDetailPage } from '@/pages/projects/ProjectDetailPage';
+
+import { DevelopersPage } from '@/pages/developers/DevelopersPage';
+import { DeveloperDetailPage } from '@/pages/developers/DeveloperDetailPage';
+
+import { AreasPage, CommunitiesPage } from '@/pages/communities/CommunitiesPage';
+import { CommunityDetailPage } from '@/pages/communities/CommunityDetailPage';
+
+import { ServicesPage } from '@/pages/services/ServicesPage';
+import { DesignBuildPage } from '@/pages/services/DesignBuildPage';
+import { InteriorsPage } from '@/pages/services/InteriorsPage';
+
+import { BlogPage } from '@/pages/blog/BlogPage';
+import { BlogPostPage } from '@/pages/blog/BlogPostPage';
+import { MarketInsightsPage } from '@/pages/market-insights/MarketInsightsPage';
+import { GalleryPage } from '@/pages/gallery/GalleryPage';
+import { ContactPage } from '@/pages/contact/ContactPage';
+
+import { PrivacyPage } from '@/pages/legal/PrivacyPage';
+import { TermsPage } from '@/pages/legal/TermsPage';
+
+import NotFound from '@/pages/not-found/NotFoundPage';
+import { AdminPage } from '@/pages/admin/AdminPage';
 
 import {
   Route,
