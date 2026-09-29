@@ -3,7 +3,7 @@
 Dubai real estate website. Do hisse hain:
 
 - **`frontend/`**: website aur admin panel (React + Vite). Vercel par chalta hai.
-- **`backend/`**: API aur database ka kaam (Node + Express + Supabase PostgreSQL). Render par chalta hai.
+- **`backend/`**: API aur database ka kaam (Node + Express + PostgreSQL). Render par chalta hai.
 
 Saari photos aur logo Cloudinary par hain (`knc-horizon/` folder). Project me koi image file nahi hai.
 
@@ -14,11 +14,13 @@ KNC-Horizon-Realtor/
 ├── README.md                  yeh file
 ├── docs/
 │   ├── IMAGE_SOURCES.md       har photo kahan se aayi, uska licence
-│   └── DATABASE_MIGRATION.md  MongoDB se Supabase par jaane ka record
+│   └── DATABASE_MIGRATION.md  database ek jagah se doosri jagah le jaane ka record
 │
 ├── frontend/
 │   ├── index.html             Google tag, favicon, default title
-│   ├── middleware.ts          har page ka title aur share image HTML me likhta hai (WhatsApp, Facebook ke liye)
+│   ├── middleware.js          har page ka title aur share image HTML me likhta hai (WhatsApp, Facebook ke liye).
+│   │                          Yeh file APNE AAP banti hai, isse haath se mat badalna.
+│   ├── scripts/               build-middleware.mjs: middleware.js banata hai (npm run build isse pehle chalata hai)
 │   ├── vercel.json            Vercel ke rules (sitemap, favicon)
 │   ├── public/                robots.txt, Google verification file
 │   └── src/
@@ -28,6 +30,7 @@ KNC-Horizon-Realtor/
 │       ├── pages/             website ke pages, section ke hisaab se (neeche table)
 │       ├── components/        jo cheezein kai pages par lagti hain
 │       ├── lib/               data, API, SEO, settings
+│       ├── middleware/        share-preview.ts: middleware ka asli code (yahan badlav karein)
 │       └── hooks/             toast (chhota message) ka hook
 │
 └── backend/
@@ -133,6 +136,7 @@ Saare pages `frontend/src/pages/` me hain. Har page ki apni file hai.
 | `src/lib/cloudinary.ts`, `media.ts` | Photo upload aur Media Library |
 | `src/lib/mailer.ts` | Enquiry ka email |
 | `src/lib/auth.ts`, `settings.ts`, `seo.ts`, `logger.ts` | Login, settings, SEO, logs |
+| `src/lib/rate-limit.ts` | Login aur forms par limit (password guessing aur spam rokne ke liye) |
 
 ### Scripts (`backend/scripts/`)
 
@@ -142,6 +146,7 @@ Saare pages `frontend/src/pages/` me hain. Har page ki apni file hai.
 | `cloudinary-images.json` | Cloudinary ki har photo ki list |
 | `apply-schema.mjs` | Database ki tables banana (dobara chalane par kuch nahi bigadta) |
 | `test-api.mjs` | Saare API check karna |
+| `test-email.mjs` | `.env` ki mail settings se ek test email bhejna (`npm run test:email`) |
 | `export-mongo.mjs`, `migrate-mongo-to-postgres.mjs`, `verify-data.mjs` | Purane MongoDB se data laane ke tools. Kaam 23 September 2026 ko ho chuka hai. |
 
 ## Aam badlav kahan karein
@@ -183,5 +188,28 @@ npm run typecheck
 npm run build
 ```
 
-- **Frontend:** GitHub par push karte hi Vercel deploy kar deta hai.
+- **Frontend:** GitHub par push karte hi Vercel deploy kar deta hai. Push ke baad Vercel dashboard me dekh lein ki deploy "Ready" hua, "Error" nahi.
 - **Backend:** Render push par apne aap deploy nahi karta. Render dashboard me "Manual Deploy" dabana hota hai.
+- **Middleware:** Vercel is project me TypeScript middleware compile nahi kar pata, isliye `middleware.js` plain JavaScript me banti hai. `src/middleware/share-preview.ts` badalne ke baad `npm run build` chalayein aur dono files commit karein.
+
+## Enquiry ka email
+
+Enquiry hamesha Admin panel > Leads / Inquiries me save hoti hai, email jaye ya na jaye. Email alert tabhi aata hai jab teeno cheezein hon:
+
+1. Admin panel > Settings me "Send lead alerts to" bhara ho (abhi `hello@knchorizonrealtor.com` hai).
+2. Render > Environment me yeh paanch values hon, phir Manual Deploy:
+
+   | Naam | Value |
+   |---|---|
+   | `SMTP_HOST` | `smtpout.secureserver.net` |
+   | `SMTP_PORT` | `465` |
+   | `SMTP_USER` | `hello@knchorizonrealtor.com` |
+   | `SMTP_PASS` | us mailbox ka apna password |
+   | `SMTP_FROM` | `KNC Horizon Realtor <hello@knchorizonrealtor.com>` |
+
+3. Render ka instance **paid** ho. Free instance par Render mail ke ports (25, 465, 587) band rakhta hai.
+
+Check karne ke do tarike:
+
+- Live par: Admin panel > Settings > **Send a test email**. Na jaye to wahi wajah bhi likhi aati hai.
+- Apne computer par: `backend/.env` me `SMTP_PASS` bharein, phir `cd backend` aur `npm run test:email`.

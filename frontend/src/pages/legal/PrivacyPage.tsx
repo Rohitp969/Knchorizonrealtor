@@ -1,10 +1,13 @@
 import { PageHero } from '@/components/blocks';
+import { useContact } from '@/lib/site-settings';
 
 /* ============================================================
    PRIVACY POLICY
 ============================================================ */
 
 export function PrivacyPage() {
+  const contact = useContact();
+
   return (
     <main className="min-h-screen bg-[#faf7f1] text-[#2b3242]">
 
@@ -261,9 +264,8 @@ export function PrivacyPage() {
             </p>
 
             <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
-              Requests concerning personal information should be directed to
-              the appropriate KNC Horizon Realtor contact once the company's
-              official privacy contact details have been confirmed.
+              Requests concerning personal information can be sent to KNC
+              Horizon Realtor at {contact.email}.
             </p>
           </div>
 

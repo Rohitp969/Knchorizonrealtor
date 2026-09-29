@@ -791,6 +791,21 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
   const [errors, setErrors] = useState<FieldErrors>({});
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState<{ sent: boolean; to?: string; reason?: string } | null>(null);
+
+  // Sends one message to the saved lead alert address, so the owner sees that alerts arrive.
+  const sendTest = async () => {
+    setTesting(true);
+    setTestResult(null);
+    try {
+      setTestResult(await adminRequest<{ sent: boolean; to?: string; reason?: string }>('/admin/settings/test-email', { method: 'POST' }));
+    } catch (reason) {
+      setTestResult({ sent: false, reason: reason instanceof Error ? reason.message : 'The test could not be started.' });
+    } finally {
+      setTesting(false);
+    }
+  };
 
   const load = useCallback(async () => {
     try {
@@ -999,6 +1014,29 @@ export function SettingsPanel({ user, area }: { user: AdminUser | null; area: 'c
                     ? `Email delivery is active via ${mail.host}. Enquiries are emailed to the address above.`
                     : `Email delivery is not configured, so no alert is sent yet — ${mail.reason} Add the SMTP_* values to the backend environment and restart the API. Enquiries are still saved and listed under Leads / Inquiries.`}
                 </p>
+              )}
+              {mail?.configured && (
+                <div className="mt-3">
+                  <button type="button" className={adminButtonClass('ghost')} onClick={sendTest} disabled={testing} data-testid="button-send-test-email">
+                    {testing ? <Loader2 size={14} className="animate-spin" /> : null} {testing ? 'Sending…' : 'Send a test email'}
+                  </button>
+                  <span className="ml-3 text-xs text-[#2b3242]/65">Goes to the saved address above. Save first if you changed it.</span>
+                  {testResult && (
+                    <p
+                      className={`mt-3 rounded-lg border px-3 py-2.5 text-xs leading-5 ${
+                        testResult.sent
+                          ? 'border-[#55735f]/30 bg-[#55735f]/10 text-[#3d5446]'
+                          : 'border-[#b23b2e]/30 bg-[#b23b2e]/8 text-[#7c2d12]'
+                      }`}
+                      role={testResult.sent ? 'status' : 'alert'}
+                      data-testid="settings-test-email-result"
+                    >
+                      {testResult.sent
+                        ? `Test email sent to ${testResult.to}. Check that inbox, and its spam folder.`
+                        : `The test email was not sent. ${testResult.reason ?? ''}`}
+                    </p>
+                  )}
+                </div>
               )}
             </fieldset>
           </>

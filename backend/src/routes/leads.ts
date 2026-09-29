@@ -5,8 +5,13 @@ import type { InquiryDoc, NewsletterDoc } from "../lib/models.ts";
 import { sendLeadAlert } from "../lib/mailer.ts";
 import { readSettings } from "../lib/settings.ts";
 import { logger } from "../lib/logger.ts";
+import { rateLimit } from "../lib/rate-limit.ts";
 
 const router = Router();
+
+// A visitor sends one or two enquiries; a script sends hundreds.
+const enquiryLimit = rateLimit({ max: 8, windowMs: 10 * 60_000, message: "You have sent several enquiries in a short time. Please wait a few minutes, or call or WhatsApp us." });
+const newsletterLimit = rateLimit({ max: 8, windowMs: 10 * 60_000, message: "Too many sign-ups from this connection. Please try again in a few minutes." });
 
 /** Resolves the slug a form submitted to the listing it refers to, so the lead is linked. */
 async function resolveId(table: "properties" | "projects", slug: unknown) {
@@ -15,7 +20,7 @@ async function resolveId(table: "properties" | "projects", slug: unknown) {
   return row?.id;
 }
 
-router.post("/inquiries", async (req, res, next) => {
+router.post("/inquiries", enquiryLimit, async (req, res, next) => {
   try {
     const { name, email, phone, interest, inquiryType, message, budget, propertyType, location, propertySlug, projectSlug, project, preferredVisitDate } = req.body as Partial<InquiryDoc>;
     const normalizedName = typeof name === "string" ? name.trim() : "";
@@ -90,7 +95,7 @@ router.post("/inquiries", async (req, res, next) => {
   }
 });
 
-router.post("/newsletter", async (req, res, next) => {
+router.post("/newsletter", newsletterLimit, async (req, res, next) => {
   try {
     const { email } = req.body as Partial<NewsletterDoc>;
     if (!email || !email.includes("@")) return res.status(400).json({ message: "A valid email is required." });

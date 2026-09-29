@@ -28,7 +28,7 @@ import {
   type TableName,
 } from "../lib/repositories.ts";
 import type { BlogPostDoc, DeveloperDoc, ProjectDoc, PropertyDoc, UserDoc } from "../lib/models.ts";
-import { mailStatus } from "../lib/mailer.ts";
+import { mailStatus, sendTestEmail } from "../lib/mailer.ts";
 import { readSettings, SUPPORTED_CURRENCIES, validateSettings, writeSettings } from "../lib/settings.ts";
 
 const router = Router();
@@ -1042,6 +1042,15 @@ router.put("/admin/settings", async (req, res, next) => {
     }
     const settings = await writeSettings(patch);
     return res.json({ settings, mail: mailStatus(), currencies: SUPPORTED_CURRENCIES });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+/** One test message to the saved lead alert address, answered with what happened. */
+router.post("/admin/settings/test-email", async (_req, res, next) => {
+  try {
+    return res.json(await sendTestEmail(await readSettings()));
   } catch (error) {
     return next(error);
   }

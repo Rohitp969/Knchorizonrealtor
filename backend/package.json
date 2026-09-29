@@ -18,7 +18,8 @@
     "db:migrate": "node scripts/migrate-mongo-to-postgres.mjs",
     "db:verify": "node scripts/migrate-mongo-to-postgres.mjs --verify",
     "db:verify-data": "node scripts/verify-data.mjs",
-    "test:api": "node scripts/test-api.mjs"
+    "test:api": "node scripts/test-api.mjs",
+    "test:email": "node scripts/test-email.mjs"
   },
   "nodemonConfig": {
     "watch": [

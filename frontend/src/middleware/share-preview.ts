@@ -16,21 +16,21 @@
  * error of any kind) is passed through untouched, so the worst case is the page exactly as it
  * was served before this file existed.
  *
- * The imports are relative and end in .ts because this file is built on its own, outside
- * Vite, where the "@/" alias does not exist.
+ * Vercel runs the file middleware.js at the top of frontend/. That file is GENERATED from
+ * this one by scripts/build-middleware.mjs, which `npm run build` runs first: edit this file,
+ * never middleware.js. It is shipped as one plain JavaScript file because Vercel cannot
+ * compile a TypeScript middleware in this project (its compile step fails with TypeScript 7
+ * and the Vite tsconfig). The addresses it runs on are listed in that script.
+ *
+ * The imports are relative and end in .ts so that Node can also run this file directly.
  */
 import { next } from '@vercel/functions/middleware';
-import { PAGE_IMAGES, PAGE_META } from './src/lib/page-meta.ts';
-import { SITE_URL, canonicalPath, projectDescription, propertyDescription, resolveHead, type Head, type HeadContext, type HeadInput, type SeoFields, type SeoSettings } from './src/lib/seo-head.ts';
-import { areas, defaultDevelopers, defaultPosts, defaultProjects, defaultRemoteProperties } from './src/lib/site-data.ts';
+import { PAGE_IMAGES, PAGE_META } from '../lib/page-meta.ts';
+import { SITE_URL, canonicalPath, projectDescription, propertyDescription, resolveHead, type Head, type HeadContext, type HeadInput, type SeoFields, type SeoSettings } from '../lib/seo-head.ts';
+import { areas, defaultDevelopers, defaultPosts, defaultProjects, defaultRemoteProperties } from '../lib/site-data.ts';
 
 /** What Vercel passes beside the request: a way to finish work after the response has gone. */
 type RequestContext = { waitUntil?: (promise: Promise<unknown>) => void };
-
-export const config = {
-  // Pages only: no files (anything with a dot), API calls, built assets or the admin console.
-  matcher: ['/', '/((?!api/|assets/|admin|.*\\.).*)'],
-};
 
 /** The public API, as in .env.production. SEO_API_URL replaces it without a code change. */
 const API = (process.env.SEO_API_URL || 'https://knchorizonrealtor.onrender.com/api').replace(/\/+$/, '');
@@ -39,8 +39,11 @@ const API = (process.env.SEO_API_URL || 'https://knchorizonrealtor.onrender.com/
 const FRESH_MS = 60_000;
 /** How long a failed request is remembered, so an API outage does not slow every page down. */
 const RETRY_MS = 30_000;
-/** The longest a page waits for the API before it is served with what is already known. */
-const WAIT_MS = 2_500;
+/**
+ * The longest a page waits for the API before it is served with what is already known. A
+ * warm API answers in about half a second; a visitor is never held longer than this for it.
+ */
+const WAIT_MS = 1_200;
 /** A request still unanswered after this long is abandoned. */
 const GIVE_UP_MS = 10_000;
 const MAX_CACHED = 300;
@@ -247,7 +250,8 @@ async function appShell(origin: string) {
     const html = response.ok ? await response.text() : '';
     // Anything else (a sign-in wall on a preview deployment, an error page) is not the app.
     if (!html.includes('<div id="root">') || !/<\/head>/i.test(html)) return undefined;
-    shells.set(origin, { until: Date.now() + 300_000, html });
+    // Kept for a minute only: after a new deployment the page must name the new files.
+    shells.set(origin, { until: Date.now() + 60_000, html });
     return html;
   } finally {
     clearTimeout(timer);
@@ -321,6 +325,10 @@ export default async function middleware(request: Request, context?: RequestCont
       headers: {
         'content-type': 'text/html; charset=utf-8',
         'cache-control': 'public, max-age=0, must-revalidate',
+        // The same three as vercel.json sets on every other response.
+        'x-content-type-options': 'nosniff',
+        'x-frame-options': 'SAMEORIGIN',
+        'referrer-policy': 'strict-origin-when-cross-origin',
         'x-seo-head': page.kind,
       },
     });

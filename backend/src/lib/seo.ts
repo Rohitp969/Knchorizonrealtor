@@ -379,7 +379,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const rows = await query<{ slug: string; lastmod: string; noindex: boolean | null; canonical_url: string | null }>(
       `select t.slug, greatest(t.updated_at, coalesce(s.updated_at, t.updated_at)) as lastmod, s.noindex, s.canonical_url
          from ${table} t left join seo_meta s on s.${column} = t.id
-        where t.published order by t.updated_at desc`,
+        where t.published order by t.updated_at desc, t.slug`,
     );
     for (const row of rows) {
       const loc = `${siteUrl}${prefix}${encodeURIComponent(row.slug)}`;
@@ -391,7 +391,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const posts = await query<{ slug: string; lastmod: string; noindex: boolean | null; canonical_url: string | null }>(
     `select p.slug, greatest(p.updated_at, coalesce(s.updated_at, p.updated_at)) as lastmod, s.noindex, s.canonical_url
        from posts p left join seo_meta s on s.post_id = p.id
-      where (p.published or p.status = 'published') order by p.published_at desc`,
+      where (p.published or p.status = 'published') order by p.published_at desc, p.slug`,
   );
   for (const row of posts) {
     const loc = `${siteUrl}/blog/${encodeURIComponent(row.slug)}`;

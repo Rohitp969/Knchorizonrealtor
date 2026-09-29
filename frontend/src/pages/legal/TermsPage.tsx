@@ -1,10 +1,13 @@
 import { PageHero } from '@/components/blocks';
+import { useContact } from '@/lib/site-settings';
 
 /* ============================================================
    TERMS & CONDITIONS
 ============================================================ */
 
 export function TermsPage() {
+  const contact = useContact();
+
   return (
     <main className="min-h-screen bg-[#faf7f1] text-[#2b3242]">
 
@@ -306,12 +309,6 @@ export function TermsPage() {
               regulations applicable to the business and the services being
               provided.
             </p>
-
-            <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
-              The final governing-law and jurisdiction wording should be
-              confirmed against KNC Horizon Realtor’s actual legal entity,
-              licence and place of registration before publication.
-            </p>
           </div>
 
 
@@ -322,9 +319,8 @@ export function TermsPage() {
             </h2>
 
             <p className="mt-4 text-sm leading-7 text-[#2b3242]/70">
-              Official company details, registered address, licence
-              information and legal contact information should be inserted
-              here once confirmed by KNC Horizon Realtor.
+              For any question about these terms, contact KNC Horizon
+              Realtor using the details below.
             </p>
 
             <div className="mt-6 space-y-1 rounded-2xl border border-[#2b3242]/12 bg-[#fffdf8]/70 p-5 sm:p-6">
@@ -334,17 +330,15 @@ export function TermsPage() {
               </p>
 
               <p className="text-sm leading-7 text-[#2b3242]/70">
-                <strong>Location:</strong> Dubai, UAE
+                <strong>Location:</strong> {contact.dubaiAddress}
               </p>
 
               <p className="text-sm leading-7 text-[#2b3242]/70">
-                <strong>Telephone:</strong> +971 58 514 1770
+                <strong>Telephone:</strong> {contact.phoneDisplay}
               </p>
 
-              <p className="mt-2 text-xs leading-6 text-[#2b3242]/65">
-                Official legal entity name, licence number, registered address
-                and legal email should be added after confirmation from the
-                company.
+              <p className="text-sm leading-7 text-[#2b3242]/70">
+                <strong>Email:</strong> {contact.email}
               </p>
 
             </div>

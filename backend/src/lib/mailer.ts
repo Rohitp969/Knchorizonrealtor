@@ -53,9 +53,28 @@ function transporter() {
     port,
     // 465 is implicit TLS; everything else starts plain and upgrades with STARTTLS.
     secure: port === 465,
+    // The upgrade is required, not hoped for: the password is never sent unencrypted.
+    requireTLS: port !== 465,
     auth: { user, pass },
+    // A mail server that cannot be reached has to fail in seconds. Left to the defaults, each
+    // enquiry would hold a connection open for minutes before giving up.
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 20_000,
   });
   return transport;
+}
+
+/** Why a message could not be sent, in words the owner can act on. */
+function explain(error: unknown) {
+  const code = String((error as { code?: unknown } | null)?.code ?? "");
+  const detail = error instanceof Error ? error.message : "Unknown mail error.";
+  if (code === "EAUTH") return `The mail server refused the sign-in. Check SMTP_USER and SMTP_PASS (the mailbox's own password). [${detail}]`;
+  if (["ETIMEDOUT", "ECONNECTION", "ESOCKET", "ECONNREFUSED", "EDNS"].includes(code)) {
+    return `The mail server could not be reached. Check SMTP_HOST and SMTP_PORT. On a free Render instance outgoing mail ports (25, 465, 587) are blocked, so email needs a paid instance. [${detail}]`;
+  }
+  if (code === "EENVELOPE") return `The mail server refused the sender or the recipient address. SMTP_FROM must be the mailbox that signs in. [${detail}]`;
+  return detail;
 }
 
 export type LeadAlert = {
@@ -147,6 +166,30 @@ export async function sendLeadAlert(lead: LeadAlert, settings: SiteSettings): Pr
     return { sent: true };
   } catch (error) {
     logger.error({ err: error, to }, "Lead alert failed to send");
-    return { sent: false, reason: error instanceof Error ? error.message : "Unknown mail error." };
+    return { sent: false, reason: explain(error) };
+  }
+}
+
+/**
+ * Sends a short test message to the lead alert address, for the "Send a test email" button in
+ * Admin → Settings: the one way to see, on the live server, that alerts really arrive.
+ */
+export async function sendTestEmail(settings: SiteSettings): Promise<{ sent: boolean; to?: string; reason?: string }> {
+  const to = settings.leadNotificationEmail?.trim();
+  if (!to) return { sent: false, reason: 'No lead alert address is saved yet. Fill in "Send lead alerts to" and save first.' };
+  const status = mailStatus();
+  if (!status.configured) return { sent: false, to, reason: status.reason };
+  try {
+    await transporter().sendMail({
+      from: config().from,
+      to,
+      subject: `Test email from ${settings.siteName}`,
+      text: `This is a test from the ${settings.siteName} admin console.\n\nIf you are reading it, enquiry alerts from the website will reach this address.`,
+    });
+    logger.info({ to }, "Test email sent");
+    return { sent: true, to };
+  } catch (error) {
+    logger.error({ err: error, to }, "Test email failed to send");
+    return { sent: false, to, reason: explain(error) };
   }
 }

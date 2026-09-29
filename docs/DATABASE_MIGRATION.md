@@ -95,6 +95,52 @@ than duplicating. It never writes to MongoDB.
 - 133 API tests pass, including admin create/read/update/delete round trips.
 - 38 browser tests of the property search pass across Buy, Rent and Off-Plan.
 
+## Move from Supabase to the company's own server (29 September 2026)
+
+The database was copied from Supabase (PostgreSQL 17.6) to the company's own PostgreSQL 18.6
+server, database `knc_db`. Nothing in the code depends on which of the two it talks to: the
+API reads `DATABASE_URL` and connects with TLS either way.
+
+| | |
+|---|---|
+| Tool | `backups/tools/copy-database.mjs` (on the owner's computer; `backups/` is not in git) |
+| Reads | `OLD_DATABASE_URL`, in a read-only snapshot. The old database was not changed. |
+| Writes | `DATABASE_URL`, in one transaction that is kept only if every row matches afterwards |
+| Result | 15 tables, 279 rows, each identical on both servers (compared row by row, twice) |
+
+Three things were made the same as on the old server:
+
+- `inquiries.context` and `inquiries.source_path` (text, empty in every row) and the index
+  `inquiries_email_created_idx` exist in the old database but not in `schema.sql`. They were
+  created in the new one too. The code does not use them.
+- The API had already made an administrator account of its own on the empty new server. It
+  was turned into the old account of the same email (same id), because the SEO records refer
+  to that id.
+
+Checked afterwards, with the API running on the new database: all 13 public endpoints and 39
+detail pages answer byte for byte what the live site answers (the sitemap lists the same 57
+addresses), the administrator signs in, and every admin list shows the old counts.
+
+### Switching the live site over
+
+The live API keeps writing to the old database until Render is given the new address, so the
+order matters:
+
+1. `node backups/tools/copy-database.mjs copy` once more, to bring over what changed since.
+2. Straight away, in Render > Environment, set `DATABASE_URL` to the new address and press
+   Manual Deploy.
+3. `node backups/tools/copy-database.mjs` (no `copy`) only reads. Do not run `copy` again once
+   the site has been on the new database for a while: a row changed in both places keeps the
+   version with the later date, but it is safer not to need that.
+
+### What the own server needs that Supabase did for free
+
+- **Backups.** Supabase made daily backups. On the own server a scheduled `pg_dump` (or the
+  host's snapshot) has to be set up, and a restore tried once.
+- **A strong password and a closed door.** Port 5432 is reachable from the internet. Use a
+  long random password, and let the firewall accept only the addresses that need it.
+- **Updates** of PostgreSQL and the operating system.
+
 ## Rolling back to MongoDB
 
 The MongoDB database was never written to, so a rollback is a code change only. The two
