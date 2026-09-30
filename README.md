@@ -96,7 +96,7 @@ Saare pages `frontend/src/pages/` me hain. Har page ki apni file hai.
 
 | File | Kya hai |
 |---|---|
-| `site-shell.tsx` | Navbar, footer, logo, WhatsApp button |
+| `site-shell.tsx` | Top bar (location, phone, Contact), navbar, footer, logo, WhatsApp button |
 | `blocks.tsx` | Property card, project card, blog card, page ka header (hero), contact form, FAQ |
 | `property-search.tsx` | Buy / Rent / Off-Plan wala search bar |
 | `phone-input.tsx` | Country code wala phone field |
@@ -157,6 +157,7 @@ Saare pages `frontend/src/pages/` me hain. Har page ki apni file hai.
 | Page ka SEO title, description, share image | Admin panel > SEO |
 | Kisi page ka text | Us page ki file (upar table) |
 | Navbar ya footer | `frontend/src/components/site-shell.tsx` |
+| Top bar ki teen lines (Exclusive Properties…) | `frontend/src/components/site-shell.tsx` me `TOP_BAR_PROMISES` |
 | Colours, fonts | `frontend/src/index.css` |
 | Logo, favicon | `frontend/src/lib/brand.ts` (file Cloudinary par `knc-horizon/logos` me) |
 | Naya page ka URL | `frontend/src/App.tsx` |

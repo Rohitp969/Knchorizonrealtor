@@ -17,7 +17,7 @@ export default function NotFound() {
 
   return (
     <main className="bg-[#faf7f1]">
-      <section className="flex min-h-[70svh] items-center site-section">
+      <section className="flex min-h-[70svh] items-center site-section pt-[calc(var(--header-h)+2rem)]">
         <div className="site-container">
           <SectionLabel>Error 404</SectionLabel>
 

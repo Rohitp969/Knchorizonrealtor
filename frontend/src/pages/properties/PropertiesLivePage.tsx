@@ -1,28 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useSearch } from 'wouter';
+import { Link, useLocation, useSearch } from 'wouter';
 import { apiFetch, type RemoteProperty } from '@/lib/api';
 import { PageHero, PropertyCard, cardGrid } from '@/components/blocks';
-import { PropertySearch } from '@/components/property-search';
-import { clearSearchHref, hasPropertySearch, matchesPropertySearch, parsePropertySearch } from '@/lib/property-search';
+import { OFF_PLAN_CHIP, clearSearchHref, hasPropertySearch, matchesPropertySearch, nearestMatches, parsePropertySearch, propertySearchHref } from '@/lib/property-search';
 import { defaultRemoteProperties } from '@/lib/site-data';
 import { useSiteSettings } from '@/lib/site-settings';
-import { isOffPlan, AppliedFilters, LoadingState, ErrorState, propertyCard } from '@/pages/shared/listing-helpers';
+import { isOffPlan, AppliedFilters, LoadingState, ErrorState, NearestMatchesNote, propertyCard } from '@/pages/shared/listing-helpers';
 
 export function PropertiesLivePage() {
   const { defaultCurrency } = useSiteSettings();
   const [items, setItems] = useState<RemoteProperty[]>(defaultRemoteProperties as unknown as RemoteProperty[]);
-  const [filter, setFilter] = useState('All');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [, navigate] = useLocation();
   const search = useSearch();
-  const query = parsePropertySearch(search);
+  const query = useMemo(() => parsePropertySearch(search), [search]);
   const searching = hasPropertySearch(query);
-
-  useEffect(() => {
-    const category = new URLSearchParams(window.location.search).get('category');
-    // Anything the collection does not hold falls through to All, below.
-    if (category) setFilter(category.toLowerCase() === 'off-plan' ? 'Off-Plan' : category.replace(/\w/, (c) => c.toUpperCase()));
-  }, []);
 
   useEffect(() => {
     // Search filters run client-side, so fetch the API's maximum page rather than the default 24.
@@ -38,23 +31,39 @@ export function PropertiesLivePage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Chips mirror what the collection actually holds, so none of them can come back empty.
-  const filters = useMemo(() => {
+  /*
+   * The type chips and the search bar's "Property type" are one control. Both read the type
+   * from the URL and a chip writes it back there, so the two can never disagree: choosing
+   * Townhouse on the chips is the same as choosing it in the bar. A chip is counted against
+   * the rest of the search (location, budget, bedrooms...) and only offered when something
+   * is behind it, so no chip leads to an empty page.
+   */
+  const inSearch = useMemo(() => items.filter((item) => matchesPropertySearch(item, { ...query, type: '' })), [items, query]);
+  const chips = useMemo(() => {
     const counts = new Map<string, number>();
-    for (const item of items) {
+    for (const item of inSearch) {
       const type = item.type?.trim();
       if (type) counts.set(type, (counts.get(type) ?? 0) + 1);
     }
     const types = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([type]) => type);
-    return ['All', ...types, ...(items.some(isOffPlan) ? ['Off-Plan'] : [])];
-  }, [items]);
+    const list = ['All', ...types, ...(inSearch.some(isOffPlan) ? [OFF_PLAN_CHIP] : [])];
+    // The type in the URL stays visible even when nothing is behind it any more, so the
+    // visitor sees what is applied and can step back to All.
+    return query.type && !list.some((chip) => chip.toLowerCase() === query.type.toLowerCase()) ? [...list, query.type] : list;
+  }, [inSearch, query.type]);
+  const active = chips.find((chip) => chip.toLowerCase() === query.type.toLowerCase()) ?? 'All';
+  const chooseChip = (chip: string) =>
+    // Same page, only the type changes: the URL is replaced in place and the page does not jump.
+    navigate(propertySearchHref({ ...query, type: chip === 'All' ? '' : chip }).replace(/#results$/, ''), { replace: true });
 
-  const active = filters.includes(filter) ? filter : 'All';
-  const byCategory =
-    active === 'All' ? items
-    : active === 'Off-Plan' ? items.filter(isOffPlan)
-    : items.filter((item) => (item.type ?? '').toLowerCase() === active.toLowerCase());
-  const filtered = byCategory.filter((item) => matchesPropertySearch(item, query));
+  const exact = useMemo(() => items.filter((item) => matchesPropertySearch(item, query)), [items, query]);
+  // A search that matches nothing still leads somewhere: the closest properties, with a note
+  // saying how the search was widened.
+  const nearest = useMemo(
+    () => (searching && exact.length === 0 ? nearestMatches(items, query, matchesPropertySearch) : { items: [] as RemoteProperty[], ignored: [] as string[] }),
+    [items, query, searching, exact.length],
+  );
+  const shown = exact.length ? exact : nearest.items;
 
   return (
     <main>
@@ -69,24 +78,28 @@ export function PropertiesLivePage() {
         copy="A considered selection of Dubai homes and opportunities, updated from our live property collection."
         image="https://res.cloudinary.com/complaintreview/image/upload/v1790577268/knc-horizon/hero/downtown-safa-park.jpg"
       />
-      {/* The home hero search links to #results; scroll-margin keeps the fixed header off the search bar. */}
-      <section id="results" className="scroll-mt-16 bg-[#faf7f1] site-section md:scroll-mt-20">
-        <div className="site-container">
-          {/* Remount when the URL changes so the fields always mirror the active search */}
-          <PropertySearch key={search} initial={query} tone="light" />
-
-          <div className="mt-8 flex flex-wrap gap-2 border-b border-[#2b3242]/15 pb-6">
-            {filters.map((item) => (
+      {/*
+       * The search bar lives on the home page only. Its link ends in #results, so a search
+       * lands straight here: the type chips, the chosen filters and the matching properties,
+       * just under the fixed header.
+       */}
+      <section className="bg-[#faf7f1] site-section">
+        <div id="results" className="site-container scroll-mt-[calc(var(--header-h)+1.5rem)]">
+          <div className="flex flex-wrap gap-2 border-b border-[#2b3242]/15 pb-6" role="group" aria-label="Property type">
+            {chips.map((chip) => (
               <button
-                key={item}
-                onClick={() => setFilter(item)}
+                key={chip}
+                type="button"
+                onClick={() => chooseChip(chip)}
+                aria-pressed={active === chip}
                 className={`rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[.13em] transition-colors ${
-                  active === item
+                  active === chip
                     ? 'bg-[#2b3242] text-[#faf7f1]'
                     : 'border border-[#2b3242]/20 text-[#2b3242]/60 hover:border-[#9f7a47] hover:text-[#9f7a47]'
                 }`}
+                data-testid={`chip-type-${chip.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
               >
-                {item}
+                {chip}
               </button>
             ))}
           </div>
@@ -94,15 +107,23 @@ export function PropertiesLivePage() {
             <AppliedFilters
               query={query}
               onClear={clearSearchHref(query)}
-              count={<span data-testid="text-search-count">{filtered.length} {filtered.length === 1 ? 'property matches' : 'properties match'} your search</span>}
+              count={
+                <span data-testid="text-search-count">
+                  {exact.length
+                    ? `${exact.length} ${exact.length === 1 ? 'property matches' : 'properties match'} your search`
+                    : nearest.items.length
+                      ? `No exact match · ${nearest.items.length} closest ${nearest.items.length === 1 ? 'property' : 'properties'}`
+                      : 'No exact match'}
+                </span>
+              }
             />
           )}
           <div className="mt-12">
             {loading ? (
               <LoadingState />
-            ) : error && filtered.length === 0 ? (
+            ) : error && shown.length === 0 ? (
               <ErrorState message={error} />
-            ) : filtered.length === 0 ? (
+            ) : shown.length === 0 ? (
               <div className="py-16 text-center">
                 <p className="block-title text-[#2b3242]">{searching ? 'No properties found.' : 'Nothing in this edit yet.'}</p>
                 {searching && (
@@ -114,11 +135,14 @@ export function PropertiesLivePage() {
                 )}
               </div>
             ) : (
-              <div className={cardGrid(filtered.length)}>
-                {filtered.map((item) => (
-                  <PropertyCard key={item.id} property={propertyCard(item, defaultCurrency)} featured={false} />
-                ))}
-              </div>
+              <>
+                {exact.length === 0 && <NearestMatchesNote ignored={nearest.ignored} noun="properties" />}
+                <div className={cardGrid(shown.length)}>
+                  {shown.map((item) => (
+                    <PropertyCard key={item.id} property={propertyCard(item, defaultCurrency)} featured={false} />
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </div>

@@ -116,6 +116,12 @@
   --site-max: 1280px;
   --site-gutter: 1.25rem;
   --site-block: 4rem;
+  /*
+   * Height of the fixed header (site-shell.tsx) before the page scrolls: on phones the logo
+   * row plus the phone bar under it, from 1024px the navy top bar plus the menu row. The
+   * home hero, the page hero and the in-page anchors leave this much room.
+   */
+  --header-h: 7.125rem;
 }
 
 @media (min-width: 640px) {
@@ -123,7 +129,11 @@
 }
 
 @media (min-width: 768px) {
-  :root { --site-gutter: 2.5rem; --site-block: 6rem; }
+  :root { --site-gutter: 2.5rem; --site-block: 6rem; --header-h: 7.625rem; }
+}
+
+@media (min-width: 1024px) {
+  :root { --header-h: 7.25rem; }
 }
 
 @media (min-width: 1280px) {
@@ -403,10 +413,10 @@
    * text pinned to the bottom, so the empty band of photo above the text ran from 35px on a
    * phone to 237px on a portrait iPad and 176px on a 1080p screen. The band now follows the
    * screen width alone: about 36px on a phone, 50px on a tablet, 85px on a laptop, never
-   * more than 112px. 5rem clears the fixed navbar.
+   * more than 112px. --header-h clears the fixed header.
    */
   --page-hero-gap: clamp(2.25rem, 6vw, 7rem);
-  padding-top: calc(5rem + var(--page-hero-gap));
+  padding-top: calc(var(--header-h) + var(--page-hero-gap));
   padding-bottom: clamp(2.5rem, 4.5vw, 4rem);
 }
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'wouter';
-import { ArrowUp, ArrowUpRight, ChevronDown, Mail, Menu, Phone, X } from 'lucide-react';
+import { ArrowUp, ArrowUpRight, ChevronDown, Mail, MapPin, Menu, Phone, X } from 'lucide-react';
 import { FaWhatsapp, FaInstagram, FaFacebookF, FaLinkedinIn, FaYoutube, FaXTwitter, FaTiktok } from 'react-icons/fa6';
 import { SOCIAL } from '@/lib/contact-info';
 import { useContact } from '@/lib/site-settings';
@@ -11,6 +11,9 @@ import { categoryOf, projectSegment, isNewLaunchProject, type SearchRow } from '
 import type { Project } from '@/lib/api';
 
 type NavItem = { label: string; href: string; needs?: 'sale' | 'rent' | 'residential' | 'commercial' | 'newLaunch' | 'apartments' | 'villas' };
+
+/* The three short promises in the top bar, left of centre on laptop and desktop screens. */
+const TOP_BAR_PROMISES = ['Exclusive Properties', 'Trusted Advisory', 'Your Dubai Real Estate Partner'];
 
 const propertyItems: NavItem[] = [
   { label: 'For Sale', href: '/properties/sale', needs: 'sale' },
@@ -152,8 +155,40 @@ export function Navbar() {
 
   return (
     <>
-      <header className={`site-gutter fixed inset-x-0 top-0 z-40 transition-all duration-500 ${inverse ? 'bg-transparent text-[#faf7f1]' : 'border-b border-[#e6dccb]/80 bg-[#faf7f1]/95 text-[#2b3242] shadow-[0_12px_30px_-26px_rgba(43,50,66,0.45)] backdrop-blur-md'} ${scrolled ? 'py-2' : 'py-3'}`}>
-        <div className="site-container flex items-center justify-between gap-6">
+      {/*
+       * The header is two rows. Its total height is --header-h (index.css); the home hero,
+       * the page hero and the in-page anchors leave that much room, so change both together.
+       */}
+      <header className="fixed inset-x-0 top-0 z-40">
+        {/*
+         * TOP BAR (laptop and desktop): where we are and what we promise on the left, the
+         * phone number and Contact on the right, so a visitor can call without scrolling.
+         * Always navy, so it reads on the dark home hero and on the ivory inner pages alike.
+         */}
+        <div className="site-gutter hidden bg-[#2b3242] text-[#faf7f1] lg:block" data-testid="top-bar">
+          <div className="site-container flex h-9 items-center justify-between gap-6">
+            <div className="flex min-w-0 items-center gap-3 text-[12px] tracking-[.02em]">
+              <span className="flex max-w-[280px] items-center gap-1.5 truncate font-medium" data-testid="top-bar-location"><MapPin size={13} className="shrink-0 text-[#d9c6a4]" aria-hidden="true" /> {contact.dubaiAddress}</span>
+              <span className="h-3.5 w-px shrink-0 bg-[#faf7f1]/25" aria-hidden="true" />
+              <p className="truncate text-[#faf7f1]/75" data-testid="top-bar-promises">
+                {TOP_BAR_PROMISES.map((text, index) => <span key={text}>{index > 0 && <span className="mx-2.5 text-[#faf7f1]/30" aria-hidden="true">|</span>}{text}</span>)}
+              </p>
+            </div>
+            <div className="flex shrink-0 items-center gap-4">
+              <a href={`tel:${contact.phoneHref}`} className="flex items-center gap-2 whitespace-nowrap text-[13px] font-semibold tracking-[.02em] transition-colors hover:text-[#ead8b8]" data-testid="link-nav-phone">
+                <Phone size={14} className="text-[#d9c6a4]" aria-hidden="true" /> {contact.phoneDisplay}
+              </a>
+              <span className="h-3.5 w-px bg-[#faf7f1]/25" aria-hidden="true" />
+              <button onClick={goContact} className="btn group min-h-7 gap-1.5 bg-[#ead8b8] px-3.5 py-1.5 text-[10.5px] text-[#2b3242] hover:bg-[#faf7f1]" data-testid="button-nav-contact">
+                Contact us <ArrowUpRight size={12} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* MENU ROW: logo on the left, the menu centred; on phone and tablet the menu button. */}
+        <div className={`site-gutter transition-all duration-500 ${inverse ? 'bg-transparent text-[#faf7f1]' : 'border-b border-[#e6dccb]/80 bg-[#faf7f1]/95 text-[#2b3242] shadow-[0_12px_30px_-26px_rgba(43,50,66,0.45)] backdrop-blur-md'} ${scrolled ? 'py-2' : 'py-3'}`}>
+        <div className="site-container flex items-center justify-between gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:justify-items-start">
           <BrandMark inverse={inverse} />
           <nav ref={navRef} className="hidden items-center gap-5 lg:flex xl:gap-7" aria-label="Primary navigation">
             <Link href="/" className="line-link flex items-center whitespace-nowrap text-[12.5px] font-medium uppercase leading-none tracking-[.06em] opacity-85 hover:opacity-100" data-testid="link-nav-home">Home</Link>
@@ -187,15 +222,26 @@ export function Navbar() {
               <button type="button" onClick={() => setDropdown(dropdown === 'insights' ? null : 'insights')} aria-haspopup="true" className="line-link flex items-center gap-1.5 whitespace-nowrap text-[12.5px] font-medium uppercase leading-none tracking-[.06em] opacity-85 hover:opacity-100" aria-expanded={dropdown === 'insights'}>Insights <ChevronDown size={12} aria-hidden="true" className={dropdown === 'insights' ? '-mt-px rotate-180 transition-transform' : '-mt-px transition-transform'} /></button>
               {dropdown === 'insights' && <div className="nav-dropdown absolute left-0 top-full w-56 border border-[#e6dccb] bg-[#fffdf8] p-2 text-[#2b3242]">{insightsItems.map((item) => <Link key={item.href} href={item.href} onClick={() => setDropdown(null)} className="block rounded-lg px-3 py-2.5 text-[13.5px] font-medium transition-colors hover:bg-[#f2ede4] hover:text-[#80623a]">{item.label}</Link>)}</div>}
             </div>
-
-            {/* CONTACT CTA */}
-            <button onClick={goContact} className={`btn group ml-1 min-h-9 gap-2 border px-4 py-2.5 ${inverse ? 'border-[#ead8b8]/60 text-[#faf7f1] hover:bg-[#ead8b8] hover:text-[#2b3242]' : 'border-[#2b3242]/35 text-[#2b3242] hover:bg-[#2b3242] hover:text-[#faf7f1]'}`} data-testid="button-nav-contact">
-              Contact us <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </button>
           </nav>
+          {/* Third column, empty: keeps the menu on the centre line of the row. */}
+          <div className="hidden lg:block" aria-hidden="true" />
           <button ref={menuButtonRef} className="-mr-2 grid h-11 w-11 place-items-center lg:hidden" onClick={() => open ? closeMenu() : setOpen(true)} aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
             {open ? <X size={21} /> : <Menu size={21} />}
           </button>
+        </div>
+        {/*
+         * PHONE BAR (phone and tablet): under the logo row, the number that dials on tap and
+         * Contact, in one slim pill. Translucent ivory on the dark home hero, soft grey on
+         * the ivory header after scrolling and on inner pages.
+         */}
+        <div className={`site-container mt-1.5 flex h-9 items-center justify-between gap-2 rounded-full border pl-1 pr-1 lg:hidden ${inverse ? 'border-[#faf7f1]/15 bg-[#faf7f1]/10' : 'border-[#2b3242]/10 bg-[#2b3242]/[.05]'}`} data-testid="mobile-phone-bar">
+          <a href={`tel:${contact.phoneHref}`} className="flex min-h-8 items-center gap-2 whitespace-nowrap pl-2.5 pr-2 text-[13px] font-medium tracking-[.02em]" data-testid="link-mobile-phone">
+            <Phone size={14} className={inverse ? 'text-[#d9c6a4]' : 'text-[#9f7a47]'} aria-hidden="true" /> {contact.phoneDisplay}
+          </a>
+          <button onClick={goContact} className={`btn min-h-7 gap-1.5 px-3.5 py-1.5 text-[10.5px] ${inverse ? 'bg-[#ead8b8] text-[#2b3242] hover:bg-[#faf7f1]' : 'bg-[#2b3242] text-[#faf7f1] hover:bg-[#8f6d3f]'}`} data-testid="button-mobile-bar-contact">
+            Contact us <ArrowUpRight size={12} />
+          </button>
+        </div>
         </div>
       </header>
       {/* Rendered outside the header: its backdrop-blur would otherwise trap these fixed layers inside the header box. */}
@@ -232,6 +278,7 @@ export function Navbar() {
 
           {/* CONTACT & WHATSAPP */}
           <button onClick={goContact} className="mt-auto flex min-h-12 w-full items-center justify-between rounded-full bg-[#2b3242] px-5 py-2 text-[13px] font-semibold uppercase tracking-[.08em] text-[#faf7f1] transition-colors hover:bg-[#8f6d3f]" data-testid="button-mobile-contact">Contact us <ArrowUpRight size={13} /></button>
+          <a href={`tel:${contact.phoneHref}`} className="mt-2 flex min-h-11 items-center justify-between border-t border-[#2b3242]/10 px-3 pt-3 text-sm" data-testid="link-mobile-menu-phone"><span className="flex items-center gap-2"><Phone size={16} className="text-[#9f7a47]" aria-hidden="true" /> {contact.phoneDisplay}</span><ArrowUpRight size={13} /></a>
           <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noreferrer" className="mt-2 flex min-h-11 items-center justify-between border-t border-[#2b3242]/10 px-3 pt-3 text-sm" data-testid="link-mobile-whatsapp"><span className="flex items-center gap-2"><FaWhatsapp size={18} className="text-[#55735f]" /> WhatsApp us</span><ArrowUpRight size={13} /></a>
           <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2 border-t border-[#2b3242]/10 px-3 pb-2 pt-3 font-mono text-[11px] uppercase tracking-[.1em] text-[#2b3242]/65"><Link href="/terms-and-conditions" onClick={closeMenu} data-testid="link-mobile-terms">Terms & Conditions</Link><Link href="/privacy-policy" onClick={closeMenu} data-testid="link-mobile-privacy">Privacy Policy</Link></div>
         </nav>

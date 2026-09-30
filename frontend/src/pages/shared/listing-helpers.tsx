@@ -6,7 +6,7 @@
 import { type ReactNode } from 'react';
 import { Link } from 'wouter';
 import { type RemoteProperty } from '@/lib/api';
-import { describeSearch, parsePropertySearch } from '@/lib/property-search';
+import { describeSearch, isOffPlanStatus, parsePropertySearch } from '@/lib/property-search';
 import { type Property } from '@/lib/site-data';
 
 export const price = (value: number, currency = 'AED') => `${currency} ${new Intl.NumberFormat('en-AE').format(value)}`;
@@ -49,7 +49,22 @@ export function AppliedFilters({ query, onClear, count }: { query: ReturnType<ty
   );
 }
 
-export const isOffPlan = (item: RemoteProperty) => /off-plan|launching|construction/i.test(item.status ?? '');
+export const isOffPlan = (item: RemoteProperty) => isOffPlanStatus(item.status);
+
+/** Above the closest matches, when the search itself matched nothing: says how it was widened. */
+export function NearestMatchesNote({ ignored, noun }: { ignored: string[]; noun: string }) {
+  const setAside = ignored.length > 1 ? `${ignored.slice(0, -1).join(', ')} and ${ignored[ignored.length - 1]}` : ignored[0];
+  return (
+    <div className="mb-8 rounded-2xl border border-[#d9c6a4]/70 bg-[#fffdf8] px-5 py-4 text-sm leading-7 text-[#2b3242]/80" data-testid="nearest-matches-note">
+      <p>
+        <span className="font-semibold text-[#2b3242]">No exact match for this search.</span>{' '}
+        These are the closest {noun} we have, with the {setAside} set aside.{' '}
+        <Link href="/contact" className="text-[#9f7a47] underline underline-offset-4">Share your brief</Link>
+        {' '}and an advisor will find more.
+      </p>
+    </div>
+  );
+}
 
 export function LoadingState() {
   return (

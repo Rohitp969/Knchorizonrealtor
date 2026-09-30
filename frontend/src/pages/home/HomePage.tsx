@@ -47,7 +47,7 @@ export default function Home() {
         className="
           home-hero site-gutter relative flex flex-col overflow-hidden
           bg-[#2b3242] text-[#faf7f1]
-          pt-28 md:pt-32
+          pt-[calc(var(--header-h)+1.5rem)] md:pt-[calc(var(--header-h)+2.5rem)]
         "
       >
         <motion.div

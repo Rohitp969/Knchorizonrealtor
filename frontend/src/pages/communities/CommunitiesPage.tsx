@@ -74,7 +74,7 @@ export function AreasPage() {
               <article
                 key={area.id}
                 id={area.id}
-                className="card-editorial group scroll-mt-28 p-5"
+                className="card-editorial group scroll-mt-[calc(var(--header-h)+1rem)] p-5"
                 data-testid={`card-community-${area.id}`}
               >
                 <div className="card-media image-reveal">

@@ -50,6 +50,17 @@ export const EMPTY_PROPERTY_SEARCH: PropertySearchQuery = {
   handover: '',
 };
 
+/*
+ * The listing page's last chip. Not a kind of home but a stage: a property whose status says
+ * it is still being built. It travels in the URL's `type` like the other chips.
+ */
+export const OFF_PLAN_CHIP = 'Off-Plan';
+
+/** A property still being built, from the status the admin typed. */
+export function isOffPlanStatus(status: string | null | undefined) {
+  return /off-plan|launching|construction/i.test(status ?? '');
+}
+
 /* ------------------------------------------------------------------ the catalogue --- */
 
 /** Categories, and the property types that sit under each. */
@@ -139,11 +150,14 @@ export function categoryOf(type: string): string | undefined {
 export function parsePropertySearch(search: string): PropertySearchQuery {
   const params = new URLSearchParams(search);
   const listing = params.get('listing');
+  const category = params.get('category') ?? '';
+  // Older links said ?category=off-plan. That is the Off-Plan chip, not a category.
+  const offPlanChip = category.toLowerCase() === 'off-plan';
   return {
     listing: listing === 'buy' || listing === 'rent' || listing === 'offplan' ? listing : '',
     location: params.get('location') ?? '',
-    category: params.get('category') ?? '',
-    type: params.get('type') ?? '',
+    category: offPlanChip ? '' : category,
+    type: offPlanChip ? OFF_PLAN_CHIP : (params.get('type') ?? ''),
     minPrice: params.get('minPrice') ?? '',
     maxPrice: params.get('maxPrice') ?? '',
     beds: params.get('beds') ?? '',
@@ -438,6 +452,7 @@ function matchesLocation(item: RemoteProperty, location: string) {
 function matchesType(item: RemoteProperty, type: string) {
   const kind = item.type ?? '';
   if (type.toLowerCase() === 'commercial') return COMMERCIAL.test(kind) || COMMERCIAL.test(item.title);
+  if (type.toLowerCase() === OFF_PLAN_CHIP.toLowerCase()) return isOffPlanStatus(item.status);
   return kind.trim().toLowerCase() === type.trim().toLowerCase();
 }
 
@@ -473,6 +488,42 @@ export function matchesProjectSearch(project: Project, query: PropertySearchQuer
   if (query.minPrice && price < Number(query.minPrice)) return false;
   if (query.maxPrice && price >= Number(query.maxPrice)) return false;
   return true;
+}
+
+/* -------------------------------------------------------------- nearest matches --- */
+
+/*
+ * A search that matches nothing still has to lead somewhere. The fields are set aside one
+ * step at a time, in the order a buyer would loosen them (bathrooms, bedrooms or handover,
+ * budget, property type, category or developer, and only then the location), until
+ * something matches. The result names the fields set aside, so the page can say exactly how
+ * the search was widened. Buy, rent and off-plan are never crossed.
+ */
+const RELAX_STEPS: { fields: (keyof PropertySearchQuery)[]; label: (mode: ListingMode) => string }[] = [
+  { fields: ['baths'], label: () => 'bathrooms' },
+  { fields: ['beds', 'handover'], label: (mode) => (mode === 'offplan' ? 'handover' : 'bedrooms') },
+  { fields: ['minPrice', 'maxPrice'], label: () => 'budget' },
+  { fields: ['type'], label: () => 'property type' },
+  { fields: ['category', 'project'], label: (mode) => (mode === 'offplan' ? 'developer' : 'category') },
+  { fields: ['location'], label: () => 'location' },
+];
+
+export function nearestMatches<T>(
+  items: T[],
+  query: PropertySearchQuery,
+  matches: (item: T, query: PropertySearchQuery) => boolean,
+): { items: T[]; ignored: string[] } {
+  const mode: ListingMode = query.listing || 'buy';
+  let widened = { ...query };
+  const ignored: string[] = [];
+  for (const step of RELAX_STEPS) {
+    if (!step.fields.some((field) => widened[field])) continue;
+    for (const field of step.fields) widened = { ...widened, [field]: '' };
+    ignored.push(step.label(mode));
+    const found = items.filter((item) => matches(item, widened));
+    if (found.length) return { items: found, ignored };
+  }
+  return { items: [], ignored };
 }
 
 /*
