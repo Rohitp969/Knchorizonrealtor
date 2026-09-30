@@ -382,8 +382,8 @@ async function linkProjectDeveloper(projectId: string) {
  * a retail unit never counted. These are the residential and commercial types the public
  * search offers (SEARCH_CATEGORIES in frontend/src/lib/property-search.ts).
  */
-const RESIDENTIAL_TYPES = ["Apartment", "Villa", "Townhouse", "Penthouse", "Duplex", "Loft", "Compound", "Whole Building", "Residential Plot"];
-const COMMERCIAL_TYPES = ["Office", "Retail", "Shop", "Showroom", "Warehouse", "Staff Accommodation", "Commercial Plot"];
+const RESIDENTIAL_TYPES = ["Apartment", "Villa", "Townhouse", "Penthouse", "Duplex", "Hotel Apartment", "Residential Plot"];
+const COMMERCIAL_TYPES = ["Office", "Retail", "Showroom", "Warehouse", "Commercial Plot"];
 
 router.get("/admin/dashboard", async (_req, res, next) => {
   try {

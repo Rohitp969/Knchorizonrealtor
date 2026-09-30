@@ -66,15 +66,20 @@ export function isOffPlanStatus(status: string | null | undefined) {
 
 /* ------------------------------------------------------------------ the catalogue --- */
 
-/** Categories, and the property types that sit under each. */
+/*
+ * Categories, and the property types under each: the kinds of property KNC sells in Dubai,
+ * no more (the owner asked for a list that fits a property seller, 2026-09-30). The same list
+ * feeds the admin form and the dashboard tiles (backend/src/routes/admin.ts), so keep the three
+ * together when a type is added or removed.
+ */
 export const SEARCH_CATEGORIES: { value: string; types: string[] }[] = [
   {
     value: 'Residential',
-    types: ['Apartment', 'Villa', 'Townhouse', 'Penthouse', 'Duplex', 'Loft', 'Compound', 'Whole Building', 'Residential Plot'],
+    types: ['Apartment', 'Villa', 'Townhouse', 'Penthouse', 'Duplex', 'Hotel Apartment', 'Residential Plot'],
   },
   {
     value: 'Commercial',
-    types: ['Office', 'Retail', 'Shop', 'Showroom', 'Warehouse', 'Staff Accommodation', 'Commercial Plot'],
+    types: ['Office', 'Retail', 'Showroom', 'Warehouse', 'Commercial Plot'],
   },
 ];
 
