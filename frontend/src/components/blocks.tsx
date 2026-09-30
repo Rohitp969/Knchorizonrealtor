@@ -50,21 +50,22 @@ export function SectionLabel({ children, light = false }: { children: string; li
 }
 
 /*
- * Section heading block: the eyebrow and heading on the left, the standfirst on the right.
- * A section's "view all" link belongs in `action`, so it sits directly under the standfirst
- * and shares its left edge. Passed as a third element beside the two columns instead, it
- * took width from the standfirst and the two no longer lined up with anything.
+ * Section heading block, one column at every width: the eyebrow, the heading, the standfirst
+ * under it, and the section's "view all" link under that, all on the same left edge. On a
+ * laptop the heading reads as one line: titles are written with a <br> for phones, and that
+ * break is hidden from 1024px (see SectionBreak). It used to put the standfirst in a second
+ * column on the right, which the owner found harder to read (2026-09-30).
  */
 export function SectionIntro({ label, title, copy, action, light = false, children, className = '' }: { label: string; title: ReactNode; copy?: string; action?: ReactNode; light?: boolean; children?: ReactNode; className?: string }) {
   return (
-    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={fadeUp} className={`flex w-full flex-col justify-between gap-6 lg:flex-row lg:items-end lg:gap-16 ${className}`}>
-      <div className="max-w-2xl">
+    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={fadeUp} className={`flex w-full flex-col gap-6 ${className}`} data-testid="section-intro">
+      <div>
         <SectionLabel light={light}>{label}</SectionLabel>
         <h2 className={`section-title mt-6 ${light ? 'text-[#faf7f1]' : 'text-[#2b3242]'}`}>{title}</h2>
       </div>
       {(copy || action) && (
-        <div className="measure-narrow text-sm lg:w-[27.5rem] lg:max-w-none lg:shrink-0 lg:pb-1">
-          {copy && <p className={`leading-7 ${light ? 'text-[#faf7f1]/65' : 'text-[#2b3242]/65'}`}>{copy}</p>}
+        <div className="measure text-sm lg:text-[15px]">
+          {copy && <p className={`leading-7 lg:leading-8 ${light ? 'text-[#faf7f1]/65' : 'text-[#2b3242]/65'}`}>{copy}</p>}
           {action && <div className="mt-5">{action}</div>}
         </div>
       )}
@@ -72,6 +73,23 @@ export function SectionIntro({ label, title, copy, action, light = false, childr
     </motion.div>
   );
 }
+
+/*
+ * The line break inside a heading. Phones keep the two lines; from 1024px the break goes and
+ * the space after it joins the two halves into one line. `keep` holds the break at every
+ * width, for the few headings too long to sit on one laptop line (a title and a place name
+ * together, or a long sentence), where the written break reads better than a chance one.
+ */
+export function SectionBreak({ keep = false }: { keep?: boolean }) {
+  return keep ? <br /> : <><br className="lg:hidden" />{' '}</>;
+}
+
+/*
+ * Whether a heading this long still sits on one line from 1024px to 1920px. Measured: the
+ * display serif averages 0.33em per glyph, so 52 characters fit at 1024px and 49 at 1920px.
+ */
+export const fitsOneLine = (text: string) => text.trim().length <= ONE_LINE_CHARS;
+const ONE_LINE_CHARS = 46;
 
 export function PropertyCard({ property, featured = false, className = '' }: { property: Property; featured?: boolean; className?: string }) {
   return (
@@ -474,9 +492,9 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
             Before you enquire
           </SectionLabel>
 
-          <h2 className="section-title mt-6 max-w-xl">
+          <h2 className="section-title mt-6">
             Your Dubai
-            <br />
+            <SectionBreak keep />
             <em className="text-[#9f7a47]">
               property questions.
             </em>
@@ -563,7 +581,7 @@ export function PageHero({ label, title, copy, image, imageAlt = '', children }:
       {image && <><img src={optimizedImage(image, 1920)} alt={imageAlt} loading="eager" fetchPriority="high" className="page-hero-image absolute inset-0 h-full w-full object-cover object-center opacity-65" /><div className="absolute inset-0 bg-gradient-to-t from-[#2b3242]/90 via-[#2b3242]/20 to-[#2b3242]/35" /></>}
       <div className="site-container relative z-10">
         <SectionLabel light={!!image}>{label}</SectionLabel>
-        <h1 className={`page-title mt-5 max-w-4xl ${image ? 'text-[#faf7f1]' : 'text-[#2b3242]'}`}>{title}</h1>
+        <h1 className={`page-title mt-5 ${image ? 'text-[#faf7f1]' : 'text-[#2b3242]'}`}>{title}</h1>
         <p className={`measure mt-5 text-sm leading-relaxed sm:text-base ${image ? 'text-[#faf7f1]/70' : 'text-[#2b3242]/65'}`}>{copy}</p>
         {children}
       </div>

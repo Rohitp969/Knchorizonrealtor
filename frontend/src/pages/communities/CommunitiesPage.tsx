@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'wouter';
-import { ContactForm, PageHero, SectionLabel, cardGrid } from '@/components/blocks';
+import { ContactForm, PageHero, SectionLabel, cardGrid, SectionBreak } from '@/components/blocks';
 import { areas } from '@/lib/site-data';
 import { useContact } from '@/lib/site-settings';
 import { optimizedImage } from '@/lib/cloudinary-image';
@@ -39,7 +39,7 @@ export function AreasPage() {
         title={
           <>
             Find the place
-            <br />
+            <SectionBreak />
             that feels like <em className="text-[#9f7a47]">you.</em>
           </>
         }
@@ -56,7 +56,7 @@ export function AreasPage() {
 
             <h2 className="section-title mt-6 text-[#2b3242]">
               Understand Dubai
-              <br />
+              <SectionBreak />
               <em className="text-[#9f7a47]">by address.</em>
             </h2>
 

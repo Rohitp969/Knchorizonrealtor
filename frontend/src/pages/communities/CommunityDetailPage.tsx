@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Link, useRoute } from 'wouter';
 import { apiFetch, type Project, type RemoteProperty } from '@/lib/api';
-import { PageHero, ProjectCard, PropertyCard, SectionLabel, cardGrid } from '@/components/blocks';
+import { PageHero, ProjectCard, PropertyCard, SectionLabel, cardGrid, SectionBreak, fitsOneLine } from '@/components/blocks';
 import { areas } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
 import { useSiteSettings } from '@/lib/site-settings';
@@ -66,7 +66,7 @@ export function CommunityDetailPage() {
   if (!name) {
     return (
       <main>
-        <PageHero label="Communities" title={<>Community<br /><em className="text-[#9f7a47]">not found.</em></>} copy="This community is not on our list yet." image="https://res.cloudinary.com/complaintreview/image/upload/v1790577274/knc-horizon/hero/maritime-city-towers.jpg" />
+        <PageHero label="Communities" title={<>Community<SectionBreak /><em className="text-[#9f7a47]">not found.</em></>} copy="This community is not on our list yet." image="https://res.cloudinary.com/complaintreview/image/upload/v1790577274/knc-horizon/hero/maritime-city-towers.jpg" />
         <section className="bg-[#faf7f1] site-section text-center">
           <Link href="/communities" className="btn btn-primary">Back to communities <ArrowUpRight size={14} /></Link>
         </section>
@@ -78,7 +78,7 @@ export function CommunityDetailPage() {
     <main>
       <PageHero
         label={community?.shortDescription ?? area?.descriptor ?? 'Dubai, by neighbourhood'}
-        title={<>{name}<br /><em className="text-[#9f7a47]">at a glance.</em></>}
+        title={<>{name}<SectionBreak keep={!fitsOneLine(`${name} at a glance.`)} /><em className="text-[#9f7a47]">at a glance.</em></>}
         copy={copy}
         image={image}
       />

@@ -1,6 +1,6 @@
 import { ArrowUpRight, Check } from 'lucide-react';
 import { Link } from 'wouter';
-import { FaqSection, PageHero, SectionIntro, SectionLabel, ServiceRow, cardGrid } from '@/components/blocks';
+import { FaqSection, PageHero, SectionIntro, SectionBreak, SectionLabel, ServiceRow, cardGrid } from '@/components/blocks';
 import { services, specialistServices } from '@/lib/site-data';
 import { optimizedImage } from '@/lib/cloudinary-image';
 
@@ -13,7 +13,7 @@ export function ServicesPage() {
         title={
           <>
             Advice for
-            <br />
+            <SectionBreak />
             <em className="text-[#9f7a47]">every direction.</em>
           </>
         }
@@ -29,7 +29,7 @@ export function ServicesPage() {
             title={
               <>
                 More than a
-                <br />
+                <SectionBreak />
                 property <em className="text-[#9f7a47]">transaction.</em>
               </>
             }
@@ -57,7 +57,7 @@ export function ServicesPage() {
             title={
               <>
                 Design & interior
-                <br />
+                <SectionBreak />
                 <em className="text-[#9f7a47]">coordination.</em>
               </>
             }
@@ -111,7 +111,7 @@ export function ServicesPage() {
             <SectionLabel>What you can expect</SectionLabel>
             <h2 className="section-title mt-6">
               No noise.
-              <br />
+              <SectionBreak />
               <em className="text-[#9f7a47]">Just movement.</em>
             </h2>
             <p className="mt-6 max-w-md text-sm leading-7 text-[#2b3242]/70">

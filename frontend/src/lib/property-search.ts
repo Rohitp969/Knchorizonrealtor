@@ -7,9 +7,12 @@ import type { Project, RemoteProperty } from '@/lib/api';
  * /properties?listing=buy&location=Dubai+Marina&category=Residential&type=Villa&minPrice=5000000&beds=3
  * /off-plan?listing=offplan&location=Dubailand&type=Emaar&minPrice=5000000&handover=2028
  *
- * Every option is read off the published collection, so nothing in a dropdown can come back
- * empty, and the lists narrow against each other as choices are made. Anything an admin
- * publishes appears here on its own; anything unpublished or deleted disappears the same way.
+ * Every dropdown shows its full list for the chosen mode, whatever else has been picked: a
+ * visitor who has chosen a location still sees every category, property type, budget band and
+ * bedroom count. Categories, types, budgets and bedrooms come from the catalogue below;
+ * locations, developers, unit types and handover years are read off the published collection,
+ * so anything an admin publishes appears on its own. A combination with nothing behind it is
+ * not a dead end: the listing page shows the closest properties instead (nearestMatches).
  *
  * Off-plan searches projects rather than properties: its category and bedroom fields become a
  * developer and a handover year, and its property type reads the project's own unit mix.
@@ -341,93 +344,104 @@ function tally(rows: SearchRow[], read: (row: SearchRow) => string): Option[] {
 const bedLabel = (beds: number) => (beds === 0 ? 'Studio' : `${beds}+ ${beds === 1 ? 'bed' : 'beds'}`);
 
 /*
- * A list is narrowed by the other choices, which can leave the value already in the URL out
- * of its own list - "3+ baths" disappears once a type is chosen whose stock starts at five,
- * even though the search itself still holds. Put the active value back so the control always
- * shows what is actually being applied.
+ * A value already in the URL may not be in its list any more (a type an admin has since
+ * renamed, a budget band from an old link). Put it back so the control always shows what is
+ * actually being applied.
  */
 function keepSelected(list: Option[], value: string, label: (value: string) => string): Option[] {
   if (!value || list.some((option) => option.value === value)) return list;
   return [...list, { value, label: label(value), count: 0 }];
 }
 
+/** Bedroom steps offered on buy and rent, whatever the stock: a studio, then 1+ to 6+. */
+const BED_STEPS = [0, 1, 2, 3, 4, 5, 6];
+
+/** Bathroom steps, the same way. */
+const BATH_STEPS = [1, 2, 3, 4, 5, 6];
+
+/*
+ * The lists behind the dropdowns, all of them full lists for the chosen mode. Nothing narrows
+ * against another choice (the owner asked for every option to stay visible once a location
+ * is picked, 2026-09-30). Each option carries the count of published listings behind it, for
+ * anything that wants to show or sort by it.
+ */
 export function searchOptions(rows: SearchRow[], query: PropertySearchQuery): SearchOptions {
   const mode: ListingMode = query.listing || 'buy';
   const offPlan = mode === 'offplan';
   const inMode = rows.filter((row) => row.mode === mode);
-  const check = tests(query);
-  // Each list is counted against the OTHER choices, so the lists narrow as the search builds
-  // and every combination the bar can reach still has something behind it.
-  const except = (...keep: ((row: SearchRow) => boolean)[]) => inMode.filter((row) => keep.every((fn) => fn(row)));
+  const same = (value: string) => value;
+  const count = (test: (row: SearchRow) => boolean) => inMode.filter(test).length;
+  const named = (value: string, test: (row: SearchRow) => boolean): Option => ({ value, label: value, count: count(test) });
 
-  const forType = except(check.location, check.category, check.budget, check.fourth, check.baths, check.extra);
-  const forBudget = except(check.location, check.category, check.type, check.fourth, check.baths, check.extra);
-  const forFourth = except(check.location, check.category, check.type, check.budget, check.baths, check.extra);
-  const forBaths = except(check.location, check.category, check.type, check.budget, check.fourth, check.extra);
-  const forProject = except(check.location, check.category, check.type, check.budget, check.fourth, check.baths);
+  // Buy and rent: the catalogue's types under the chosen category (every type when no
+  // category is chosen), then any published type the catalogue does not name.
+  const catalogueTypes = SEARCH_CATEGORIES
+    .filter((category) => !query.category || category.value === query.category)
+    .flatMap((category) => category.types);
+  const extraTypes = tally(inMode.filter((row) => !query.category || !row.category || row.category === query.category), (row) => row.type)
+    .map((option) => option.value)
+    .filter((type) => !catalogueTypes.some((name) => name.toLowerCase() === type.toLowerCase()));
 
-  // Bedroom steps present in the remaining stock: "3 beds" means 3 or more, and a studio is
-  // its own step rather than a floor.
-  // A zero only becomes "Studio" when a home sits behind it, not a commercial floor.
-  const bedSteps = [...new Set(forFourth.filter((row) => row.beds > 0 || row.category === 'Residential').map((row) => row.beds))]
-    .sort((a, b) => a - b)
-    .map((beds) => ({ value: beds === 0 ? 'studio' : String(beds), label: bedLabel(beds) }));
-
-  // Handover windows present in the remaining projects, in date order.
-  const handoverSteps = [...new Set(forFourth.map((row) => handoverYear(row.handover)))]
+  // Handover windows present in the published projects, in date order.
+  const handoverSteps = [...new Set(inMode.map((row) => handoverYear(row.handover)))]
     .sort((a, b) => a - b)
     .map((year) => (year ? { value: String(year), label: String(year) } : { value: 'ready', label: 'Ready / completed' }));
 
-  const same = (value: string) => value;
-
   return {
     total: countRows(rows, query),
-    locations: keepSelected(tally(except(check.category, check.type, check.budget, check.fourth, check.baths, check.extra), (row) => row.location), query.location, same),
-    categories: keepSelected(tally(except(check.location, check.type, check.budget, check.fourth, check.baths, check.extra), (row) => row.category), query.category, same),
-    types: keepSelected(tally(forType, (row) => row.type), query.type, same),
-    budgets: keepSelected(SEARCH_BUDGETS[mode]
-      .map((band) => ({
+    locations: keepSelected(tally(inMode, (row) => row.location), query.location, same),
+    // Buy and rent offer both categories; off-plan offers every developer with a project.
+    categories: offPlan
+      ? keepSelected(tally(inMode, (row) => row.developer), query.category, same)
+      : SEARCH_CATEGORIES.map((category) => named(category.value, (row) => row.category === category.value)),
+    // Off-plan offers the unit mix the projects record (Villas, Apartments, Waterfront...).
+    types: offPlan
+      ? keepSelected(tally(inMode, (row) => row.type), query.type, same)
+      : keepSelected(
+          [...catalogueTypes, ...extraTypes].map((type) => named(type, (row) => row.type.toLowerCase() === type.toLowerCase())),
+          query.type,
+          same,
+        ),
+    budgets: keepSelected(
+      SEARCH_BUDGETS[mode].map((band) => ({
         value: `${band.min ?? ''}-${band.max ?? ''}`,
         label: band.label,
         // "under 5M" is exclusive at the top so neighbouring bands never double-count.
-        count: forBudget.filter((row) => (band.min == null || row.price >= band.min) && (band.max == null || row.price < band.max)).length,
-      }))
-      .filter((band) => band.count > 0),
+        count: count((row) => (band.min == null || row.price >= band.min) && (band.max == null || row.price < band.max)),
+      })),
       query.minPrice || query.maxPrice ? `${query.minPrice}-${query.maxPrice}` : '',
-      (value) => SEARCH_BUDGETS[mode].find((band) => `${band.min ?? ''}-${band.max ?? ''}` === value)?.label ?? value),
-    fourth: keepSelected((offPlan ? handoverSteps : bedSteps)
-      .map((option) => ({
-        ...option,
-        count: forFourth.filter((row) =>
-          offPlan
-            ? matchesHandover(row.handover, option.value)
-            : matchesBeds(row.beds, option.value, row.category === 'Residential'),
-        ).length,
-      }))
-      .filter((option) => option.count > 0),
-      offPlan ? query.handover : query.beds,
-      (value) => (offPlan
-        ? (value === 'ready' ? 'Ready / completed' : value)
-        : bedLabel(value === 'studio' ? 0 : Number(value)))),
-    // Bathroom steps present in the remaining stock; off-plan projects hold no bathrooms.
-    baths: offPlan ? [] : keepSelected([...new Set(forBaths.map((row) => row.baths))]
-      .filter((baths) => baths > 0)
-      .sort((a, b) => a - b)
-      .map((baths) => ({
-        value: String(baths),
-        label: `${baths}+ ${baths === 1 ? 'bath' : 'baths'}`,
-        count: forBaths.filter((row) => row.baths >= baths).length,
-      }))
-      .filter((option) => option.count > 0),
-      query.baths,
-      (value) => `${value}+ ${value === '1' ? 'bath' : 'baths'}`),
+      (value) => SEARCH_BUDGETS[mode].find((band) => `${band.min ?? ''}-${band.max ?? ''}` === value)?.label ?? value,
+    ),
+    fourth: offPlan
+      ? keepSelected(
+          handoverSteps.map((option) => ({ ...option, count: count((row) => matchesHandover(row.handover, option.value)) })),
+          query.handover,
+          (value) => (value === 'ready' ? 'Ready / completed' : value),
+        )
+      : keepSelected(
+          BED_STEPS.map((beds) => {
+            const value = beds === 0 ? 'studio' : String(beds);
+            return { value, label: bedLabel(beds), count: count((row) => matchesBeds(row.beds, value, row.category === 'Residential')) };
+          }),
+          query.beds,
+          (value) => bedLabel(value === 'studio' ? 0 : Number(value)),
+        ),
+    // Bathrooms, buy and rent only; off-plan projects hold no bathrooms.
+    baths: offPlan
+      ? []
+      : keepSelected(
+          BATH_STEPS.map((baths) => ({ value: String(baths), label: `${baths}+ ${baths === 1 ? 'bath' : 'baths'}`, count: count((row) => row.baths >= baths) })),
+          query.baths,
+          (value) => `${value}+ ${value === '1' ? 'bath' : 'baths'}`,
+        ),
+    // The projects themselves, off-plan only, by title.
     projects: offPlan
       ? keepSelected(
-          [...new Map(forProject.filter((row) => row.project).map((row) => [row.project, row.projectTitle])).entries()]
+          [...new Map(inMode.filter((row) => row.project).map((row) => [row.project, row.projectTitle])).entries()]
             .sort((a, b) => a[1].localeCompare(b[1]))
             .map(([value, label]) => ({ value, label, count: 1 })),
           query.project,
-          (value) => value.replace(/-/g, ' ').replace(/\w/g, (c) => c.toUpperCase()),
+          (value) => value.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
         )
       : [],
   };

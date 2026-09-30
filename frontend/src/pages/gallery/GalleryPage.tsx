@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
-import { PageHero, cardGrid } from '@/components/blocks';
+import { PageHero, cardGrid, SectionBreak } from '@/components/blocks';
 import { defaultGallery, type GalleryItem } from '@/lib/site-data';
 import { optimizedImage } from '@/lib/cloudinary-image';
 
@@ -23,7 +23,7 @@ export function GalleryPage() {
         label="The visual archive"
         title={
           <>
-            A sense of<br />
+            A sense of<SectionBreak />
             <em className="text-[#9f7a47]">place.</em>
           </>
         }

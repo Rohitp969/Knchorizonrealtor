@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import { apiFetch, type Post } from '@/lib/api';
-import { PageHero, PostCard, cardGrid } from '@/components/blocks';
+import { PageHero, PostCard, cardGrid, SectionBreak } from '@/components/blocks';
 import { defaultPosts } from '@/lib/site-data';
 import { LoadingState, ErrorState } from '@/pages/shared/listing-helpers';
 
@@ -36,7 +36,7 @@ export function BlogPage() {
         label="The KNC blog"
         title={
           <>
-            Property, made<br />
+            Property, made<SectionBreak />
             <em className="text-[#9f7a47]">clearer.</em>
           </>
         }

@@ -1,5 +1,5 @@
 import { ArrowUpRight, Globe2 } from 'lucide-react';
-import { ContactForm, PageHero, SectionLabel } from '@/components/blocks';
+import { ContactForm, PageHero, SectionLabel, SectionBreak } from '@/components/blocks';
 import { useContact } from '@/lib/site-settings';
 
 export function ContactPage() {
@@ -13,7 +13,7 @@ export function ContactPage() {
         title={
           <>
             A good move
-            <br />
+            <SectionBreak />
             starts with a{" "}
             <em className="text-[#9f7a47]">hello.</em>
           </>

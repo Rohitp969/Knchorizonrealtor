@@ -21,11 +21,11 @@ import {
 } from '@/lib/property-search';
 
 /*
- * The dropdowns list the whole Dubai catalogue, so a client can search for any category they
- * have in mind. These rows are what gives each option its live count, and merges in anything
- * an admin has published that the catalogue does not already name. One fetch per page load is
- * enough and the result is shared by the hero and the listing bars; if the call fails the
- * same rows are derived from the listings bundled with the site.
+ * The dropdowns list the whole catalogue, so a client can search for any category they have
+ * in mind, and every list stays complete whatever else is chosen. These rows supply the
+ * locations, developers and handover years, give each option its count, and add any type an
+ * admin has published that the catalogue does not name. One fetch per page load is enough;
+ * if the call fails the same rows are derived from the listings bundled with the site.
  */
 const fallbackRows = (): SearchRow[] => [
   ...rowsFromProperties(defaultRemoteProperties as never),

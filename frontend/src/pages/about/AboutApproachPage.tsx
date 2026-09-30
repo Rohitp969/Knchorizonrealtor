@@ -1,7 +1,7 @@
 import { ArrowRight, Building2, Compass, Landmark, ShieldCheck } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'wouter';
-import { PageHero, SectionIntro, SectionLabel } from '@/components/blocks';
+import { PageHero, SectionIntro, SectionBreak, SectionLabel } from '@/components/blocks';
 import { useContact } from '@/lib/site-settings';
 
 /* ============================================================
@@ -39,7 +39,7 @@ export function AboutApproachPage() {
         title={
           <>
             Calm is not passive.
-            <br />
+            <SectionBreak />
             <em className="text-[#9f7a47]">It is prepared.</em>
           </>
         }
@@ -76,7 +76,7 @@ export function AboutApproachPage() {
             title={
               <>
                 Four phases of
-                <br />
+                <SectionBreak />
                 <em className="text-[#9f7a47]">considered advisory.</em>
               </>
             }

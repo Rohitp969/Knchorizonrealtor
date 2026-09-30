@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft, Check } from 'lucide-react';
 import { Link, useLocation, useRoute } from 'wouter';
 import { apiFetch, type RemoteProperty } from '@/lib/api';
-import { ContactForm, PageHero, SectionLabel } from '@/components/blocks';
+import { ContactForm, PageHero, SectionLabel, SectionBreak, fitsOneLine } from '@/components/blocks';
 import { defaultRemoteProperties } from '@/lib/site-data';
 import { absoluteUrl, listingJsonLd, usePageMeta, useSeoData, type SeoFields } from '@/lib/seo';
 import { useSiteSettings } from '@/lib/site-settings';
@@ -84,6 +84,10 @@ export function PropertyDetailPage() {
     );
   }
 
+  // The place under the name: the community, or the address when no community is recorded.
+  // A record with neither shows the name alone rather than a stray full stop.
+  const place = (property.community || property.location || '').trim();
+
   return (
     <main>
       <PageHero
@@ -91,8 +95,12 @@ export function PropertyDetailPage() {
         title={
           <>
             {property.title}
-            <br />
-            <em className="text-[#d9c6a4]">{property.community}.</em>
+            {place && (
+              <>
+                <SectionBreak keep={!fitsOneLine(`${property.title} ${place}.`)} />
+                <em className="text-[#d9c6a4]">{place}.</em>
+              </>
+            )}
           </>
         }
         copy={property.description}

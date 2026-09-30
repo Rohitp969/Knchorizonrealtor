@@ -1,6 +1,6 @@
 import { Check } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
-import { ContactForm, PageHero, SectionIntro, SectionLabel } from '@/components/blocks';
+import { ContactForm, PageHero, SectionIntro, SectionBreak, SectionLabel } from '@/components/blocks';
 import { useContact } from '@/lib/site-settings';
 
 /* ============================================================
@@ -42,7 +42,7 @@ export function IndiaOfficePage() {
         title={
           <>
             Connecting India to
-            <br />
+            <SectionBreak />
             <em className="text-[#9f7a47]">prime Dubai real estate.</em>
           </>
         }
@@ -79,7 +79,7 @@ export function IndiaOfficePage() {
             title={
               <>
                 Tailored solutions for
-                <br />
+                <SectionBreak />
                 <em className="text-[#9f7a47]">Indian & NRI clients.</em>
               </>
             }

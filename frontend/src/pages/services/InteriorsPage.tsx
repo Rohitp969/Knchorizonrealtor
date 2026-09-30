@@ -1,4 +1,4 @@
-import { ContactForm, PageHero, SectionIntro, SectionLabel } from '@/components/blocks';
+import { ContactForm, PageHero, SectionIntro, SectionBreak, SectionLabel } from '@/components/blocks';
 import { useContact } from '@/lib/site-settings';
 import { optimizedImage } from '@/lib/cloudinary-image';
 
@@ -29,7 +29,7 @@ export function InteriorsPage() {
         title={
           <>
             The finishing
-            <br />
+            <SectionBreak />
             <em className="text-[#9f7a47]">touch.</em>
           </>
         }
@@ -85,7 +85,7 @@ export function InteriorsPage() {
             title={
               <>
                 A complete point
-                <br />
+                <SectionBreak />
                 <em className="text-[#9f7a47]">of view.</em>
               </>
             }
@@ -123,7 +123,7 @@ export function InteriorsPage() {
             title={
               <>
                 Less noise.
-                <br />
+                <SectionBreak />
                 <em className="text-[#9f7a47]">More intention.</em>
               </>
             }
@@ -189,7 +189,7 @@ export function InteriorsPage() {
 
             <h2 className="section-title mt-6 text-[#2b3242]">
               Bring us
-              <br />
+              <SectionBreak />
               <em className="text-[#9f7a47]">the room.</em>
             </h2>
 

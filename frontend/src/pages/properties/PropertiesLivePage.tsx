@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useSearch } from 'wouter';
 import { apiFetch, type RemoteProperty } from '@/lib/api';
-import { PageHero, PropertyCard, cardGrid } from '@/components/blocks';
+import { PageHero, PropertyCard, cardGrid, SectionBreak } from '@/components/blocks';
 import { OFF_PLAN_CHIP, clearSearchHref, hasPropertySearch, matchesPropertySearch, nearestMatches, parsePropertySearch, propertySearchHref } from '@/lib/property-search';
 import { defaultRemoteProperties } from '@/lib/site-data';
 import { useSiteSettings } from '@/lib/site-settings';
@@ -71,7 +71,7 @@ export function PropertiesLivePage() {
         label="The live property edit"
         title={
           <>
-            Places worth<br />
+            Places worth<SectionBreak />
             <em className="text-[#9f7a47]">your attention.</em>
           </>
         }

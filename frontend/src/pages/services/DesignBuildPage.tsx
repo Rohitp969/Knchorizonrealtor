@@ -1,4 +1,4 @@
-import { ContactForm, PageHero, SectionIntro, SectionLabel } from '@/components/blocks';
+import { ContactForm, PageHero, SectionIntro, SectionBreak, SectionLabel } from '@/components/blocks';
 import { useContact } from '@/lib/site-settings';
 
 export function DesignBuildPage() {
@@ -35,7 +35,7 @@ export function DesignBuildPage() {
         title={
           <>
             Design that
-            <br />
+            <SectionBreak />
             <em className="text-[#9f7a47]">adds value.</em>
           </>
         }
@@ -50,9 +50,9 @@ export function DesignBuildPage() {
             Design & build coordination
           </SectionLabel>
 
-          <h2 className="section-title mt-6 max-w-4xl text-[#2b3242]">
+          <h2 className="section-title mt-6 text-[#2b3242]">
             A better property deserves
-            <br />
+            <SectionBreak />
             a better{" "}
             <em className="text-[#9f7a47]">
               plan.
@@ -116,7 +116,7 @@ export function DesignBuildPage() {
             title={
               <>
                 Start with the
-                <br />
+                <SectionBreak />
                 <em className="text-[#9f7a47]">property.</em>
               </>
             }
@@ -192,7 +192,7 @@ export function DesignBuildPage() {
 
             <h2 className="section-title mt-6 text-[#2b3242]">
               Tell us about the
-              <br />
+              <SectionBreak keep />
               <em className="text-[#9f7a47]">
                 property.
               </em>

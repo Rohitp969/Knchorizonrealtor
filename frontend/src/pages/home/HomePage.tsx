@@ -8,7 +8,7 @@ import {
   FeaturedProjects,
   FeaturedProperties,
   LatestInsights,
-  SectionIntro,
+  SectionIntro, SectionBreak,
   SectionLabel,
   ServiceRow,
   cardGrid,
@@ -123,7 +123,7 @@ export default function Home() {
             title={
               <>
                 Properties with
-                <br />
+                <SectionBreak />
                 <em className="text-[#9f7a47]">
                   a point of view.
                 </em>
@@ -197,7 +197,7 @@ export default function Home() {
         <div className="site-container">
           <SectionIntro
             label="Off-plan in Dubai"
-            title={<>New developments<br /><em className="text-[#9f7a47]">worth an early look.</em></>}
+            title={<>New developments<SectionBreak /><em className="text-[#9f7a47]">worth an early look.</em></>}
             copy="Launches and off-plan releases from established Dubai developers, with payment plans and handover timelines set out clearly."
           />
 
@@ -230,7 +230,7 @@ export default function Home() {
             title={
               <>
                 Know the feeling
-                <br />
+                <SectionBreak />
                 of each{' '}
                 <em className="text-[#9f7a47]">
                   address.
@@ -279,7 +279,7 @@ export default function Home() {
         <div className="site-container">
           <SectionIntro
             label="Developers"
-            title={<>The names behind<br /><em className="text-[#9f7a47]">Dubai&rsquo;s landmarks.</em></>}
+            title={<>The names behind<SectionBreak /><em className="text-[#9f7a47]">Dubai&rsquo;s landmarks.</em></>}
             copy="Profiles of the developers building across Dubai&rsquo;s principal communities, each with their own project history and official site."
           />
 
@@ -326,7 +326,7 @@ export default function Home() {
             title={
               <>
                 The right advice,
-                <br />
+                <SectionBreak />
                 <em className="text-[#9f7a47]">
                   at the right moment.
                 </em>
@@ -359,7 +359,7 @@ export default function Home() {
             title={
               <>
                 Spaces with
-                <br />
+                <SectionBreak />
                 <em className="text-[#9f7a47]">
                   a point of view.
                 </em>
@@ -438,7 +438,7 @@ export default function Home() {
             title={
               <>
                 A clear head in
-                <br />
+                <SectionBreak />
                 <em className="text-[#d9c6a4]">
                   a fast city.
                 </em>
@@ -567,7 +567,7 @@ export default function Home() {
               className="section-title mt-6 text-[#2b3242]"
             >
               Invest
-              <br />
+              <SectionBreak />
               <em className="text-[#9f7a47]">
                 in Dubai.
               </em>
@@ -627,7 +627,7 @@ export default function Home() {
         <div className="site-container">
           <SectionIntro
             label="Insights"
-            title={<>Notes on the<br /><em className="text-[#9f7a47]">Dubai market.</em></>}
+            title={<>Notes on the<SectionBreak /><em className="text-[#9f7a47]">Dubai market.</em></>}
             copy="Perspective on buying, renting and investing in Dubai from our advisory desk."
           />
 
@@ -694,10 +694,10 @@ export default function Home() {
             </SectionLabel>
 
             <h2
-              className="section-title mt-6 max-w-3xl"
+              className="section-title mt-6"
             >
               Let’s find your
-              <br />
+              <SectionBreak />
               <em className="text-[#d9c6a4]">
                 next property.
               </em>

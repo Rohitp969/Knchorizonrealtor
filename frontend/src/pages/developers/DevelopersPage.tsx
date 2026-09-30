@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowUpRight, ExternalLink, Globe } from 'lucide-react';
 import { Link } from 'wouter';
 import { apiFetch, type Developer } from '@/lib/api';
-import { PageHero, SectionLabel, cardGrid } from '@/components/blocks';
+import { PageHero, SectionLabel, cardGrid, SectionBreak } from '@/components/blocks';
 import { defaultDevelopers } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
 import { useContact } from '@/lib/site-settings';
@@ -49,7 +49,7 @@ export function DevelopersPage() {
         label="Dubai developers"
         title={
           <>
-            Names behind<br />
+            Names behind<SectionBreak />
             <em className="text-[#9f7a47]">Dubai's next chapter.</em>
           </>
         }

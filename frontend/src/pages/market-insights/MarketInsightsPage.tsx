@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowRight, Building2, Coins, Globe2, Landmark, ShieldCheck, TrendingUp } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'wouter';
-import { PageHero, SectionIntro, SectionLabel } from '@/components/blocks';
+import { PageHero, SectionIntro, SectionBreak, SectionLabel } from '@/components/blocks';
 import { useContact } from '@/lib/site-settings';
 import { apiFetch } from '@/lib/api';
 
@@ -63,7 +63,7 @@ export function MarketInsightsPage() {
         title={
           <>
             Dubai property fundamentals,
-            <br />
+            <SectionBreak />
             <em className="text-[#9f7a47]">grounded in fact.</em>
           </>
         }
@@ -79,7 +79,7 @@ export function MarketInsightsPage() {
             title={
               <>
                 The structural pillars of
-                <br />
+                <SectionBreak />
                 <em className="text-[#9f7a47]">Dubai real estate.</em>
               </>
             }

@@ -1,6 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'wouter';
-import { PageHero, SectionIntro, SectionLabel } from '@/components/blocks';
+import { PageHero, SectionIntro, SectionBreak, SectionLabel } from '@/components/blocks';
 
 export function AboutPage() {
   return (
@@ -12,7 +12,7 @@ export function AboutPage() {
         title={
           <>
             A steady point
-            <br />
+            <SectionBreak />
             in a moving city.
           </>
         }
@@ -54,7 +54,7 @@ export function AboutPage() {
             title={
               <>
                 Calm is not passive.
-                <br />
+                <SectionBreak />
                 <em className="text-[#9f7a47]">It is prepared.</em>
               </>
             }
@@ -105,9 +105,9 @@ export function AboutPage() {
         <div className="site-container">
           <SectionLabel>Our Commitment</SectionLabel>
 
-          <h2 className="section-title mt-6 max-w-4xl text-[#2b3242]">
+          <h2 className="section-title mt-6 text-[#2b3242]">
             Useful honesty,
-            <br />
+            <SectionBreak />
             <em className="text-[#9f7a47]">beautifully delivered.</em>
           </h2>
 

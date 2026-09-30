@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearch } from 'wouter';
 import { apiFetch, type Project } from '@/lib/api';
-import { PageHero, ProjectCard, cardGrid } from '@/components/blocks';
+import { PageHero, ProjectCard, cardGrid, SectionBreak } from '@/components/blocks';
 import { clearSearchHref, hasPropertySearch, matchesProjectSearch, nearestMatches, parsePropertySearch, type PropertySearchQuery } from '@/lib/property-search';
 import { defaultProjects } from '@/lib/site-data';
 import { AppliedFilters, ErrorState, NearestMatchesNote } from '@/pages/shared/listing-helpers';
@@ -62,7 +62,7 @@ export function ProjectsPage() {
         label="The next horizon"
         title={
           <>
-            Projects with<br />
+            Projects with<SectionBreak />
             <em className="text-[#9f7a47]">possibility.</em>
           </>
         }

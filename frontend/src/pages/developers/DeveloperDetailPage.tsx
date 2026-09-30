@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, ExternalLink, Globe, MapPin } from 'lucide-react';
 import { Link, useRoute } from 'wouter';
-import { ContactForm, ErrorState, PageHero, SectionLabel } from '@/components/blocks';
+import { ContactForm, ErrorState, PageHero, SectionLabel, SectionBreak, fitsOneLine } from '@/components/blocks';
 import { apiFetch, type Developer, type Project } from '@/lib/api';
 import { defaultProjects } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
@@ -213,7 +213,7 @@ export function DeveloperDetailPage() {
         title={
           <>
             {developer.name}
-            <br />
+            <SectionBreak keep={!fitsOneLine(`${developer.name} master builder.`)} />
             <em className="text-[#9f7a47]">master builder.</em>
           </>
         }

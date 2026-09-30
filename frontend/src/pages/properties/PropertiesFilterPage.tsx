@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'wouter';
 import { apiFetch, type RemoteProperty } from '@/lib/api';
-import { PageHero, PropertyCard, cardGrid } from '@/components/blocks';
+import { PageHero, PropertyCard, cardGrid, SectionBreak } from '@/components/blocks';
 import { categoryOf } from '@/lib/property-search';
 import { defaultRemoteProperties } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
@@ -76,12 +76,12 @@ export function PropertiesFilterPage(props: PropertiesFilterPageProps = {}) {
   }, [category]);
 
   const titles: Record<string, React.ReactNode> = {
-    residential: <>Residential<br /><em className="text-[#9f7a47]">properties.</em></>,
-    commercial: <>Commercial<br /><em className="text-[#9f7a47]">spaces.</em></>,
-    investment: <>Investment<br /><em className="text-[#9f7a47]">opportunities.</em></>,
-    'off-plan': <>Off-Plan<br /><em className="text-[#9f7a47]">launches.</em></>,
-    sale: <>Properties<br /><em className="text-[#9f7a47]">for sale.</em></>,
-    rent: <>Properties<br /><em className="text-[#9f7a47]">for rent.</em></>
+    residential: <>Residential<SectionBreak /><em className="text-[#9f7a47]">properties.</em></>,
+    commercial: <>Commercial<SectionBreak /><em className="text-[#9f7a47]">spaces.</em></>,
+    investment: <>Investment<SectionBreak /><em className="text-[#9f7a47]">opportunities.</em></>,
+    'off-plan': <>Off-Plan<SectionBreak /><em className="text-[#9f7a47]">launches.</em></>,
+    sale: <>Properties<SectionBreak /><em className="text-[#9f7a47]">for sale.</em></>,
+    rent: <>Properties<SectionBreak /><em className="text-[#9f7a47]">for rent.</em></>
   };
 
   const copyMap: Record<string, string> = {

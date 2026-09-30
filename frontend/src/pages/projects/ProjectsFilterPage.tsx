@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'wouter';
 import { apiFetch, type Project } from '@/lib/api';
-import { PageHero, ProjectCard, cardGrid } from '@/components/blocks';
+import { PageHero, ProjectCard, cardGrid, SectionBreak } from '@/components/blocks';
 import { isNewLaunchProject, projectSegment } from '@/lib/property-search';
 import { defaultProjects } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
@@ -69,11 +69,11 @@ export function ProjectsFilterPage(props: ProjectsFilterPageProps = {}) {
   }, [filter]);
 
   const titles: Record<string, React.ReactNode> = {
-    featured: <>Featured<br /><em className="text-[#9f7a47]">projects.</em></>,
-    'new-launches': <>New<br /><em className="text-[#9f7a47]">launches.</em></>,
-    'off-plan': <>Off-Plan<br /><em className="text-[#9f7a47]">developments.</em></>,
-    apartments: <>Off-Plan<br /><em className="text-[#9f7a47]">apartments.</em></>,
-    'villas-townhouses': <>Villas &<br /><em className="text-[#9f7a47]">townhouses.</em></>
+    featured: <>Featured<SectionBreak /><em className="text-[#9f7a47]">projects.</em></>,
+    'new-launches': <>New<SectionBreak /><em className="text-[#9f7a47]">launches.</em></>,
+    'off-plan': <>Off-Plan<SectionBreak /><em className="text-[#9f7a47]">developments.</em></>,
+    apartments: <>Off-Plan<SectionBreak /><em className="text-[#9f7a47]">apartments.</em></>,
+    'villas-townhouses': <>Villas &<SectionBreak /><em className="text-[#9f7a47]">townhouses.</em></>
   };
 
   const copyMap: Record<string, string> = {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Check } from 'lucide-react';
 import { Link, useLocation, useRoute } from 'wouter';
-import { ContactForm, ErrorState, PageHero, SectionLabel } from '@/components/blocks';
+import { ContactForm, ErrorState, PageHero, SectionLabel, SectionBreak, fitsOneLine } from '@/components/blocks';
 import { apiFetch, type Project } from '@/lib/api';
 import { defaultProjects } from '@/lib/site-data';
 import { absoluteUrl, listingJsonLd, usePageMeta, useSeoData, type SeoFields } from '@/lib/seo';
@@ -85,6 +85,9 @@ export function ProjectDetailPage() {
 
   const images = project.gallery?.length ? project.gallery : [project.image || fallbackImage];
 
+  // The place under the name; a project with no location recorded shows the name alone.
+  const place = (project.location || '').trim();
+
   return (
     <main>
       <PageHero
@@ -92,8 +95,12 @@ export function ProjectDetailPage() {
         title={
           <>
             {project.title}
-            <br />
-            <em className="text-[#d9c6a4]">{project.location}.</em>
+            {place && (
+              <>
+                <SectionBreak keep={!fitsOneLine(`${project.title} ${place}.`)} />
+                <em className="text-[#d9c6a4]">{place}.</em>
+              </>
+            )}
           </>
         }
         copy={project.description}
