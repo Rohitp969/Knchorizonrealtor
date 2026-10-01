@@ -118,6 +118,12 @@ export function PropertiesLivePage() {
               }
             />
           )}
+          {/* What a "From" price is, said once above the cards. */}
+          {shown.some((item) => item.priceFrom) && (
+            <p className="measure mt-6 text-xs leading-5 text-[#2b3242]/60" data-testid="note-starting-prices">
+              Prices marked “From” are the starting prices or rents that the developer or landlord publishes for a home type, an office or a building, not a quote for one unit. Rents are per year. Each page names its source and the day it was checked.
+            </p>
+          )}
           <div className="mt-12">
             {loading ? (
               <LoadingState />

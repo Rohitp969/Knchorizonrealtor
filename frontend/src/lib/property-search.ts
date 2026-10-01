@@ -61,7 +61,7 @@ export const OFF_PLAN_CHIP = 'Off-Plan';
 
 /** A property still being built, from the status the admin typed. */
 export function isOffPlanStatus(status: string | null | undefined) {
-  return /off-plan|launching|construction/i.test(status ?? '');
+  return /off-plan|launch|construction/i.test(status ?? '');
 }
 
 /* ------------------------------------------------------------------ the catalogue --- */
@@ -210,9 +210,12 @@ export type SearchRow = {
   project: string;
   projectTitle: string;
   beds: number;
+  /** Top of a bedroom range ("1 to 3 bedrooms"); 0 or absent when `beds` is the only figure. */
+  bedsMax?: number;
   baths: number;
   featured: boolean;
   handover: string;
+  /** 0 when no price is published; such a row never satisfies a budget. */
   price: number;
 };
 
@@ -249,6 +252,7 @@ export function rowsFromProperties(items: RemoteProperty[]): SearchRow[] {
       project: '',
       projectTitle: '',
       beds: Number(item.bedrooms) || 0,
+      bedsMax: Number(item.bedroomsMax) || 0,
       baths: Number(item.bathrooms) || 0,
       featured: item.featured === true,
       handover: '',
@@ -287,9 +291,13 @@ function handoverYear(handover: string) {
   return Number(handover.match(/\d{4}/)?.[0] ?? 0);
 }
 
+/** A handover the record states as done, as opposed to one nobody has published. */
+const isReadyHandover = (handover: string) => /ready|complete|handed/i.test(handover);
+
 function matchesHandover(handover: string, wanted: string) {
   if (!wanted) return true;
-  if (wanted === 'ready') return /ready|complete|handed/i.test(handover) || handoverYear(handover) === 0;
+  // A project whose handover the developer has not published matches no handover filter.
+  if (wanted === 'ready') return isReadyHandover(handover);
   const open = wanted.endsWith('+');
   const year = Number(open ? wanted.slice(0, -1) : wanted);
   return open ? handoverYear(handover) >= year : handoverYear(handover) === year;
@@ -299,9 +307,20 @@ function matchesHandover(handover: string, wanted: string) {
  * Bedrooms. A commercial floor also records zero bedrooms, so "Studio" only ever means a
  * home with no separate bedroom, never an office that happens to have none.
  */
-function matchesBeds(beds: number, wanted: string, residential = true) {
+function matchesBeds(beds: number, wanted: string, residential = true, bedsMax = 0) {
   if (!wanted) return true;
-  return wanted === 'studio' ? beds === 0 && residential : beds >= Number(wanted);
+  // "1 to 3 bedrooms" answers a search for 3 bedrooms.
+  return wanted === 'studio' ? beds === 0 && residential : Math.max(beds, bedsMax) >= Number(wanted);
+}
+
+/*
+ * Budget. A price of 0 means nobody has published one ("Price on request"), so such a listing
+ * never falls inside a budget: it is not "under AED 1M", it is unknown.
+ */
+function inBudget(price: number, min: number | undefined, max: number | undefined) {
+  if (min == null && max == null) return true;
+  if (!(price > 0)) return false;
+  return (min == null || price >= min) && (max == null || price < max);
 }
 
 /** Predicates for a query, one per field, so a field can be counted with its own left out. */
@@ -315,9 +334,9 @@ function tests(query: PropertySearchQuery) {
     category: (row: SearchRow) =>
       !query.category || (row.mode === 'offplan' ? row.developer === query.category : !row.category || row.category === query.category),
     type: (row: SearchRow) => !query.type || row.type === query.type,
-    budget: (row: SearchRow) => (!query.minPrice || row.price >= min) && (!query.maxPrice || row.price < max),
+    budget: (row: SearchRow) => inBudget(row.price, query.minPrice ? min : undefined, query.maxPrice ? max : undefined),
     fourth: (row: SearchRow) =>
-      matchesBeds(row.beds, query.beds, row.category === 'Residential') && matchesHandover(row.handover, query.handover),
+      matchesBeds(row.beds, query.beds, row.category === 'Residential', row.bedsMax) && matchesHandover(row.handover, query.handover),
     // Bathrooms are a floor too; featured and project are exact.
     baths: (row: SearchRow) => !query.baths || row.baths >= Number(query.baths),
     extra: (row: SearchRow) => !query.project || row.project === query.project,
@@ -387,10 +406,14 @@ export function searchOptions(rows: SearchRow[], query: PropertySearchQuery): Se
     .map((option) => option.value)
     .filter((type) => !catalogueTypes.some((name) => name.toLowerCase() === type.toLowerCase()));
 
-  // Handover windows present in the published projects, in date order.
-  const handoverSteps = [...new Set(inMode.map((row) => handoverYear(row.handover)))]
-    .sort((a, b) => a - b)
-    .map((year) => (year ? { value: String(year), label: String(year) } : { value: 'ready', label: 'Ready / completed' }));
+  // Handover windows present in the published projects, in date order. A project with no
+  // published handover adds no window of its own.
+  const handoverSteps = [
+    ...(inMode.some((row) => isReadyHandover(row.handover)) ? [{ value: 'ready', label: 'Ready / completed' }] : []),
+    ...[...new Set(inMode.map((row) => handoverYear(row.handover)).filter(Boolean))]
+      .sort((a, b) => a - b)
+      .map((year) => ({ value: String(year), label: String(year) })),
+  ];
 
   return {
     total: countRows(rows, query),
@@ -412,7 +435,7 @@ export function searchOptions(rows: SearchRow[], query: PropertySearchQuery): Se
         value: `${band.min ?? ''}-${band.max ?? ''}`,
         label: band.label,
         // "under 5M" is exclusive at the top so neighbouring bands never double-count.
-        count: count((row) => (band.min == null || row.price >= band.min) && (band.max == null || row.price < band.max)),
+        count: count((row) => inBudget(row.price, band.min, band.max)),
       })),
       query.minPrice || query.maxPrice ? `${query.minPrice}-${query.maxPrice}` : '',
       (value) => SEARCH_BUDGETS[mode].find((band) => `${band.min ?? ''}-${band.max ?? ''}` === value)?.label ?? value,
@@ -426,7 +449,7 @@ export function searchOptions(rows: SearchRow[], query: PropertySearchQuery): Se
       : keepSelected(
           BED_STEPS.map((beds) => {
             const value = beds === 0 ? 'studio' : String(beds);
-            return { value, label: bedLabel(beds), count: count((row) => matchesBeds(row.beds, value, row.category === 'Residential')) };
+            return { value, label: bedLabel(beds), count: count((row) => matchesBeds(row.beds, value, row.category === 'Residential', row.bedsMax)) };
           }),
           query.beds,
           (value) => bedLabel(value === 'studio' ? 0 : Number(value)),
@@ -485,9 +508,8 @@ export function matchesPropertySearch(item: RemoteProperty, query: PropertySearc
     if (category && category !== query.category) return false;
   }
   if (query.type && !matchesType(item, query.type)) return false;
-  if (query.minPrice && item.price < Number(query.minPrice)) return false;
-  if (query.maxPrice && item.price >= Number(query.maxPrice)) return false;
-  if (!matchesBeds(Number(item.bedrooms) || 0, query.beds, categoryOf(item.type ?? '') === 'Residential')) return false;
+  if (!inBudget(Number(item.price) || 0, query.minPrice ? Number(query.minPrice) : undefined, query.maxPrice ? Number(query.maxPrice) : undefined)) return false;
+  if (!matchesBeds(Number(item.bedrooms) || 0, query.beds, categoryOf(item.type ?? '') === 'Residential', Number(item.bedroomsMax) || 0)) return false;
   if (query.baths && (Number(item.bathrooms) || 0) < Number(query.baths)) return false;
   return true;
 }
@@ -504,8 +526,7 @@ export function matchesProjectSearch(project: Project, query: PropertySearchQuer
   if (query.project && (project.slug ?? '').trim() !== query.project) return false;
   if (!matchesHandover(project.handover ?? '', query.handover)) return false;
   const price = Number(project.startingPrice) || 0;
-  if (query.minPrice && price < Number(query.minPrice)) return false;
-  if (query.maxPrice && price >= Number(query.maxPrice)) return false;
+  if (!inBudget(price, query.minPrice ? Number(query.minPrice) : undefined, query.maxPrice ? Number(query.maxPrice) : undefined)) return false;
   return true;
 }
 
@@ -552,10 +573,25 @@ export function nearestMatches<T>(
  * so neither page ever shows something it does not describe.
  */
 export function projectSegment(project: Project): 'villas' | 'apartments' | null {
-  const text = `${project.category ?? ''} ${project.title ?? ''} ${project.description ?? ''}`.toLowerCase();
-  if (/\bvillas?\b|\btownhouses?\b|\bmansions?\b/.test(text)) return 'villas';
-  if (/\bapartments?\b|\bresidences?\b|\btowers?\b|\bpenthouses?\b|\bvertical\b|\blofts?\b|\bstudios?\b/.test(text)) return 'apartments';
-  return null;
+  const segments = projectSegments(project);
+  return segments.villas ? 'villas' : segments.apartments ? 'apartments' : null;
+}
+
+const VILLA_WORDS = /\bvillas?\b|\btownhouses?\b|\bmansions?\b/;
+const APARTMENT_WORDS = /\bapartments?\b|\bresidences?\b|\btowers?\b|\bpenthouses?\b|\bvertical\b|\blofts?\b|\bstudios?\b/;
+
+/*
+ * Both segments at once, because a community can sell apartments and villas side by side
+ * ("Apartments & Villas"). The category the admin recorded decides when it names a segment;
+ * only a project without one is read from its title and description.
+ */
+export function projectSegments(project: Project): { villas: boolean; apartments: boolean } {
+  const category = (project.category ?? '').toLowerCase();
+  const fromCategory = { villas: VILLA_WORDS.test(category), apartments: APARTMENT_WORDS.test(category) };
+  if (fromCategory.villas || fromCategory.apartments) return fromCategory;
+  const text = `${project.title ?? ''} ${project.description ?? ''}`.toLowerCase();
+  const villas = VILLA_WORDS.test(text);
+  return { villas, apartments: !villas && APARTMENT_WORDS.test(text) };
 }
 
 /** A project counts as a new launch from its flag, or from the status the admin typed. */

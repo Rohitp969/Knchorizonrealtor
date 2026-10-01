@@ -20,7 +20,7 @@ import { PropertySearch } from '@/components/property-search';
 
 import { areas, defaultDevelopers, services, specialistServices } from '@/lib/site-data';
 import { useContact } from '@/lib/site-settings';
-import { optimizedImage } from '@/lib/cloudinary-image';
+import { optimizedImage, responsiveImage, CARD_SIZES } from '@/lib/cloudinary-image';
 
 export default function Home() {
   const contact = useContact();
@@ -379,7 +379,8 @@ export default function Home() {
                 <div>
                   <div className="card-media">
                     <img
-                      src={optimizedImage(service.image, 800)}
+                      {...responsiveImage(service.image, [480, 800, 1200])}
+                      sizes={CARD_SIZES}
                       alt={service.title}
                       loading="lazy"
                       className="

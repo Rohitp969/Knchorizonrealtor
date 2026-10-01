@@ -429,4 +429,45 @@ alter table gallery add column if not exists image_public_id text;
 alter table media add column if not exists width integer;
 alter table media add column if not exists height integer;
 alter table media add column if not exists format text;
+-- Where the image came from and on what terms (the photo's page, and e.g. "Pexels License,
+-- photographer ..."). Shown and edited in the Media Library; empty for the agency's own photos.
+alter table media add column if not exists source_url text;
+alter table media add column if not exists license_note text;
 create index if not exists media_url_idx on media (url);
+
+-- ---------------------------------------------------------------------------
+-- Verified listings: where each fact came from, and who took each photo
+-- ---------------------------------------------------------------------------
+-- Additive only. A project or property is published with the developer's own page as its
+-- source and the day it was checked. A fact the developer does not publish stays empty
+-- (starting_price / price 0, handover '', status '') and the website says so instead of
+-- showing a number nobody can stand behind.
+--   unit_types    what the development offers, in the developer's words ("1 to 3-bedroom apartments")
+--   source_url    the developer's page the facts were read from
+--   source_name   how to name that source ("emaar.com")
+--   verified_on   the day the facts were checked, as YYYY-MM-DD
+alter table projects add column if not exists unit_types text not null default '';
+alter table projects add column if not exists source_url text not null default '';
+alter table projects add column if not exists source_name text not null default '';
+alter table projects add column if not exists verified_on text not null default '';
+-- The cover's photographer and the page it came from, and whether it is a real photo of a
+-- comparable place rather than of the project itself. Gallery entries carry the same three
+-- inside gallery_images: { "url", "alt", "publicId", "representative", "credit", "sourceUrl" }.
+alter table projects add column if not exists cover_image_credit text not null default '';
+alter table projects add column if not exists cover_image_source text not null default '';
+alter table projects add column if not exists cover_image_representative boolean not null default false;
+
+-- A property can be a home type inside one of the projects (project_slug), sold by that
+-- project's developer. price_from marks a developer's starting price ("From AED ...") rather
+-- than the price of one particular home; bedrooms_max is the top of a range ("1 to 3 bedrooms").
+alter table properties add column if not exists project_slug text;
+alter table properties add column if not exists developer text not null default '';
+alter table properties add column if not exists price_from boolean not null default false;
+alter table properties add column if not exists bedrooms_max integer not null default 0;
+alter table properties add column if not exists source_url text not null default '';
+alter table properties add column if not exists source_name text not null default '';
+alter table properties add column if not exists verified_on text not null default '';
+alter table properties add column if not exists cover_image_credit text not null default '';
+alter table properties add column if not exists cover_image_source text not null default '';
+alter table properties add column if not exists cover_image_representative boolean not null default false;
+create index if not exists properties_project_slug_idx on properties (project_slug) where published;

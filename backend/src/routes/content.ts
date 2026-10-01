@@ -68,7 +68,7 @@ function conditions(initial: string[] = []) {
  */
 router.get("/public/properties", async (req, res, next) => {
   try {
-    const { type, propertyType, listingType, community, city, q, featured, minPrice, maxPrice, bedrooms, sort, page = "1", limit = "24" } = req.query as Record<string, string | undefined>;
+    const { type, propertyType, listingType, community, city, q, featured, minPrice, maxPrice, bedrooms, project, sort, page = "1", limit = "24" } = req.query as Record<string, string | undefined>;
     const filter = conditions(["published"]);
 
     const wantedType = type ?? propertyType;
@@ -79,14 +79,18 @@ router.get("/public/properties", async (req, res, next) => {
     if (listingType) filter.push(`listing_type = ${filter.bind(listingType)}`);
     if (community) filter.push(`community = ${filter.bind(community)}`);
     if (city) filter.push(`city = ${filter.bind(city)}`);
+    // The home types recorded under one project, for that project's page.
+    if (project) filter.push(`project_slug = ${filter.bind(project)}`);
     if (featured === "true") filter.push("featured");
     if (q) {
       const value = filter.bind(contains(q));
       filter.push(`(title ilike ${value} or location ilike ${value} or community ilike ${value})`);
     }
+    // A price nobody has published is stored as 0 and never satisfies a budget.
     if (minPrice && Number.isFinite(Number(minPrice))) filter.push(`price >= ${filter.bind(Number(minPrice))}`);
-    if (maxPrice && Number.isFinite(Number(maxPrice))) filter.push(`price <= ${filter.bind(Number(maxPrice))}`);
-    if (bedrooms && Number.isFinite(Number(bedrooms))) filter.push(`bedrooms >= ${filter.bind(Number(bedrooms))}`);
+    if (maxPrice && Number.isFinite(Number(maxPrice))) filter.push(`price > 0 and price <= ${filter.bind(Number(maxPrice))}`);
+    // "1 to 3 bedrooms" answers a search for 3 bedrooms.
+    if (bedrooms && Number.isFinite(Number(bedrooms))) filter.push(`greatest(bedrooms, bedrooms_max) >= ${filter.bind(Number(bedrooms))}`);
 
     const pageNumber = Math.max(1, Number(page) || 1);
     const pageSize = Math.min(50, Math.max(1, Number(limit) || 24));
@@ -128,9 +132,9 @@ router.get("/public/property-filters", async (_req, res, next) => {
     const propertyRows = await query<{
       community: string; location: string; type: string; property_type: string | null;
       listing_type: string | null; status: string; price: number; bedrooms: number;
-      bathrooms: number; featured: boolean;
+      bedrooms_max: number; bathrooms: number; featured: boolean;
     }>(
-      `select community, location, type, property_type, listing_type, status, price, bedrooms, bathrooms, featured
+      `select community, location, type, property_type, listing_type, status, price, bedrooms, bedrooms_max, bathrooms, featured
          from properties where published limit 2000`,
     );
 
@@ -145,6 +149,7 @@ router.get("/public/property-filters", async (_req, res, next) => {
       developer: "",
       project: "",
       beds: Number(row.bedrooms) || 0,
+      bedsMax: Number(row.bedrooms_max) || 0,
       baths: Number(row.bathrooms) || 0,
       featured: row.featured === true,
       handover: "",

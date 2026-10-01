@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'wouter';
 import { apiFetch, type Project } from '@/lib/api';
 import { PageHero, ProjectCard, cardGrid, SectionBreak } from '@/components/blocks';
-import { isNewLaunchProject, projectSegment } from '@/lib/property-search';
+import { isNewLaunchProject, projectSegments } from '@/lib/property-search';
 import { defaultProjects } from '@/lib/site-data';
 import { usePageMeta } from '@/lib/seo';
 import { LoadingState, ErrorState } from '@/pages/shared/listing-helpers';
@@ -10,8 +10,8 @@ import { LoadingState, ErrorState } from '@/pages/shared/listing-helpers';
 /** Applies an off-plan page's own meaning to a list of published projects. */
 function narrowProjects(list: Project[], filter: string) {
   if (filter === 'new-launches') return list.filter(isNewLaunchProject);
-  if (filter === 'apartments') return list.filter((project) => projectSegment(project) === 'apartments');
-  if (filter === 'villas-townhouses') return list.filter((project) => projectSegment(project) === 'villas');
+  if (filter === 'apartments') return list.filter((project) => projectSegments(project).apartments);
+  if (filter === 'villas-townhouses') return list.filter((project) => projectSegments(project).villas);
   return list;
 }
 

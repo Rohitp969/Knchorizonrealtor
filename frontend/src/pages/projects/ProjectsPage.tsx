@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearch } from 'wouter';
 import { apiFetch, type Project } from '@/lib/api';
 import { PageHero, ProjectCard, cardGrid, SectionBreak } from '@/components/blocks';
-import { clearSearchHref, hasPropertySearch, matchesProjectSearch, nearestMatches, parsePropertySearch, type PropertySearchQuery } from '@/lib/property-search';
+import { clearSearchHref, hasPropertySearch, isNewLaunchProject, matchesProjectSearch, nearestMatches, parsePropertySearch, type PropertySearchQuery } from '@/lib/property-search';
 import { defaultProjects } from '@/lib/site-data';
 import { AppliedFilters, ErrorState, NearestMatchesNote } from '@/pages/shared/listing-helpers';
 
-const isNewLaunch = (project: Project) => /launching|new/i.test(project.status ?? '');
+// The same rule as the /off-plan/new-launches page: the project's flag, or its status.
+const isNewLaunch = isNewLaunchProject;
 
 export function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>(defaultProjects as unknown as Project[]);

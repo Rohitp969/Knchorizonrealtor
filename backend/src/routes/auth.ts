@@ -14,7 +14,6 @@ const loginLimit = rateLimit({ max: 20, windowMs: 15 * 60_000, message: "Too man
 router.post("/auth/login", loginLimit, async (req, res, next) => {
   try {
     const { email, password } = req.body as { email?: string; password?: string };
-    console.log(email, password);
     if (!email || !password) return res.status(400).json({ message: "Email and password are required." });
     const result = await authenticate(email, password);
     if (!result) return res.status(401).json({ message: "Invalid admin credentials." });

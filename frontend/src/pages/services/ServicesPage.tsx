@@ -2,7 +2,7 @@ import { ArrowUpRight, Check } from 'lucide-react';
 import { Link } from 'wouter';
 import { FaqSection, PageHero, SectionIntro, SectionBreak, SectionLabel, ServiceRow, cardGrid } from '@/components/blocks';
 import { services, specialistServices } from '@/lib/site-data';
-import { optimizedImage } from '@/lib/cloudinary-image';
+import { responsiveImage, CARD_SIZES } from '@/lib/cloudinary-image';
 
 export function ServicesPage() {
   return (
@@ -73,7 +73,8 @@ export function ServicesPage() {
                 <div>
                   <div className="card-media mb-6">
                     <img
-                      src={optimizedImage(specialist.image, 800)}
+                      {...responsiveImage(specialist.image, [480, 800, 1200])}
+                      sizes={CARD_SIZES}
                       alt={specialist.title}
                       loading="lazy"
                       className="h-full w-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-[1.03]"

@@ -4,10 +4,11 @@ import { ArrowUp, ArrowUpRight, ChevronDown, Mail, MapPin, Menu, Phone, X } from
 import { FaWhatsapp, FaInstagram, FaFacebookF, FaLinkedinIn, FaYoutube, FaXTwitter, FaTiktok } from 'react-icons/fa6';
 import { SOCIAL } from '@/lib/contact-info';
 import { useContact } from '@/lib/site-settings';
-import { BRAND_LOGOS, type BrandLogo } from '@/lib/brand';
+import { BRAND_LOGO, BRAND_MARK } from '@/lib/brand';
+import { optimizedImage } from '@/lib/cloudinary-image';
 import { NewsletterForm } from '@/components/blocks';
 import { apiFetch } from '@/lib/api';
-import { categoryOf, projectSegment, isNewLaunchProject, type SearchRow } from '@/lib/property-search';
+import { categoryOf, projectSegments, isNewLaunchProject, type SearchRow } from '@/lib/property-search';
 import type { Project } from '@/lib/api';
 
 type NavItem = { label: string; href: string; needs?: 'sale' | 'rent' | 'residential' | 'commercial' | 'newLaunch' | 'apartments' | 'villas' };
@@ -36,28 +37,35 @@ const offPlanItems: NavItem[] = [
  * on stock are hidden until something is published behind them. Everything is optimistic
  * until the two calls answer, so the menu never flickers items away on a slow connection.
  */
+// One lookup per page load, shared by the menu and the footer.
+let stockPromise: Promise<Record<string, boolean>> | null = null;
+
+function loadStock() {
+  stockPromise ??= Promise.all([
+    apiFetch<{ listings: SearchRow[] }>('/public/property-filters').catch(() => ({ listings: [] as SearchRow[] })),
+    apiFetch<{ projects: Project[] }>('/public/projects').catch(() => ({ projects: [] as Project[] })),
+  ]).then(([rows, projects]): Record<string, boolean> => {
+    const listings = rows.listings ?? [];
+    const list = projects.projects ?? [];
+    if (!listings.length && !list.length) return {}; // both calls failed: leave everything shown
+    return {
+      sale: listings.some((row) => row.mode === 'buy'),
+      rent: listings.some((row) => row.mode === 'rent'),
+      residential: listings.some((row) => row.mode !== 'offplan' && categoryOf(row.type) === 'Residential'),
+      commercial: listings.some((row) => row.mode !== 'offplan' && categoryOf(row.type) === 'Commercial'),
+      newLaunch: list.some(isNewLaunchProject),
+      apartments: list.some((project) => projectSegments(project).apartments),
+      villas: list.some((project) => projectSegments(project).villas),
+    };
+  });
+  return stockPromise;
+}
+
 function useStockedNav() {
   const [stock, setStock] = useState<Record<string, boolean>>({});
   useEffect(() => {
     let live = true;
-    Promise.all([
-      apiFetch<{ listings: SearchRow[] }>('/public/property-filters').catch(() => ({ listings: [] as SearchRow[] })),
-      apiFetch<{ projects: Project[] }>('/public/projects').catch(() => ({ projects: [] as Project[] })),
-    ]).then(([rows, projects]) => {
-      if (!live) return;
-      const listings = rows.listings ?? [];
-      const list = projects.projects ?? [];
-      if (!listings.length && !list.length) return; // both calls failed: leave everything shown
-      setStock({
-        sale: listings.some((row) => row.mode === 'buy'),
-        rent: listings.some((row) => row.mode === 'rent'),
-        residential: listings.some((row) => row.mode !== 'offplan' && categoryOf(row.type) === 'Residential'),
-        commercial: listings.some((row) => row.mode !== 'offplan' && categoryOf(row.type) === 'Commercial'),
-        newLaunch: list.some(isNewLaunchProject),
-        apartments: list.some((project) => projectSegment(project) === 'apartments'),
-        villas: list.some((project) => projectSegment(project) === 'villas'),
-      });
-    });
+    loadStock().then((next) => { if (live) setStock(next); });
     return () => { live = false; };
   }, []);
   return (items: NavItem[]) => items.filter((item) => !item.needs || stock[item.needs] !== false);
@@ -76,21 +84,36 @@ const insightsItems = [
 ];
 
 /*
- * The KNC Horizon Realtor logo: the stacked mark (KNC over HORIZON REALTOR), the same in the
- * header and the footer, only smaller in the header. It is narrow (1.57 : 1), so the header
- * fits it at every width without swapping to a separate emblem. Both colourways stay mounted
- * so the header can cross-fade from the ivory logo over the hero photo to the navy one once
- * it turns solid.
+ * The logo, linked home.
+ * `large` (footer): the full golden emblem, 96px tall, where there is room for its wordmark.
+ * Otherwise (header): the emblem's own arrangement, kept legible at menu-bar height: the KNC
+ * mark with the skyline on top (28px on phones, 34px from tablets up) and the name set in type
+ * under it, centred, in the emblem's manner: bold caps, then REALTOR letter-spaced between two
+ * hairlines that fill the width of the name above, as on the emblem itself. `inverse`
+ * is the header over the dark home hero, where the type turns light gold; on the ivory header
+ * it is the site's gold. The owner wants the stacked form, not the name beside the mark.
+ * Intrinsic sizes are declared so the browser reserves the boxes before the images arrive.
  */
 export function BrandMark({ inverse = false, large = false }: { inverse?: boolean; large?: boolean }) {
-  const size = large ? 'h-24 w-auto' : 'h-12 w-auto md:h-14';
-  const logo = (tone: '' | '-light', className: string) => (
-    <img src={BRAND_LOGOS[`stacked${tone}` as BrandLogo]} alt="" className={`${size} transition-opacity duration-500 ${className}`} />
-  );
+  if (large) {
+    return (
+      <Link href="/" className="inline-flex shrink-0 items-center transition-opacity hover:opacity-85" aria-label="KNC Horizon Realtor home" data-testid="link-brand-home">
+        <img src={optimizedImage(BRAND_LOGO.src, 640)} alt="" width={BRAND_LOGO.width} height={BRAND_LOGO.height} className="h-24 w-auto" />
+      </Link>
+    );
+  }
   return (
-    <Link href="/" className="relative inline-flex shrink-0 items-center transition-opacity hover:opacity-85" aria-label="KNC Horizon Realtor home" data-testid="link-brand-home">
-      {logo('', inverse ? 'opacity-0' : 'opacity-100')}
-      {logo('-light', `absolute left-0 top-0 ${inverse ? 'opacity-100' : 'opacity-0'}`)}
+    <Link href="/" className="inline-flex shrink-0 flex-col items-center gap-[3px] transition-opacity hover:opacity-85" aria-label="KNC Horizon Realtor home" data-testid="link-brand-home">
+      <img src={optimizedImage(BRAND_MARK.src, 480)} alt="" width={BRAND_MARK.width} height={BRAND_MARK.height} className="h-7 w-auto md:h-[34px]" />
+      <span className={`flex flex-col items-stretch leading-none transition-colors duration-500 ${inverse ? 'text-[#e9d3a3]' : 'text-[#9f7a47]'}`} aria-hidden="true">
+        <span className="whitespace-nowrap text-center text-[10px] font-bold uppercase tracking-[.14em] md:text-[11px]">KNC Horizon</span>
+        {/* The hairlines take whatever width the name above leaves beside REALTOR. */}
+        <span className="mt-[5px] flex items-center gap-1.5">
+          <span className="h-px flex-1 bg-current opacity-60" />
+          <span className="whitespace-nowrap font-mono text-[6.5px] uppercase tracking-[.4em] opacity-85 md:text-[7.5px]">Realtor</span>
+          <span className="h-px flex-1 bg-current opacity-60" />
+        </span>
+      </span>
     </Link>
   );
 }
@@ -187,7 +210,7 @@ export function Navbar() {
         </div>
 
         {/* MENU ROW: logo on the left, the menu centred; on phone and tablet the menu button. */}
-        <div className={`site-gutter transition-all duration-500 ${inverse ? 'bg-transparent text-[#faf7f1]' : 'border-b border-[#e6dccb]/80 bg-[#faf7f1]/95 text-[#2b3242] shadow-[0_12px_30px_-26px_rgba(43,50,66,0.45)] backdrop-blur-md'} ${scrolled ? 'py-2' : 'py-3'}`}>
+        <div className={`site-gutter transition-all duration-500 ${inverse ? 'bg-transparent text-[#faf7f1]' : 'border-b border-[#e6dccb]/80 bg-[#faf7f1]/95 text-[#2b3242] shadow-[0_12px_30px_-26px_rgba(43,50,66,0.45)] backdrop-blur-md'} ${scrolled ? 'py-1.5' : 'py-2'}`}>
         <div className="site-container flex items-center justify-between gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:justify-items-start">
           <BrandMark inverse={inverse} />
           <nav ref={navRef} className="hidden items-center gap-5 lg:flex xl:gap-7" aria-label="Primary navigation">
@@ -326,6 +349,10 @@ function SocialLinks() {
 
 export function Footer() {
   const contact = useContact();
+  // The same rule as the menu: no link to a page that has nothing on it yet.
+  const inStock = useStockedNav();
+  const footerProperties = inStock(propertyItems.filter((item) => item.needs === 'sale' || item.needs === 'rent'));
+  const footerOffPlan = inStock(offPlanItems.filter((item) => item.needs));
   return (
     <footer className="site-section border-t border-[#d9c6a4]/20 bg-[#262d3b] text-[#faf7f1]">
       <div className="site-container">
@@ -335,7 +362,7 @@ export function Footer() {
 
           {/* Brand & Introduction */}
           <div className="col-span-full lg:col-span-1">
-            <BrandMark inverse large />
+            <BrandMark large />
             <p className="block-title mt-7 max-w-sm text-[#d9c6a4]">
               A more considered way to move through Dubai.
             </p>
@@ -348,15 +375,16 @@ export function Footer() {
           <div>
             <p className="eyebrow text-[#9f7a47]">Properties</p>
             <div className="mt-4 flex flex-col items-start gap-2.5 font-mono text-[11px] uppercase tracking-[.13em] text-[#faf7f1]/70">
-              <Link href="/properties/sale" className="line-link hover:text-[#faf7f1]">For Sale</Link>
-              <Link href="/properties/rent" className="line-link hover:text-[#faf7f1]">For Rent</Link>
+              {footerProperties.map((item) => (
+                <Link key={item.href} href={item.href} className="line-link hover:text-[#faf7f1]">{item.label}</Link>
+              ))}
               <Link href="/off-plan" className="line-link hover:text-[#faf7f1]">Off-Plan</Link>
               <Link href="/properties" className="line-link hover:text-[#faf7f1]">All Properties</Link>
               <div className="my-1 border-t border-[#faf7f1]/10 w-full" />
               <p className="eyebrow text-[#9f7a47]">Off-Plan</p>
-              <Link href="/off-plan/new-launches" className="line-link hover:text-[#faf7f1]">New Launches</Link>
-              <Link href="/off-plan/apartments" className="line-link hover:text-[#faf7f1]">Apartments</Link>
-              <Link href="/off-plan/villas-townhouses" className="line-link hover:text-[#faf7f1]">Villas & Townhouses</Link>
+              {footerOffPlan.map((item) => (
+                <Link key={item.href} href={item.href} className="line-link hover:text-[#faf7f1]">{item.label}</Link>
+              ))}
               <Link href="/off-plan/developers" className="line-link hover:text-[#faf7f1]">By Developer</Link>
             </div>
           </div>

@@ -146,6 +146,38 @@ function projectImages(body: Record<string, unknown>, existing?: ProjectDoc) {
   };
 }
 
+/** A short text field: the trimmed value when sent, otherwise what the record already holds. */
+function textField(value: unknown, existing: string | null | undefined, max = 500) {
+  return typeof value === "string" ? value.trim().slice(0, max) : existing ?? "";
+}
+
+/** An https:// address (a developer's page, a photo's page), or "" when cleared or unusable. */
+function linkField(value: unknown, existing: string | null | undefined) {
+  if (typeof value !== "string") return existing ?? "";
+  const url = value.trim();
+  return /^https:\/\//i.test(url) ? url.slice(0, 500) : "";
+}
+
+/*
+ * Where a listing's facts came from and when they were checked, and who took the cover photo.
+ * The cover's credit only survives while the cover itself stays the same image.
+ */
+function sourceFields(
+  body: Record<string, unknown>,
+  existing: { sourceUrl?: string; sourceName?: string; verifiedOn?: string; coverImageCredit?: string; coverImageSource?: string; coverImageRepresentative?: boolean } | undefined,
+  coverKept: boolean,
+) {
+  const verifiedOn = typeof body.verifiedOn === "string" ? body.verifiedOn.trim() : existing?.verifiedOn ?? "";
+  return {
+    sourceUrl: linkField(body.sourceUrl, existing?.sourceUrl),
+    sourceName: textField(body.sourceName, existing?.sourceName, 120),
+    verifiedOn: /^\d{4}-\d{2}-\d{2}$/.test(verifiedOn) ? verifiedOn : "",
+    coverImageCredit: textField(body.coverImageCredit, coverKept ? existing?.coverImageCredit : "", 160),
+    coverImageSource: linkField(body.coverImageSource, coverKept ? existing?.coverImageSource : ""),
+    coverImageRepresentative: typeof body.coverImageRepresentative === "boolean" ? body.coverImageRepresentative : coverKept ? existing?.coverImageRepresentative ?? false : false,
+  };
+}
+
 function cleanBody(body: Record<string, unknown>) {
   const { _id, id, createdAt, updatedAt, ...rest } = body;
   return { ...rest, updatedAt: new Date() };
@@ -269,6 +301,12 @@ function propertyBody(body: Record<string, unknown>, _unknown?: unknown, existin
   const published = typeof body.published === "boolean" ? body.published : existing?.published ?? false;
   // listingType drives the Buy/Rent split in the public search, so an edit must keep it.
   const listingType = typeof body.listingType === "string" ? body.listingType.trim() : existing?.listingType;
+  // A home type inside a project: the project's slug, its developer, and whether the price is
+  // the developer's starting price for that type.
+  const projectSlug = typeof body.projectSlug === "string" ? body.projectSlug.trim().toLowerCase() || null : existing?.projectSlug ?? null;
+  const developer = textField(body.developer, existing?.developer, 120);
+  const priceFrom = typeof body.priceFrom === "boolean" ? body.priceFrom : existing?.priceFrom ?? false;
+  const bedroomsMax = typeof body.bedroomsMax === "number" ? (body.bedroomsMax > bedrooms ? Math.floor(body.bedroomsMax) : 0) : existing?.bedroomsMax ?? 0;
   if (!title || !slug) return undefined;
   const now = new Date();
   return {
@@ -286,7 +324,12 @@ function propertyBody(body: Record<string, unknown>, _unknown?: unknown, existin
     size,
     description,
     ...pictures,
+    ...sourceFields(body, existing, pictures.coverImage === (existing?.coverImage || existing?.images?.[0] || "")),
     amenities,
+    projectSlug,
+    developer,
+    priceFrom,
+    bedroomsMax,
     featured,
     published,
     updatedAt: now,
@@ -309,6 +352,7 @@ function projectBody(body: Record<string, unknown>, _unknown?: unknown, existing
   const category = typeof body.category === "string" ? body.category.trim() : existing?.category ?? "";
   const status = typeof body.status === "string" ? body.status.trim() : existing?.status ?? "";
   const completionDate = typeof body.completionDate === "string" ? body.completionDate.trim() : existing?.completionDate ?? "";
+  const unitTypes = textField(body.unitTypes, existing?.unitTypes, 200);
   const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl.trim() : existing?.imageUrl ?? "";
   const imagePath = typeof body.imagePath === "string" ? body.imagePath.trim() : existing?.imagePath ?? "";
   const newLaunch = typeof body.newLaunch === "boolean" ? body.newLaunch : existing?.newLaunch ?? false;
@@ -328,7 +372,9 @@ function projectBody(body: Record<string, unknown>, _unknown?: unknown, existing
     completionDate,
     startingPrice,
     handover,
+    unitTypes,
     ...pictures,
+    ...sourceFields(body, existing, pictures.image === (existing?.image || existing?.coverImage || "")),
     imageUrl,
     imagePath,
     amenities,
@@ -725,6 +771,28 @@ router.get("/admin/media", async (_req, res, next) => {
     const { configured, cloudName } = cloudinaryStatus();
     return res.json({ items: toApiList("media", rows), folders: MEDIA_FOLDERS, cloudinary: { configured, cloudName } });
   } catch (error) { return next(error); }
+});
+
+/*
+ * Where an image came from and on what terms. Both are plain text the admin maintains; the
+ * source is kept to an http(s) URL or empty.
+ */
+router.patch("/admin/media/:id", async (req, res, next) => {
+  try {
+    if (!isId(req.params.id)) return res.status(400).json({ message: "Invalid media id." });
+    const body = (req.body ?? {}) as Record<string, unknown>;
+    const patch: Record<string, string> = {};
+    if (typeof body.sourceUrl === "string") {
+      const source = body.sourceUrl.trim();
+      if (source && !/^https?:\/\/\S+$/.test(source)) return res.status(400).json({ message: "The source must be a full http(s) link, or empty." });
+      patch.sourceUrl = source.slice(0, 500);
+    }
+    if (typeof body.licenseNote === "string") patch.licenseNote = body.licenseNote.trim().slice(0, 500);
+    if (!Object.keys(patch).length) return res.status(400).json({ message: "Nothing to change: send sourceUrl and/or licenseNote." });
+    const row = await updateRow("media", req.params.id, patch);
+    if (!row) return res.status(404).json({ message: "Media not found." });
+    return res.json({ item: toApi("media", row) });
+  } catch (error) { return sendError(res, next, error); }
 });
 
 /*

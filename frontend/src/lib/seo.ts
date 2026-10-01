@@ -1,5 +1,5 @@
 import { createContext, createElement, useContext, useEffect, useId, useState, type ReactNode } from 'react';
-import { BRAND_LOGOS } from '@/lib/brand';
+import { BRAND_LOGO } from '@/lib/brand';
 import { useLocation } from 'wouter';
 import { apiFetch } from '@/lib/api';
 import { useSiteSettings } from '@/lib/site-settings';
@@ -161,7 +161,7 @@ export function organizationJsonLd({ siteName, siteUrl, phone, email }: Contact)
     '@type': 'RealEstateAgent',
     name: siteName,
     url: `${siteUrl}/`,
-    logo: BRAND_LOGOS.stacked,
+    logo: BRAND_LOGO.src,
     image: absoluteUrl(DEFAULT_OG_IMAGE, siteUrl),
     ...(phone ? { telephone: phone } : {}),
     ...(email ? { email } : {}),
@@ -198,6 +198,6 @@ export function articleJsonLd({ url, headline, description, image, datePublished
     ...(datePublished ? { datePublished } : {}),
     ...(dateModified ? { dateModified } : {}),
     author: { '@type': 'Organization', name: author || siteName },
-    publisher: { '@type': 'Organization', name: siteName, logo: { '@type': 'ImageObject', url: BRAND_LOGOS.stacked } },
+    publisher: { '@type': 'Organization', name: siteName, logo: { '@type': 'ImageObject', url: BRAND_LOGO.src, width: BRAND_LOGO.width, height: BRAND_LOGO.height } },
   };
 }

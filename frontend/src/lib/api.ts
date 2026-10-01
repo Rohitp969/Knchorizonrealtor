@@ -40,13 +40,28 @@ export type RemoteProperty = {
   coverImage?: string;
   coverImageAlt?: string;
   galleryImages?: GalleryImage[];
+  /** Who took the cover photo, the page it came from, and whether it stands in for the home. */
+  coverImageCredit?: string;
+  coverImageSource?: string;
+  coverImageRepresentative?: boolean;
   amenities: string[];
+  /** A home type inside a project: the project's slug and its developer. */
+  projectSlug?: string | null;
+  developer?: string;
+  /** True when `price` is the developer's starting price for this type ("From AED ..."). */
+  priceFrom?: boolean;
+  /** Top of a bedroom range ("1 to 3 bedrooms"); 0 when `bedrooms` is the only figure. */
+  bedroomsMax?: number;
+  /** The developer's page the facts were read from, how to name it, and the day it was checked. */
+  sourceUrl?: string;
+  sourceName?: string;
+  verifiedOn?: string;
   featured: boolean;
   published: boolean;
 };
 
-/** One image of a gallery, with the alt text the admin wrote for it. */
-export type GalleryImage = { url: string; alt?: string; publicId?: string | null };
+/** One image of a gallery, with the alt text the admin wrote for it and the photographer's credit. */
+export type GalleryImage = { url: string; alt?: string; publicId?: string | null; representative?: boolean; credit?: string; sourceUrl?: string };
 
 export type Project = {
   id: string;
@@ -64,8 +79,17 @@ export type Project = {
   coverImageAlt?: string;
   gallery?: string[];
   galleryImages?: GalleryImage[];
+  coverImageCredit?: string;
+  coverImageSource?: string;
+  coverImageRepresentative?: boolean;
   category?: string;
   status?: string;
+  /** What the development offers, in the developer's words ("1 to 3-bedroom apartments"). */
+  unitTypes?: string;
+  /** The developer's page the facts were read from, how to name it, and the day it was checked. */
+  sourceUrl?: string;
+  sourceName?: string;
+  verifiedOn?: string;
   amenities?: string[];
   highlights?: string[];
   featured?: boolean;

@@ -118,10 +118,11 @@
   --site-block: 4rem;
   /*
    * Height of the fixed header (site-shell.tsx) before the page scrolls: on phones the logo
-   * row plus the phone bar under it, from 1024px the navy top bar plus the menu row. The
-   * home hero, the page hero and the in-page anchors leave this much room.
+   * row (28px mark with the name under it, 8px padding) plus the phone bar; on tablets the same
+   * with a 34px mark; from 1024px the navy top bar plus the menu row (34px mark). Measured:
+   * 111 / 119 / 113px. The home hero, the page hero and the in-page anchors leave this much room.
    */
-  --header-h: 7.125rem;
+  --header-h: 6.9375rem;
 }
 
 @media (min-width: 640px) {
@@ -129,11 +130,11 @@
 }
 
 @media (min-width: 768px) {
-  :root { --site-gutter: 2.5rem; --site-block: 6rem; --header-h: 7.625rem; }
+  :root { --site-gutter: 2.5rem; --site-block: 6rem; --header-h: 7.4375rem; }
 }
 
 @media (min-width: 1024px) {
-  :root { --header-h: 7.25rem; }
+  :root { --header-h: 7.0625rem; }
 }
 
 @media (min-width: 1280px) {

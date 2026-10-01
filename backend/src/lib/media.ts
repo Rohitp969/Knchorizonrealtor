@@ -9,7 +9,19 @@ import { isImageRef, oneLine } from "./seo.ts";
  * never be saved pointing at an asset id the admin did not actually use.
  */
 
-export type GalleryImage = { url: string; alt: string; publicId: string | null };
+/*
+ * `representative` marks a real photo of a comparable place in Dubai that stands in for a
+ * listing or project the agency has no licensed photo of. The website labels such images, so
+ * a visitor is never told a representative photo shows the actual home or project.
+ */
+export type GalleryImage = { url: string; alt: string; publicId: string | null; representative?: boolean; credit?: string; sourceUrl?: string };
+
+/** The photographer line and the page a photo came from, kept only when they were given. */
+function creditOf(record: Record<string, unknown>) {
+  const credit = typeof record.credit === "string" ? oneLine(record.credit).slice(0, 160) : "";
+  const sourceUrl = typeof record.sourceUrl === "string" && /^https:\/\//i.test(record.sourceUrl.trim()) ? record.sourceUrl.trim().slice(0, 500) : "";
+  return { ...(credit ? { credit } : {}), ...(sourceUrl ? { sourceUrl } : {}) };
+}
 
 export const MAX_ALT_LENGTH = 250;
 export const MAX_GALLERY_IMAGES = 30;
@@ -41,7 +53,7 @@ export function cleanGallery(value: unknown): GalleryImage[] | undefined {
     const url = cleanImageUrl(typeof entry === "string" ? entry : record.url);
     if (!url || seen.has(url)) continue;
     seen.add(url);
-    gallery.push({ url, alt: cleanAlt(record.alt) ?? "", publicId: null });
+    gallery.push({ url, alt: cleanAlt(record.alt) ?? "", publicId: null, ...(record.representative === true ? { representative: true } : {}), ...creditOf(record) });
   }
   return gallery.slice(0, MAX_GALLERY_IMAGES);
 }
@@ -51,7 +63,7 @@ export function storedGallery(value: unknown, fallbackUrls: readonly string[] = 
   const stored = Array.isArray(value)
     ? value
         .filter((entry): entry is Record<string, unknown> => typeof entry === "object" && entry !== null && typeof (entry as { url?: unknown }).url === "string")
-        .map((entry) => ({ url: String(entry.url), alt: typeof entry.alt === "string" ? entry.alt : "", publicId: typeof entry.publicId === "string" ? entry.publicId : null }))
+        .map((entry) => ({ url: String(entry.url), alt: typeof entry.alt === "string" ? entry.alt : "", publicId: typeof entry.publicId === "string" ? entry.publicId : null, ...(entry.representative === true ? { representative: true } : {}), ...creditOf(entry) }))
     : [];
   if (stored.length) return stored;
   return fallbackUrls.filter(Boolean).map((url) => ({ url, alt: "", publicId: null }));

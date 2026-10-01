@@ -169,6 +169,10 @@ export type MediaItem = {
   width?: number | null;
   height?: number | null;
   format?: string | null;
+  /** The photo's page at its source (Pexels, Unsplash, Wikimedia Commons), when it is not the agency's own. */
+  sourceUrl?: string | null;
+  /** Its licence and photographer, e.g. "Pexels License, photographer AJ Ahamad". */
+  licenseNote?: string | null;
   createdAt?: string;
 };
 
@@ -204,6 +208,11 @@ export function listMedia() {
  * Deletes from Cloudinary and the library. An image still shown on the website is refused
  * (AdminRequestError with `usedBy`) unless `force` is set.
  */
+/** Records where an image came from and on what terms. */
+export function updateMedia(id: string, patch: { sourceUrl?: string; licenseNote?: string }) {
+  return adminRequest<{ item: MediaItem }>(`/admin/media/${id}`, { method: 'PATCH', body: JSON.stringify(patch) }).then((data) => data.item);
+}
+
 export function deleteMedia(id: string, options: { force?: boolean } = {}) {
   return adminRequest<void>(`/admin/media/${id}${options.force ? '?force=1' : ''}`, { method: 'DELETE' });
 }

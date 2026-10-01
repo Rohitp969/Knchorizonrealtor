@@ -5,7 +5,8 @@
  */
 import { type ReactNode } from 'react';
 import { Link } from 'wouter';
-import { type RemoteProperty } from '@/lib/api';
+import { type GalleryImage, type RemoteProperty } from '@/lib/api';
+import { hasRepresentativePhotos, photoCredits, propertyDetails, propertyPriceLabel, verifiedDate } from '@/lib/listing-format';
 import { describeSearch, isOffPlanStatus, parsePropertySearch } from '@/lib/property-search';
 import { type Property } from '@/lib/site-data';
 
@@ -17,8 +18,8 @@ export const propertyCard = (item: RemoteProperty, currency = 'AED'): Property =
   title: item.title,
   location: item.location,
   type: item.type,
-  price: price(item.price, item.currency || currency),
-  details: `${item.bedrooms} beds · ${item.bathrooms} baths · ${new Intl.NumberFormat('en-AE').format(item.size)} sq ft`,
+  price: propertyPriceLabel(item, currency),
+  details: propertyDetails(item),
   image: item.images[0] || 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg',
   imageAlt: item.coverImageAlt || undefined,
   note: item.status,
@@ -50,6 +51,59 @@ export function AppliedFilters({ query, onClear, count }: { query: ReturnType<ty
 }
 
 export const isOffPlan = (item: RemoteProperty) => isOffPlanStatus(item.status);
+
+/*
+ * Under a listing's facts: where they came from and when they were checked. A listing with a
+ * source says so and links to it; one without (entered by hand, nothing to point to) keeps the
+ * plain "indicative" wording. Either way the visitor is told the figures can change and that
+ * KNC Horizon Realtor confirms them on enquiry.
+ */
+export function SourceNote({ developer, sourceUrl, sourceName, verifiedOn, rental = false }: { developer?: string; sourceUrl?: string; sourceName?: string; verifiedOn?: string; /** A home or office offered for rent by its landlord, rather than sold by its developer. */ rental?: boolean }) {
+  const checked = verifiedDate(verifiedOn);
+  if (!sourceUrl) {
+    return (
+      <p className="mt-4 text-xs leading-5 text-[#2b3242]/55" data-testid="note-indicative">
+        Prices and dates are indicative and change with each release. Contact KNC Horizon Realtor for current availability and pricing.
+      </p>
+    );
+  }
+  return (
+    <p className="mt-4 text-xs leading-5 text-[#2b3242]/60" data-testid="note-verified-source">
+      {developer ? (rental ? `Offered for rent by ${developer}. ` : `Developed and marketed by ${developer}. `) : ''}
+      Details as published on{' '}
+      <a href={sourceUrl} target="_blank" rel="noopener noreferrer nofollow" className="text-[#9f7a47] underline underline-offset-2" data-testid="link-verified-source">
+        {sourceName || 'the developer’s website'}
+      </a>
+      {checked ? `, checked on ${checked}` : ''}. They are {rental ? 'the landlord’s' : 'the developer’s'} figures and can change at any time; contact KNC Horizon Realtor for current availability and pricing.
+    </p>
+  );
+}
+
+/** Who took the photos, and a plain statement of what a "Representative image" is. */
+export function ImageCredits({ cover, gallery, coverRepresentative, subject }: { cover?: { credit?: string; sourceUrl?: string }; gallery?: GalleryImage[]; coverRepresentative?: boolean; subject: string }) {
+  const credits = photoCredits(cover, gallery);
+  const representative = hasRepresentativePhotos(coverRepresentative, gallery);
+  if (!credits.length && !representative) return null;
+  return (
+    <p className="mt-4 text-xs leading-5 text-[#2b3242]/55" data-testid="text-image-credits">
+      {credits.length > 0 && (
+        <>
+          Photos:{' '}
+          {credits.map((entry, index) => (
+            <span key={entry.credit}>
+              {index > 0 && ', '}
+              {entry.sourceUrl
+                ? <a href={entry.sourceUrl} target="_blank" rel="noopener noreferrer nofollow" className="underline underline-offset-2 hover:text-[#9f7a47]">{entry.credit}</a>
+                : entry.credit}
+            </span>
+          ))}
+          .{' '}
+        </>
+      )}
+      {representative && `Photos marked “Representative image” are real photographs of the area or of a comparable place in Dubai, not of ${subject}.`}
+    </p>
+  );
+}
 
 /** Above the closest matches, when the search itself matched nothing: says how it was widened. */
 export function NearestMatchesNote({ ignored, noun }: { ignored: string[]; noun: string }) {

@@ -2,7 +2,8 @@ import { useState, type FormEvent } from 'react';
 import { ArrowUpRight, Loader2, Lock } from 'lucide-react';
 
 import { adminLogin } from '@/lib/admin-api';
-import { BRAND_LOGOS } from '@/lib/brand';
+import { BRAND_LOGO } from '@/lib/brand';
+import { optimizedImage } from '@/lib/cloudinary-image';
 
 /** Admin sign-in. Credentials are checked by the backend against the hashed user in PostgreSQL. */
 export function AdminLogin({ onSignedIn, notice }: { onSignedIn: () => void; notice?: string }) {
@@ -31,7 +32,7 @@ export function AdminLogin({ onSignedIn, notice }: { onSignedIn: () => void; not
             sign-in panel instead of loose pieces stacked down the left edge. */}
         <form onSubmit={submit} className="rounded-2xl border border-[#2b3242]/10 bg-[#fcfaf5] px-6 py-8 shadow-[0_24px_48px_-32px_rgba(43,50,66,0.4)] sm:px-8" noValidate>
           <div className="text-center">
-            <img src={BRAND_LOGOS.stacked} alt="KNC Horizon Realtor" className="mx-auto h-16 w-auto" />
+            <img src={optimizedImage(BRAND_LOGO.src, 480)} alt={BRAND_LOGO.alt} width={BRAND_LOGO.width} height={BRAND_LOGO.height} className="mx-auto h-20 w-auto" />
             <h1 className="mt-6 font-serif text-2xl leading-tight text-[#2b3242]">Admin console</h1>
             <p className="mt-2 text-sm leading-relaxed text-[#2b3242]/60">Sign in with your KNC account. Administrators and SEO managers use the same sign-in.</p>
           </div>

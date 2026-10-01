@@ -122,12 +122,16 @@ export function PropertySearch({
 
   const offPlan = listing === 'offplan';
 
+  // A tab is offered only while the site has something behind it: with no rental listings
+  // published there is no Rent tab to lead a visitor to an empty page. Buy always stays.
+  const modes = LISTING_MODES.filter((mode) => mode.value === 'buy' || mode.value === listing || rows.some((row) => row.mode === mode.value));
+
   return (
     <form role="search" aria-label="Search properties" onSubmit={submit} className={className} data-testid="form-property-search">
      <div className={styles.shell}>
       <div className={`flex items-stretch border-b ${styles.bar}`}>
         <div className="flex w-full items-stretch" role="group" aria-label="What are you looking for">
-          {LISTING_MODES.map((mode, index) => (
+          {modes.map((mode, index) => (
             <button
               key={mode.value}
               type="button"

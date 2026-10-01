@@ -250,9 +250,9 @@ async function migrateDatabase(apply) {
     }
     for (const entry of newMedia) {
       await client.query(
-        `insert into media (url, public_id, filename, mimetype, size, folder, width, height, format, created_at)
-         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, now())`,
-        [entry.url, entry.publicId, path.basename(entry.local), entry.format === "svg" ? "image/svg+xml" : `image/${entry.format === "jpg" ? "jpeg" : entry.format}`, entry.bytes, entry.folder, entry.width, entry.height, entry.format],
+        `insert into media (url, public_id, filename, mimetype, size, folder, width, height, format, source_url, license_note, created_at)
+         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, now())`,
+        [entry.url, entry.publicId, path.basename(entry.local), entry.format === "svg" ? "image/svg+xml" : `image/${entry.format === "jpg" ? "jpeg" : entry.format}`, entry.bytes, entry.folder, entry.width, entry.height, entry.format, entry.page ?? null, [entry.licence, entry.photographer ? `photographer ${entry.photographer}` : null, entry.representative ? "representative image" : null].filter(Boolean).join(", ") || null],
       );
     }
     await client.query("commit");

@@ -4,7 +4,7 @@ import { Link } from 'wouter';
 import { ContactForm, PageHero, SectionLabel, cardGrid, SectionBreak } from '@/components/blocks';
 import { areas } from '@/lib/site-data';
 import { useContact } from '@/lib/site-settings';
-import { optimizedImage } from '@/lib/cloudinary-image';
+import { responsiveImage, CARD_SIZES } from '@/lib/cloudinary-image';
 import { apiFetch, type Project, type RemoteProperty } from '@/lib/api';
 
 export function AreasPage() {
@@ -79,7 +79,8 @@ export function AreasPage() {
               >
                 <div className="card-media image-reveal">
                   <img
-                    src={optimizedImage(area.image, 800)}
+                    {...responsiveImage(area.image, [480, 800, 1200])}
+                    sizes={CARD_SIZES}
                     alt={`${area.name}, Dubai`}
                     loading="lazy"
                     className="transition-transform duration-700 group-hover:scale-[1.03]"

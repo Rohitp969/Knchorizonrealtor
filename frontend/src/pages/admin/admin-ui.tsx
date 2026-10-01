@@ -534,7 +534,7 @@ export function ImagePicker({
   );
 }
 
-export type GalleryImageValue = { url: string; alt: string };
+export type GalleryImageValue = { url: string; alt: string; representative?: boolean; credit?: string; sourceUrl?: string };
 
 /**
  * A gallery: several images, each its own Cloudinary asset with its own alt text, in the order
@@ -642,6 +642,30 @@ export function GalleryPicker({
                   className="w-full rounded-md border border-[#2b3242]/20 bg-[#fffdf8] px-2 py-1.5 text-xs outline-none focus:border-[#9f7a47]"
                   data-testid={`input-gallery-alt-${index}`}
                 />
+                <label className="flex items-center gap-1.5 text-[11px] text-[#2b3242]/70">
+                  <input type="checkbox" checked={image.representative === true} onChange={(event) => update(index, { representative: event.target.checked })} className="accent-[#9f7a47]" data-testid={`input-gallery-representative-${index}`} />
+                  Representative photo (a comparable place, not this one). The website labels it.
+                </label>
+                <div className="grid gap-1.5 sm:grid-cols-2">
+                  <input
+                    value={image.credit ?? ''}
+                    maxLength={160}
+                    onChange={(event) => update(index, { credit: event.target.value })}
+                    placeholder="Credit: Photographer / Pexels"
+                    aria-label={`Photo credit for image ${index + 1}`}
+                    className="w-full rounded-md border border-[#2b3242]/20 bg-[#fffdf8] px-2 py-1.5 text-xs outline-none focus:border-[#9f7a47]"
+                    data-testid={`input-gallery-credit-${index}`}
+                  />
+                  <input
+                    value={image.sourceUrl ?? ''}
+                    maxLength={500}
+                    onChange={(event) => update(index, { sourceUrl: event.target.value })}
+                    placeholder="Photo page: https://..."
+                    aria-label={`Source page for image ${index + 1}`}
+                    className="w-full rounded-md border border-[#2b3242]/20 bg-[#fffdf8] px-2 py-1.5 text-xs outline-none focus:border-[#9f7a47]"
+                    data-testid={`input-gallery-source-${index}`}
+                  />
+                </div>
                 <div className="flex items-center gap-1">
                   <span className="mr-auto font-mono text-[9px] uppercase tracking-[.1em] text-[#2b3242]/50">#{index + 1}</span>
                   <button type="button" onClick={() => move(index, -1)} disabled={index === 0} className="grid h-7 w-7 place-items-center rounded-md border border-[#2b3242]/15 text-[#2b3242] hover:border-[#9f7a47] disabled:opacity-30" aria-label="Move earlier"><ArrowUp size={12} /></button>

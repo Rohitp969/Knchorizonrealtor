@@ -121,12 +121,12 @@ const projectFolder = (values: Record<string, any>) =>
     : values.featured ? 'knc-horizon/projects/featured'
       : 'knc-horizon/projects/off-plan';
 
-type GalleryEntry = { url: string; alt: string };
+type GalleryEntry = { url: string; alt: string; representative?: boolean; credit?: string; sourceUrl?: string };
 
 /** A stored gallery, or for records saved before galleries existed, one built from plain URLs. */
 function galleryFrom(stored: unknown, urls: unknown): GalleryEntry[] {
   if (Array.isArray(stored) && stored.length) {
-    return stored.filter((entry) => entry && typeof entry.url === 'string').map((entry) => ({ url: entry.url, alt: entry.alt ?? '' }));
+    return stored.filter((entry) => entry && typeof entry.url === 'string').map((entry) => ({ url: entry.url, alt: entry.alt ?? '', ...(entry.representative === true ? { representative: true } : {}), ...(entry.credit ? { credit: entry.credit } : {}), ...(entry.sourceUrl ? { sourceUrl: entry.sourceUrl } : {}) }));
   }
   return Array.isArray(urls) ? urls.filter((url): url is string => typeof url === 'string' && Boolean(url)).map((url) => ({ url, alt: '' })) : [];
 }
@@ -185,22 +185,32 @@ export const resources: Record<string, ResourceConfig> = {
       { name: 'location', label: 'Location', type: 'text', required: true, group: 'Location' },
       { name: 'community', label: 'Community', type: 'text', optionsFrom: 'communities', group: 'Location' },
       { name: 'city', label: 'City', type: 'text', group: 'Location' },
-      { name: 'price', label: 'Price', type: 'number', required: true, group: 'Pricing' },
+      { name: 'price', label: 'Price', type: 'number', required: true, help: 'Leave 0 when no price is published; the website then shows "Price on request".', group: 'Pricing' },
       { name: 'currency', label: 'Currency', type: 'select', options: ['AED', 'USD', 'EUR', 'GBP', 'INR'], group: 'Pricing' },
+      { name: 'priceFrom', label: 'This is a starting price (shown as "From ...")', type: 'boolean', group: 'Pricing' },
       { name: 'bedrooms', label: 'Bedrooms', type: 'number', group: 'Specification' },
+      { name: 'bedroomsMax', label: 'Bedrooms, up to', type: 'number', help: 'Only for a range such as 1 to 3 bedrooms; otherwise leave 0.', group: 'Specification' },
       { name: 'bathrooms', label: 'Bathrooms', type: 'number', group: 'Specification' },
       { name: 'size', label: 'Area (sq ft)', type: 'number', group: 'Specification' },
       { name: 'description', label: 'Description', type: 'textarea', required: true, full: true, group: 'Content' },
       { name: 'amenities', label: 'Amenities', type: 'tags', full: true, help: 'Comma separated', group: 'Content' },
       { name: 'highlights', label: 'Highlights', type: 'tags', full: true, help: 'Comma separated', group: 'Content' },
+      { name: 'developer', label: 'Developer', type: 'text', optionsFrom: 'developers', help: 'For a home inside a developer\'s project.', group: 'Source' },
+      { name: 'projectSlug', label: 'Project slug', type: 'text', placeholder: 'binghatti-skyrise', help: 'Links this home to its project page: /projects/<slug>.', group: 'Source' },
+      { name: 'sourceUrl', label: 'Source page (https://...)', type: 'text', help: "The developer's own page these facts were read from. Shown on the website as the source.", group: 'Source' },
+      { name: 'sourceName', label: 'Source name', type: 'text', placeholder: 'emaar.com', group: 'Source' },
+      { name: 'verifiedOn', label: 'Checked on', type: 'text', placeholder: 'YYYY-MM-DD', help: 'The day the facts were last checked against the source.', group: 'Source' },
       { name: 'coverImage', label: 'Cover image', type: 'image', full: true, altField: 'coverImageAlt', folder: propertyFolder, help: 'Shown on property cards and at the top of the listing.', group: 'Media' },
-      { name: 'galleryImages', label: 'Gallery images', type: 'gallery', full: true, folder: propertyFolder, help: 'Select several files at once; each is uploaded as its own image. Give every photo alt text.', group: 'Media' },
+      { name: 'coverImageCredit', label: 'Cover photo credit', type: 'text', placeholder: 'Photographer / Pexels', group: 'Media' },
+      { name: 'coverImageSource', label: 'Cover photo page (https://...)', type: 'text', group: 'Media' },
+      { name: 'coverImageRepresentative', label: 'Cover is a representative photo (a comparable place, not this home)', type: 'boolean', group: 'Media' },
+      { name: 'galleryImages', label: 'Gallery images', type: 'gallery', full: true, folder: propertyFolder, help: 'Select several files at once; each is uploaded as its own image. Give every photo alt text and its credit.', group: 'Media' },
       { name: 'featured', label: 'Featured on the home page', type: 'boolean', group: 'Visibility' },
       { name: 'published', label: 'Published on the website', type: 'boolean', group: 'Visibility' },
     ],
     defaults: {
       currency: 'AED', type: 'Apartment', listingType: 'sale', status: 'For sale',
-      bedrooms: 0, bathrooms: 0, size: 0, price: 0, coverImage: '', coverImageAlt: '', galleryImages: [], amenities: [], featured: false, published: true,
+      bedrooms: 0, bedroomsMax: 0, bathrooms: 0, size: 0, price: 0, priceFrom: false, coverImage: '', coverImageAlt: '', coverImageRepresentative: false, galleryImages: [], amenities: [], featured: false, published: true,
     },
     formValues: (item) => {
       const images: string[] = Array.isArray(item.images) ? item.images : [];
@@ -253,21 +263,28 @@ export const resources: Record<string, ResourceConfig> = {
       { name: 'developer', label: 'Developer', type: 'select', optionsFrom: 'developers', required: true, group: 'Details' },
       { name: 'location', label: 'Location', type: 'text', required: true, group: 'Details' },
       { name: 'category', label: 'Property types', type: 'text', help: 'e.g. Apartments, Villas', group: 'Details' },
-      { name: 'status', label: 'Launch status', type: 'select', options: ['Launching soon', 'Now selling', 'Under construction', 'Ready'], group: 'Details' },
-      { name: 'startingPrice', label: 'Starting price', type: 'number', required: true, group: 'Pricing' },
-      { name: 'handover', label: 'Handover', type: 'text', placeholder: 'Q4 2027', group: 'Pricing' },
+      { name: 'unitTypes', label: 'Homes offered', type: 'text', placeholder: '1 to 3-bedroom apartments', help: 'In the developer\'s words.', group: 'Details' },
+      { name: 'status', label: 'Status', type: 'select', options: ['Off-plan', 'New launch', 'Under construction', 'Ready', 'Launching soon', 'Now selling'], help: 'Only what the developer states; leave empty when unsure.', group: 'Details' },
+      { name: 'startingPrice', label: 'Starting price', type: 'number', required: true, help: 'Leave 0 when the developer publishes none; the website then shows "Price on request".', group: 'Pricing' },
+      { name: 'handover', label: 'Handover', type: 'text', placeholder: 'Q4 2027', help: 'Leave empty when the developer publishes none.', group: 'Pricing' },
       { name: 'completionDate', label: 'Completion date', type: 'text', group: 'Pricing' },
       { name: 'description', label: 'Description', type: 'textarea', required: true, full: true, group: 'Content' },
       { name: 'amenities', label: 'Amenities', type: 'tags', full: true, group: 'Content' },
       { name: 'highlights', label: 'Payment plan / highlights', type: 'tags', full: true, help: 'Comma separated', group: 'Content' },
+      { name: 'sourceUrl', label: 'Source page (https://...)', type: 'text', help: "The developer's own page these facts were read from. Shown on the website as the source.", group: 'Source' },
+      { name: 'sourceName', label: 'Source name', type: 'text', placeholder: 'emaar.com', group: 'Source' },
+      { name: 'verifiedOn', label: 'Checked on', type: 'text', placeholder: 'YYYY-MM-DD', help: 'The day the facts were last checked against the source.', group: 'Source' },
       { name: 'image', label: 'Cover image', type: 'image', full: true, altField: 'coverImageAlt', folder: projectFolder, help: 'Shown on project cards and at the top of the project page.', group: 'Media' },
-      { name: 'galleryImages', label: 'Gallery images', type: 'gallery', full: true, folder: projectFolder, help: 'Select several files at once; each is uploaded as its own image. Give every photo alt text.', group: 'Media' },
+      { name: 'coverImageCredit', label: 'Cover photo credit', type: 'text', placeholder: 'Photographer / Pexels', group: 'Media' },
+      { name: 'coverImageSource', label: 'Cover photo page (https://...)', type: 'text', group: 'Media' },
+      { name: 'coverImageRepresentative', label: 'Cover is a representative photo (the area or a comparable place, not this project)', type: 'boolean', group: 'Media' },
+      { name: 'galleryImages', label: 'Gallery images', type: 'gallery', full: true, folder: projectFolder, help: 'Select several files at once; each is uploaded as its own image. Give every photo alt text and its credit.', group: 'Media' },
       { name: 'newLaunch', label: 'New launch', type: 'boolean', group: 'Visibility' },
       { name: 'offPlan', label: 'Off-plan', type: 'boolean', group: 'Visibility' },
       { name: 'featured', label: 'Featured', type: 'boolean', group: 'Visibility' },
       { name: 'published', label: 'Published on the website', type: 'boolean', group: 'Visibility' },
     ],
-    defaults: { startingPrice: 0, featured: false, published: true, offPlan: true, newLaunch: false, amenities: [], highlights: [], galleryImages: [] },
+    defaults: { startingPrice: 0, featured: false, published: true, offPlan: true, newLaunch: false, coverImageRepresentative: false, amenities: [], highlights: [], galleryImages: [] },
     formValues: (item) => ({
       ...item,
       image: item.image || item.coverImage || '',

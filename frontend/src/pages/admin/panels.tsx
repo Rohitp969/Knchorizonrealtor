@@ -7,6 +7,7 @@ import {
   MEDIA_FOLDERS,
   adminRequest,
   deleteMedia,
+  updateMedia,
   loadMediaLibrary,
   uploadAdminImage,
   type AdminUser,
@@ -536,6 +537,42 @@ function MediaDetail({ label, value }: { label: string; value?: string | null })
   );
 }
 
+/*
+ * Where the image came from and on what terms: the photo's page at its source and a note such
+ * as "Pexels License, photographer AJ Ahamad". Kept with the image so the licence of every
+ * photo on the site can be checked from the console.
+ */
+function MediaSourceForm({ item, onSaved }: { item: MediaItem; onSaved: (item: MediaItem) => void }) {
+  const toast = useToast();
+  const [sourceUrl, setSourceUrl] = useState(item.sourceUrl ?? '');
+  const [licenseNote, setLicenseNote] = useState(item.licenseNote ?? '');
+  const [saving, setSaving] = useState(false);
+  useEffect(() => { setSourceUrl(item.sourceUrl ?? ''); setLicenseNote(item.licenseNote ?? ''); }, [item.id, item.sourceUrl, item.licenseNote]);
+  const save = async () => {
+    setSaving(true);
+    try {
+      onSaved(await updateMedia(item.id, { sourceUrl: sourceUrl.trim(), licenseNote: licenseNote.trim() }));
+      toast('success', 'Source and licence saved.');
+    } catch (reason) {
+      toast('error', reason instanceof Error ? reason.message : 'Could not save.');
+    } finally {
+      setSaving(false);
+    }
+  };
+  return (
+    <div className="mt-4 rounded-xl border border-[#2b3242]/10 bg-[#fffdf8] px-3 py-3" data-testid="media-source-form">
+      <p className="font-mono text-[10px] uppercase tracking-[.12em] text-[#2b3242]/60">Source and licence</p>
+      <div className="mt-2 grid gap-2 sm:grid-cols-2">
+        <input value={sourceUrl} onChange={(event) => setSourceUrl(event.target.value)} placeholder="Photo page, e.g. https://www.pexels.com/photo/…" className="min-w-0 rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] px-3 py-2 text-sm outline-none focus:border-[#9f7a47]" aria-label="Source URL" data-testid="input-media-source" />
+        <input value={licenseNote} onChange={(event) => setLicenseNote(event.target.value)} placeholder="Licence, e.g. Pexels License, photographer …" className="min-w-0 rounded-lg border border-[#2b3242]/20 bg-[#fffdf8] px-3 py-2 text-sm outline-none focus:border-[#9f7a47]" aria-label="Licence note" data-testid="input-media-licence" />
+      </div>
+      <div className="mt-2 flex justify-end">
+        <button type="button" className={adminButtonClass('primary')} onClick={save} disabled={saving} data-testid="button-save-media-source">{saving ? 'Saving…' : 'Save source'}</button>
+      </div>
+    </div>
+  );
+}
+
 export function MediaPanel() {
   const toast = useToast();
   const [library, setLibrary] = useState<MediaLibrary | null>(null);
@@ -689,6 +726,8 @@ export function MediaPanel() {
                   </p>
                   <MediaDetail label="Cloudinary URL" value={item.url} />
                   <MediaDetail label="public_id" value={item.publicId} />
+                  <MediaDetail label="Source" value={item.sourceUrl} />
+                  <MediaDetail label="Licence" value={item.licenseNote} />
                   <div className="mt-3 flex flex-wrap items-center gap-1.5">
                     <CopyButton value={item.url} label="Copy URL" />
                     <button type="button" onClick={() => setDeleting(item)} className="ml-auto grid h-9 w-9 place-items-center rounded-lg border border-[#2b3242]/15 text-[#b23b2e] hover:border-[#b23b2e]" title="Delete" aria-label={`Delete ${item.filename ?? 'image'}`} data-testid={`button-delete-media-${item.id}`}>
@@ -715,6 +754,7 @@ export function MediaPanel() {
               <CopyButton value={preview.url} />
               {preview.publicId && <CopyButton value={preview.publicId} label="Copy public_id" />}
             </div>
+            <MediaSourceForm item={preview} onSaved={(item) => { setPreview(item); setLibrary((current) => (current ? { ...current, items: current.items.map((row) => (row.id === item.id ? item : row)) } : current)); }} />
           </div>
         )}
       </Modal>

@@ -38,8 +38,23 @@ export type PropertyDoc = {
   coverImagePublicId?: string | null;
   coverImageAlt?: string;
   galleryImages?: GalleryImage[];
+  /** Who took the cover photo, the page it came from, and whether it stands in for the home. */
+  coverImageCredit?: string;
+  coverImageSource?: string;
+  coverImageRepresentative?: boolean;
   amenities: string[];
   highlights?: string[];
+  /** A home type inside a project: the project's slug and its developer. */
+  projectSlug?: string | null;
+  developer?: string;
+  /** True when `price` is the developer's starting price for this type, not one home's price. */
+  priceFrom?: boolean;
+  /** Top of a bedroom range ("1 to 3 bedrooms"); 0 when `bedrooms` is the only figure. */
+  bedroomsMax?: number;
+  /** The developer's page the facts were read from, how to name it, and the day it was checked. */
+  sourceUrl?: string;
+  sourceName?: string;
+  verifiedOn?: string;
   featured: boolean;
   published: boolean;
   createdAt: Date;
@@ -67,8 +82,17 @@ export type ProjectDoc = {
   coverImageAlt?: string;
   gallery?: string[];
   galleryImages?: GalleryImage[];
+  coverImageCredit?: string;
+  coverImageSource?: string;
+  coverImageRepresentative?: boolean;
   amenities?: string[];
   highlights?: string[];
+  /** What the development offers, in the developer's words. */
+  unitTypes?: string;
+  /** The developer's page the facts were read from, how to name it, and the day it was checked. */
+  sourceUrl?: string;
+  sourceName?: string;
+  verifiedOn?: string;
   completionDate?: string;
   newLaunch?: boolean;
   offPlan?: boolean;

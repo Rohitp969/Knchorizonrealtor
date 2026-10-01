@@ -5,7 +5,8 @@ import { Link } from 'wouter';
 import { defaultPosts, defaultProjects, properties, type Area, type Property, type Service, faqs } from '@/lib/site-data';
 import { apiFetch, type Post, type Project, type RemoteProperty } from '@/lib/api';
 import { useSiteSettings } from '@/lib/site-settings';
-import { optimizedImage } from '@/lib/cloudinary-image';
+import { optimizedImage, responsiveImage, CARD_SIZES, HERO_SIZES } from '@/lib/cloudinary-image';
+import { projectPlaceLine, projectPriceLabel, propertyDetails, propertyPriceLabel } from '@/lib/listing-format';
 import { PhoneInput, type PhoneChange } from '@/components/phone-input';
 
 export const fadeUp = {
@@ -108,7 +109,8 @@ export function PropertyCard({ property, featured = false, className = '' }: { p
       >
         <div className={`mobile-card-image image-reveal card-media ${featured ? 'card-media-wide' : ''}`}>
           <img
-            src={optimizedImage(property.image, 800)}
+            {...responsiveImage(property.image, [480, 800, 1200])}
+            sizes={CARD_SIZES}
             alt={property.imageAlt || `${property.title}, ${property.location}`}
             loading="lazy"
             onError={(event) => { event.currentTarget.src = 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg'; }}
@@ -163,8 +165,8 @@ function remotePropertyCard(item: RemoteProperty, currency: string): Property {
     title: item.title,
     location: item.location,
     type: item.type,
-    price: `${item.currency || currency} ${new Intl.NumberFormat('en-AE').format(item.price)}`,
-    details: `${item.bedrooms} beds · ${item.bathrooms} baths · ${new Intl.NumberFormat('en-AE').format(item.size)} sq ft`,
+    price: propertyPriceLabel(item, currency),
+    details: propertyDetails(item),
     image: item.images?.[0] || 'https://res.cloudinary.com/complaintreview/image/upload/v1790577279/knc-horizon/pages/dubai-skyline-from-sea.jpg',
     imageAlt: item.coverImageAlt || undefined,
     note: item.status,
@@ -231,24 +233,28 @@ export function ProjectCard({ project }: { project: Project }) {
       <div>
         <div className="card-media image-reveal">
           <img
-            src={optimizedImage(project.image || FALLBACK_IMAGE, 800)}
+            {...responsiveImage(project.image || FALLBACK_IMAGE, [480, 800, 1200])}
+            sizes={CARD_SIZES}
             alt={project.coverImageAlt || `${project.title} by ${project.developer}, ${project.location}`}
             loading="lazy"
             onError={(event) => { event.currentTarget.src = FALLBACK_IMAGE; }}
             className="transition-transform duration-700 group-hover:scale-[1.03]"
           />
-          <span className="absolute left-3 top-3 rounded-full border border-[#faf7f1]/30 bg-[#2b3242]/80 px-3 py-1 font-mono text-[11px] uppercase tracking-[.12em] text-[#faf7f1] backdrop-blur-xs">
-            {project.status || 'Off-Plan'}
-          </span>
+          {/* The status the developer states, or none: nothing is assumed about a project. */}
+          {project.status && (
+            <span className="absolute left-3 top-3 rounded-full border border-[#faf7f1]/30 bg-[#2b3242]/80 px-3 py-1 font-mono text-[11px] uppercase tracking-[.12em] text-[#faf7f1] backdrop-blur-xs">
+              {project.status}
+            </span>
+          )}
         </div>
-        <p className="eyebrow mt-4 line-clamp-1 text-[#9f7a47]">{project.developer} · {project.location}</p>
+        <p className="eyebrow mt-4 line-clamp-1 text-[#9f7a47]">{[project.developer, projectPlaceLine(project)].filter(Boolean).join(' · ')}</p>
         <h3 className="card-title mt-2 line-clamp-2">{project.title}</h3>
         <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#2b3242]/65">{project.description}</p>
       </div>
       <div className="mt-5 border-t border-[#2b3242]/12 pt-4">
         <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[.13em] text-[#2b3242]/65">
-          <span>From {aed(project.startingPrice, defaultCurrency)}</span>
-          <span>Handover {project.handover}</span>
+          <span data-testid={`text-project-price-${project.slug}`}>{projectPriceLabel(project, defaultCurrency)}</span>
+          {project.handover && <span>Handover {project.handover}</span>}
         </div>
         <span className="mt-3 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47] group-hover:underline">
           View project <ArrowUpRight size={14} />
@@ -272,7 +278,8 @@ export function PostCard({ post }: { post: Post }) {
       <div>
         <div className="card-media image-reveal">
           <img
-            src={optimizedImage(post.featuredImage || post.image || FALLBACK_IMAGE, 800)}
+            {...responsiveImage(post.featuredImage || post.image || FALLBACK_IMAGE, [480, 800, 1200])}
+            sizes={CARD_SIZES}
             alt={post.featuredImageAlt || post.title}
             loading="lazy"
             onError={(event) => { event.currentTarget.src = FALLBACK_IMAGE; }}
@@ -374,7 +381,7 @@ export function AreaCard({ area, index, className = 'w-full' }: { area: Area; in
     <motion.article initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={fadeUp} transition={{ delay: index * .08 }} className={`group ${className}`} data-testid={`card-area-${area.id}`}>
       <Link href={`/communities/${area.id}`} className="card-editorial group block p-5" data-testid={`link-area-${area.id}`}>
         <div className="card-media bg-[#2b3242]">
-          <img src={optimizedImage(area.image, 800)} alt={area.name} loading="lazy" className="h-full w-full object-cover opacity-85 transition-transform duration-700 ease-out group-hover:scale-[1.03]" data-testid={`img-area-${area.id}`} />
+          <img {...responsiveImage(area.image, [480, 800, 1200])} sizes={CARD_SIZES} alt={area.name} loading="lazy" className="h-full w-full object-cover opacity-85 transition-transform duration-700 ease-out group-hover:scale-[1.03]" data-testid={`img-area-${area.id}`} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#2b3242]/85 via-[#2b3242]/20 to-transparent" />
           <div className="absolute inset-x-5 bottom-5 text-[#faf7f1]">
             <p className="font-mono text-[11px] uppercase tracking-[.15em] text-[#d9c6a4]">Dubai · Community</p>
@@ -575,16 +582,21 @@ export function FaqSection({ compact = false }: { compact?: boolean }) {
   );
 }
 
-export function PageHero({ label, title, copy, image, imageAlt = '', children }: { label: string; title: ReactNode; copy: string; image?: string; imageAlt?: string; children?: ReactNode }) {
+export function PageHero({ label, title, copy, image, imageAlt = '', imageNote, children }: { label: string; title: ReactNode; copy: string; image?: string; imageAlt?: string; /** A short label over the photo, e.g. "Representative image". */ imageNote?: string; children?: ReactNode }) {
   return (
     <section className={`page-hero site-gutter relative flex items-end overflow-hidden ${image ? 'bg-[#2b3242]' : 'bg-[#efeae2]'}`}>
-      {image && <><img src={optimizedImage(image, 1920)} alt={imageAlt} loading="eager" fetchPriority="high" className="page-hero-image absolute inset-0 h-full w-full object-cover object-center opacity-65" /><div className="absolute inset-0 bg-gradient-to-t from-[#2b3242]/90 via-[#2b3242]/20 to-[#2b3242]/35" /></>}
+      {image && <><img {...responsiveImage(image, [1024, 1600, 2400])} sizes={HERO_SIZES} alt={imageAlt} loading="eager" fetchPriority="high" className="page-hero-image absolute inset-0 h-full w-full object-cover object-center opacity-65" /><div className="absolute inset-0 bg-gradient-to-t from-[#2b3242]/90 via-[#2b3242]/20 to-[#2b3242]/35" /></>}
       <div className="site-container relative z-10">
         <SectionLabel light={!!image}>{label}</SectionLabel>
         <h1 className={`page-title mt-5 ${image ? 'text-[#faf7f1]' : 'text-[#2b3242]'}`}>{title}</h1>
         <p className={`measure mt-5 text-sm leading-relaxed sm:text-base ${image ? 'text-[#faf7f1]/70' : 'text-[#2b3242]/65'}`}>{copy}</p>
         {children}
       </div>
+      {image && imageNote && (
+        <span className="absolute right-4 top-[calc(var(--header-h)+0.75rem)] z-10 rounded-full border border-[#faf7f1]/30 bg-[#2b3242]/70 px-3 py-1 font-mono text-[10px] uppercase tracking-[.12em] text-[#faf7f1] backdrop-blur-xs sm:right-6" data-testid="label-hero-image-note">
+          {imageNote}
+        </span>
+      )}
     </section>
   );
 }

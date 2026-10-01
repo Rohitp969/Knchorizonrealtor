@@ -14,6 +14,7 @@ KNC-Horizon-Realtor/
 ├── README.md                  yeh file
 ├── docs/
 │   ├── IMAGE_SOURCES.md       har photo kahan se aayi, uska licence
+│   ├── VERIFIED_LISTINGS.md   har project aur ghar: developer ka kaunsa page, kya verify hua, kya nahi mila
 │   └── DATABASE.md            database: tables, server ki dekhbhaal, backup
 │
 ├── frontend/
@@ -76,7 +77,7 @@ Saare pages `frontend/src/pages/` me hain. Har page ki apni file hai.
 | Page nahi mila (404) | koi bhi galat URL | `not-found/NotFoundPage.tsx` |
 | Admin panel | `/admin` | `admin/` folder |
 
-`pages/shared/listing-helpers.tsx` me woh cheezein hain jo listing wale pages me same hain: price likhne ka tarika, property card, loading aur error message.
+`pages/shared/listing-helpers.tsx` me woh cheezein hain jo listing wale pages me same hain: property card, "Details as published on ..." wali line (`SourceNote`), photo credits (`ImageCredits`), loading aur error message.
 
 ### Admin panel (`frontend/src/pages/admin/`)
 
@@ -118,6 +119,7 @@ Saare pages `frontend/src/pages/` me hain. Har page ki apni file hai.
 | `api.ts` | Website ke API calls aur data ke types |
 | `admin-api.ts` | Admin panel ke API calls, upload folders |
 | `property-search.ts` | Search aur filter ka logic |
+| `listing-format.ts` | Price, bedrooms, size likhne ke rules. Jo figure developer ne publish nahi ki woh number nahi banti: price 0 ho to "Price on request", handover khaali ho to dikhta hi nahi |
 | `utils.ts` | Chhota helper |
 
 ## Backend
@@ -144,6 +146,7 @@ Saare pages `frontend/src/pages/` me hain. Har page ki apni file hai.
 |---|---|
 | `migrate-images-to-cloudinary.mjs` | Nayi photos Cloudinary par daalna |
 | `cloudinary-images.json` | Cloudinary ki har photo ki list |
+| `verified-listings.json` | Website ke projects aur unke ghar: har fact ke saath developer ke page ka quote. Database me `backups/tools/apply-verified-listings.mjs` se jaata hai |
 | `apply-schema.mjs` | Database ki tables banana (dobara chalane par kuch nahi bigadta) |
 | `test-api.mjs` | Saare API check karna |
 | `test-email.mjs` | `.env` ki mail settings se ek test email bhejna (`npm run test:email`) |
@@ -154,7 +157,13 @@ Saare pages `frontend/src/pages/` me hain. Har page ki apni file hai.
 |---|---|
 | Phone, WhatsApp, email, address | Admin panel > Settings |
 | Property, project, blog, developer | Admin panel |
+| Project ka price, handover ya status badal gaya | Developer ka page kholo (project page par "Details as published on ..." ka link). Admin panel > Off-Plan Projects > project kholo > naya figure likho aur **Checked on** me aaj ki tareekh daalo. Developer ne figure hata di ho to price 0 / handover khaali kar do: website khud "Price on request" / "Not published by the developer" likhegi. **Andaze se koi figure mat likhna** |
+| Naya project jodna | Sirf woh project jo developer ki apni website par ho. Admin panel me jodo aur **Source page** (developer ka link), **Source name** aur **Checked on** zaroor bharo. Poori list aur rules: `docs/VERIFIED_LISTINGS.md` |
+| Kisi project ke andar ka ghar (jaise "1-Bedroom at ...") | Admin panel > Properties > naya record: **Project slug** me project ka slug, **Developer**, aur "This is a starting price" tick karo (website "From AED ..." likhegi) |
 | Page ka SEO title, description, share image | Admin panel > SEO |
+| Property/project ki photos | Admin panel me record kholo > Cover image / Gallery images. Jo photo asli property ki nahi, usi jaisi jagah ki hai, uska "Representative photo" box tick karo: website us par "Representative image" label dikhati hai |
+| Photo kahan se aayi, licence kya hai | Admin panel > Media Library > photo kholo > Source and licence. Poori list `docs/IMAGE_SOURCES.md` me |
+| Photo ka credit (photographer) | Record kholo > Cover photo credit, aur gallery ki har photo ke neeche "Credit" aur "Photo page". Website gallery ke neeche "Photos: ..." likhti hai |
 | Kisi page ka text | Us page ki file (upar table) |
 | Navbar ya footer | `frontend/src/components/site-shell.tsx` |
 | Top bar ki teen lines (Exclusive Properties…) | `frontend/src/components/site-shell.tsx` me `TOP_BAR_PROMISES` |

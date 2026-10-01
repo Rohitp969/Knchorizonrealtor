@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { PageHero, cardGrid, SectionBreak } from '@/components/blocks';
 import { defaultGallery, type GalleryItem } from '@/lib/site-data';
-import { optimizedImage } from '@/lib/cloudinary-image';
+import { optimizedImage, responsiveImage, CARD_SIZES } from '@/lib/cloudinary-image';
 
 export function GalleryPage() {
   const [items, setItems] = useState<GalleryItem[]>(defaultGallery);
@@ -40,7 +40,8 @@ export function GalleryPage() {
             >
               <div className="card-media">
                 <img
-                  src={optimizedImage(item.image, 800)}
+                  {...responsiveImage(item.image, [480, 800, 1200])}
+                  sizes={CARD_SIZES}
                   alt={item.alt}
                   loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
