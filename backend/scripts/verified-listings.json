@@ -43,10 +43,48 @@
         "handover",
         "location (district name not on the developer's page)"
       ],
-      "dropPhotos": [
+      "photos": [
         {
-          "local": "/images/the-oasis-garden-water-feature.jpg",
-          "reason": "Its Pexels page says Dubai, but other frames of the same series show a resort outside Dubai, so the place can no longer be vouched for. Taken out of the gallery; the file stays in Cloudinary."
+          "local": "/images/the-oasis-villa-pool-garden.jpg",
+          "alt": "Private pool with tropical planting at a modern villa in Dubai",
+          "representative": true,
+          "credit": "Rana Matloob Hussain / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/luxury-poolside-oasis-in-modern-dubai-villa-34378029/"
+        },
+        {
+          "local": "/images/the-oasis-villa-community-aerial.jpg",
+          "alt": "Modern villas with gardens and pools in a Dubai residential community, seen from above",
+          "representative": true,
+          "credit": "Subbu Rayan / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-residential-villas-in-dubai-overview-31771226/"
+        },
+        {
+          "local": "/images/the-oasis-villa-living-room.jpg",
+          "alt": "Living room with a long sofa, soft lighting and modern decor in a Dubai home",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-dubai-living-room-with-cozy-interiors-30554297/"
+        },
+        {
+          "local": "/images/the-oasis-community-greenery-aerial.jpg",
+          "alt": "A low-rise villa community surrounded by greenery in Dubai, aerial view",
+          "representative": true,
+          "credit": "Subbu Rayan / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-dubai-residential-area-31771213/"
+        },
+        {
+          "local": "/images/the-oasis-villas-skyline-aerial.jpg",
+          "alt": "Luxury villas in the foreground and the Dubai skyline behind them on a clear day",
+          "representative": true,
+          "credit": "Abid Ali / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/villas-in-front-of-skyscapers-in-dubai-10514386/"
+        },
+        {
+          "local": "/images/jumeirah-islands-lakeside-villas.jpg",
+          "alt": "Aerial view of lakeside villas with pools and gardens in Jumeirah Islands, Dubai",
+          "representative": true,
+          "credit": "Eslam Tawakol / Unsplash",
+          "sourceUrl": "https://unsplash.com/photos/an-aerial-view-of-a-house-with-a-swimming-pool-4mcc0wEhmlM"
         }
       ]
     },
@@ -88,6 +126,57 @@
       },
       "unverified": [
         "handover"
+      ],
+      "photos": [
+        {
+          "local": "/images/the-valley-townhouse-rows-aerial.jpg",
+          "alt": "Rows of modern townhouses with uniform architecture amid greenery in Dubai, aerial view",
+          "representative": true,
+          "credit": "Subbu Rayan / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-residential-buildings-in-dubai-31771223/"
+        },
+        {
+          "local": "/images/the-valley-community-lake.jpg",
+          "alt": "A calm lake with lawns and trees in a residential district of Dubai",
+          "representative": true,
+          "credit": "Alexander Shabanov / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/tranquil-lake-view-in-residential-dubai-setting-37173165/"
+        },
+        {
+          "local": "/images/the-valley-family-living-room.jpg",
+          "alt": "Family living room with a grey sofa and indoor plants in a Dubai home",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/cozy-modern-living-room-interior-in-dubai-32168986/"
+        },
+        {
+          "local": "/images/the-valley-park-fountain.jpg",
+          "alt": "Park with a fountain, lawns and modern low-rise buildings in Dubai",
+          "representative": true,
+          "credit": "Alexander Shabanov / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/scenic-view-of-park-and-fountain-in-urban-setting-37173171/"
+        },
+        {
+          "local": "/images/the-valley-greenery-aerial.jpg",
+          "alt": "Tree-lined streets and low-rise homes in Dubai seen from the air",
+          "representative": true,
+          "credit": "San Photography / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-lush-green-dubai-landscape-30606280/"
+        },
+        {
+          "local": "/images/the-valley-family-playground.jpg",
+          "alt": "Colourful children's playground beside apartment buildings in a Dubai residential area",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-playground-in-dubai-residential-area-29247929/"
+        },
+        {
+          "local": "/images/dubai-villa-community-golf-lake.jpg",
+          "alt": "Lake, palm-lined lawns and golf greens with villas around them in a Dubai residential community",
+          "representative": true,
+          "credit": "Nelemson Guevarra / Unsplash",
+          "sourceUrl": "https://unsplash.com/photos/a-large-body-of-water-surrounded-by-palm-trees-6g7PM3PIsZo"
+        }
       ]
     },
     {
@@ -128,6 +217,50 @@
       },
       "unverified": [
         "handover (the developer's page gives two different dates)"
+      ],
+      "photos": [
+        {
+          "local": "/images/bay-by-cavalli-marina-towers-day.jpg",
+          "alt": "Dubai Marina skyline with waterfront towers and yachts on a clear day",
+          "representative": true,
+          "credit": "Denys Gromov / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/dubai-marina-dubai-uae-28350360/"
+        },
+        {
+          "local": "/images/bay-by-cavalli-rooftop-pool.jpg",
+          "alt": "Rooftop pool looking out over the Dubai Marina skyline",
+          "representative": true,
+          "credit": "Vika Glitter / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/luxury-rooftop-view-over-dubai-marina-skyline-36134179/"
+        },
+        {
+          "local": "/images/bay-by-cavalli-pool-terrace.jpg",
+          "alt": "Rooftop pool with white minimalist architecture against the Dubai skyline",
+          "representative": true,
+          "credit": "Asi Si / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/a-swimming-pool-in-a-white-building-with-blue-glass-28287768/"
+        },
+        {
+          "local": "/images/bay-by-cavalli-marina-night.jpg",
+          "alt": "Yachts moored in Dubai Marina at night beneath lit residential towers",
+          "representative": true,
+          "credit": "Adeel Rana / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/dubai-marina-night-view-with-yachts-and-skyscrapers-30063500/"
+        },
+        {
+          "local": "/images/bay-by-cavalli-marina-aerial.jpg",
+          "alt": "Aerial view of the Dubai Marina waterfront, its towers and the yacht harbour, beside Dubai Harbour",
+          "representative": true,
+          "credit": "Nelemson G / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/stunning-aerial-view-of-dubai-marina-29470820/"
+        },
+        {
+          "local": "/images/bay-by-cavalli-night-view-window.jpg",
+          "alt": "Dubai Marina's night skyline seen through a floor-to-ceiling window",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/stunning-night-view-of-dubai-marina-from-hotel-room-30047554/"
+        }
       ]
     },
     {
@@ -169,6 +302,43 @@
       "unverified": [
         "startingPrice",
         "handover"
+      ],
+      "photos": [
+        {
+          "local": "/images/sobha-one-waterside-towers.jpg",
+          "alt": "A boat on the water with Dubai's towers behind it",
+          "representative": true,
+          "credit": "Kirandeep Singh Walia / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/towers-by-the-water-in-dubai-19801770/"
+        },
+        {
+          "local": "/images/sobha-one-golf-course-skyline.jpg",
+          "alt": "Golf course fairway with the Dubai skyline blurred in the background",
+          "representative": true,
+          "credit": "Khuram Naseem / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/golf-club-and-ball-on-green-course-in-dubai-37825484/"
+        },
+        {
+          "local": "/images/sobha-one-dubai-skyline-sunset.jpg",
+          "alt": "Dubai skyline at sunset with modern towers under a dramatic sky",
+          "representative": true,
+          "credit": "Walid Ahmad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/cityscape-of-dubai-under-a-dramatic-sky-17238022/"
+        },
+        {
+          "local": "/images/sobha-one-creek-skyline.jpg",
+          "alt": "Dubai Creek with the city skyline rising behind it",
+          "representative": true,
+          "credit": "MAMADO UAE / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/scenic-dubai-creek-with-city-skyline-view-29401672/"
+        },
+        {
+          "local": "/images/sobha-one-creek-aerial-dusk.jpg",
+          "alt": "Aerial view of Dubai Creek and the surrounding districts at dusk",
+          "representative": true,
+          "credit": "Mo Eid / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-the-dubai-creek-and-old-town-united-arab-emirates-17865518/"
+        }
       ]
     },
     {
@@ -213,10 +383,48 @@
         "startingPrice",
         "handover"
       ],
-      "dropPhotos": [
+      "photos": [
         {
-          "local": "/images/bay-grove-beachfront-balcony.jpg",
-          "reason": "Its Pexels page says Dubai, but another photo of the same batch is titled Sharjah, so the place can no longer be vouched for. Taken out of the gallery; the file stays in Cloudinary."
+          "local": "/images/bay-grove-beachfront-pools-aerial.jpg",
+          "alt": "Beachfront pools and gardens on the Dubai shore, aerial view",
+          "representative": true,
+          "credit": "The Lazy Artist Gallery / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-resort-1488515/"
+        },
+        {
+          "local": "/images/bay-grove-apartment-living-room.jpg",
+          "alt": "Living room with a beige sofa and a wooden table by a window in a Dubai apartment",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-living-room-interior-with-beige-sofa-29149090/"
+        },
+        {
+          "local": "/images/bay-grove-dubai-coastline.jpg",
+          "alt": "Dubai's coastline with turquoise water and a sandy beach under a clear sky",
+          "representative": true,
+          "credit": "Nelemson G / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/scenic-view-of-dubai-s-palm-jumeirah-coastline-29212687/"
+        },
+        {
+          "local": "/images/bay-grove-deira-coast-sunset.jpg",
+          "alt": "The Deira shoreline and its towers at sunset, near Dubai Islands",
+          "representative": true,
+          "credit": "Kirandeep Singh Walia / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/deira-twin-towers-on-sea-coast-in-dubai-19913932/"
+        },
+        {
+          "local": "/images/bay-grove-dubai-coast-aerial.jpg",
+          "alt": "Aerial view of Dubai's beaches and skyline on a sunny day",
+          "representative": true,
+          "credit": "Vika Glitter / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-dubai-skyline-with-iconic-landmarks-36134243/"
+        },
+        {
+          "local": "/images/dubai-islands-from-space.jpg",
+          "alt": "Dubai Islands and their shoreline off Deira, photographed from the International Space Station",
+          "representative": true,
+          "credit": "NASA Johnson Space Center, Earth Science and Remote Sensing Unit / Wikimedia Commons",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS065-E-74317_-_View_of_Earth.jpg"
         }
       ]
     },
@@ -249,7 +457,51 @@
         "handover": "'The completion date for Binghatti Circle is Q2, 2027.'",
         "status": "Derived: the developer lists the project as 'Available' with completion in Q2 2027, so it is sold before completion"
       },
-      "unverified": []
+      "unverified": [],
+      "photos": [
+        {
+          "local": "/images/binghatti-circle-apartment-complex.jpg",
+          "alt": "Apartment complex against a bright blue sky in Dubai",
+          "representative": true,
+          "credit": "aboodi vesakaran / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/blue-sky-over-apartment-building-in-dubai-uae-16494373/"
+        },
+        {
+          "local": "/images/binghatti-circle-apartment-interior.jpg",
+          "alt": "Compact modern apartment interior with minimalist decor in Dubai",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-dubai-apartment-interior-with-minimalist-design-30147881/"
+        },
+        {
+          "local": "/images/binghatti-circle-balconies.jpg",
+          "alt": "Close view of geometric balconies on a modern Dubai apartment building",
+          "representative": true,
+          "credit": "San Photography / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/an-apartment-with-uneven-balconies-8342450/"
+        },
+        {
+          "local": "/images/binghatti-circle-residential-facade.jpg",
+          "alt": "Modern residential building with orange balcony accents in Dubai",
+          "representative": true,
+          "credit": "Subbu Rayan / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-architecture-of-a-dubai-residential-building-31254168/"
+        },
+        {
+          "local": "/images/binghatti-circle-tower-greenery.jpg",
+          "alt": "Residential high-rise rising behind pink bougainvillea and greenery in Dubai",
+          "representative": true,
+          "credit": "Rehman Ashraf / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/clear-blue-sky-over-high-rise-buildings-13801299/"
+        },
+        {
+          "local": "/images/binghatti-circle-district-skyline.jpg",
+          "alt": "Dubai high-rises above a leafy residential district, aerial view",
+          "representative": true,
+          "credit": "Abid Ali / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-city-buildings-near-body-of-water-10569403/"
+        }
+      ]
     },
     {
       "slug": "rashid-yachts-marina",
@@ -1391,11 +1643,11 @@
       "evidence": "'SERA 2 AT RASHID YACHTS & MARINA, 1 to 3, FROM AED 2,112,888'",
       "photos": [
         {
-          "local": "/images/dubai-marina-dusk-yachts.jpg",
-          "alt": "Dubai Marina at dusk with towers and moored yachts",
+          "local": "/images/apt-interior-living-room-white-sofa.jpg",
+          "alt": "Pale sofa with cushions and a vase of flowers in a bright living room in Dubai",
           "representative": true,
-          "credit": "Sandhu Jassi / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/skyline-of-dubai-marina-with-luxury-yachts-35732385/"
+          "credit": "Atulmohan / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/pillows-on-white-sofa-18266457/"
         },
         {
           "local": "/images/dubai-apartment-open-plan-living.jpg",
@@ -1405,11 +1657,11 @@
           "sourceUrl": "https://www.pexels.com/photo/33621947/"
         },
         {
-          "local": "/images/dubai-apartment-kitchen-bar-table.jpg",
-          "alt": "Open kitchen with a bar table and stools beside the living area",
+          "local": "/images/apt-building-pool-deck-and-apartment-blocks.jpg",
+          "alt": "Residents' swimming pool with sun loungers below mid-rise apartment blocks in Dubai",
           "representative": true,
           "credit": "AJ Ahamad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/29149072/"
+          "sourceUrl": "https://www.pexels.com/photo/29149087/"
         }
       ]
     },
@@ -1433,11 +1685,11 @@
       "evidence": "'BAYSTAR BY VIDA AT RASHID YACHTS & MARINA, 1, 2, 3 & 4, FROM AED 2,175,888'",
       "photos": [
         {
-          "local": "/images/dubai-marina-towers-clear-sky.jpg",
-          "alt": "Dubai Marina towers under a clear blue sky",
+          "local": "/images/apt-interior-living-room-minimalist.jpg",
+          "alt": "Minimalist living room with a curved sofa, plants and sheer curtains in Dubai",
           "representative": true,
-          "credit": "David Kuvaev / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/sea-coast-of-dubai-19872816/"
+          "credit": "aju.bee / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/elegant-minimalist-living-room-in-dubai-33123409/"
         },
         {
           "local": "/images/dubai-marina-apartment-bedroom.jpg",
@@ -1447,11 +1699,11 @@
           "sourceUrl": "https://www.pexels.com/photo/30554296/"
         },
         {
-          "local": "/images/dubai-marina-apartment-sofa-olive-tree.jpg",
-          "alt": "Sofa corner with an olive tree beside the kitchenette of a furnished Dubai Marina apartment",
+          "local": "/images/dubai-apartment-kitchen-bar-table.jpg",
+          "alt": "Open kitchen with a bar table and stools beside the living area",
           "representative": true,
           "credit": "AJ Ahamad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/30554291/"
+          "sourceUrl": "https://www.pexels.com/photo/29149072/"
         }
       ]
     },
@@ -1475,25 +1727,25 @@
       "evidence": "Page data: 'Silva - Dubai Creek Harbour', bedrooms '1 - 3', lowest unit price 1,790,888; footer bar 'PRICES FROM AED 1,790,888'",
       "photos": [
         {
-          "local": "/images/dubai-creek-harbour-marina-from-above.jpg",
-          "alt": "Dubai Creek Harbour marina and its pontoons seen from a high floor",
-          "representative": true,
-          "credit": "AJ Ahamad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/19495373/"
-        },
-        {
-          "local": "/images/dubai-creek-sunset-skyline.jpg",
-          "alt": "Sunset over Dubai Creek with the Burj Khalifa and Downtown skyline in silhouette",
-          "representative": true,
-          "credit": "AJ Ahamad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/19495374/"
-        },
-        {
           "local": "/images/dubai-apartment-living-room-sofa.jpg",
           "alt": "Living room with a grey sofa and wooden coffee table between full-height windows",
           "representative": true,
           "credit": "AJ Ahamad / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/29149071/"
+        },
+        {
+          "local": "/images/apt-interior-bedroom-orange-cushion.jpg",
+          "alt": "Bed with white linen, an orange cushion and folded towels in Dubai",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/luxurious-bed-setting-with-orange-cushion-in-dubai-30554294/"
+        },
+        {
+          "local": "/images/dubai-creek-harbour-marina-from-above.jpg",
+          "alt": "Dubai Creek Harbour marina and its pontoons seen from a high floor",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/19495373/"
         }
       ]
     },
@@ -1517,13 +1769,6 @@
       "evidence": "Page data: 'Albero at Dubai Creek Harbour', bedrooms '1 - 3', lowest unit price 1,813,888 ('FROM AED 1,813,888')",
       "photos": [
         {
-          "local": "/images/dubai-creek-harbour-towers.jpg",
-          "alt": "Residential towers at Dubai Creek Harbour in late-afternoon sun, with palm trees below",
-          "representative": true,
-          "credit": "Aadil Sabeer / Unsplash",
-          "sourceUrl": "https://unsplash.com/photos/cars-parked-near-high-rise-buildings-during-daytime-onP3aM_3tuA"
-        },
-        {
           "local": "/images/downtown-dubai-apartment-living-dining.jpg",
           "alt": "Living and dining area with a curved sofa, round table and sculptural pendant light",
           "representative": true,
@@ -1536,6 +1781,13 @@
           "representative": true,
           "credit": "Real Estate 4k / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/lamp-on-wooden-cabinet-in-hallway-18638649/"
+        },
+        {
+          "local": "/images/dubai-creek-harbour-towers.jpg",
+          "alt": "Residential towers at Dubai Creek Harbour in late-afternoon sun, with palm trees below",
+          "representative": true,
+          "credit": "Aadil Sabeer / Unsplash",
+          "sourceUrl": "https://unsplash.com/photos/cars-parked-near-high-rise-buildings-during-daytime-onP3aM_3tuA"
         }
       ]
     },
@@ -1559,18 +1811,18 @@
       "evidence": "'BAYVIEW BY ADDRESS RESORTS AT EMAAR BEACHFRONT, 1-4, FROM AED 3,594,888'",
       "photos": [
         {
-          "local": "/images/dubai-marina-dusk.jpg",
-          "alt": "Dubai Marina towers and the marina canal at dusk",
+          "local": "/images/apt-interior-balcony-with-sea-view.jpg",
+          "alt": "Balcony with a table and two chairs looking over villas and a beach to the sea in Dubai",
           "representative": true,
-          "credit": "Maaroo24 / Wikimedia Commons",
-          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Dubai_Marina_27.12.2024.jpg"
+          "credit": "Javlon Pulatov / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/a-table-and-chairs-on-the-balcony-with-a-beach-view-8047502/"
         },
         {
-          "local": "/images/dubai-marina-canal-window-view.jpg",
-          "alt": "The Dubai Marina canal, a bridge and yachts at golden hour, seen through a high-floor window",
+          "local": "/images/dubai-marina-apartment-sofa-olive-tree.jpg",
+          "alt": "Sofa corner with an olive tree beside the kitchenette of a furnished Dubai Marina apartment",
           "representative": true,
           "credit": "AJ Ahamad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/30554295/"
+          "sourceUrl": "https://www.pexels.com/photo/30554291/"
         },
         {
           "local": "/images/dubai-marina-apartment-bathroom-vanity.jpg",
@@ -1643,13 +1895,6 @@
       "evidence": "'AVAILABLE UNITS: STUDIO, Starting AED 1,764,999, 386 sqft'",
       "photos": [
         {
-          "local": "/images/downtown-dubai-balcony-table-burj-khalifa.jpg",
-          "alt": "Apartment balcony with a chair and table facing the Burj Khalifa and the Downtown Dubai skyline",
-          "representative": true,
-          "credit": "Mary Rose Relente / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/33363140/"
-        },
-        {
           "local": "/images/dubai-studio-apartment-sofa-bed.jpg",
           "alt": "Furnished studio apartment with a sofa bed made up, two artworks and the balcony door",
           "representative": true,
@@ -1657,11 +1902,18 @@
           "sourceUrl": "https://www.pexels.com/photo/32168965/"
         },
         {
-          "local": "/images/downtown-dubai-apartment-sofa-corner.jpg",
-          "alt": "Sofa corner with a vase of eucalyptus on a gold side table",
+          "local": "/images/downtown-dubai-balcony-table-burj-khalifa.jpg",
+          "alt": "Apartment balcony with a chair and table facing the Burj Khalifa and the Downtown Dubai skyline",
           "representative": true,
-          "credit": "AJ Ahamad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/30336905/"
+          "credit": "Mary Rose Relente / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/33363140/"
+        },
+        {
+          "local": "/images/apt-building-downtown-sidewalk-and-towers.jpg",
+          "alt": "Palm-lined sidewalk between residential towers in central Dubai",
+          "representative": true,
+          "credit": "Lajos Kristóf Kántor / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-dubai-skyline-with-palm-lined-sidewalk-36339264/"
         }
       ]
     },
@@ -1685,6 +1937,13 @@
       "evidence": "'AVAILABLE UNITS: 3 BEDROOM, Starting AED 13,394,999, 2196 sqft'",
       "photos": [
         {
+          "local": "/images/downtown-dubai-apartment-twin-bedroom.jpg",
+          "alt": "Second bedroom with twin beds and scalloped headboards under arched wall panelling",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/29080565/"
+        },
+        {
           "local": "/images/downtown-dubai-balcony-burj-khalifa.jpg",
           "alt": "Glass-fronted balcony corner looking up at the Burj Khalifa and Downtown towers",
           "representative": true,
@@ -1697,13 +1956,6 @@
           "representative": true,
           "credit": "AJ Ahamad / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/30336909/"
-        },
-        {
-          "local": "/images/downtown-dubai-apartment-twin-bedroom.jpg",
-          "alt": "Second bedroom with twin beds and scalloped headboards under arched wall panelling",
-          "representative": true,
-          "credit": "AJ Ahamad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/29080565/"
         }
       ]
     },
@@ -1727,25 +1979,25 @@
       "evidence": "FAQ: 'Studios start around AED 1.2 million, 1-bedroom apartments from AED 2.05 million'",
       "photos": [
         {
+          "local": "/images/apt-interior-living-room-armchair-and-lamp.jpg",
+          "alt": "Armchair, floor lamp and a small fridge in a studio living room in Dubai",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/dubai-property-28319178/"
+        },
+        {
+          "local": "/images/apt-building-residents-gym-treadmills.jpg",
+          "alt": "Residents' gym with treadmills and exercise bikes beside full-height windows in Dubai",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/29149082/"
+        },
+        {
           "local": "/images/downtown-business-bay-night-water.jpg",
           "alt": "Downtown Dubai and Business Bay towers lit at night, reflected in the water",
           "representative": true,
           "credit": "Rohit George / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/stunning-night-view-of-downtown-dubai-skyline-31747298/"
-        },
-        {
-          "local": "/images/dubai-studio-balcony-breakfast.jpg",
-          "alt": "Breakfast for two on a small balcony table with a lantern, at night",
-          "representative": true,
-          "credit": "AJ Ahamad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/32168955/"
-        },
-        {
-          "local": "/images/dubai-water-canal-night.jpg",
-          "alt": "Dubai Water Canal at night, lit promenades on both banks and towers along the skyline",
-          "representative": true,
-          "credit": "Pranav Madhu / Unsplash",
-          "sourceUrl": "https://unsplash.com/photos/lighted-buildings-at-night-52kHTpGahi8"
         }
       ]
     },
@@ -1783,11 +2035,11 @@
           "sourceUrl": "https://www.pexels.com/photo/36903893/"
         },
         {
-          "local": "/images/business-bay-towers-aerial.jpg",
-          "alt": "Cluster of Business Bay residential high-rises on a clear day, seen from high above",
+          "local": "/images/apt-interior-balcony-table-with-city-view.jpg",
+          "alt": "Balcony table set for two with sparkling juice, looking out at low-rise blocks and towers in Dubai",
           "representative": true,
-          "credit": "Nelemson Guevarra / Unsplash",
-          "sourceUrl": "https://unsplash.com/photos/an-aerial-view-of-a-city-with-tall-buildings-1FuwIHTJL0A"
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/outdoor-dining-with-dubai-cityscape-view-30336913/"
         }
       ]
     },
@@ -1811,13 +2063,6 @@
       "evidence": "FAQ: 'Studios start around AED 1.1 million, 1-bedroom apartments from AED 1.75 million'",
       "photos": [
         {
-          "local": "/images/jlt-lake-towers.jpg",
-          "alt": "Jumeirah Lake Towers high-rises around a JLT lake, seen from the lakeside walk",
-          "representative": true,
-          "credit": "Yourusernamewillbepublic2 / Wikimedia Commons",
-          "sourceUrl": "https://commons.wikimedia.org/wiki/File:JLT_Lake_from_first_level.jpg"
-        },
-        {
           "local": "/images/interiors-living-room-rocking-chair.jpg",
           "alt": "Living room with a rocking chair, a TV unit and a dark green wall",
           "representative": true,
@@ -1830,6 +2075,13 @@
           "representative": true,
           "credit": "AJ Ahamad / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/modern-home-office-desk-setup-in-dubai-30047573/"
+        },
+        {
+          "local": "/images/jlt-lake-towers.jpg",
+          "alt": "Jumeirah Lake Towers high-rises around a JLT lake, seen from the lakeside walk",
+          "representative": true,
+          "credit": "Yourusernamewillbepublic2 / Wikimedia Commons",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:JLT_Lake_from_first_level.jpg"
         }
       ]
     },
@@ -1865,6 +2117,13 @@
           "representative": true,
           "credit": "Kadir Avşar / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/a-bedroom-with-a-bed-a-lamp-and-a-painting-14750392/"
+        },
+        {
+          "local": "/images/apt-building-jlt-towers-on-the-lake.jpg",
+          "alt": "Towers of Jumeirah Lake Towers reflected in the lake, Dubai",
+          "representative": true,
+          "credit": "Nelemson G / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/stunning-dubai-jumeirah-lake-towers-skyline-reflection-29410941/"
         }
       ]
     },
@@ -1888,25 +2147,25 @@
       "evidence": "Available units: '1 BR Apartments, Dubai Harbour, Dubai, 1 Bedroom, Up to 1304 sq.ft', price 3,939,000 AED in the page data",
       "photos": [
         {
+          "local": "/images/apt-interior-bedroom-with-city-view.jpg",
+          "alt": "Bedroom with a white bed and built-in wardrobes beside a corner window overlooking Dubai towers",
+          "representative": true,
+          "credit": "Louie A / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-bedroom-with-city-view-and-minimalist-design-33197288/"
+        },
+        {
+          "local": "/images/apartments-pool-below-towers.jpg",
+          "alt": "Residents' swimming pool with palm trees below a group of apartment towers in Dubai",
+          "representative": true,
+          "credit": "DIMRAPTIS & MARIACHARIZANI / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/swimming-pool-in-dubai-5619275/"
+        },
+        {
           "local": "/images/dubai-marina-night-view-high-floor.jpg",
           "alt": "Dubai Marina at night from a high-floor residence, towers lit above the marina and moored yachts",
           "representative": true,
           "credit": "AJ Ahamad / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/vibrant-dubai-marina-skyline-at-night-30554306/"
-        },
-        {
-          "local": "/images/dubai-villa-ensuite-bathroom.jpg",
-          "alt": "En-suite bathroom with arched backlit mirrors, stone walls and a glass shower door",
-          "representative": true,
-          "credit": "S3T Koncepts / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/30217152/"
-        },
-        {
-          "local": "/images/interiors-balcony-table-with-view.jpg",
-          "alt": "Small round table with two mugs and a succulent by a window, apartment buildings beyond",
-          "representative": true,
-          "credit": "AJ Ahamad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/minimalist-table-with-succulent-in-dubai-apartment-30707663/"
         }
       ]
     },
@@ -1923,18 +2182,18 @@
       "bedroomsMax": 0,
       "size": 0,
       "price": 66843000,
-      "featured": false,
+      "featured": true,
       "description": "A four-bedroom penthouse in DAMAC Bay by Cavalli, the seafront tower at Dubai Harbour. DAMAC lists four-bedroom penthouses of up to 10,036 sq ft from AED 66,843,000.",
       "sourceUrl": "https://www.damacproperties.com/en/projects/damac-bay-by-cavalli/",
       "sourceName": "damacproperties.com",
       "evidence": "Available units: '4 BR Penthouse, Dubai Harbour, Dubai, 4 Bedrooms, Up to 10036 sq.ft', price 66,843,000 AED in the page data",
       "photos": [
         {
-          "local": "/images/dubai-penthouse-living-room.jpg",
-          "alt": "Penthouse living room with a grey sofa, armchairs and patterned rug on white marble floors",
+          "local": "/images/penthouse-duplex-lounge-tall-windows.jpg",
+          "alt": "Double-height lounge with a corner sofa, a chess table and tall windows onto the towers of Dubai",
           "representative": true,
-          "credit": "Real Estate 4k / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/18305070/"
+          "credit": "Coralt Zou / Unsplash",
+          "sourceUrl": "https://unsplash.com/photos/Jvy0fB41xtQ"
         },
         {
           "local": "/images/dubai-penthouse-dining-room.jpg",
@@ -1949,6 +2208,155 @@
           "representative": true,
           "credit": "Real Estate 4k / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/18305069/"
+        },
+        {
+          "local": "/images/dubai-penthouse-kitchen-skyline-window.jpg",
+          "alt": "Kitchen of a Dubai penthouse with a hob, an oven and a window onto the city's towers",
+          "representative": true,
+          "credit": "Real Estate 4k / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/18305066/"
+        }
+      ]
+    },
+    {
+      "slug": "damac-bay-by-cavalli-5-bedroom-penthouse",
+      "title": "5-Bedroom Penthouse at DAMAC Bay by Cavalli",
+      "projectSlug": "bay-by-cavalli",
+      "developer": "DAMAC",
+      "community": "Dubai Harbour",
+      "location": "DAMAC Bay by Cavalli, Dubai Harbour",
+      "type": "Penthouse",
+      "listingType": "sale",
+      "status": "Off-plan",
+      "bedrooms": 5,
+      "bedroomsMax": 0,
+      "size": 0,
+      "price": 73036000,
+      "priceFrom": true,
+      "featured": false,
+      "description": "A five-bedroom penthouse in DAMAC Bay by Cavalli, the seafront tower at Dubai Harbour. DAMAC lists five-bedroom penthouses of up to 10,054 sq ft from AED 73,036,000.",
+      "sourceUrl": "https://www.damacproperties.com/en/projects/damac-bay-by-cavalli/",
+      "sourceName": "damacproperties.com",
+      "verifiedOn": "2026-10-03",
+      "evidence": "Available units: '5 BR Penthouse, Dubai Harbour, Dubai, 5 Bedrooms, Up to 10054 sq.ft, Q4 / 2028'; price 73,036,000 AED in the page data (7303600000 fils), shown to this visitor as INR 1,850,793,168, in the same ratio to the 4 BR penthouse's 66,843,000 AED",
+      "photos": [
+        {
+          "local": "/images/penthouse-terrace-over-palm-jumeirah.jpg",
+          "alt": "Terrace lounge chairs high above the sea, looking over Palm Jumeirah and Burj Al Arab at sunset, Dubai",
+          "representative": true,
+          "credit": "Vincent Rivaud / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/small-islands-on-seashore-21856201/"
+        },
+        {
+          "local": "/images/dubai-penthouse-living-room.jpg",
+          "alt": "Penthouse living room with a grey sofa, armchairs and patterned rug on white marble floors",
+          "representative": true,
+          "credit": "Real Estate 4k / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/18305070/"
+        },
+        {
+          "local": "/images/dubai-penthouse-kitchen-breakfast-bar.jpg",
+          "alt": "Kitchen of a Dubai penthouse: breakfast bar with stools under pendant lights and a marble floor",
+          "representative": true,
+          "credit": "Real Estate 4k / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/18305065/"
+        },
+        {
+          "local": "/images/penthouse-bedroom-marina-view.jpg",
+          "alt": "Bedroom with a white bed beside a tall corner window overlooking Dubai Marina towers",
+          "representative": true,
+          "credit": "Louie A / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-bedroom-with-cityscape-view-33197293/"
+        }
+      ]
+    },
+    {
+      "slug": "sobha-seahaven-penthouses",
+      "title": "Penthouses at Sobha SeaHaven",
+      "projectSlug": "sobha-seahaven",
+      "developer": "Sobha Realty",
+      "community": "Dubai Harbour",
+      "location": "Sobha SeaHaven, Dubai Harbour",
+      "type": "Penthouse",
+      "listingType": "sale",
+      "status": "For sale",
+      "bedrooms": 5,
+      "bedroomsMax": 6,
+      "size": 0,
+      "price": 0,
+      "priceFrom": false,
+      "featured": false,
+      "description": "Five and six-bedroom penthouses in Sobha SeaHaven, Sobha Realty's three towers at Dubai Harbour. Sobha describes the towers as one to four-bedroom apartments and five to six-bedroom penthouses with waterfront and city views and private terraces. It does not publish a price.",
+      "sourceUrl": "https://www.sobharealty.com/sobha-communities/sobha-seahaven",
+      "sourceName": "sobharealty.com",
+      "verifiedOn": "2026-10-03",
+      "evidence": "'Sobha SeaHaven's three towers offer diverse living options, including contemporary apartments, Sky Edition units, and luxurious penthouses and duplexes. With 1-to-4-bedroom apartments and 5- to 6-bedroom penthouses, each residence offers stunning waterfront and city views, complemented by podiums, sky amenities, and private terraces.'; no price and no handover date on the page",
+      "photos": [
+        {
+          "local": "/images/penthouse-rooftop-pool-and-skyline.jpg",
+          "alt": "Rooftop pool with sun loungers beneath a pergola and the Dubai skyline beyond",
+          "representative": true,
+          "credit": "Richard / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/luxurious-rooftop-pool-overlooking-dubai-skyline-33647166/"
+        },
+        {
+          "local": "/images/penthouse-suite-with-city-view.jpg",
+          "alt": "Hotel suite with a bed, armchair and desk beside tall windows looking onto a Dubai tower",
+          "representative": true,
+          "credit": "Khojiakbar Teshaboev / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/elegant-hotel-room-with-modern-decor-in-dubai-34631242/"
+        },
+        {
+          "local": "/images/apt-interior-rooftop-pool-skyline-view.jpg",
+          "alt": "Rooftop infinity pool edge with a side table, looking across the water to Dubai's tower skyline",
+          "representative": true,
+          "credit": "Vika Glitter / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/dubai-city-s-iconic-skyline-with-infinity-pool-view-36134185/"
+        }
+      ]
+    },
+    {
+      "slug": "the-edit-at-d3-penthouses",
+      "title": "Penthouses at The Edit at d3",
+      "projectSlug": "the-edit-at-d3",
+      "developer": "Meraas",
+      "community": "Dubai Design District",
+      "location": "The Edit at d3, Dubai Design District",
+      "type": "Penthouse",
+      "listingType": "sale",
+      "status": "Off-plan",
+      "bedrooms": 0,
+      "bedroomsMax": 0,
+      "size": 0,
+      "price": 0,
+      "priceFrom": false,
+      "featured": false,
+      "description": "Penthouses in The Edit at d3, Meraas's waterfront residences in Dubai Design District. Meraas describes the project as one to four-bedroom residences and exclusive penthouses and lists Penthouse among its unit types. It does not publish a penthouse price, size or bedroom count.",
+      "sourceUrl": "https://www.meraas.com/en/the-edit-at-d3",
+      "sourceName": "meraas.com",
+      "verifiedOn": "2026-10-03",
+      "evidence": "'The Edit at d3 offers 1 to 4-bedroom residences and exclusive penthouses.'; project card: 'Dubai Design District, 1 BR to 4 BR / Penthouse, From AED 2.00 M, Properties Available' (AED 2.00 M is the project's starting price, not a penthouse price); unit types on the page: '2 Bedroom, 3 Bedroom, 4 Bedroom, Penthouse'",
+      "photos": [
+        {
+          "local": "/images/penthouse-double-height-lounge-skyline-view.jpg",
+          "alt": "Double-height lounge with armchairs and a chandelier in front of a glass wall overlooking the Dubai skyline",
+          "representative": true,
+          "credit": "Olha Kovaliuk / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/interior-of-a-contemporary-apartment-with-view-of-skyscrapers-17616615/"
+        },
+        {
+          "local": "/images/penthouse-bedroom-window-burj-khalifa-view.jpg",
+          "alt": "Burj Khalifa and Downtown Dubai seen from a bed through a tall bedroom window",
+          "representative": true,
+          "credit": "Derya Erel / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/30876933/"
+        },
+        {
+          "local": "/images/penthouse-terrace-pergola-dining.jpg",
+          "alt": "Roof terrace with dining tables under a timber pergola, planters and apartment blocks behind, Dubai",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/29149077/"
         }
       ]
     },
@@ -2040,6 +2448,13 @@
           "representative": true,
           "credit": "S3T Koncepts / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/30217120/"
+        },
+        {
+          "local": "/images/villa-lakeside-villas-and-skyline.jpg",
+          "alt": "White villas and lawns on a lake shore with a tower skyline behind, Dubai",
+          "representative": true,
+          "credit": "Alexander Shabanov / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/stunning-view-of-dubai-skyline-from-a-park-37173167/"
         }
       ]
     },
@@ -2112,11 +2527,11 @@
       "evidence": "Available units: 'Bluewaters, 808 Sqft, 1 [bed], 2 [bath], 277,000'; community page: '698 one, two, three and four-bedroom, glass-fronted apartments', 'Size 807 - 2,337 Sqft', 'Rent starting at 292,100' (the listed unit is lower)",
       "photos": [
         {
-          "local": "/images/rental-marina-towers-from-above.jpg",
-          "alt": "Dubai Marina's residential towers seen from above, with the sea and Palm Jumeirah beyond",
+          "local": "/images/apt-building-bluewaters-residential-street.jpg",
+          "alt": "Palm-lined pedestrian street between mid-rise apartment blocks with a giant observation wheel at the end, Dubai",
           "representative": true,
-          "credit": "Kate Trysh / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/stunning-panoramic-view-of-city-skyline-with-skyscrapers-and-blue-sky-27206533/"
+          "credit": "@jdgromov / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/residential-area-with-palm-trees-and-ferris-wheel-in-the-background-4624577/"
         },
         {
           "local": "/images/rental-living-room-beige-sofa.jpg",
@@ -2124,6 +2539,13 @@
           "representative": true,
           "credit": "AJ Ahamad / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/modern-living-room-with-cozy-beige-sofa-and-decor-30554301/"
+        },
+        {
+          "local": "/images/apt-building-bluewaters-wheel-and-residences.jpg",
+          "alt": "The Ain Dubai wheel rising behind low-rise residences and palm trees on Bluewaters Island, Dubai",
+          "representative": true,
+          "credit": "JDgromov / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/huge-white-ferris-wheel-in-dubai-uae-4584928/"
         }
       ]
     },
@@ -2155,18 +2577,25 @@
       "evidence": "'Size 984 - 4,483 Sqft', 'Rent starting at 157,500'; 'City Walk Residences 1 Bed - 4 Bed Apartments'",
       "photos": [
         {
+          "local": "/images/city-walk-boulevard-and-mid-rise-blocks.jpg",
+          "alt": "Wide boulevard with a grass median, palm trees and mid-rise apartment blocks in Dubai",
+          "representative": true,
+          "credit": "Lajos Kristóf Kántor / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-dubai-boulevard-with-skyscrapers-36339267/"
+        },
+        {
+          "local": "/images/city-walk-cafe-terrace-and-palms.jpg",
+          "alt": "Outdoor cafe terrace with red parasols under palm trees between low-rise blocks with tower views, Dubai",
+          "representative": true,
+          "credit": "Alexander Shabanov / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-outdoor-cafe-in-urban-setting-with-palm-trees-37850581/"
+        },
+        {
           "local": "/images/rental-rooftop-terrace-apartment-block.jpg",
           "alt": "Rooftop terrace with table-tennis tables beside a mid-rise apartment block in Dubai",
           "representative": true,
           "credit": "AJ Ahamad / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/modern-dubai-rooftop-with-table-tennis-29149079/"
-        },
-        {
-          "local": "/images/downtown-night-aerial.jpg",
-          "alt": "Downtown Dubai and Sheikh Zayed Road lit up at night, seen from above",
-          "representative": true,
-          "credit": "bulletrain743 (via Pixabay) / Wikimedia Commons",
-          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Downtown,_Dubai_(36714617205"
         }
       ]
     },
@@ -2205,18 +2634,18 @@
           "sourceUrl": "https://unsplash.com/photos/a-hotel-with-a-pool-and-palm-trees-in-front-of-it-YwpS1BHzHI8"
         },
         {
-          "local": "/images/avenue-al-jaddaf-creek-towers-boats.jpg",
-          "alt": "Modern towers above traditional boats on Dubai Creek",
+          "local": "/images/apt-building-wave-balcony-tower.jpg",
+          "alt": "Top of an apartment tower with curved white balconies and terracotta panels against a blue sky in Dubai",
           "representative": true,
-          "credit": "Walid Ahmad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/modern-architecture-and-traditional-boats-in-dubai-31146745/"
+          "credit": "aboodi vesakaran / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/minimalist-architecture-design-16563236/"
         },
         {
-          "local": "/images/avenue-al-jaddaf-creek-sunset.jpg",
-          "alt": "Dubai Creek at sunset with boats and the city skyline",
+          "local": "/images/apt-building-shaded-pool-deck.jpg",
+          "alt": "Residents' swimming pool under shade sails on a timber deck in Dubai",
           "representative": true,
-          "credit": "Walid Ahmad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/sunset-view-of-dubai-creek-with-boat-and-skyline-33468140/"
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/29149085/"
         }
       ]
     },
@@ -2250,11 +2679,25 @@
       "evidence": "'Dubai Residential owns and operates 18 well-maintained buildings in the Al Ramth Cluster', 'Size 388 - 2,582 Sqft', 'Rent starting at 36,000'",
       "photos": [
         {
-          "local": "/images/rental-palm-lined-park-path.jpg",
-          "alt": "Palm-lined walking path with a blue track through a landscaped park between apartment towers in Dubai",
+          "local": "/images/apt-building-courtyard-pool-between-blocks.jpg",
+          "alt": "Courtyard swimming pool between mid-rise apartment blocks in Dubai",
           "representative": true,
-          "credit": "Lajos Kristóf Kántor / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/palm-tree-lined-walkway-in-dubai-park-36339290/"
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-dubai-residential-complex-with-pool-29247927/"
+        },
+        {
+          "local": "/images/apartments-ordinary-apartment-blocks.jpg",
+          "alt": "Cluster of ordinary sand-coloured apartment blocks with trees between them in Dubai",
+          "representative": true,
+          "credit": "aboodi vesakaran / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-residential-buildings-in-dubai-skyline-29581558/"
+        },
+        {
+          "local": "/images/apt-interior-living-room-sofa-and-palm.jpg",
+          "alt": "Sofa with a throw and cushion in front of a palm and framed art in a Dubai living room",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/cozy-living-room-with-elegant-decor-in-dubai-32168949/"
         },
         {
           "local": "/images/rental-mosaic-pool-terrace.jpg",
@@ -2262,6 +2705,13 @@
           "representative": true,
           "credit": "Kate Trysh / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/outdoor-rooftop-swimming-pool-with-modern-cityscape-views-27206543/"
+        },
+        {
+          "local": "/images/rental-palm-lined-park-path.jpg",
+          "alt": "Palm-lined walking path with a blue track through a landscaped park between apartment towers in Dubai",
+          "representative": true,
+          "credit": "Lajos Kristóf Kántor / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/palm-tree-lined-walkway-in-dubai-park-36339290/"
         }
       ]
     },
@@ -2294,18 +2744,25 @@
       "evidence": "'the studios and 1 to 3 bedroom apartments offered within the community', 'Size 180 - 2,010 Sqft', 'Rent starting at 23,100'",
       "photos": [
         {
-          "local": "/images/rental-geometric-apartment-facade.jpg",
-          "alt": "Apartment facade with angular white balconies and terracotta accents in Dubai",
+          "local": "/images/apt-building-low-rise-apartment-building-corner.jpg",
+          "alt": "Low-angle view of a new sand-coloured low-rise apartment building at a street corner in Dubai",
           "representative": true,
-          "credit": "SANDRA GOPAN / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/geometric-modern-apartment-facade-in-dubai-32312787/"
+          "credit": "JDgromov / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/brown-concrete-building-under-blue-sky-4716785/"
         },
         {
-          "local": "/images/rental-towers-and-low-rise-district.jpg",
-          "alt": "Two glass towers above a wide low-rise residential district in Dubai, seen from a high floor",
+          "local": "/images/apt-interior-kitchen-with-washing-machine.jpg",
+          "alt": "Compact kitchen with a fridge, kettle and washing machine under the counter in Dubai",
           "representative": true,
-          "credit": "Kate Trysh / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-urban-infrastructure-and-high-rise-buildings-27206540/"
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-kitchen-interior-with-stainless-steel-appliances-30554290/"
+        },
+        {
+          "local": "/images/apt-building-rooftop-pool-deck.jpg",
+          "alt": "Rooftop swimming pool with lifebuoys and loungers between apartment buildings in Dubai",
+          "representative": true,
+          "credit": "JDgromov / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/an-empty-swimming-pool-4716818/"
         }
       ]
     },
@@ -2387,13 +2844,6 @@
       "evidence": "'Each of the four and five-bedroom villas', 'Size 3,731 - 4,587 Sqft', 'Rent starting at 265,000'",
       "photos": [
         {
-          "local": "/images/dubai-mediterranean-homes-row.jpg",
-          "alt": "A row of Mediterranean-style homes under a clear blue sky in Dubai",
-          "representative": true,
-          "credit": "Yosef Futsum / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/concrete-buildings-under-the-blue-sky-14476591/"
-        },
-        {
           "local": "/images/rental-mediterranean-villas-red-roofs.jpg",
           "alt": "Mediterranean-style villas with red tile roofs among palm trees in Dubai",
           "representative": true,
@@ -2401,18 +2851,18 @@
           "sourceUrl": "https://www.pexels.com/photo/mediterranean-villas-with-lush-garden-landscape-33977060/"
         },
         {
-          "local": "/images/dubai-mediterranean-villas.jpg",
-          "alt": "Mediterranean-style villas with terracotta roofs behind date palms and lawns in Dubai",
+          "local": "/images/jumeirah-islands-villas-aerial.jpg",
+          "alt": "Villas and gardens of the Jumeirah Islands community in Dubai, aerial view",
           "representative": true,
           "credit": "Ayrat / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/mediterranean-villas-with-lush-garden-landscape-33977060/"
+          "sourceUrl": "https://www.pexels.com/photo/jumeirah-island-housing-development-16534005/"
         },
         {
-          "local": "/images/dubai-villa-garden-planting.jpg",
-          "alt": "Tropical planting against a textured wall in a Dubai villa garden",
+          "local": "/images/villas-villa-district-aerial.jpg",
+          "alt": "Aerial view of a low-rise villa district with a roundabout and tree-lined roads in Dubai",
           "representative": true,
-          "credit": "aboodi vesakaran / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/modern-desert-garden-with-tropical-plants-31215853/"
+          "credit": "San Photography / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-dubai-residential-area-and-roads-35791367/"
         }
       ]
     },
@@ -2437,18 +2887,25 @@
       "evidence": "wasl.ae residential search: 'wasl port views building 4, Al Mina, Unit No. 407, Price 75,000 / Year, Size (Sq.ft.) 897.00, Type: 1 bedroom'",
       "photos": [
         {
+          "local": "/images/apartments-balcony-facade.jpg",
+          "alt": "Facade of an apartment building with rows of balconies and green-tinted windows in Dubai",
+          "representative": true,
+          "credit": "aboodi vesakaran / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/balconies-in-an-apartment-building-11603371/"
+        },
+        {
+          "local": "/images/apt-building-pool-beside-apartment-blocks.jpg",
+          "alt": "Swimming pool on a podium deck beside mid-rise apartment blocks in Dubai",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/29149088/"
+        },
+        {
           "local": "/images/rental-harbour-yachts-and-skyline.jpg",
           "alt": "Yachts moored in a harbour with the Dubai skyline in the morning haze",
           "representative": true,
           "credit": "Rockwell branding agency / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/cruise-ships-moored-in-dubai-19612315/"
-        },
-        {
-          "local": "/images/rental-creek-waterfront-buildings.jpg",
-          "alt": "Waterfront buildings and a minaret on Dubai Creek, with a boat moored at the quay",
-          "representative": true,
-          "credit": "Kate Trysh / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/scenic-view-of-dubai-creek-with-traditional-dhow-28515818/"
         }
       ]
     },
@@ -2473,18 +2930,25 @@
       "evidence": "wasl.ae residential search: 'wasl Village - Building 15, Al Qusais Ind. Fifth, Unit No. 401, Price 49,000 / Year, Size (Sq.ft.) 764.24, Type: 1 bedroom'",
       "photos": [
         {
-          "local": "/images/avenue-al-jaddaf-apartment-bedroom.jpg",
-          "alt": "Bright minimalist bedroom with white cabinets in a Dubai apartment",
+          "local": "/images/apt-building-yellow-apartment-block.jpg",
+          "alt": "Yellow mid-rise apartment block with rows of balconies under a deep blue sky in Dubai",
           "representative": true,
-          "credit": "AJ Ahamad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/modern-minimalist-bedroom-interior-in-dubai-32168988/"
+          "credit": "aboodi vesakaran / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-residential-building-against-blue-sky-in-dubai-31215758/"
         },
         {
-          "local": "/images/avenue-al-jaddaf-creek-heritage-skyline.jpg",
-          "alt": "Traditional building beside Dubai Creek with the modern skyline behind",
+          "local": "/images/apt-interior-bathroom-round-mirror.jpg",
+          "alt": "Bathroom with a round mirror, vessel basin and wooden vanity in Dubai",
           "representative": true,
-          "credit": "Azamat Hatypov / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/historic-architecture-along-dubai-creek-33277564/"
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/dubai-property-28319180/"
+        },
+        {
+          "local": "/images/apartments-low-rise-building-and-lawn.jpg",
+          "alt": "Low-rise sand-coloured apartment building with a lawn and young trees in Dubai",
+          "representative": true,
+          "credit": "Kadir AVSAR / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/a-large-apartment-building-with-a-green-lawn-14749907/"
         }
       ]
     },
@@ -2509,18 +2973,25 @@
       "evidence": "wasl.ae residential search: 'R1081-A1 - wasl green park, Ras Al Khor Ind. Third, Unit No. 312, Price 103,000 / Year, Size (Sq.ft.) 1,489.23, Type: 3 bedroom'",
       "photos": [
         {
-          "local": "/images/dubai-villa-community-lake.jpg",
-          "alt": "Aerial view of villas among palms and lush trees beside a lake in a Dubai villa community",
+          "local": "/images/apt-building-mid-rise-residential-blocks.jpg",
+          "alt": "Sand-coloured mid-rise apartment blocks with arched details and a lawn in Dubai",
           "representative": true,
-          "credit": "Eslam Tawakol / Unsplash",
-          "sourceUrl": "https://unsplash.com/photos/a-birds-eye-view-of-a-residential-neighborhood-TqouW9u0qmk"
+          "credit": "Magda Ehlers / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-architecture-in-dubai-under-clear-skies-35144792/"
         },
         {
-          "local": "/images/dubai-villas-pools-aerial.jpg",
-          "alt": "Aerial view of villas with private pools and leafy gardens around a cul-de-sac in Dubai",
+          "local": "/images/apt-building-residents-gym-weights.jpg",
+          "alt": "Residents' gym with dumbbell racks and benches beside full-height windows in Dubai",
           "representative": true,
-          "credit": "The Lazy Artist Gallery / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-buildigns-1642125/"
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/29149073/"
+        },
+        {
+          "local": "/images/apartments-mid-rise-district-aerial.jpg",
+          "alt": "Aerial view of a dense mid-rise residential district with a domed mosque in Dubai",
+          "representative": true,
+          "credit": "Magda Ehlers / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-mosque-in-urban-dubai-35139026/"
         }
       ]
     },
@@ -2552,11 +3023,11 @@
           "sourceUrl": "https://www.pexels.com/photo/modern-villa-in-dubai-residential-area-34188580/"
         },
         {
-          "local": "/images/dubai-townhouse-patio-seating.jpg",
-          "alt": "Sunlit patio seating with a striped cushion in front of a garden screen",
+          "local": "/images/villa-living-room-media-console.jpg",
+          "alt": "Living-room wall with a television above a cane-fronted console, a floor lamp and plants in a Dubai home",
           "representative": true,
-          "credit": "AJ Ahamad / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/30250657/"
+          "credit": "Usman Mehmood / Unsplash",
+          "sourceUrl": "https://unsplash.com/photos/q5oqHDj9YoE"
         },
         {
           "local": "/images/dubai-townhouse-sofa-by-garden-doors.jpg",
@@ -2588,18 +3059,25 @@
       "evidence": "wasl.ae commercial search: 'Project P1039 - Jewel of the Creek F1F2 Office Building, Port Saeed, Unit No. OF403, Price 98,770 / Year, Size (Sq.ft.) 581.00, Type: office'",
       "photos": [
         {
-          "local": "/images/rental-creekside-offices-and-ferries.jpg",
-          "alt": "Creekside buildings and ferries on Dubai Creek on a clear day",
-          "representative": true,
-          "credit": "Magda Ehlers / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/modern-boats-on-dubai-creek-waterway-35132524/"
-        },
-        {
           "local": "/images/dubai-office-lounge-glass-partition.jpg",
           "alt": "Office lounge with white armchairs and a sofa beside a fluted-glass partitioned meeting room",
           "representative": true,
           "credit": "Muhammad Haris / Pexels",
           "sourceUrl": "https://www.pexels.com/photo/20417389/"
+        },
+        {
+          "local": "/images/creekside-creek-office-towers-at-sunset.jpg",
+          "alt": "Curved glass office towers on the bank of Dubai Creek at sunset, with boats moored below",
+          "representative": true,
+          "credit": "Walid Ahmad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-skyscrapers-at-sunset-in-dubai-33148679/"
+        },
+        {
+          "local": "/images/rental-creekside-offices-and-ferries.jpg",
+          "alt": "Creekside buildings and ferries on Dubai Creek on a clear day",
+          "representative": true,
+          "credit": "Magda Ehlers / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-boats-on-dubai-creek-waterway-35132524/"
         }
       ]
     },
@@ -2624,13 +3102,6 @@
       "evidence": "wasl.ae commercial search: 'Project P1039 - Jewel of the Creek F1F2 Office Building, Port Saeed, Unit No. OF502, Price 247,050 / Year, Size (Sq.ft.) 1,647.00, Type: office'",
       "photos": [
         {
-          "local": "/images/rental-creek-abras-and-quay.jpg",
-          "alt": "Abra boats crossing Dubai Creek in front of the buildings on the quay",
-          "representative": true,
-          "credit": "Magda Ehlers / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/traditional-boats-on-dubai-creek-with-skyline-35132526/"
-        },
-        {
           "local": "/images/dubai-office-coffee-bar-reception.jpg",
           "alt": "Fitted office floor in Dubai with a round coffee bar, glass meeting pods and full-height windows",
           "representative": true,
@@ -2638,11 +3109,18 @@
           "sourceUrl": "https://unsplash.com/photos/T3jf5TUaHOE"
         },
         {
-          "local": "/images/dubai-office-breakout-world-map.jpg",
-          "alt": "Office breakout area with a bar counter, high stools and a world-map feature wall",
+          "local": "/images/apt-building-deira-twin-towers-waterfront.jpg",
+          "alt": "The Deira Twin Towers and waterfront buildings along Dubai Creek at sunset",
           "representative": true,
-          "credit": "Coralt Zou / Unsplash",
-          "sourceUrl": "https://unsplash.com/photos/8L3QuLJeTKs"
+          "credit": "Kirandeep Singh Ahluwalia / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/sea-coast-of-dubai-19913933/"
+        },
+        {
+          "local": "/images/rental-creek-abras-and-quay.jpg",
+          "alt": "Abra boats crossing Dubai Creek in front of the buildings on the quay",
+          "representative": true,
+          "credit": "Magda Ehlers / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/traditional-boats-on-dubai-creek-with-skyline-35132526/"
         }
       ]
     },
@@ -2675,18 +3153,25 @@
       "evidence": "'Eaton Square is Ellington's first commercial development'; 'Property type: Grade A Full-Floor Office – Shell and Core'; 'Status: Off Plan'; no price on the page",
       "photos": [
         {
-          "local": "/images/rental-glass-corridor-modern-building.jpg",
-          "alt": "Glass-walled corridor with white steel bracing in a modern building in Dubai",
-          "representative": true,
-          "credit": "Lajos Kristóf Kántor / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/modern-glass-corridor-in-dubai-architecture-36339281/"
-        },
-        {
           "local": "/images/dubai-coworking-office.jpg",
           "alt": "Shared work desk and meeting table under pendant lights in a fitted Dubai office",
           "representative": true,
           "credit": "Coralt Zou / Unsplash",
           "sourceUrl": "https://unsplash.com/photos/a-room-with-a-table-chairs-and-a-clock-on-the-wall-yDBsF9eID8Q"
+        },
+        {
+          "local": "/images/office-glass-office-and-towers.jpg",
+          "alt": "Glass-fronted office building with trees in front and two tall towers behind, Dubai",
+          "representative": true,
+          "credit": "Ivy Marie / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/emirates-tower-in-dubai-15018564/"
+        },
+        {
+          "local": "/images/rental-glass-corridor-modern-building.jpg",
+          "alt": "Glass-walled corridor with white steel bracing in a modern building in Dubai",
+          "representative": true,
+          "credit": "Lajos Kristóf Kántor / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-glass-corridor-in-dubai-architecture-36339281/"
         }
       ]
     },
@@ -2716,18 +3201,25 @@
       "evidence": "FAQ: 'Prices start from AED 850,000 for both Studio Flex apartments and Standard office units'; 'The estimated handover for ASPIRZ is Q4-2028'; 'separate entrances for residences and offices'",
       "photos": [
         {
-          "local": "/images/rental-faceted-balconies-and-palms.jpg",
-          "alt": "Faceted white balconies of an apartment building above palm fronds in Dubai",
+          "local": "/images/dubai-office-breakout-world-map.jpg",
+          "alt": "Office breakout area with a bar counter, high stools and a world-map feature wall",
           "representative": true,
-          "credit": "SANDRA GOPAN / Pexels",
-          "sourceUrl": "https://www.pexels.com/photo/modern-architectural-facade-in-dubai-32312788/"
+          "credit": "Coralt Zou / Unsplash",
+          "sourceUrl": "https://unsplash.com/photos/8L3QuLJeTKs"
         },
         {
-          "local": "/images/address-sky-view-night.jpg",
-          "alt": "Address Sky View tower in Downtown Dubai lit up at night",
+          "local": "/images/office-emirates-towers-looking-up.jpg",
+          "alt": "Looking up at the two Emirates Towers against a clear sky in Dubai",
           "representative": true,
-          "credit": "Vishnu Kalanad / Unsplash",
-          "sourceUrl": "https://unsplash.com/photos/modern-skyscraper-illuminated-at-night-with-unique-architecture-dt-T0vW-o5U"
+          "credit": "Kirandeep Singh Ahluwalia / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/low-angle-shot-of-emirates-towers-14309391/"
+        },
+        {
+          "local": "/images/offices-office-skyline-at-dusk.jpg",
+          "alt": "Office towers of Dubai's financial district under a pale dusk sky",
+          "representative": true,
+          "credit": "Kirandeep Singh Ahluwalia / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/dubai-cityscape-during-sunset-14365249/"
         }
       ]
     },
@@ -2753,11 +3245,122 @@
       "evidence": "'AVAILABLE UNITS: OFFICE, Starting AED 2,685,600, 1074 sqft'",
       "photos": [
         {
+          "local": "/images/office-twin-glass-towers.jpg",
+          "alt": "Pair of glass towers seen from below against the sun in Dubai",
+          "representative": true,
+          "credit": "sylvie muller / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/low-angle-photo-of-curtain-window-buildings-160389/"
+        },
+        {
+          "local": "/images/offices-financial-district-towers-at-sunset.jpg",
+          "alt": "Office towers of Dubai's financial district at sunset, seen from above",
+          "representative": true,
+          "credit": "Nihongraphy / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/aerial-photography-of-high-rise-buildings-in-the-city-during-sunset-13256050/"
+        },
+        {
           "local": "/images/jvc-circle-aerial.jpg",
           "alt": "Aerial view at dusk of a landscaped circle and apartment blocks in Jumeirah Village Circle",
           "representative": true,
           "credit": "Alim / Unsplash",
           "sourceUrl": "https://unsplash.com/photos/an-aerial-view-of-a-city-with-a-circular-building-Djln5-h7r0I"
+        }
+      ]
+    },
+    {
+      "slug": "the-element-at-sobha-one",
+      "title": "The Element at Sobha One",
+      "projectSlug": "sobha-one",
+      "developer": "Sobha Realty",
+      "community": "Ras Al Khor",
+      "location": "Sobha One, Ras Al Khor, Dubai",
+      "type": "Apartment",
+      "listingType": "sale",
+      "status": "For sale",
+      "bedrooms": 1,
+      "bedroomsMax": 4,
+      "size": 0,
+      "price": 1830000,
+      "priceFrom": true,
+      "featured": true,
+      "description": "A high-rise residential tower within Sobha One by Sobha Realty, on Ras Al Khor Road beside the Ras Al Khor Wildlife Sanctuary, with one to four-bedroom apartments and 270-degree views over the sanctuary, the Dubai skyline and Sobha One's pitch-and-putt golf course. Sobha quotes starting prices from AED 1.83 million, subject to inventory availability; its one-bedroom layouts measure 729 to 753 sq ft including the balcony.",
+      "amenities": [
+        "Kids' play area",
+        "BBQ and dining area",
+        "Jacuzzi",
+        "Outdoor gym",
+        "Business lounge",
+        "Rooftop lounge"
+      ],
+      "sourceUrl": "https://www.sobharealty.com/properties-in-dubai/sobha-one/the-element",
+      "sourceName": "sobharealty.com",
+      "evidence": "sobharealty.com/properties-in-uae lists 'The Element at Sobha One' among its apartments for sale (checked 3 October 2026). Its page: 'The Element offers a curated collection of 1 to 4 bedroom residences'; 'breathtaking 270° panoramic views overlooking the Ras Al Khor Wildlife Sanctuary, Dubai Skyline & world-class golf course'; 'Starting Prices AED 1.83 M* ... Subject to inventory availability*'; floor plans: 1 Bedroom Apartment Type A/B/C, total 740.02 / 729.37 / 753.48 sq ft; amenities 'Kids play area, BBQ & dining area, Jacuzzi, Outdoor gym, Business lounge, Rooftop lounge'; FAQ: 'a premium residential tower within Sobha One, developed by Sobha Realty and located in Sobha Hartland, Mohammed Bin Rashid City (MBR City)'. No handover date, no status word and no price range beyond the starting price are shown; a hidden page attribute carries 'AED 9.59 M*' as an upper figure, which is not displayed and is not used.",
+      "photos": [
+        {
+          "local": "/images/apt-interior-living-room-neutral-tones.jpg",
+          "alt": "Living room with a white sofa, leather armchair, floor lamp and round coffee table in Dubai",
+          "representative": true,
+          "credit": "aju.bee / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-minimalist-living-room-with-neutral-tones-32853131/"
+        },
+        {
+          "local": "/images/apt-interior-kitchen-white-cabinets.jpg",
+          "alt": "White kitchen with a gas range, extractor hood and a wooden-topped island in a Dubai apartment",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-kitchen-interior-in-dubai-apartment-30250653/"
+        },
+        {
+          "local": "/images/sobha-one-apartment-city-view.jpg",
+          "alt": "Bright living room with a panoramic city view through a large window in Dubai",
+          "representative": true,
+          "credit": "AJ Ahamad / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-living-room-with-city-view-and-cozy-sofa-29149089/"
+        }
+      ],
+      "verifiedOn": "2026-10-03"
+    },
+    {
+      "slug": "city-walk-community-retail",
+      "title": "Community Retail Space at City Walk Residences",
+      "developer": "Dubai Residential",
+      "community": "City Walk",
+      "location": "City Walk Residences, City Walk",
+      "type": "Retail",
+      "listingType": "rent",
+      "status": "For rent",
+      "bedrooms": 0,
+      "bedroomsMax": 0,
+      "size": 0,
+      "price": 0,
+      "priceFrom": false,
+      "featured": false,
+      "description": "Retail space for rent among the community shops at City Walk Residences. Dubai Residential invites retail enquiries for convenience stores, services and cafés in its communities and names City Walk Residences among them; it does not publish rents or unit sizes.",
+      "sourceUrl": "https://dubairesidential.ae/en/community-shops",
+      "sourceName": "dubairesidential.ae",
+      "verifiedOn": "2026-10-01",
+      "evidence": "'our community retail spaces are strategically located within established high-density neighbourhoods'; 'Explore available retail opportunities'; shop names offered on the enquiry form: 'Meydan Residences 1, Meydan Heights, Bluewaters Residences, City Walk Residences, International City'; no rent on the page",
+      "photos": [
+        {
+          "local": "/images/retail-clothing-store-interior.jpg",
+          "alt": "Clothing store interior with mannequins and racks of menswear in Dubai",
+          "representative": true,
+          "credit": "Kate Trysh / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/a-retail-shopping-store-with-a-lot-of-clothing-and-manikins-27203469/"
+        },
+        {
+          "local": "/images/retail-restaurant-frontage-at-sunset.jpg",
+          "alt": "Two-storey restaurant frontage with a lawn and palm trees at sunset in Dubai",
+          "representative": true,
+          "credit": "Maram / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/modern-restaurant-exterior-in-dubai-at-sunset-36339195/"
+        },
+        {
+          "local": "/images/city-walk-lit-pergola-walkway.jpg",
+          "alt": "Pergola walkway hung with strings of lights between low-rise buildings at dusk in Dubai",
+          "representative": true,
+          "credit": "Miguel Cuenca / Pexels",
+          "sourceUrl": "https://www.pexels.com/photo/christmas-lights-illuminated-on-city-street-11045839/"
         }
       ]
     }

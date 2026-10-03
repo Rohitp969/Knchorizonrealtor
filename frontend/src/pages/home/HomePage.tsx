@@ -347,25 +347,25 @@ export default function Home() {
       </section>
 
       {/* =========================================================
-          SPECIALIST SERVICES
-          Two services, so a two-column grid (no empty third column)
+          AFTER YOU BUY
+          Three services for an owner, so the three-column grid has no empty slot
       ========================================================= */}
       <section
         className="bg-[#faf7f1] site-section"
       >
         <div className="site-container">
           <SectionIntro
-            label="Specialist Design & Living Solutions"
+            label="After You Buy"
             title={
               <>
-                Spaces with
+                Your property,
                 <SectionBreak />
                 <em className="text-[#9f7a47]">
-                  a point of view.
+                  finished and looked after.
                 </em>
               </>
             }
-            copy="When the right property is only the beginning, our design and interiors team helps you carry the idea through."
+            copy="Buying is the first step. KNC Studio helps you plan, build and furnish the space, and we can manage the property for you afterwards."
           />
 
           <div className={`mt-12 ${cardGrid(specialistServices.length)}`}>
@@ -381,7 +381,7 @@ export default function Home() {
                     <img
                       {...responsiveImage(service.image, [480, 800, 1200])}
                       sizes={CARD_SIZES}
-                      alt={service.title}
+                      alt={service.imageAlt}
                       loading="lazy"
                       className="
                         h-full
@@ -403,7 +403,7 @@ export default function Home() {
                       text-[#9f7a47]
                     "
                   >
-                    KNC Studio
+                    {service.eyebrow}
                   </p>
 
                   <h3 className="block-title mt-2 text-[#2b3242] transition-colors group-hover:text-[#9f7a47]">
@@ -418,7 +418,7 @@ export default function Home() {
                 <span
                   className="mt-5 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[.14em] text-[#9f7a47] group-hover:underline"
                 >
-                  Explore service
+                  {service.link}
                   <ArrowUpRight size={14} />
                 </span>
               </Link>

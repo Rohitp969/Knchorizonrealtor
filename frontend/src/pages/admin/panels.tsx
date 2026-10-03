@@ -15,6 +15,7 @@ import {
   type MediaLibrary,
 } from '@/lib/admin-api';
 import { optimizedImage } from '@/lib/cloudinary-image';
+import { apiFetch } from '@/lib/api';
 import {
   AdminPanelHeader,
   ConfirmDialog,
@@ -222,6 +223,17 @@ export function InquiriesPanel() {
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('');
   const [active, setActive] = useState<Row | null>(null);
+  // The listing an enquiry is about, by name: the slug alone is hard to read in a hurry.
+  const [listingNames, setListingNames] = useState<Record<string, string>>({});
+  useEffect(() => {
+    const wanted = [active?.propertySlug && `properties:${active.propertySlug}`, active?.projectSlug && `projects:${active.projectSlug}`].filter((key): key is string => Boolean(key) && !(key! in listingNames));
+    for (const key of wanted) {
+      const [kind, slug] = key.split(':') as ['properties' | 'projects', string];
+      apiFetch<{ property?: { title: string }; project?: { title: string } }>(`/public/${kind}/${encodeURIComponent(slug)}`)
+        .then((data) => setListingNames((names) => ({ ...names, [key]: data.property?.title ?? data.project?.title ?? slug })))
+        .catch(() => setListingNames((names) => ({ ...names, [key]: `${slug} (no longer published)` })));
+    }
+  }, [active?.propertySlug, active?.projectSlug]);
   const [deleting, setDeleting] = useState<Row | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
 
@@ -367,8 +379,8 @@ export function InquiriesPanel() {
               {active.budget && <Detail label="Budget" value={active.budget} />}
               {active.propertyType && <Detail label="Property type" value={active.propertyType} />}
               {active.location && <Detail label="Preferred location" value={active.location} />}
-              {active.propertySlug && <Detail label="Property" value={active.propertySlug} />}
-              {active.projectSlug && <Detail label="Project" value={active.projectSlug} />}
+              {active.propertySlug && <Detail label="Property" value={<span data-testid="enquiry-property">{listingNames[`properties:${active.propertySlug}`] ?? active.propertySlug}<span className="block font-mono text-[10px] text-[#2b3242]/50">/properties/{active.propertySlug}</span></span>} />}
+              {active.projectSlug && <Detail label="Project" value={<span data-testid="enquiry-project">{listingNames[`projects:${active.projectSlug}`] ?? active.projectSlug}<span className="block font-mono text-[10px] text-[#2b3242]/50">/projects/{active.projectSlug}</span></span>} />}
             </div>
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[.12em] text-[#2b3242]/60">Message</p>

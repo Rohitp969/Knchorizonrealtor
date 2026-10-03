@@ -49,24 +49,25 @@ export function ServicesPage() {
         </div>
       </section>
 
-      {/* SPECIALIST PRACTICES (DESIGN & BUILD / INTERIORS) */}
+      {/* AFTER YOU BUY (DESIGN & BUILD / INTERIORS / PROPERTY MANAGEMENT) */}
       <section className="bg-[#efeae2] site-section">
         <div className="site-container">
           <SectionIntro
-            label="Specialist Practices"
+            label="After You Buy"
             title={
               <>
-                Design & interior
+                Design, interiors
                 <SectionBreak />
-                <em className="text-[#9f7a47]">coordination.</em>
+                <em className="text-[#9f7a47]">and management.</em>
               </>
             }
-            copy="Beyond advisory, we support clients with dedicated design, procurement, and furnishing coordination for their Dubai residences."
+            copy="Beyond advisory, we support owners with design, procurement and furnishing coordination for their Dubai homes, and with managing the property afterwards."
           />
 
           <div className={`mt-12 ${cardGrid(specialistServices.length)}`}>
             {specialistServices.map((specialist) => (
               <div
+                id={specialist.id}
                 key={specialist.id}
                 className="card-editorial group flex h-full flex-col justify-between p-5"
               >
@@ -75,13 +76,13 @@ export function ServicesPage() {
                     <img
                       {...responsiveImage(specialist.image, [480, 800, 1200])}
                       sizes={CARD_SIZES}
-                      alt={specialist.title}
+                      alt={specialist.imageAlt}
                       loading="lazy"
                       className="h-full w-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                     />
                   </div>
                   <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9f7a47]">
-                    Specialist Practice
+                    {specialist.eyebrow}
                   </span>
                   <h3 className="block-title mt-2 text-[#2b3242]">
                     {specialist.title}
@@ -95,7 +96,7 @@ export function ServicesPage() {
                     href={specialist.href}
                     className="inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.14em] text-[#9f7a47] line-link"
                   >
-                    Learn more
+                    {specialist.link}
                     <ArrowUpRight size={14} />
                   </Link>
                 </div>
