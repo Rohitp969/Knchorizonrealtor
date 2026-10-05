@@ -305,7 +305,7 @@ export function BlogPostPage() {
 
       {/* Floating / Sticky TOC Pill when scrolling */}
       {showStickyToc && tocSections.length > 0 && (
-        <div className="fixed top-16 left-0 right-0 z-40 bg-[#faf8f5]/95 backdrop-blur-md border-b border-[#2b3242]/10 py-2.5 px-4 shadow-xs transition-all duration-300">
+        <div className="fixed top-[var(--header-h)] left-0 right-0 z-30 bg-[#faf8f5]/95 backdrop-blur-md border-b border-[#2b3242]/10 py-2.5 px-4 shadow-xs transition-all duration-300">
           <div className="mx-auto max-w-[48rem] flex items-center justify-between gap-3">
             <button
               onClick={() => setIsTocOpen((prev) => !prev)}
