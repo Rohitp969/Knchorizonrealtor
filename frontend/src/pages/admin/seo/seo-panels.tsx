@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { AlertTriangle, CheckCircle2, ChevronDown, ExternalLink, FileText, Pencil, Plus, RefreshCw, Search, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronDown, ExternalLink, FileText, Image as ImageIcon, Pencil, Plus, RefreshCw, Search, XCircle } from 'lucide-react';
+
+import { optimizedImage } from '@/lib/cloudinary-image';
 
 import type { AdminUser } from '@/lib/admin-api';
 import { useContact } from '@/lib/site-settings';
@@ -307,12 +309,44 @@ const ARTICLE_FILTERS: { value: ArticleStatus | 'all'; label: string }[] = [
 const STATUS_TONE = { draft: 'draft', review: 'review', published: 'live' } as const;
 const STATUS_LABEL = { draft: 'Draft', review: 'In review', published: 'Published' } as const;
 
+const CATEGORY_COLORS: Record<string, string> = {
+  informational: 'from-[#3b5998]/20 to-[#3b5998]/10',
+  investment: 'from-[#55735f]/20 to-[#55735f]/10',
+  buying: 'from-[#9f7a47]/20 to-[#9f7a47]/10',
+  renting: 'from-[#7a5929]/20 to-[#7a5929]/10',
+  'area guide': 'from-[#2b3242]/15 to-[#2b3242]/6',
+  perspective: 'from-[#8f4f7a]/20 to-[#8f4f7a]/10',
+};
+
+function ArticleThumbnail({ image, category }: { image: string | null; category: string }) {
+  const gradient = CATEGORY_COLORS[category.toLowerCase()] ?? 'from-[#2b3242]/12 to-[#2b3242]/5';
+  if (image) {
+    return (
+      <img
+        src={optimizedImage(image, 240)}
+        alt=""
+        loading="lazy"
+        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+      />
+    );
+  }
+  return (
+    <span className={`flex h-full w-full flex-col items-center justify-center gap-1 bg-gradient-to-br ${gradient}`}>
+      <ImageIcon size={20} className="text-[#2b3242]/25" />
+      <span className="font-mono text-[7px] uppercase tracking-widest text-[#2b3242]/20">No image</span>
+    </span>
+  );
+}
+
 export function SeoArticlesPanel({ user }: { user: AdminUser }) {
   const { data, error, loading, reload } = useSeoOverview();
   const [filter, setFilter] = useState<ArticleStatus | 'all'>('all');
   const [edit, setEdit] = useState<EditTarget | null>(null);
   const articles = data?.articles ?? [];
   const shown = filter === 'all' ? articles : articles.filter((article) => article.status === filter);
+
+  const filterCount = (value: ArticleStatus | 'all') =>
+    value === 'all' ? articles.length : articles.filter((a) => a.status === value).length;
 
   return (
     <div>
@@ -321,48 +355,119 @@ export function SeoArticlesPanel({ user }: { user: AdminUser }) {
         description={user.canPublishArticles ? 'Write, review and publish blog articles.' : 'Write articles and submit them for review; an administrator publishes them.'}
       >
         <RefreshButton onClick={reload} loading={loading} />
-        <button type="button" className={adminButtonClass()} onClick={() => setEdit({ kind: 'article', id: null })} data-testid="button-new-article"><Plus size={14} /> New article</button>
+        <button type="button" className={adminButtonClass()} onClick={() => setEdit({ kind: 'article', id: null })} data-testid="button-new-article">
+          <Plus size={14} /> New article
+        </button>
       </AdminPanelHeader>
+
       <div className="mt-5">
         <Loading data={data} error={error} reload={reload}>
           {(overview) => (
             <>
+              {/* Filter tabs */}
               <div className="flex flex-wrap gap-2" role="tablist">
                 {ARTICLE_FILTERS.map((option) => {
-                  const total = option.value === 'all' ? articles.length : articles.filter((article) => article.status === option.value).length;
+                  const total = filterCount(option.value);
+                  const active = filter === option.value;
                   return (
-                    <button key={option.value} type="button" role="tab" aria-selected={filter === option.value} onClick={() => setFilter(option.value)} className={`rounded-full border px-3.5 py-1.5 text-sm transition-colors ${filter === option.value ? 'border-[#2b3242] bg-[#2b3242] text-[#faf7f1]' : 'border-[#2b3242]/15 bg-[#fffdf8] text-[#2b3242]/70 hover:border-[#9f7a47]'}`}>
-                      {option.label} <span className="opacity-70">({total})</span>
+                    <button
+                      key={option.value}
+                      type="button"
+                      role="tab"
+                      aria-selected={active}
+                      onClick={() => setFilter(option.value)}
+                      className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+                        active
+                          ? 'border-[#2b3242] bg-[#2b3242] text-[#faf7f1]'
+                          : 'border-[#2b3242]/15 bg-[#fffdf8] text-[#2b3242]/65 hover:border-[#9f7a47] hover:text-[#9f7a47]'
+                      }`}
+                    >
+                      {option.label}
+                      <span className={`ml-1.5 rounded-full px-1.5 py-0.5 font-mono text-[10px] ${active ? 'bg-white/20' : 'bg-[#2b3242]/8'}`}>
+                        {total}
+                      </span>
                     </button>
                   );
                 })}
               </div>
+
+              {/* Article list */}
               {shown.length === 0 ? (
-                <div className="mt-5"><StateBlock title="No articles here" message="Articles you create or submit for review appear in this list." /></div>
+                <div className="mt-5">
+                  <StateBlock
+                    title="No articles here"
+                    message={filter === 'all' ? 'Create your first article to get started.' : `No articles with status "${filter}" yet.`}
+                    action={filter === 'all' ? (
+                      <button className={adminButtonClass()} onClick={() => setEdit({ kind: 'article', id: null })}>
+                        <Plus size={14} /> New article
+                      </button>
+                    ) : undefined}
+                  />
+                </div>
               ) : (
-                <ul className={`${card} mt-5`}>
-                  {shown.map((article) => (
-                    <li key={article.id} className="flex flex-col gap-3 border-b border-[#2b3242]/8 px-4 py-3 last:border-0 sm:flex-row sm:items-center" data-testid={`seo-article-${article.slug}`}>
-                      <span className="flex min-w-0 flex-1 items-center gap-3">
-                        <span className="grid h-12 w-16 shrink-0 place-items-center overflow-hidden rounded-lg bg-[#2b3242]/8">
-                          {article.image ? <img src={article.image} alt="" loading="lazy" className="h-full w-full object-cover" /> : <FileText size={16} className="text-[#2b3242]/40" />}
+                <div className={`${card} mt-5 overflow-hidden`}>
+                  <ul>
+                    {shown.map((article, index) => (
+                      <li
+                        key={article.id}
+                        className={`group flex items-start gap-4 px-5 py-4 transition-colors hover:bg-[#fcf9f3] ${
+                          index < shown.length - 1 ? 'border-b border-[#2b3242]/8' : ''
+                        }`}
+                        data-testid={`seo-article-${article.slug}`}
+                      >
+                        {/* Thumbnail */}
+                        <span className="relative h-[54px] w-20 shrink-0 overflow-hidden rounded-lg border border-[#2b3242]/8 bg-[#f5f2ec]">
+                          <ArticleThumbnail image={article.image} category={article.category} />
                         </span>
-                        <span className="min-w-0">
-                          <span className="block truncate font-medium text-[#2b3242]">{article.title}</span>
-                          <span className="block truncate text-xs text-[#2b3242]/60">{article.category} · updated {new Date(article.updatedAt).toLocaleDateString('en-GB', { dateStyle: 'medium' })}</span>
+
+                        {/* Title + meta */}
+                        <span className="flex min-w-0 flex-1 flex-col justify-center gap-1 py-0.5">
+                          <span className="line-clamp-2 text-sm font-semibold leading-snug text-[#2b3242]">
+                            {article.title}
+                          </span>
+                          <span className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-[#2b3242]/50">
+                            <span className="rounded bg-[#2b3242]/6 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[.08em]">
+                              {article.category}
+                            </span>
+                            <span>·</span>
+                            <span>{article.author}</span>
+                            <span>·</span>
+                            <span>
+                              Updated {new Date(article.updatedAt).toLocaleDateString('en-GB', { dateStyle: 'medium' })}
+                            </span>
+                          </span>
                         </span>
-                      </span>
-                      <span className="flex flex-wrap items-center gap-2">
-                        <StatusPill tone={STATUS_TONE[article.status]}>{STATUS_LABEL[article.status]}</StatusPill>
-                        {article.status === 'published' && (
-                          <a href={`/blog/${article.slug}`} target="_blank" rel="noreferrer" className={adminButtonClass('ghost')}><ExternalLink size={12} /> View</a>
-                        )}
-                        <button type="button" className={adminButtonClass('ghost')} onClick={() => setEdit({ kind: 'article', id: article.id })}><Pencil size={12} /> Edit</button>
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+
+                        {/* Actions */}
+                        <span className="flex shrink-0 items-center gap-2">
+                          <StatusPill tone={STATUS_TONE[article.status]}>
+                            {STATUS_LABEL[article.status]}
+                          </StatusPill>
+                          {article.status === 'published' && (
+                            <a
+                              href={`/blog/${article.slug}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className={adminButtonClass('ghost')}
+                              title="View live article"
+                            >
+                              <ExternalLink size={12} /> View
+                            </a>
+                          )}
+                          <button
+                            type="button"
+                            className={adminButtonClass('ghost')}
+                            onClick={() => setEdit({ kind: 'article', id: article.id })}
+                          >
+                            <Pencil size={12} /> Edit
+                          </button>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
+
               <EditorHost edit={edit} overview={overview} user={user} onClose={() => setEdit(null)} onSaved={reload} />
             </>
           )}
