@@ -19,10 +19,16 @@ export function ProjectsPage() {
   // This page only ever searches projects, so the mode is always off-plan.
   const query = useMemo<PropertySearchQuery>(() => ({ ...parsed, listing: 'offplan' }), [parsed]);
 
-  // ?filter=featured and ?filter=new-launches pick a chip; a new search starts again from All.
+  // URL ?filter= picks a chip; a new search starts again from All.
   useEffect(() => {
     const wanted = (new URLSearchParams(search).get('filter') ?? '').toLowerCase();
-    setFilter(wanted === 'featured' ? 'Featured' : wanted === 'new-launches' ? 'New launches' : 'All');
+    setFilter(
+      wanted === 'featured' ? 'Featured'
+      : wanted === 'new-launches' ? 'New launches'
+      : wanted === 'apartments' ? 'Apartments'
+      : wanted === 'villas-townhouses' ? 'Villas & Townhouses'
+      : 'All'
+    );
   }, [search]);
 
   useEffect(() => {
@@ -38,9 +44,10 @@ export function ProjectsPage() {
   // The search comes first; the chips are counted against what it found, so a chip is only
   // shown when something is behind it and none of them can empty the page.
   const inSearch = useMemo(() => projects.filter((project) => matchesProjectSearch(project, query)), [projects, query]);
+
   const filters = useMemo(() => [
     'All',
-    ...(inSearch.some((project) => project.featured) ? ['Featured'] : []),
+    ...(inSearch.some((p) => p.featured) ? ['Featured'] : []),
     ...(inSearch.some(isNewLaunch) ? ['New launches'] : []),
   ], [inSearch]);
 

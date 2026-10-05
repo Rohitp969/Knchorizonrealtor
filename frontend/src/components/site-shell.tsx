@@ -362,7 +362,7 @@ export function Footer() {
 
           {/* Brand & Introduction */}
           <div className="col-span-full lg:col-span-1">
-            <BrandMark large />
+            <BrandMark inverse />
             <p className="block-title mt-7 max-w-sm text-[#d9c6a4]">
               A more considered way to move through Dubai.
             </p>
