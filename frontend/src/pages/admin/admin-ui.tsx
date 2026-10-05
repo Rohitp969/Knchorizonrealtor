@@ -273,7 +273,7 @@ function useUploadFolder(suggested: string) {
  * The media library as a chooser: search, a folder filter and, for galleries, several images
  * picked at once.
  */
-function MediaLibraryModal({
+export function MediaLibraryModal({
   open,
   onClose,
   load,

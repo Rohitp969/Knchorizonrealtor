@@ -3288,6 +3288,112 @@ export const defaultProjects = [
 
 export const defaultPosts = [
   {
+    id: 'can-indians-buy-property-in-dubai',
+    slug: 'can-indians-buy-property-in-dubai',
+    title: 'Can Indians buy property in Dubai?',
+    excerpt: 'A comprehensive legal and financial guide for Indian citizens buying freehold homes and investment properties in Dubai.',
+    category: 'Guides',
+    subCategory: 'Buying from India',
+    author: 'KNC Horizon',
+    publishedAt: '2026-10-01T00:00:00.000Z',
+    updatedAt: '2026-10-05T00:00:00.000Z',
+    readingTime: '9 min read',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/blog/marina-palm-view.jpg',
+    featuredImage: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/blog/marina-palm-view.jpg',
+    featuredImageAlt: 'Dubai Marina and Palm Jumeirah waterfront skyline',
+    quickAnswer: {
+      badge: 'QUICK ANSWER',
+      highlight: 'Yes.',
+      summary: 'Indian citizens can buy freehold property in designated areas of Dubai with full ownership rights. No UAE residency, citizenship or local sponsor is needed.',
+      disclaimer: 'Subject to DLD regulations. Verify current rules before you buy.',
+    },
+    keyTakeaways: [
+      'Indians can legally own freehold property in designated areas of Dubai.',
+      'UAE residency is not required to buy, own, or lease residential or commercial property.',
+      'Ownership can be in your individual name, jointly with family, or through a corporate structure.',
+      'Properties valued at AED 750,000+ qualify for a 2-year UAE Investor Visa; AED 2M+ qualifies for a 10-year Golden Visa.',
+      'Funds are legally remitted through RBI’s Liberalised Remittance Scheme (LRS) up to USD 250,000 per person per financial year.',
+    ],
+    faqs: [
+      {
+        question: 'Can an Indian buy property in Dubai without a UAE visa?',
+        answer: 'Yes. A UAE visa or residency is not required to purchase, own or hold property in Dubai\'s designated freehold areas. All you need is a valid passport to complete the registration with the Dubai Land Department (DLD).',
+      },
+      {
+        question: 'Can Indians buy villas in Dubai?',
+        answer: 'Yes. Indian investors can buy standalone villas and townhouses in designated freehold areas including Palm Jumeirah, Dubai Hills Estate, Emirates Living, Arabian Ranches, and DAMAC Hills with 100% freehold title.',
+      },
+      {
+        question: 'Can Indians buy off-plan property?',
+        answer: 'Yes. Indian buyers are among the largest investor groups in Dubai off-plan projects, benefiting from flexible developer payment plans (e.g. 60/40 or 1% monthly) and direct developer purchase with no agent fees.',
+      },
+      {
+        question: 'How do Indian buyers transfer funds to Dubai legally?',
+        answer: 'Funds are transferred from India through authorized dealer banks under the Reserve Bank of India’s Liberalised Remittance Scheme (LRS). Each individual can transfer up to USD 250,000 per fiscal year. Multiple family members can pool their allowances for larger property acquisitions.',
+      },
+      {
+        question: 'What is the tax implication in India for owning property in Dubai?',
+        answer: 'Dubai charges 0% personal income tax, 0% property tax, and 0% capital gains tax. Rental income received in Dubai is taxable in India as foreign income, but investors benefit from provisions under the UAE-India Double Tax Avoidance Agreement (DTAA).',
+      },
+    ],
+    leadCtaTitle: 'Looking to explore property in Dubai from India?',
+    leadCtaSubtitle: 'Connect with our dedicated India Desk for verified listings, payment plans, and zero-fee buyer guidance.',
+    content: `
+      <p class="article-lead">Dubai has firmly established itself as one of the world's most attractive real estate markets for Indian investors and home-buyers. Whether you are looking for high rental yields, capital growth, or a second home for family holidays, the legal framework in Dubai makes purchasing property straightforward and transparent.</p>
+
+      <h2>What is freehold property in Dubai?</h2>
+      <p>Under the landmark Law No. 7 of 2006, the Government of Dubai opened designated areas to foreign nationals of any nationality, granting them <strong>100% absolute ownership rights</strong> (freehold title) registered directly with the Dubai Land Department (DLD).</p>
+      <p>As a freehold owner, you receive an official Title Deed (Mulkiya) issued by the DLD. You have complete legal freedom to occupy the property, rent it out, sell it, or pass it on to your legal heirs without needing a local Emirati partner or sponsor.</p>
+
+      <h2>What costs should Indian buyers consider?</h2>
+      <p>The advertised property price is only one part of the total cost. These are the categories to budget for.</p>
+
+      <div class="structured-cost-card">
+        <div class="cost-item">
+          <h4>Property price</h4>
+          <p>The agreed purchase price of the unit between buyer and developer or seller.</p>
+        </div>
+        <div class="cost-item">
+          <h4>DLD registration fee</h4>
+          <p>Charged by the Dubai Land Department to register the title deed (4% of property value + admin fees).</p>
+        </div>
+        <div class="cost-item">
+          <h4>Agency commission</h4>
+          <p>Fee paid to the real estate agency facilitating the transaction (typically 2% + 5% VAT for secondary market; often 0% on off-plan).</p>
+        </div>
+        <div class="cost-item">
+          <h4>Service charges</h4>
+          <p>Ongoing building and community maintenance fees paid after purchase, calculated per square foot annually.</p>
+        </div>
+        <div class="cost-item">
+          <h4>Mortgage-related costs</h4>
+          <p>Arrangement and processing fees, property valuation fee, and mortgage registration fee (0.25% of loan amount) where financing is used.</p>
+        </div>
+        <div class="cost-item">
+          <h4>Currency conversion</h4>
+          <p>Bank transfer fees and exchange margin when converting Indian Rupees (INR) to UAE Dirhams (AED) via authorized dealer banks.</p>
+        </div>
+      </div>
+
+      <h2>Step-by-step process for Indian buyers</h2>
+      <p>Buying property in Dubai from India follows a streamlined, digital-first procedure governed by the Real Estate Regulatory Agency (RERA):</p>
+      <ol class="article-steps-list">
+        <li><strong>Select the Property & Reserve:</strong> Identify the unit (off-plan or ready), sign the reservation agreement, and pay the booking deposit (typically 5% to 10%).</li>
+        <li><strong>Sign the Sales Agreement (MOU / Form F):</strong> For secondary resale, both parties sign the standard RERA Form F. For off-plan, the developer issues the Sale and Purchase Agreement (SPA).</li>
+        <li><strong>Remit Funds via RBI LRS:</strong> Wire the milestone payments or purchase balance from your Indian bank account directly to the RERA-regulated project escrow account or seller.</li>
+        <li><strong>Obtain No Objection Certificate (NOC):</strong> The developer issues an NOC certifying all service charges and obligations are clear.</li>
+        <li><strong>DLD Title Deed Transfer:</strong> The Dubai Land Department issues the official electronic Title Deed in your name, verified instantly via the Dubai REST application.</li>
+      </ol>
+
+      <h2>Golden Visa eligibility for Indian property owners</h2>
+      <p>Investing in Dubai real estate unlocks residency privileges for you and your family:</p>
+      <ul>
+        <li><strong>2-Year Investor Visa:</strong> Available for properties valued at AED 750,000 (approx. ₹1.7 Crore) or more.</li>
+        <li><strong>10-Year UAE Golden Visa:</strong> Available for property purchases of AED 2,000,000 (approx. ₹4.5 Crore) or more. This allows 100% family sponsorship, domestic staff sponsorship, and no restriction on maximum stay outside the UAE. Off-plan properties with approved developers also qualify once minimum equity is met.</li>
+      </ul>
+    `,
+  },
+  {
     id: 'where-to-live-in-dubai',
     slug: 'where-to-live-in-dubai',
     title: 'Where to live in Dubai when the city needs to feel like home',

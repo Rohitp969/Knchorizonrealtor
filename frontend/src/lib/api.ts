@@ -121,6 +121,18 @@ export type Developer = {
   projects?: { title: string; slug: string }[];
 };
 
+export type QuickAnswer = {
+  badge?: string;
+  highlight: string;
+  summary: string;
+  disclaimer?: string;
+};
+
+export type FaqItem = {
+  question: string;
+  answer: string;
+};
+
 export type Post = {
   id: string;
   slug: string;
@@ -128,6 +140,7 @@ export type Post = {
   excerpt: string;
   content: string;
   category: string;
+  subCategory?: string;
   image: string;
   imageUrl?: string;
   imagePath?: string;
@@ -135,9 +148,16 @@ export type Post = {
   featuredImageAlt?: string;
   author: string;
   publishedAt: string;
+  updatedAt?: string;
+  readingTime?: string;
   status?: 'draft' | 'published';
   seoTitle?: string;
   seoDescription?: string;
+  quickAnswer?: QuickAnswer;
+  keyTakeaways?: string[];
+  faqs?: FaqItem[];
+  leadCtaTitle?: string;
+  leadCtaSubtitle?: string;
 };   
 
 export type Testimonial = {

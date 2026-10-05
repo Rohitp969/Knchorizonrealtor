@@ -6,6 +6,7 @@ import { DEFAULT_OG_IMAGE, resolveHead, type SeoFields } from '@/lib/seo';
 import { ImagePicker, Modal, Spinner, StateBlock, adminButtonClass, useToast } from '@/pages/admin/admin-ui';
 import { seoApi, toSeoInput, type Article, type ArticleStatus, type SeoInput, type SeoListing, type SeoOverview, type SeoPageRow } from './seo-api';
 import { optimizedImage } from '@/lib/cloudinary-image';
+import { RichTextEditor } from '../RichTextEditor';
 import { articleSeoTitle, headInputFor, pageDefaults, projectDescription, propertyDescription, type SeoTarget } from './seo-rules';
 import {
   EditorLayout,
@@ -330,7 +331,18 @@ export function ArticleEditor({ articleId, overview, user, onClose, onSaved }: {
                     {errors.featuredImage && <span className="mt-1 block text-xs text-[#b23b2e]">{errors.featuredImage}</span>}
                   </div>
                 )}
-                <TextArea label="Article text" value={fields.content} onChange={(value) => set('content', value)} readOnly={locked} error={errors.content} rows={12} hint="Plain text. A blank line starts a new paragraph." testId="article-content" />
+                <RichTextEditor
+                  label="Article text"
+                  value={fields.content}
+                  onChange={(value) => set('content', value)}
+                  readOnly={locked}
+                  error={errors.content}
+                  hint="Rich formatted article text with headings, bold, italic, links, lists, and inline body images."
+                  testId="article-content"
+                  folder="knc-horizon/blog"
+                  loadLibrary={seoApi.media}
+                  uploadImage={seoApi.upload}
+                />
               </div>
             </fieldset>
             <SeoFieldsForm

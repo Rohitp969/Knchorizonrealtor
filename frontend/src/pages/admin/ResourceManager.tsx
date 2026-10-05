@@ -19,6 +19,7 @@ import {
   adminButtonClass,
   useToast,
 } from '@/pages/admin/admin-ui';
+import { RichTextEditor } from './RichTextEditor';
 
 type Item = Record<string, any> & { id: string };
 
@@ -530,17 +531,27 @@ function ResourceForm({
                         folder={folderFor(field, values)}
                         onChange={(next) => setValue(field.name, next)}
                       />
+                    ) : field.type === 'richtext' ? (
+                      <RichTextEditor
+                        label={field.label}
+                        value={String(value ?? '')}
+                        onChange={(next) => setValue(field.name, next)}
+                        placeholder={field.placeholder}
+                        hint={field.help}
+                        folder={folderFor(field, values)}
+                        testId={`field-${field.name}`}
+                      />
                     ) : (
                       <label className="block">
                         <span className="font-mono text-[11px] uppercase tracking-[.14em] text-[#2b3242]/65">
                           {field.label}{field.required && <span className="text-[#b23b2e]"> *</span>}
                         </span>
 
-                        {field.type === 'textarea' || field.type === 'richtext' ? (
+                        {field.type === 'textarea' ? (
                           <textarea
                             value={value ?? ''}
                             onChange={(event) => setValue(field.name, event.target.value)}
-                            rows={field.type === 'richtext' ? 10 : 3}
+                            rows={3}
                             placeholder={field.placeholder}
                             className={`${inputClass} resize-y`}
                             data-testid={`field-${field.name}`}

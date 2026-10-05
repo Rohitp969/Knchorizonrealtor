@@ -23,6 +23,7 @@ import {
 } from "../lib/seo.ts";
 import { acceptImage, handleImageUpload } from "./admin.ts";
 import { cleanAlt, publicIdsFor } from "../lib/media.ts";
+import { sanitizeArticleContent } from "../lib/sanitize-content.ts";
 
 /*
  * SEO: the public SEO data, the SEO console and the SEO manager accounts.
@@ -242,9 +243,10 @@ async function saveArticle(req: AuthenticatedRequest, res: Response, existing?: 
   if (title.length < 3 || title.length > 160) errors.push({ field: "title", message: "Title must be between 3 and 160 characters." });
   const slugResult = parseSlug(body.slug);
   if (slugResult.error) errors.push(slugResult.error);
-  const content = typeof body.content === "string" ? body.content.trim() : "";
+  const rawContent = typeof body.content === "string" ? body.content.trim() : "";
+  const content = sanitizeArticleContent(rawContent);
   if (!content) errors.push({ field: "content", message: "Article text is required." });
-  if (content.length > 100_000) errors.push({ field: "content", message: "Article text is too long." });
+  if (content.length > 500_000) errors.push({ field: "content", message: "Article text is too long." });
   const excerpt = oneLine(body.excerpt);
   if (excerpt.length > 400) errors.push({ field: "excerpt", message: "Excerpt must be 400 characters or fewer." });
   const category = oneLine(body.category) || "General";

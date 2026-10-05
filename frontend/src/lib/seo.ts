@@ -201,3 +201,19 @@ export function articleJsonLd({ url, headline, description, image, datePublished
     publisher: { '@type': 'Organization', name: siteName, logo: { '@type': 'ImageObject', url: BRAND_LOGO.src, width: BRAND_LOGO.width, height: BRAND_LOGO.height } },
   };
 }
+
+export function faqJsonLd(faqs: { question: string; answer: string }[]) {
+  if (!faqs || faqs.length === 0) return null;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+}

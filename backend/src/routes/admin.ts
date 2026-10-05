@@ -27,6 +27,7 @@ import {
   updateRow,
   type TableName,
 } from "../lib/repositories.ts";
+import { sanitizeArticleContent } from "../lib/sanitize-content.ts";
 import type { BlogPostDoc, DeveloperDoc, ProjectDoc, PropertyDoc, UserDoc } from "../lib/models.ts";
 import { mailStatus, sendTestEmail } from "../lib/mailer.ts";
 import { readSettings, SUPPORTED_CURRENCIES, validateSettings, writeSettings } from "../lib/settings.ts";
@@ -208,7 +209,8 @@ function blogBody(body: Record<string, unknown>, existing?: BlogPostDoc) {
   const featuredImage = imageField(typeof body.featuredImage === "string" ? body.featuredImage : body.image, "Featured image") ?? existingFeatured;
   const title = typeof body.title === "string" ? body.title.trim() : existing?.title;
   const slug = typeof body.slug === "string" ? body.slug.trim().toLowerCase() : existing?.slug;
-  const content = typeof body.content === "string" ? body.content.trim() : existing?.content;
+  const rawContent = typeof body.content === "string" ? body.content.trim() : existing?.content;
+  const content = rawContent ? sanitizeArticleContent(rawContent) : undefined;
   if (!title || !slug || !content) return undefined;
   const status = body.status === "draft" ? "draft" : body.status === "published" || body.published === true ? "published" : existing?.status ?? (existing?.published ? "published" : "draft");
   const now = new Date();
