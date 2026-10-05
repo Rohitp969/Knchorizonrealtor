@@ -353,7 +353,7 @@ export function BlogPostPage() {
       )}
 
       {/* Main Article Container */}
-      <article className="mx-auto max-w-[48rem] px-4 sm:px-6 pt-8 sm:pt-12">
+      <article className="mx-auto max-w-[48rem] px-4 sm:px-6 pt-[calc(var(--header-h)+2rem)]">
         {/* Breadcrumbs */}
         <nav aria-label="Breadcrumbs" className="flex items-center gap-2 text-xs sm:text-sm text-[#2b3242]/70 font-medium">
           <Link href="/blog" className="border-b-2 border-[#e59a27] pb-0.5 text-[#2b3242] hover:text-[#e59a27] transition-colors font-semibold">

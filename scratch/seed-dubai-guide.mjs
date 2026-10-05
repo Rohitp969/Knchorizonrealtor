@@ -15,13 +15,40 @@ const ARTICLE_CONTENT = `<p class="article-lead">Dubai has firmly established it
 <p>Under the landmark Law No. 7 of 2006, the Government of Dubai opened designated areas to foreign nationals of any nationality, granting them <strong>100% absolute ownership rights</strong> (freehold title) registered directly with the Dubai Land Department (DLD).</p>
 <p>As a freehold owner, you receive an official Title Deed (Mulkiya) issued by the DLD. You have complete legal freedom to occupy the property, rent it out, sell it, or pass it on to your legal heirs without needing a local Emirati partner or sponsor.</p>
 
+<h2>Where can Indians buy property in Dubai?</h2>
+<p>Dubai land is categorised into three ownership zones. Only freehold areas are fully open to Indian nationals.</p>
+<div class="structured-cost-card">
+  <div class="cost-item">
+    <h4>Freehold areas</h4>
+    <p>Full 100% ownership registered with the DLD. Open to all nationalities. Covers Dubai Marina, Downtown Dubai, Palm Jumeirah, Business Bay, Jumeirah Village Circle, Dubai Hills Estate, Arabian Ranches, DAMAC Hills, Meydan, Creek Harbour, and 60+ other master communities.</p>
+  </div>
+  <div class="cost-item">
+    <h4>Leasehold areas</h4>
+    <p>Long-term leases (typically 99 years) granted to expatriates, also registered with the DLD. Found in older commercial districts such as Deira, Bur Dubai and parts of Jumeirah.</p>
+  </div>
+  <div class="cost-item">
+    <h4>Non-designated areas</h4>
+    <p>Restricted to UAE and GCC nationals only. Includes most heritage and established residential zones outside the formal freehold map.</p>
+  </div>
+</div>
+<p>Designated freehold zones can be updated over time, so confirm the area's status with the DLD or a licensed agent before you make an offer.</p>
+
+<h2>What types of property can Indians buy?</h2>
+<p>Within freehold zones, Indian buyers have access to the same range of property types as any foreign buyer.</p>
+<ul>
+  <li><strong>Apartments</strong> — Studios to four-bedroom units across all budgets, from AED 400,000 in outer communities to AED 20M+ penthouses on the Palm.</li>
+  <li><strong>Villas</strong> — Standalone or semi-detached homes in gated communities. Popular in Dubai Hills Estate, Arabian Ranches and DAMAC Hills.</li>
+  <li><strong>Townhouses</strong> — A middle ground between apartments and villas. Strong rental demand in family-oriented communities like Jumeirah Village Circle and Town Square.</li>
+  <li><strong>Luxury properties</strong> — Penthouses, sky villas and branded residences (Bugatti, Lamborghini, Four Seasons) available in Downtown and Palm Jumeirah.</li>
+  <li><strong>Off-plan properties</strong> — Units purchased directly from developers before or during construction, with flexible payment plans and lower entry prices.</li>
+</ul>
+
 <h2>What costs should Indian buyers consider?</h2>
 <p>The advertised property price is only one part of the total cost. These are the categories to budget for.</p>
-
 <div class="structured-cost-card">
   <div class="cost-item">
     <h4>Property price</h4>
-    <p>The agreed purchase price of the unit between buyer and developer or seller.</p>
+    <p>The agreed purchase price of the unit.</p>
   </div>
   <div class="cost-item">
     <h4>DLD registration fee</h4>
@@ -41,25 +68,57 @@ const ARTICLE_CONTENT = `<p class="article-lead">Dubai has firmly established it
   </div>
   <div class="cost-item">
     <h4>Currency conversion</h4>
-    <p>Bank transfer fees and exchange margin when converting Indian Rupees (INR) to UAE Dirhams (AED) via authorized dealer banks.</p>
+    <p>Bank transfer fees and exchange margin when converting INR to AED via authorised dealer banks.</p>
   </div>
 </div>
+<p><em>Budget the sticker price plus at least 5–7% for a ready unit, or 2–4% for off-plan where agent fees are usually zero.</em></p>
 
-<h2>Step-by-step process for Indian buyers</h2>
-<p>Buying property in Dubai from India follows a streamlined, digital-first procedure governed by the Real Estate Regulatory Agency (RERA):</p>
+<h2>What documents do Indians need?</h2>
+<p>Requirements vary slightly by property type and whether you buy in person or remotely. Expect to provide:</p>
+<ul>
+  <li><strong>Valid passport</strong> — plus a copy if you are already in the UAE.</li>
+  <li><strong>Proof of funds or income</strong> — particularly for larger transactions or mortgage applications.</li>
+  <li><strong>Power of Attorney</strong> — if you appoint the developer or an agent as an authorised signatory on your behalf.</li>
+  <li><strong>Bank account details</strong> — for payment transfers and, where relevant, mortgage processing.</li>
+</ul>
+<p>Confirm the exact requirements with your agent, the developer and the Dubai Land Department before you start.</p>
+
+<h2>How does the buying process work?</h2>
+<p>At a high level, a property purchase typically follows seven steps.</p>
 <ol class="article-steps-list">
-  <li><strong>Select the Property &amp; Reserve:</strong> Identify the unit (off-plan or ready), sign the reservation agreement, and pay the booking deposit (typically 5% to 10%).</li>
-  <li><strong>Sign the Sales Agreement (MOU / Form F):</strong> For secondary resale, both parties sign the standard RERA Form F. For off-plan, the developer issues the Sale and Purchase Agreement (SPA).</li>
-  <li><strong>Remit Funds via RBI LRS:</strong> Wire the milestone payments or purchase balance from your Indian bank account directly to the RERA-regulated project escrow account or seller.</li>
-  <li><strong>Obtain No Objection Certificate (NOC):</strong> The developer issues an NOC certifying all service charges and obligations are clear.</li>
-  <li><strong>DLD Title Deed Transfer:</strong> The Dubai Land Department issues the official electronic Title Deed in your name, verified instantly via the Dubai REST application.</li>
+  <li><strong>Choose your objective</strong> — Decide use: rental income, long-term investment, or family home.</li>
+  <li><strong>Choose a location</strong> — Match to your lifestyle goals and financial capacity.</li>
+  <li><strong>Shortlist properties</strong> — Tour in person or via virtual viewing sessions.</li>
+  <li><strong>Verify the property and developer</strong> — Check DLD registration and developer approval status.</li>
+  <li><strong>Review terms and total costs</strong> — Including DLD fee, agent commission and payment plan.</li>
+  <li><strong>Complete documentation</strong> — Sign the SPA or MOU. Down payment is typically 10–30%.</li>
+  <li><strong>Complete payment and registration</strong> — Complete at the DLD office or through an authorised trustee office.</li>
 </ol>
 
-<h2>Golden Visa eligibility for Indian property owners</h2>
-<p>Investing in Dubai real estate unlocks residency privileges for you and your family:</p>
+<h2>How do Indian buyers transfer funds to Dubai?</h2>
+<p>Indian residents must comply with both Indian foreign exchange regulations and UAE remittance rules when sending property purchase funds abroad.</p>
 <ul>
-  <li><strong>2-Year Investor Visa:</strong> Available for properties valued at AED 750,000 (approx. ₹1.7 Crore) or more.</li>
-  <li><strong>10-Year UAE Golden Visa:</strong> Available for property purchases of AED 2,000,000 (approx. ₹4.5 Crore) or more. This allows 100% family sponsorship, domestic staff sponsorship, and no restriction on maximum stay outside the UAE. Off-plan properties with approved developers also qualify once minimum equity is met.</li>
+  <li><strong>RBI Liberalised Remittance Scheme (LRS)</strong> — Permits each resident Indian to remit up to USD 250,000 per financial year for overseas property investment. Multiple family members can pool their allowances.</li>
+  <li><strong>FEMA compliance</strong> — Funds must be transferred via authorised dealer banks. Retain all wire transfer receipts and Form A2 records for future repatriation or sale.</li>
+  <li><strong>Wire transfer</strong> — Direct bank-to-bank SWIFT transfer to the developer's RERA-registered project escrow account or to the seller's DLD-verified account.</li>
+  <li><strong>Currency timing</strong> — AED is pegged to USD (1 USD = 3.67 AED). Use a forward contract or currency specialist for large transfers to reduce exchange rate risk.</li>
+</ul>
+
+<h2>Can buying property lead to a UAE residency or Golden Visa?</h2>
+<p>Property ownership does not automatically grant UAE residency, but it opens two government residency pathways:</p>
+<ul>
+  <li><strong>2-Year Property Investor Visa</strong> — Available for completed (ready) properties valued at AED 750,000 or more (approx. &#8377;1.7 Crore). Renewable every two years while ownership continues.</li>
+  <li><strong>10-Year UAE Golden Visa</strong> — Available for property purchases of AED 2,000,000 or more (approx. &#8377;4.5 Crore). Allows 100% family sponsorship and unlimited re-entry with no restriction on time spent outside the UAE. Off-plan properties with approved developers qualify once minimum equity thresholds are met.</li>
+</ul>
+<p>Check the exact threshold and eligibility criteria with the Dubai Land Department, as these change periodically.</p>
+
+<h2>Is Dubai property a good investment for Indians?</h2>
+<ul>
+  <li><strong>Rental yields</strong> — Dubai typically delivers gross rental yields of 5–9% per year depending on community and unit size. This compares favourably to most Indian metros, where yields sit at 2–3%.</li>
+  <li><strong>Zero tax</strong> — Dubai levies 0% personal income tax, 0% capital gains tax and 0% inheritance tax. The UAE-India DTAA prevents double taxation on rental income.</li>
+  <li><strong>Currency benefit</strong> — Earnings in AED (pegged to USD) provide a natural hedge against INR depreciation.</li>
+  <li><strong>Capital appreciation</strong> — Prime areas saw 15–25% price growth in 2022–2024. Off-plan projects in emerging master communities offer higher upside.</li>
+  <li><strong>Regulatory transparency</strong> — DLD and RERA provide a strong legal framework: all transactions are registered, escrow is mandatory for off-plan, and developer defaults are protected under RERA law.</li>
 </ul>`;
 
 async function run() {
@@ -108,7 +167,7 @@ async function run() {
     return;
   }
 
-  // 3. Article exists — check if it has a featured image; patch if missing
+  // 3. Article exists — always update content + image so DB matches site-data.ts
   const listRes = await fetch(`${BASE}/admin/blog`, { headers: authHeaders });
   const listData = await listRes.json();
   const posts = listData.posts ?? listData.items ?? [];
@@ -119,24 +178,18 @@ async function run() {
     return;
   }
 
-  const hasImage = existing.featuredImage || existing.image || existing.imageUrl;
-  if (hasImage) {
-    console.log('✓ Article already has a featured image:', hasImage);
-    return;
-  }
-
-  // Patch the image
+  // Always patch both content and featured image together
   const patchRes = await fetch(`${BASE}/admin/blog/${existing.id}`, {
     method: 'PATCH',
     headers: authHeaders,
-    body: JSON.stringify({ featuredImage: FEATURED_IMAGE }),
+    body: JSON.stringify({ featuredImage: FEATURED_IMAGE, content: ARTICLE_CONTENT }),
   });
   const patchResult = await patchRes.json();
   if (patchRes.ok) {
-    console.log('✓ Featured image added to existing article:', FEATURED_IMAGE);
+    console.log('✓ Article content + featured image updated:', existing.id);
   } else {
     console.error('✗ Patch failed:', patchResult);
-    console.log('→ Fix manually: go to admin → Articles → Edit → Featured Image → paste:', FEATURED_IMAGE);
+    console.log('→ Fix manually: go to admin → Articles → Edit the article.');
   }
 }
 
