@@ -3502,11 +3502,41 @@ export const defaultPosts = [
 ];
 
 export const defaultGallery: GalleryItem[] = [
-  { id: 'gal-1', title: 'Abras on Dubai Creek', category: 'Heritage', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577264/knc-horizon/gallery/abras-dubai-creek.jpg', alt: 'Traditional wooden abra boats flying the UAE flag crossing Dubai Creek in daylight' },
-  { id: 'gal-2', title: 'The Spice Souk', category: 'Heritage', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577266/knc-horizon/gallery/dubai-spice-souk.jpg', alt: 'Woven baskets and bowls piled with colourful dried flowers and spices at the Dubai Spice Souk' },
-  { id: 'gal-3', title: 'Jumeirah Mosque', category: 'Architecture', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577266/knc-horizon/gallery/jumeirah-mosque.jpg', alt: 'Jumeirah Mosque in Dubai with a carved stone dome and twin minarets behind trees under a blue sky' },
-  { id: 'gal-4', title: 'Desert dunes', category: 'Landscapes', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577264/knc-horizon/gallery/dubai-desert-dunes.jpg', alt: 'Rippled orange sand dunes stretching into the distance in the desert outside Dubai' },
-  { id: 'gal-5', title: 'Jumeira Public Beach', category: 'Waterfront', image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577266/knc-horizon/gallery/jumeira-public-beach.jpg', alt: 'Wide pale-sand Jumeira Public Beach in Dubai with a lifeguard tower, palms and distant beachgoers' },
+  {
+    id: 'gal-1',
+    title: 'The Palm from Above',
+    category: 'Palm Jumeirah',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577261/knc-horizon/communities/palm-jumeirah-aerial.jpg',
+    alt: 'Aerial view of Palm Jumeirah and its fronds — Dubai\'s iconic palm-shaped island with luxury residences',
+  },
+  {
+    id: 'gal-2',
+    title: 'Dubai Marina at Night',
+    category: 'Dubai Skyline',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790844454/knc-horizon/projects/bay-by-cavalli/bay-by-cavalli-marina-night.jpg',
+    alt: 'Yachts moored in Dubai Marina at night beneath illuminated luxury residential towers',
+  },
+  {
+    id: 'gal-3',
+    title: 'Lakeside Villa Community',
+    category: 'Luxury Villas',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577280/knc-horizon/projects/dubai-villa-community-golf-lake.jpg',
+    alt: 'Lake, palm-lined lawns and luxury villas in a gated residential community in Dubai',
+  },
+  {
+    id: 'gal-4',
+    title: 'Rooftop Infinity Pool',
+    category: 'Pools & Outdoor Living',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790853409/knc-horizon/projects/bayz-101/bayz-101-rooftop-pool-facing-burj-khalifa.jpg',
+    alt: 'Rooftop infinity pool overlooking the Burj Khalifa and the Dubai skyline at sunrise',
+  },
+  {
+    id: 'gal-5',
+    title: 'Burj Khalifa Skyline',
+    category: 'Dubai Skyline',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577267/knc-horizon/hero/burj-khalifa-aerial.jpg',
+    alt: 'The Burj Khalifa rising above the Downtown Dubai skyline — the world\'s tallest tower surrounded by premium real estate',
+  },
 ];
 
 // Verified public developer profiles (name, description, official website only)
