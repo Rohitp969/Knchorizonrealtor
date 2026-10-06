@@ -7,9 +7,9 @@ import { cloudinaryStatus } from "./lib/cloudinary.ts";
 
 /*
  * Render assigns the port through PORT and the service must listen on it, so that always
- * wins. Locally there is usually no PORT set, and 5000 is what the dev proxy expects.
+ * wins. Locally there is usually no PORT set, and 6000 is what the dev proxy expects.
  */
-const rawPort = process.env["PORT"] ?? "5000";
+const rawPort = process.env["PORT"] ?? "6000";
 const port = Number(rawPort);
 
 if (Number.isNaN(port) || port <= 0) {

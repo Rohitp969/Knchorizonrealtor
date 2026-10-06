@@ -746,4 +746,34 @@
   font-family: var(--app-font-mono), monospace;
 }
 
+/* Formula Callout Banner */
+.article-formula-banner {
+  background: linear-gradient(135deg, #1e2532 0%, #2b3548 100%);
+  border-left: 4px solid #f59e0b;
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  margin: 1.75rem 0 2rem;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.article-formula-banner .formula-label {
+  font-family: var(--app-font-mono), monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #f59e0b;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.article-formula-banner .formula-math {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  line-height: 1.45;
+}
+
+
 

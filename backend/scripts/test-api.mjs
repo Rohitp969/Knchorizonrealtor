@@ -9,7 +9,7 @@
  */
 import "dotenv/config";
 
-const BASE = process.argv[2] || "http://localhost:5000/api";
+const BASE = process.argv[2] || "http://localhost:6000/api";
 const EMAIL = process.env.ADMIN_EMAIL;
 const PASSWORD = process.env.ADMIN_PASSWORD;
 

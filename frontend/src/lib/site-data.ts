@@ -3456,6 +3456,188 @@ export const defaultPosts = [
     `,
   },
   {
+    id: 'dubai-property-price-in-inr',
+    slug: 'dubai-property-price-in-inr',
+    title: 'How Much Does Property in Dubai Cost in INR? Complete Price Guide for Indian Buyers',
+    excerpt: 'Wondering how much property in Dubai costs in INR? See how AED prices convert, what affects cost, and what Indian buyers should budget for.',
+    category: 'Guides',
+    subCategory: 'Buying from India',
+    author: 'KNC Horizon',
+    publishedAt: '2026-10-05T05:41:49.916Z',
+    updatedAt: '2026-10-06T07:21:04.057Z',
+    readingTime: '8 min read',
+    image: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/blog/marina-palm-view.jpg',
+    featuredImage: 'https://res.cloudinary.com/complaintreview/image/upload/v1790577260/knc-horizon/blog/marina-palm-view.jpg',
+    featuredImageAlt: 'Dubai skyline and residential towers over water',
+    quickAnswer: {
+      badge: 'QUICK ANSWER',
+      highlight: 'There is no single fixed price.',
+      summary: "The cost in INR depends on two things: the property's price in AED and the live AED–INR exchange rate on the day you convert, which changes daily. Price also varies by location, property type, size, developer, and whether the unit is ready or off-plan.",
+      disclaimer: 'Always check the live exchange rate and current listing price before setting a rupee budget.',
+    },
+    keyTakeaways: [
+      'Dubai properties are priced in AED; your INR cost depends directly on the live AED–INR exchange rate.',
+      'Entry-level studios in emerging areas can start under ₹1 Crore, while prime communities scale higher.',
+      'Off-plan developments offer flexible developer payment plans, lowering initial upfront capital.',
+      'Budget 5–7% above the property price for DLD registration (4%), agency, and administration fees.',
+      'Indian buyers can remit funds legally under RBI’s LRS up to USD 250,000 per individual per financial year.',
+    ],
+    faqs: [
+      {
+        question: 'How much does property in Dubai cost in INR?',
+        answer: 'It depends on the property\'s AED price and the AED–INR exchange rate at the time of conversion, and both change. There is no single INR figure for Dubai property as a whole.',
+      },
+      {
+        question: 'Can I buy property in Dubai under ₹50 lakhs?',
+        answer: 'Possibly, depending on the exchange rate, location and property type, but availability is not guaranteed. Smaller units in select communities are more likely to fit. Confirm current listings with an agent.',
+      },
+      {
+        question: 'Can I buy property in Dubai under ₹1 crore?',
+        answer: 'This budget opens up more options, especially apartments and smaller units in more communities, but availability depends on current pricing and the exchange rate.',
+      },
+      {
+        question: 'How much does an apartment in Dubai cost?',
+        answer: 'It varies by size (studio to multi-bedroom) and location. Central and waterfront areas are generally priced higher than emerging communities. Check current pricing with an agent.',
+      },
+      {
+        question: 'How much does a villa in Dubai cost in Indian rupees?',
+        answer: 'Villas generally cost more than apartments and depend on size, plot, community and luxury positioning. The INR value depends on the live AED–INR rate.',
+      },
+      {
+        question: 'How much does a townhouse cost in Dubai?',
+        answer: 'Townhouses typically sit between apartments and villas, varying by bedrooms, community and whether the unit is ready or off-plan.',
+      },
+      {
+        question: 'Is Dubai property cheaper than property in India?',
+        answer: 'It is not a simple comparison, as both markets cover a wide range of prices by city, location and property type. Compare specific properties, not general assumptions.',
+      },
+      {
+        question: 'What is the cheapest property in Dubai?',
+        answer: 'Smaller units such as studios in emerging or developing communities generally sit at the lower end, but exact pricing changes with the market. Confirm with current listings.',
+      },
+      {
+        question: 'How much money should an Indian have to buy property in Dubai?',
+        answer: 'Beyond the property price, budget for registration fees, agency commission and other transaction costs, plus ongoing service charges. The total depends on the property you choose.',
+      },
+      {
+        question: 'What additional costs are involved in buying Dubai property?',
+        answer: 'Common ones are DLD registration charges (4%), agency fees (typically 2%), service charges, mortgage costs where financing is used, and currency conversion costs. Ask for a current, itemised cost sheet.',
+      },
+      {
+        question: 'Can Indians buy property in Dubai for investment?',
+        answer: 'Yes, many do, for rental income or long-term capital appreciation. Returns are not guaranteed, so evaluate each opportunity individually.',
+      },
+      {
+        question: 'How can I convert Dubai property prices from AED to INR?',
+        answer: 'Multiply the AED price by the current AED–INR exchange rate. Always use a live rate, since currency markets move daily.',
+      },
+    ],
+    leadCtaTitle: 'Looking to explore property in Dubai from India?',
+    leadCtaSubtitle: 'Connect with our dedicated India Desk for verified listings, payment plans, and zero-fee buyer guidance.',
+    content: `
+      <p class="article-lead">Indian buyers researching Dubai real estate usually want to know one thing first: what does this actually cost in rupees? Dubai property is priced in AED (UAE dirhams), while Indian budgets are planned in INR, so converting between the two is the first step.</p>
+      <p>This guide explains how to think about Dubai property costs in INR without relying on outdated numbers or a fixed conversion rate.</p>
+
+      <h2>Dubai Property Prices in INR: How the Conversion Works</h2>
+      <p>Dubai listings are almost always quoted in AED. To see the INR value, apply the current AED–INR exchange rate:</p>
+      <div class="article-formula-banner">
+        <div class="formula-label">The Basic Formula</div>
+        <div class="formula-math">AED Property Price × Current AED–INR Exchange Rate = Approximate INR Value</div>
+      </div>
+      <p>The exchange rate moves daily with currency markets, so the same property can convert to a different rupee figure from one week to the next. Treat any INR figure as an estimate, and always confirm the actual listing price with the agent or developer.</p>
+
+      <h2>How Much Money Do You Need to Buy Property in Dubai?</h2>
+      <p>There is no single minimum price. What you need depends on:</p>
+      <ul>
+        <li><strong>Apartment vs villa:</strong> apartments generally have a lower entry point.</li>
+        <li><strong>Location:</strong> central, waterfront and established communities usually cost more than emerging or suburban areas.</li>
+        <li><strong>Size:</strong> a studio or one-bedroom costs less than a larger multi-bedroom home.</li>
+        <li><strong>Ready vs off-plan:</strong> off-plan units often need lower upfront payments, spread over a construction-linked plan.</li>
+        <li><strong>Developer and project:</strong> pricing differs between developers, and even between projects in the same area.</li>
+        <li><strong>Amenities:</strong> buildings and communities with more facilities tend to price higher.</li>
+      </ul>
+      <p>Instead of asking “what is the price of Dubai property?”, ask “what is my total purchase budget?” That means the property price plus registration fees, agency commission and other one-time costs.</p>
+
+      <h2>Can You Buy Property in Dubai Under ₹50 Lakhs?</h2>
+      <p>It depends, and it changes. Availability at this budget depends on:</p>
+      <ul>
+        <li>The AED–INR exchange rate at the time you check.</li>
+        <li>Current market pricing, which shifts with supply and demand.</li>
+        <li>Location: smaller or emerging communities are more likely to have lower entry prices.</li>
+        <li>Property type: studios are more likely to fit than larger apartments or villas.</li>
+        <li>Off-plan projects, some of which offer smaller units or extended payment plans.</li>
+      </ul>
+      <p>No specific property, project or area is guaranteed at this budget. Convert ₹50 lakhs to AED at the live rate, then share that figure with a licensed agent such as KNC Horizon, who can check it against current listings.</p>
+
+      <h2>Can You Buy Property in Dubai Under ₹1 Crore?</h2>
+      <p>A ₹1 crore budget opens up more options than ₹50 lakhs, but availability still depends on the exchange rate, location, property type and market conditions. Within this range, Indian buyers commonly look at:</p>
+      <ul>
+        <li><strong>Apartments:</strong> especially studios and one-bedrooms in a wider range of communities.</li>
+        <li><strong>Emerging communities:</strong> entry prices are often lower than in established central areas.</li>
+        <li><strong>Off-plan opportunities:</strong> developers may offer more accessible payment structures.</li>
+        <li><strong>Smaller units:</strong> price generally scales with square footage.</li>
+      </ul>
+      <p>The same budget can buy very different property types depending on the area, so always verify against current listings and the live rate.</p>
+
+      <h2>How Much Does Property Cost by Type?</h2>
+      <h3>Apartments</h3>
+      <p>Apartment pricing depends mainly on unit size and location. Roughly:</p>
+      <ul>
+        <li><strong>Studios:</strong> lower end of the apartment range.</li>
+        <li><strong>One-bedroom:</strong> costs more than a studio, varying by building and area.</li>
+        <li><strong>Two-bedroom:</strong> popular with families and rental investors.</li>
+        <li><strong>Three-bedroom and above, or penthouse-style:</strong> higher end of the segment.</li>
+      </ul>
+      <p>Areas Indian buyers often compare include Dubai Marina, Downtown Dubai, Business Bay, Jumeirah Village Circle (JVC), Dubai Creek Harbour, Dubai South and Dubai Silicon Oasis. Each has a different price position based on location, infrastructure and demand.</p>
+
+      <h3>Villas</h3>
+      <p>Villas usually cost more than apartments because of larger built-up areas, private plots and community amenities. Price depends on:</p>
+      <ul>
+        <li>Villa size and number of bedrooms.</li>
+        <li>Plot size, as well as built-up area.</li>
+        <li>The community and its amenities.</li>
+        <li>Location within Dubai.</li>
+        <li>The luxury positioning of the project.</li>
+      </ul>
+
+      <h2>What Additional Costs Should Indian Buyers Consider?</h2>
+      <p>The advertised property price is only one part of the total cost. These are the main categories to budget for:</p>
+      <div class="structured-cost-card">
+        <div class="cost-item">
+          <h4>DLD Registration Fee</h4>
+          <p>4% of the property value paid to the Dubai Land Department to register the title deed, plus administrative fees.</p>
+        </div>
+        <div class="cost-item">
+          <h4>Agency Commission</h4>
+          <p>Typically 2% + 5% VAT for secondary market transactions; often 0% on direct off-plan purchases from developers.</p>
+        </div>
+        <div class="cost-item">
+          <h4>Ongoing Service Charges</h4>
+          <p>Annual community and building maintenance fees calculated per square foot, covering security, pools, gyms and common areas.</p>
+        </div>
+        <div class="cost-item">
+          <h4>Mortgage & Valuation Fees</h4>
+          <p>Bank arrangement fees, property valuation, and mortgage registration (0.25% of loan amount) where financing is used.</p>
+        </div>
+        <div class="cost-item">
+          <h4>Currency Conversion & Bank Wire</h4>
+          <p>Remittance charges and exchange rate margins when transferring funds via RBI's LRS through Indian authorised dealer banks.</p>
+        </div>
+      </div>
+      <p><em>Treat “property price” and “total purchase and ownership cost” as two different numbers. Budget at least 5–7% above sticker price for ready homes.</em></p>
+
+      <h2>Is Buying Property in Dubai a Good Investment for Indians?</h2>
+      <p>Many Indian buyers look at Dubai for rental income, long-term appreciation or portfolio diversification. Key advantages include:</p>
+      <ul>
+        <li><strong>Rental yields:</strong> Dubai typically delivers gross rental yields of 5–9% per year depending on community and unit size, comparing favourably to Indian metros (2–3%).</li>
+        <li><strong>Zero tax:</strong> Dubai levies 0% personal income tax, 0% capital gains tax and 0% inheritance tax. Under the UAE-India DTAA, investors avoid double taxation.</li>
+        <li><strong>Currency benefit:</strong> Earnings in AED (pegged to USD) provide a natural hedge against INR depreciation.</li>
+        <li><strong>Capital appreciation:</strong> Prime communities continue to see strong demand and sustained long-term capital growth.</li>
+        <li><strong>Regulatory safety:</strong> Complete transparency under RERA and Dubai Land Department with mandatory project escrow accounts.</li>
+      </ul>
+    `,
+  },
+  {
     id: 'where-to-live-in-dubai',
     slug: 'where-to-live-in-dubai',
     title: 'Where to live in Dubai when the city needs to feel like home',

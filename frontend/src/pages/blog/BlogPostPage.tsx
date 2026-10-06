@@ -15,7 +15,7 @@ import {
 import { FaWhatsapp } from 'react-icons/fa6';
 import { Link, useLocation, useRoute } from 'wouter';
 import DOMPurify from 'dompurify';
-import { apiFetch, type Post, type FaqItem } from '@/lib/api';
+import { apiFetch, type Post, type FaqItem, type QuickAnswer } from '@/lib/api';
 import { cardGrid } from '@/components/blocks';
 import { defaultPosts } from '@/lib/site-data';
 import {
@@ -76,6 +76,241 @@ export function BlogPostPage() {
   const customTitle =
     post?.seoTitle && post.seoTitle.trim() !== post.title.trim() ? post.seoTitle : null;
 
+  // Comprehensive Article Parsing & Extraction
+  // Guarantees consistent premium format for EVERY article:
+  // - Signature dark gold Quick Answer hero card
+  // - Interactive Table of Contents dropdown & sticky pill
+  // - Key Takeaways card with golden checkmarks
+  // - Clean editorial body (with QA, bullet guides, and FAQs stripped to avoid duplication)
+  // - Interactive FAQ accordion with chevron toggles
+  // - India / Dubai tailored Lead Capture Card
+  const {
+    sanitizedHtml,
+    tocSections,
+    calculatedReadingTime,
+    quickAnswer,
+    keyTakeaways,
+    faqs,
+    leadCtaTitle,
+    leadCtaSubtitle,
+    subCategory,
+  } = useMemo(() => {
+    if (!post?.content) {
+      return {
+        sanitizedHtml: '',
+        tocSections: [],
+        calculatedReadingTime: '5 min read',
+        quickAnswer: post?.quickAnswer || null,
+        keyTakeaways: post?.keyTakeaways || [],
+        faqs: post?.faqs || [],
+        leadCtaTitle: post?.leadCtaTitle || 'Looking to explore property in Dubai?',
+        leadCtaSubtitle:
+          post?.leadCtaSubtitle ||
+          'Leave your contact details and our senior property advisor will reach out with tailor-made options.',
+        subCategory: post?.subCategory || post?.category || 'Guides',
+      };
+    }
+
+    const trimmed = post.content.trim();
+    let rawHtml = trimmed;
+
+    // Handle plain text paragraph split if not already HTML
+    if (!/<[a-z][\s\S]*>/i.test(trimmed)) {
+      rawHtml = trimmed
+        .split(/\n\s*\n/)
+        .map((p) => `<p>${p.replace(/\n/g, '<br />')}</p>`)
+        .join('');
+    }
+
+    const isIndia = /india|inr|rupee|lakh|crore/i.test(
+      `${post.title} ${post.excerpt || ''} ${post.category || ''}`,
+    );
+
+    // 1. QUICK ANSWER EXTRACTION / GENERATION
+    let extractedQa: QuickAnswer | null = post.quickAnswer || null;
+    if (!extractedQa) {
+      // Try to find explicit quick answer block in HTML
+      const qaRegex =
+        /<(?:p|div|h[234])>\s*(?:<strong>|<b>)?\s*(?:Quick\s*answer|Fast\s*Facts|Summary|Overview)\s*:?\s*(?:<\/strong>|<\/b>)?\s*<\/(?:p|div|h[234])>\s*(?:<p>([\s\S]*?)<\/p>)?/i;
+      const qaMatch = rawHtml.match(qaRegex);
+
+      if (qaMatch) {
+        const fullSummary = (qaMatch[1] || '').replace(/<[^>]*>/g, '').trim();
+        const firstSentenceMatch = fullSummary.match(/^([^\.\?!]+[\.\?!])/);
+        let highlight = 'Key Overview';
+        let summary = fullSummary;
+        let disclaimer =
+          'Always verify live exchange rates and current listing prices before setting a rupee budget.';
+
+        if (firstSentenceMatch && firstSentenceMatch[1].length <= 45) {
+          highlight = firstSentenceMatch[1].trim();
+          summary = fullSummary.slice(firstSentenceMatch[0].length).trim();
+        } else if (firstSentenceMatch && firstSentenceMatch[1].length <= 70) {
+          highlight = firstSentenceMatch[1].trim();
+        } else if (/cost|price/i.test(post.title)) {
+          highlight = 'Varies Daily.';
+        }
+
+        const discMatch = summary.match(/(Always\s+check[\s\S]*|Subject\s+to[\s\S]*|Verify[\s\S]*)$/i);
+        if (discMatch) {
+          disclaimer = discMatch[1].trim();
+          summary = summary.replace(discMatch[0], '').trim();
+        }
+
+        extractedQa = {
+          badge: 'QUICK ANSWER',
+          highlight,
+          summary: summary || fullSummary,
+          disclaimer,
+        };
+
+        // Remove extracted QA block from content to prevent duplicate display
+        rawHtml = rawHtml.replace(qaMatch[0], '');
+      } else {
+        // Fallback Quick Answer from excerpt so the signature dark gold box is ALWAYS present
+        extractedQa = {
+          badge: 'QUICK ANSWER',
+          highlight: isIndia ? 'Investment Guide' : 'Key Overview',
+          summary:
+            post.excerpt ||
+            'Essential facts, regulations and direct pricing breakdown for property buyers in Dubai.',
+          disclaimer: 'Subject to Dubai Land Department regulations. Verify details before you buy.',
+        };
+      }
+    }
+
+    // 2. KEY TAKEAWAYS EXTRACTION
+    let extractedTakeaways: string[] = post.keyTakeaways || [];
+    if (extractedTakeaways.length === 0) {
+      const guideRegex =
+        /<(?:p|div|h[234])>\s*(?:<strong>|<b>)?\s*(?:In\s*this\s*guide|Key\s*takeaways?|What\s*you'll\s*learn|Highlights)\s*:?\s*(?:<\/strong>|<\/b>)?\s*<\/(?:p|div|h[234])>([\s\S]*?)(?=<h2|<p>\s*(?!•|[-*]|\d+\.|\s*&bull;|\s*&#8226;))/i;
+      const guideMatch = rawHtml.match(guideRegex);
+
+      if (guideMatch) {
+        const items = guideMatch[1]
+          .split(/<\/p>|<\/li>/i)
+          .map((s) => s.replace(/<[^>]*>/g, '').replace(/^[•\-\*\s\u00a0&bull;&#8226;]+/, '').trim())
+          .filter((s) => s.length > 2 && !/^faqs?$/i.test(s));
+
+        if (items.length > 0) {
+          extractedTakeaways = items;
+          rawHtml = rawHtml.replace(guideMatch[0], '');
+        }
+      }
+
+      // If still empty, derive up to 5 points from article H2s if article is detailed
+      if (extractedTakeaways.length === 0) {
+        const h2Matches = Array.from(rawHtml.matchAll(/<h2[^>]*>(.*?)<\/h2>/gi))
+          .map((m) => m[1].replace(/<[^>]*>/g, '').trim())
+          .filter((t) => !/faq|frequently|question|about\s+knc|contact/i.test(t));
+        if (h2Matches.length >= 3) {
+          extractedTakeaways = h2Matches.slice(0, 5);
+        }
+      }
+    }
+
+    // 3. FAQS EXTRACTION
+    let extractedFaqs: FaqItem[] = post.faqs || [];
+    if (extractedFaqs.length === 0) {
+      const faqSectionRegex = /<h2>\s*(?:Frequently\s*Asked\s*Questions|FAQs?)\s*<\/h2>([\s\S]*)$/i;
+      const faqMatch = rawHtml.match(faqSectionRegex);
+
+      if (faqMatch) {
+        const faqText = faqMatch[1];
+        const itemRegex = /<h3>([\s\S]*?)<\/h3>\s*<p>([\s\S]*?)<\/p>/gi;
+        let m;
+        let lastIndex = 0;
+        const parsed: FaqItem[] = [];
+
+        while ((m = itemRegex.exec(faqText)) !== null) {
+          const q = m[1].replace(/<[^>]*>/g, '').trim();
+          const a = m[2].replace(/<[^>]*>/g, '').trim();
+          if (q && a) parsed.push({ question: q, answer: a });
+          lastIndex = m.index + m[0].length;
+        }
+
+        if (parsed.length > 0) {
+          extractedFaqs = parsed;
+          const trailing = faqText.slice(lastIndex).trim();
+          rawHtml = rawHtml.slice(0, faqMatch.index) + (trailing ? '\n' + trailing : '');
+        }
+      }
+    }
+
+    // 4. FORMULA BEAUTIFIER
+    // Transforms raw formula lines into styled luxury formula cards
+    rawHtml = rawHtml.replace(
+      /<p>\s*<strong>\s*(?:The\s+basic\s+formula|Formula)\s*<\/strong>\s*<\/p>\s*<p>\s*<strong>([\s\S]*?)<\/strong>\s*<\/p>/gi,
+      (_match, formula) => `
+        <div class="article-formula-banner">
+          <div class="formula-label">Calculation Formula</div>
+          <div class="formula-math">${formula}</div>
+        </div>
+      `,
+    );
+
+    // 5. ESTIMATE READING TIME
+    const plainText = rawHtml.replace(/<[^>]*>/g, ' ');
+    const wordCount = plainText.trim().split(/\s+/).filter(Boolean).length;
+    const minutes = Math.max(1, Math.ceil(wordCount / 180));
+    const autoReadingTime = `${minutes} min read`;
+
+    // 6. EXTRACT H2s AND ASSIGN IDs FOR TABLE OF CONTENTS
+    const sections: TocSection[] = [];
+    let headingIndex = 0;
+
+    const processedHtml = rawHtml.replace(/<h2([^>]*)>(.*?)<\/h2>/gi, (_match, attrs, titleText) => {
+      headingIndex++;
+      const cleanTitle = titleText.replace(/<[^>]*>/g, '').trim();
+      const slugId =
+        cleanTitle
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-') || `section-${headingIndex}`;
+
+      sections.push({ id: slugId, title: cleanTitle });
+      return `<h2 id="${slugId}"${attrs}>${titleText}</h2>`;
+    });
+
+    if (extractedFaqs.length > 0) {
+      sections.push({
+        id: 'frequently-asked-questions',
+        title: 'Frequently asked questions',
+      });
+    }
+
+    const clean = DOMPurify.sanitize(processedHtml, {
+      ADD_ATTR: ['target', 'rel', 'loading', 'id'],
+    });
+
+    // 7. TAILORED LEAD CTA & SUBCATEGORY
+    const leadCtaTitle =
+      post.leadCtaTitle ||
+      (isIndia
+        ? 'Looking to explore property in Dubai from India?'
+        : 'Looking to explore property in Dubai?');
+    const leadCtaSubtitle =
+      post.leadCtaSubtitle ||
+      (isIndia
+        ? 'Connect with our dedicated India Desk for verified listings, payment plans, and zero-fee buyer guidance.'
+        : 'Leave your contact details and our senior property advisor will reach out with tailor-made options.');
+
+    const subCategory =
+      post.subCategory || (isIndia ? 'Buying from India' : post.category || 'Guides');
+
+    return {
+      sanitizedHtml: clean,
+      tocSections: sections,
+      calculatedReadingTime: post.readingTime || autoReadingTime,
+      quickAnswer: extractedQa,
+      keyTakeaways: extractedTakeaways,
+      faqs: extractedFaqs,
+      leadCtaTitle,
+      leadCtaSubtitle,
+      subCategory,
+    };
+  }, [post]);
+
   // SEO JSON-LD with BlogPosting + FAQPage Structured Data
   const jsonLdData = useMemo(() => {
     if (!post) return undefined;
@@ -93,12 +328,12 @@ export function BlogPostPage() {
       }),
     ];
 
-    if (post.faqs && post.faqs.length > 0) {
-      const faqSchema = faqJsonLd(post.faqs);
+    if (faqs && faqs.length > 0) {
+      const faqSchema = faqJsonLd(faqs);
       if (faqSchema) schemas.push(faqSchema);
     }
     return schemas;
-  }, [post, heroImage, seoSettings.siteUrl, siteName]);
+  }, [post, heroImage, seoSettings.siteUrl, siteName, faqs]);
 
   usePageMeta(
     post?.title ?? 'Guide',
@@ -144,55 +379,6 @@ export function BlogPostPage() {
         if (!post) setError(reason instanceof Error ? reason.message : 'Article not found.');
       });
   }, [params?.slug]);
-
-  // Parse HTML and inject IDs into H2 tags for Table of Contents
-  const { sanitizedHtml, tocSections, calculatedReadingTime } = useMemo(() => {
-    if (!post?.content) return { sanitizedHtml: '', tocSections: [], calculatedReadingTime: '5 min read' };
-
-    const trimmed = post.content.trim();
-    let rawHtml = trimmed;
-
-    // Handle plain text paragraph split if not already HTML
-    if (!/<[a-z][\s\S]*>/i.test(trimmed)) {
-      rawHtml = trimmed
-        .split(/\n\s*\n/)
-        .map((p) => `<p>${p.replace(/\n/g, '<br />')}</p>`)
-        .join('');
-    }
-
-    // Estimate reading time from words
-    const plainText = rawHtml.replace(/<[^>]*>/g, ' ');
-    const wordCount = plainText.trim().split(/\s+/).filter(Boolean).length;
-    const minutes = Math.max(1, Math.ceil(wordCount / 180));
-    const autoReadingTime = `${minutes} min read`;
-
-    // Extract H2s and assign IDs
-    const sections: TocSection[] = [];
-    let headingIndex = 0;
-
-    const processedHtml = rawHtml.replace(/<h2([^>]*)>(.*?)<\/h2>/gi, (_match, attrs, titleText) => {
-      headingIndex++;
-      const cleanTitle = titleText.replace(/<[^>]*>/g, '').trim();
-      const slugId =
-        cleanTitle
-          .toLowerCase()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/\s+/g, '-') || `section-${headingIndex}`;
-
-      sections.push({ id: slugId, title: cleanTitle });
-      return `<h2 id="${slugId}"${attrs}>${titleText}</h2>`;
-    });
-
-    const clean = DOMPurify.sanitize(processedHtml, {
-      ADD_ATTR: ['target', 'rel', 'loading', 'id'],
-    });
-
-    return {
-      sanitizedHtml: clean,
-      tocSections: sections,
-      calculatedReadingTime: post.readingTime || autoReadingTime,
-    };
-  }, [post?.content, post?.readingTime]);
 
   // Track active section on scroll
   useEffect(() => {
@@ -360,7 +546,7 @@ export function BlogPostPage() {
             Guides
           </Link>
           <span className="text-[#2b3242]/30">/</span>
-          <span className="text-[#2b3242]/85 truncate">{post.subCategory || post.category}</span>
+          <span className="text-[#2b3242]/85 truncate">{subCategory}</span>
         </nav>
 
         {/* H1 Main Article Title */}
@@ -383,26 +569,26 @@ export function BlogPostPage() {
         {/* ======================================================== */}
         {/* 1. QUICK ANSWER (Zero-Click / Featured Snippet Box)       */}
         {/* ======================================================== */}
-        {post.quickAnswer && (
+        {quickAnswer && (
           <section className="mt-8 rounded-2xl bg-[#1e2532] text-white p-6 sm:p-7 shadow-lg border border-white/5 relative overflow-hidden">
             <div className="flex items-center justify-between gap-3">
               <span className="text-[11px] font-mono uppercase tracking-[0.18em] font-bold text-[#f59e0b]">
-                {post.quickAnswer.badge || 'QUICK ANSWER'}
+                {quickAnswer.badge || 'QUICK ANSWER'}
               </span>
               <Sparkles size={16} className="text-[#f59e0b]/80" />
             </div>
 
-            <div className="mt-2 text-4xl sm:text-5xl md:text-6xl font-black text-[#f59e0b] tracking-tight">
-              {post.quickAnswer.highlight}
+            <div className="mt-2 text-3xl sm:text-4xl md:text-5xl font-black text-[#f59e0b] tracking-tight leading-tight">
+              {quickAnswer.highlight}
             </div>
 
             <p className="mt-4 text-base sm:text-[17px] leading-relaxed text-white/90 font-normal">
-              {post.quickAnswer.summary}
+              {quickAnswer.summary}
             </p>
 
-            {post.quickAnswer.disclaimer && (
+            {quickAnswer.disclaimer && (
               <p className="mt-5 border-t border-white/10 pt-3.5 text-xs text-white/55 leading-normal">
-                {post.quickAnswer.disclaimer}
+                {quickAnswer.disclaimer}
               </p>
             )}
           </section>
@@ -454,11 +640,11 @@ export function BlogPostPage() {
         {/* ======================================================== */}
         {/* 3. KEY TAKEAWAYS SECTION                                 */}
         {/* ======================================================== */}
-        {post.keyTakeaways && post.keyTakeaways.length > 0 && (
+        {keyTakeaways && keyTakeaways.length > 0 && (
           <section className="mt-9">
             <h2 className="text-2xl font-bold text-[#1c2432] tracking-tight">Key takeaways</h2>
             <ul className="mt-5 space-y-3.5">
-              {post.keyTakeaways.map((takeaway, idx) => (
+              {keyTakeaways.map((takeaway, idx) => (
                 <li key={idx} className="flex items-start gap-3 text-[15px] sm:text-base leading-relaxed text-[#2b3242]">
                   <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#e59a27] text-white mt-1 shadow-xs">
                     <Check size={12} strokeWidth={3.5} />
@@ -481,13 +667,13 @@ export function BlogPostPage() {
         {/* ======================================================== */}
         {/* 5. FREQUENTLY ASKED QUESTIONS (Interactive Accordion)    */}
         {/* ======================================================== */}
-        {post.faqs && post.faqs.length > 0 && (
+        {faqs && faqs.length > 0 && (
           <section className="mt-12 pt-8 border-t border-[#2b3242]/12" id="frequently-asked-questions">
             <h2 className="text-2xl sm:text-[1.75rem] font-bold text-[#1c2432] tracking-tight">
               Frequently asked questions
             </h2>
             <div className="mt-6 divide-y divide-[#2b3242]/12 border-t border-[#2b3242]/12">
-              {post.faqs.map((faq, idx) => {
+              {faqs.map((faq, idx) => {
                 const isOpen = Boolean(openFaqIndexes[idx]);
                 return (
                   <div key={idx} className="py-4 sm:py-5">
@@ -519,11 +705,10 @@ export function BlogPostPage() {
         {/* ======================================================== */}
         <section className="mt-12 rounded-2xl bg-[#1e2532] text-white p-6 sm:p-8 shadow-xl border border-white/5">
           <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug">
-            {post.leadCtaTitle || `Looking to explore property in Dubai?`}
+            {leadCtaTitle}
           </h3>
           <p className="mt-2 text-sm text-white/70">
-            {post.leadCtaSubtitle ||
-              'Leave your contact details and our senior property advisor will reach out with tailor-made options.'}
+            {leadCtaSubtitle}
           </p>
 
           {leadSuccess ? (
