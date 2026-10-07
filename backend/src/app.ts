@@ -4,6 +4,7 @@ import pinoHttp from "pino-http";
 import router from "./routes/index.ts";
 import { logger } from "./lib/logger.ts";
 import { uploadDir } from "./routes/admin.ts";
+import { sitemapXml, sitemapEntries } from "./lib/seo.ts";
 
 const app: Express = express();
 
@@ -52,6 +53,15 @@ app.use(
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/uploads", express.static(uploadDir));
+
+app.get("/sitemap.xml", async (_req, res, next) => {
+  try {
+    const xml = sitemapXml(await sitemapEntries());
+    res.type("application/xml").set("Cache-Control", "public, max-age=600").send(xml);
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.use("/api", router);
 

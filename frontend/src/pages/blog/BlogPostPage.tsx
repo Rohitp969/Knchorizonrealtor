@@ -98,7 +98,7 @@ export function BlogPostPage() {
     if (!post?.content) {
       return {
         sanitizedHtml: '',
-        tocSections: [],
+        tocSections: [] as TocSection[],
         calculatedReadingTime: '5 min read',
         quickAnswer: post?.quickAnswer || null,
         keyTakeaways: post?.keyTakeaways || [],

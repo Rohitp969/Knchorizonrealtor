@@ -22,7 +22,7 @@
   "rewrites": [
     {
       "source": "/sitemap.xml",
-      "destination": "https://knchorizonrealtor.onrender.com/api/sitemap.xml"
+      "destination": "https://knchorizonrealtor.com/api/sitemap.xml"
     },
     {
       "source": "/favicon.ico",
