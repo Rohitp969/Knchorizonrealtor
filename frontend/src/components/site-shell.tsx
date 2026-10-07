@@ -214,7 +214,7 @@ export function Navbar() {
         <div className="site-container flex items-center justify-between gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:justify-items-start">
           <BrandMark inverse={inverse} />
           <nav ref={navRef} className="hidden items-center gap-5 lg:flex xl:gap-7" aria-label="Primary navigation">
-            <Link href="/" className="line-link flex items-center whitespace-nowrap text-[12.5px] font-medium uppercase leading-none tracking-[.06em] opacity-85 hover:opacity-100" data-testid="link-nav-home">Home</Link>
+            <Link href="/" className="line-link flex items-center whitespace-nowrap text-[12.5px] font-medium uppercase leading-none tracking-[.06em] opacity-85 hover:opacity-100" data-testid="link-nav-home">Ho</Link>
             
             {/* PROPERTIES */}
             <div className="relative py-3 -my-3" onMouseEnter={() => setDropdown('properties')} onMouseLeave={() => setDropdown(null)}>
